@@ -29,11 +29,13 @@ type Term struct {
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
+type term Term
+
 func (t Term) MarshalJSON() ([]byte, error) {
 	if t.BoostParam.BoostValue == nil && t.CaseInsensitiveParam.CaseInsensitiveValue == nil {
 		return json.Marshal(t.Value)
 	}
-	return json.Marshal(t)
+	return json.Marshal(term(t))
 }
 func (t *Term) UnmarshalJSON(data []byte) error {
 	g := gjson.ParseBytes(data)
@@ -43,7 +45,15 @@ func (t *Term) UnmarshalJSON(data []byte) error {
 		t.CaseInsensitiveParam = CaseInsensitiveParam{}
 		return nil
 	}
-	return json.Unmarshal(data, t)
+	var tt term
+	err := json.Unmarshal(data, &tt)
+	if err != nil {
+		return err
+	}
+	t.BoostParam = tt.BoostParam
+	t.Value = tt.Value
+	t.CaseInsensitiveParam = tt.CaseInsensitiveParam
+	return nil
 }
 
 func NewTerm() Term {
