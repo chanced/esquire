@@ -27,40 +27,6 @@ type DateField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
-func (d *DateField) SetFormat(v string) *DateField {
-	d.FormatParam.SetFormat(v)
-	return d
-}
-
-// SetIgnoreMalformed sets IgnoreMalformed to v
-func (d *DateField) SetIgnoreMalformed(v bool) *DateField {
-	d.IgnoreMalformedParam.SetIgnoreMalformed(v)
-	return d
-}
-
-func (d *DateField) SetDocValues(v bool) *DateField {
-	d.DocValuesParam.SetDocValues(v)
-	return d
-}
-func (d *DateField) SetStore(v bool) *DateField {
-	d.StoreParam.SetStore(v)
-	return d
-}
-func (d *DateField) SetNullValue(v interface{}) *DateField {
-	d.NullValueParam.SetNullValue(v)
-	return d
-}
-
-func (d *DateField) SetMetaParam(v map[string]string) *DateField {
-	d.MetaParam.SetMeta(v)
-	return d
-}
-
-func (d *DateField) SetIndex(v bool) *DateField {
-	d.IndexParam.SetIndex(v)
-	return d
-}
-
 // DateNanoSecField is an addition to the DateField data type.
 //
 // However there is an important distinction between the two. The existing date
@@ -101,40 +67,6 @@ type DateNanoSecField struct {
 	NullValueParam       `bson:",inline" json:",inline"`
 	StoreParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
-}
-
-func (d *DateNanoSecField) SetFormat(v string) *DateNanoSecField {
-	d.FormatParam.SetFormat(v)
-	return d
-}
-
-// SetIgnoreMalformed sets IgnoreMalformed to v
-func (d *DateNanoSecField) SetIgnoreMalformed(v bool) *DateNanoSecField {
-	d.IgnoreMalformedParam.SetIgnoreMalformed(v)
-	return d
-}
-
-func (d *DateNanoSecField) SetDocValues(v bool) *DateNanoSecField {
-	d.DocValuesParam.SetDocValues(v)
-	return d
-}
-func (d *DateNanoSecField) SetStore(v bool) *DateNanoSecField {
-	d.StoreParam.SetStore(v)
-	return d
-}
-func (d *DateNanoSecField) SetNullValue(v interface{}) *DateNanoSecField {
-	d.NullValueParam.SetNullValue(v)
-	return d
-}
-
-func (d *DateNanoSecField) SetMetaParam(v map[string]string) *DateNanoSecField {
-	d.MetaParam.SetMeta(v)
-	return d
-}
-
-func (d *DateNanoSecField) SetIndex(v bool) *DateNanoSecField {
-	d.IndexParam.SetIndex(v)
-	return d
 }
 
 func NewDateNanoSecField() *DateNanoSecField {

@@ -19,12 +19,3 @@ func NewBinaryField() *BinaryField {
 		},
 	}
 }
-
-func (b *BinaryField) SetDocValues(v bool) *BinaryField {
-	b.DocValuesParam.SetDocValues(v)
-	return b
-}
-func (b *BinaryField) SetStore(v bool) *BinaryField {
-	b.StoreParam.SetStore(v)
-	return b
-}

@@ -24,31 +24,3 @@ type CompletionField struct {
 func NewCompletionField() *CompletionField {
 	return &CompletionField{BaseField: BaseField{MappingType: TypeCompletion}}
 }
-
-// SetAnalyzer sets Analyzer to v
-func (c *CompletionField) SetAnalyzer(v string) *CompletionField {
-	c.AnalyzerValue = v
-	return c
-}
-
-// SetSearchAnalyzer sets SearchAnalyzer to v
-func (c *CompletionField) SetSearchAnalyzer(v string) *CompletionField {
-	c.AnalyzerParam.SetSearchAnalyzer(v)
-	return c
-}
-
-// SetPreserveSeperators sets the PreserveSeperatorParam value to v
-func (c *CompletionField) SetPreserveSeperators(v bool) *CompletionField {
-	c.PreserveSeperatorsParam.SetPreserveSeperators(v)
-	return c
-}
-
-func (c *CompletionField) SetPreservePositionIncrements(v bool) *CompletionField {
-	c.PreservePositionIncrementsParam.SetPreservePositionIncrements(v)
-	return c
-}
-
-func (c *CompletionField) SetMaxInputLength(v int) *CompletionField {
-	c.MaxInputLengthParam.SetMaxInputLength(v)
-	return c
-}

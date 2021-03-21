@@ -45,8 +45,3 @@ func NewAliasField() *AliasField {
 		BaseField: BaseField{MappingType: TypeAlias},
 	}
 }
-
-func (a *AliasField) SetPath(path string) *AliasField {
-	a.PathParam.SetPath(path)
-	return a
-}
