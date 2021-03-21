@@ -27,6 +27,18 @@ type DateField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f DateField) Clone() Field {
+	n := NewDateField()
+	n.SetDocValues(f.DocValues())
+	n.SetFormat(f.Format())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetNullValue(f.NullValue())
+	n.SetStore(f.Store())
+	return n
+}
+
 // DateNanoSecField is an addition to the DateField data type.
 //
 // However there is an important distinction between the two. The existing date
@@ -67,6 +79,18 @@ type DateNanoSecField struct {
 	NullValueParam       `bson:",inline" json:",inline"`
 	StoreParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
+}
+
+func (f DateNanoSecField) Clone() Field {
+	n := NewDateNanoSecField()
+	n.SetDocValues(f.DocValues())
+	n.SetFormat(f.Format())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetNullValue(f.NullValue())
+	n.SetStore(f.Store())
+	return n
 }
 
 func NewDateNanoSecField() *DateNanoSecField {

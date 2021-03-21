@@ -111,5 +111,7 @@ func (s SimilarityParam) Similarity() Similarity {
 
 // SetSimilarity sets the Similarity Value to v
 func (s *SimilarityParam) SetSimilarity(v Similarity) {
-	s.SimilarityValue = &v
+	if s.Similarity() != v {
+		s.SimilarityValue = &v
+	}
 }

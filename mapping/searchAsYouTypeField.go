@@ -1,6 +1,6 @@
 package mapping
 
-// SearchAsYouTypeField  is a text-like field that is optimized to provide
+// SearchAsYouTypeField is a text-like field that is optimized to provide
 // out-of-the-box support for queries that serve an as-you-type completion use
 // case. It creates a series of subfields that are analyzed to index terms that
 // can be efficiently matched by a query that partially matches the entire
@@ -47,6 +47,20 @@ type SearchAsYouTypeField struct {
 	StoreParam          `bson:",inline" json:",inline"`
 	SimilarityParam     `bson:",inline" json:",inline"`
 	TermVectorParam     `bson:",inline" json:",inline"`
+}
+
+func (f SearchAsYouTypeField) Clone() Field {
+	n := NewSearchAsYouTypeField()
+	n.SetMaxShingleSize(f.MaxShingleSize())
+	n.SetAnalyzer(f.Analyzer())
+	n.SetSearchQuoteAnalyzer(f.SearchQuoteAnalyzer())
+	n.SetSearchAnalyzer(f.SearchAnalyzer())
+	n.SetIndexOptions(f.IndexOptions())
+	n.SetNorms(f.Norms())
+	n.SetSimilarity(f.Similarity())
+	n.SetStore(f.Store())
+	n.SetTermVector(f.TermVector())
+	return n
 }
 
 func NewSearchAsYouTypeField() *SearchAsYouTypeField {

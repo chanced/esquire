@@ -58,5 +58,7 @@ func (pig PositionIncrementGapParam) PositionIncrementGap() uint {
 
 // SetPositionIncrementGap sets the PositionIncrementGap Value to v
 func (pig *PositionIncrementGapParam) SetPositionIncrementGap(v uint) {
-	pig.PositionIncrementGapValue = &v
+	if pig.PositionIncrementGap() != v {
+		pig.PositionIncrementGapValue = &v
+	}
 }

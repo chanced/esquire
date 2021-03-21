@@ -73,5 +73,7 @@ func (n NormsParam) Norms() bool {
 
 // SetNorms sets the Norms value to v
 func (n *NormsParam) SetNorms(v bool) {
-	n.NormsValue = &v
+	if n.Norms() != v {
+		n.NormsValue = &v
+	}
 }

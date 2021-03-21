@@ -52,8 +52,6 @@ type Fields []Field
 
 func (f Fields) Clone() Fields {
 	res := make(Fields, len(f))
-	for i, v := range f {
-		res[i] = v
-	}
+	copy(res, f)
 	return res
 }

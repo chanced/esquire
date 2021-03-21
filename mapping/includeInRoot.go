@@ -38,5 +38,7 @@ func (iir IncludeInRootParam) IncludeInRoot() bool {
 
 // SetIncludeInRoot sets the IncludeInRoot Value to v
 func (iir *IncludeInRootParam) SetIncludeInRoot(v bool) {
-	iir.IncludeInRootValue = &v
+	if iir.IncludeInRoot() != v {
+		iir.IncludeInRootValue = &v
+	}
 }

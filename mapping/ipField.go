@@ -12,6 +12,15 @@ type IPField struct {
 	StoreParam           `json:",inline" bson:",inline"`
 }
 
+func (f IPField) Clone() Field {
+	n := NewIPField()
+	n.SetDocValues(f.DocValues())
+	n.SetIndex(f.Index())
+	n.SetNullValue(f.NullValue())
+	n.SetStore(f.Store())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	return n
+}
 func NewIPField() *IPField {
 	return &IPField{BaseField: BaseField{MappingType: TypeIP}}
 }

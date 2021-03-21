@@ -42,6 +42,29 @@ type TextField struct {
 	MetaParam                     `json:",inline" bson:",inline"`
 }
 
+func (f TextField) Clone() Field {
+	n := NewTextField()
+	n.SetEagerGlobalOrdinals(f.EagerGlobalOrdinals())
+	n.SetAnalyzer(f.Analyzer())
+	n.SetSearchAnalyzer(f.SearchAnalyzer())
+	n.SetSearchQuoteAnalyzer(f.SearchQuoteAnalyzer())
+	n.SetFields(f.Fields().Clone())
+	n.SetFieldData(f.FieldData())
+	n.SetFieldDataFrequencyFilter(f.FieldDataFrequencyFilter().Clone())
+	n.SetIndex(f.Index())
+	n.SetIndexOptions(f.IndexOptions())
+	n.SetIndexPhrases(f.IndexPhrases())
+	n.SetIndexPrefixesMaxChars(f.IndexPrefixesMaxChars())
+	n.SetIndexPrefixesMinChars(f.IndexPrefixesMinChars())
+	n.SetMeta(f.Meta().Clone())
+	n.SetNorms(f.Norms())
+	n.SetPositionIncrementGap(f.PositionIncrementGap())
+	n.SetSimilarity(f.Similarity())
+	n.SetStore(f.Store())
+	n.SetTermVector(f.TermVector())
+	return n
+}
+
 func NewTextField() *TextField {
 	return &TextField{BaseField: BaseField{MappingType: TypeText}}
 }

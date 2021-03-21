@@ -113,6 +113,13 @@ type JoinField struct {
 	RelationsParam           `bson:",inline" json:",inline"`
 }
 
+func (f JoinField) Clone() Field {
+	n := NewJoinField()
+	n.SetEagerGlobalOrdinals(f.EagerGlobalOrdinals())
+	n.SetRelations(f.Relations().Clone())
+	return n
+}
+
 func NewJoinField() *JoinField {
 	return &JoinField{BaseField: BaseField{MappingType: TypeJoin}}
 }

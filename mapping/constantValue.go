@@ -22,7 +22,7 @@ type FieldWithConstantValue interface {
 	WithConstantValue
 }
 
-// ConstantValueParam is a mapping with the value parameter
+// ConstantValueParam is a mixin for mappings with the value parameter
 //
 // The value to associate with all documents in the index. If this parameter is
 // not provided, it is set based on the first document that gets indexed.

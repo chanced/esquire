@@ -78,7 +78,9 @@ func (ap AnalyzerParam) SearchAnalyzer() string {
 
 // SetSearchAnalyzer sets SearchAnalyzer to v
 func (ap *AnalyzerParam) SetSearchAnalyzer(v string) {
-	ap.SearchAnalyzerValue = v
+	if ap.SearchAnalyzer() != v {
+		ap.SearchAnalyzerValue = v
+	}
 }
 
 // SearchQuoteAnalyzer setting allows you to specify an analyzer for
@@ -91,7 +93,6 @@ func (ap AnalyzerParam) SearchQuoteAnalyzer() string {
 // SetSearchQuoteAnalyzer sets SearchQuoteAnalyzer to v
 func (ap AnalyzerParam) SetSearchQuoteAnalyzer(v string) {
 	if ap.SearchAnalyzer() != v {
-
 		ap.SearchQuoteAnalyzerValue = v
 	}
 }

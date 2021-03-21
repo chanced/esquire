@@ -14,6 +14,11 @@ type PercolatorField struct {
 	BaseField `json:",inline" bson:",inline"`
 }
 
-func NewPerculatorField() *PercolatorField {
+func (f PercolatorField) Clone() Field {
+	n := NewPercolatorField()
+	return n
+}
+
+func NewPercolatorField() *PercolatorField {
 	return &PercolatorField{BaseField: BaseField{MappingType: TypePercolator}}
 }

@@ -19,6 +19,13 @@ type WildcardField struct {
 	IgnoreAboveParam `bson:",inline" json:",inline"`
 }
 
+func (f WildcardField) Clone() Field {
+	n := NewWildcardField()
+	n.SetNullValue(f.NullValue())
+	n.SetIgnoreAbove(f.IgnoreAbove())
+	return n
+}
+
 func NewWildcardField() *WildcardField {
 	return &WildcardField{BaseField: BaseField{MappingType: TypeWildcardKeyword}}
 }

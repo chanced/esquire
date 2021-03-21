@@ -6,15 +6,14 @@ func NewBooleanField() *BooleanField {
 	}
 }
 
-// BooleanField is a Field Type
-//
-// Boolean fields accept JSON true and false values, but can also accept strings which are interpreted as either true or false:
+// BooleanField accepts JSON true and false values, but can also accept strings
+// which are interpreted as either true or false:
 //
 // False values
-// 	false, "false", "" (empty string)
+//  false, "false", "" (empty string)
 //
 // True values
-// 	true, "true"
+//  true, "true"
 type BooleanField struct {
 	BaseField      `bson:",inline" json:",inline"`
 	DocValuesParam `bson:",inline" json:",inline"`

@@ -20,8 +20,6 @@ type DocValueFields Fields
 
 func (f DocValueFields) Clone() DocValueFields {
 	res := make(DocValueFields, len(f))
-	for i, v := range f {
-		res[i] = v
-	}
+	copy(res, f)
 	return res
 }

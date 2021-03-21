@@ -38,6 +38,13 @@ type GeoPointField struct {
 	CoerceParam          `bson:",inline" json:",inline"`
 }
 
+func (f GeoPointField) Clone() Field {
+	n := NewGeoPointField()
+	n.SetCoerce(f.Coerce())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIgnoreZValue(f.IgnoreZValue())
+	return n
+}
 func NewGeoPointField() *GeoPointField {
 	return &GeoPointField{BaseField: BaseField{MappingType: TypeGeoPoint}}
 }

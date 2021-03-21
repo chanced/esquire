@@ -14,6 +14,14 @@ type GeoShapeField struct {
 	CoerceParam          `bson:",inline" json:",inline"`
 }
 
+func (f GeoShapeField) Clone() Field {
+	n := NewGeoShapeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIgnoreZValue(f.IgnoreZValue())
+	n.SetOrientation(f.Orientation())
+	return n
+}
 func NewGeoShapeField() *GeoShapeField {
 	return &GeoShapeField{BaseField: BaseField{MappingType: TypeGeoShape}}
 }

@@ -40,5 +40,7 @@ func (sq SplitQueriesOnWhitespaceParam) SplitQueriesOnWhitespace() bool {
 
 // SetSplitQueriesOnWhitespace sets the SplitQueriesOnWhitespace Value to v
 func (sq *SplitQueriesOnWhitespaceParam) SetSplitQueriesOnWhitespace(v bool) {
-	sq.SplitQueriesOnWhitespaceValue = &v
+	if sq.SplitQueriesOnWhitespace() != v {
+		sq.SplitQueriesOnWhitespaceValue = &v
+	}
 }

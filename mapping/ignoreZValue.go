@@ -60,5 +60,7 @@ func (izv IgnoreZValueParam) IgnoreZValue() bool {
 
 // SetIgnoreZValue sets the IgnoreZValue Value to v
 func (izv *IgnoreZValueParam) SetIgnoreZValue(v bool) {
-	izv.IgnoreZValueValue = &v
+	if izv.IgnoreZValue() != v {
+		izv.IgnoreZValueValue = &v
+	}
 }

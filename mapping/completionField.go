@@ -24,6 +24,7 @@ type CompletionField struct {
 func (f CompletionField) Clone() Field {
 	n := NewCompletionField()
 	n.SetAnalyzer(f.Analyzer())
+	n.SetSearchAnalyzer(f.SearchAnalyzer())
 	n.SetMaxInputLength(f.MaxInputLength())
 	n.SetPreservePositionIncrements(f.PreservePositionIncrements())
 	n.SetPreserveSeperators(f.PreserveSeperators())

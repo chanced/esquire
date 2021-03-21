@@ -55,5 +55,7 @@ func (mss MaxShingleSizeParam) MaxShingleSize() int {
 //
 // Valid values are 2 (inclusive) to 4 (inclusive). Defaults to 3.
 func (mss *MaxShingleSizeParam) SetMaxShingleSize(v int) {
-	mss.MaxShingleSizeValue = &v
+	if mss.MaxShingleSize() != v {
+		mss.MaxShingleSizeValue = &v
+	}
 }

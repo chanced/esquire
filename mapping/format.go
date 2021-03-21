@@ -431,5 +431,7 @@ func (f FormatParam) Format() string {
 }
 
 func (f *FormatParam) SetFormat(v string) {
-	f.FormatValue = v
+	if v != f.Format() {
+		f.FormatValue = v
+	}
 }

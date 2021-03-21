@@ -34,7 +34,7 @@ type PrefixQuery struct {
 // Prefix panics if Value is not set. It is intended to be used inside of a builder.
 func (p *PrefixQuery) Prefix(v Prefix) {
 	if v.Value == "" {
-		panic(NewSearchError(ErrMissingValue, QueryTypePrefix))
+		panic(NewQueryError(ErrMissingValue, QueryTypePrefix))
 	}
 	p.PrefixQueryValue = v.Query()
 }

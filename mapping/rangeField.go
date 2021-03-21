@@ -18,6 +18,14 @@ type IntegerRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
+func (f IntegerRangeField) Clone() Field {
+	n := NewIntegerRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewIntegerRangeField() *IntegerRangeField {
 	return &IntegerRangeField{BaseField: BaseField{MappingType: TypeIntegerRange}}
 }
@@ -31,7 +39,15 @@ type FloatRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
-func NewFloatRangeFIeld() *FloatRangeField {
+func (f FloatRangeField) Clone() Field {
+	n := NewFloatRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
+
+func NewFloatRangeField() *FloatRangeField {
 	return &FloatRangeField{BaseField: BaseField{MappingType: TypeFloatRange}}
 }
 
@@ -44,6 +60,13 @@ type LongRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
+func (f LongRangeField) Clone() Field {
+	n := NewLongRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
 func NewLongRangeField() *LongRangeField {
 	return &LongRangeField{BaseField: BaseField{MappingType: TypeLongRange}}
 }
@@ -57,6 +80,13 @@ type DoubleRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
+func (f DoubleRangeField) Clone() Field {
+	n := NewDoubleRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
 func NewDoubleRangeField() *DoubleRangeField {
 	return &DoubleRangeField{BaseField: BaseField{MappingType: TypeDoubleRange}}
 }
@@ -73,6 +103,13 @@ type DateRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
+func (f DateRangeField) Clone() Field {
+	n := NewDateRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
 func NewDateRangeField() *DateRangeField {
 	return &DateRangeField{BaseField: BaseField{MappingType: TypeDateRange}}
 }
@@ -86,6 +123,13 @@ type IPRangeField struct {
 	StoreParam  `bson:",inline" json:",inline"`
 }
 
+func (f IPRangeField) Clone() Field {
+	n := NewIPRangeField()
+	n.SetCoerce(f.Coerce())
+	n.SetIndex(f.Index())
+	n.SetStore(f.Store())
+	return n
+}
 func NewIPRangeField() *IPRangeField {
 	return &IPRangeField{BaseField: BaseField{MappingType: TypeIPRange}}
 }

@@ -115,6 +115,9 @@ type FieldsParam struct {
 // for sorting and aggregations, or the same string value analyzed by different
 // analyzers.
 func (f FieldsParam) Fields() Fields {
+	if f.FieldsValue == nil {
+		f.FieldsValue = Fields{}
+	}
 	return f.FieldsValue
 }
 
@@ -137,7 +140,6 @@ func (f *FieldsParam) SetField(key string, v Field) {
 	if f.FieldsValue == nil {
 		f.FieldsValue = Fields{}
 	}
-
 	f.FieldsValue[key] = v
 
 }

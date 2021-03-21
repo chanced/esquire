@@ -95,5 +95,7 @@ func (ego EagerGlobalOrdinalsParam) EagerGlobalOrdinals() bool {
 
 // SetEagerGlobalOrdinals sets the EagerGlobalOrdinals value to v
 func (ego *EagerGlobalOrdinalsParam) SetEagerGlobalOrdinals(v bool) {
-	ego.EagerGlobalOrdinalsValue = &v
+	if ego.EagerGlobalOrdinals() != v {
+		ego.EagerGlobalOrdinalsValue = &v
+	}
 }

@@ -107,5 +107,7 @@ func (o OrientationParam) Orientation() Orientation {
 
 // SetOrientation sets the Orientation Value to v
 func (o *OrientationParam) SetOrientation(v Orientation) {
-	o.OrientationValue = &v
+	if o.Orientation() != v {
+		o.OrientationValue = &v
+	}
 }

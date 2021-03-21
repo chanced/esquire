@@ -5,6 +5,22 @@ type IndexPrefixes struct {
 	MaximumChars *uint `bson:"max_chars,omitempty" json:"max_chars,omitempty"`
 }
 
+func (ip *IndexPrefixes) Clone() *IndexPrefixes {
+	if ip == nil {
+		return nil
+	}
+	v := IndexPrefixes{}
+	if ip.MaximumChars != nil {
+		max := *ip.MaximumChars
+		v.MaximumChars = &max
+	}
+	if ip.MinimumChars != nil {
+		min := *ip.MinimumChars
+		v.MinimumChars = &min
+	}
+	return &v
+}
+
 // WithIndexPrefixes is a mapping with the index_prefixes parameter
 //
 // The index_prefixes parameter enables the indexing of term prefixes to speed up
@@ -60,7 +76,9 @@ func (ip *IndexPrefixesParams) SetIndexPrefixesMinChars(v uint) error {
 	if ip.IndexPrefixesValue == nil {
 		ip.IndexPrefixesValue = &IndexPrefixes{}
 	}
-	ip.IndexPrefixesValue.MinimumChars = &v
+	if ip.IndexPrefixesMinChars() != v {
+		ip.IndexPrefixesValue.MinimumChars = &v
+	}
 	return nil
 }
 
@@ -76,12 +94,17 @@ func (ip IndexPrefixesParams) IndexPrefixesMaxChars() uint {
 // SetIndexPrefixesMaxChars sets the maximum prefix length to index. Must be
 // less than 20, and defaults to 5. The value is inclusive.
 func (ip *IndexPrefixesParams) SetIndexPrefixesMaxChars(v uint) error {
+
 	if v >= 20 {
 		return ErrInvalidIndexPrefixMaxChars
 	}
 	if v == 0 {
 		return ErrInvalidIndexPrefixMaxChars
 	}
+	if ip.IndexPrefixesMaxChars() == v {
+		return nil
+	}
+
 	if ip.IndexPrefixesValue == nil {
 		ip.IndexPrefixesValue = &IndexPrefixes{}
 	}

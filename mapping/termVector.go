@@ -97,5 +97,7 @@ func (tv TermVectorParam) TermVector() TermVector {
 
 // SetTermVector sets the TermVector Value to v
 func (tv *TermVectorParam) SetTermVector(v TermVector) {
-	tv.TermVectorValue = &v
+	if tv.TermVector() != v {
+		tv.TermVectorValue = &v
+	}
 }

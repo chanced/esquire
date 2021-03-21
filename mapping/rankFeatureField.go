@@ -10,6 +10,12 @@ type RankFeatureField struct {
 	PositiveScoreImpactParam `json:",inline" bson:",inline"`
 }
 
+func (f RankFeatureField) Clone() Field {
+	n := NewRankFeatureField()
+	n.SetPositiveScoreImpact(n.PositiveScoreImpact())
+	return n
+}
+
 func NewRankFeatureField() *RankFeatureField {
 	return &RankFeatureField{BaseField: BaseField{MappingType: TypeRankFeature}}
 }
@@ -22,6 +28,12 @@ func NewRankFeatureField() *RankFeatureField {
 type RankFeaturesField struct {
 	BaseField                `json:",inline" bson:",inline"`
 	PositiveScoreImpactParam `json:",inline" bson:",inline"`
+}
+
+func (f RankFeaturesField) Clone() Field {
+	n := NewRankFeaturesField()
+	n.SetPositiveScoreImpact(n.PositiveScoreImpact())
+	return n
 }
 
 func NewRankFeaturesField() *RankFeaturesField {

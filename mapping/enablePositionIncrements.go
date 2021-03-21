@@ -44,5 +44,7 @@ func (epi EnablePositionIncrementsParam) EnablePositionIncrements() bool {
 
 // SetEnablePositionIncrements sets the EnablePositionIncrements Value to v
 func (epi *EnablePositionIncrementsParam) SetEnablePositionIncrements(v bool) {
-	epi.EnablePositionIncrementsValue = &v
+	if epi.EnablePositionIncrements() != v {
+		epi.EnablePositionIncrementsValue = &v
+	}
 }

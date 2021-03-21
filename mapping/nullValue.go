@@ -46,5 +46,7 @@ func (nv NullValueParam) NullValue() interface{} {
 
 // SetNullValue sets the NullValue value to v
 func (nv *NullValueParam) SetNullValue(v interface{}) {
-	nv.NullValueValue = v
+	if nv.NullValue() != v {
+		nv.NullValueValue = v
+	}
 }

@@ -117,6 +117,9 @@ func (io IndexOptionsParam) IndexOptions() IndexOptions {
 
 // SetIndexOptions sets IndexOptions value to v
 func (io *IndexOptionsParam) SetIndexOptions(v IndexOptions) error {
+	if io.IndexOptions() == v {
+		return nil
+	}
 	for _, x := range allIndexOptions {
 		if x == v {
 			io.IndexOptionsValue = &v

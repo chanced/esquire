@@ -7,6 +7,14 @@ type FieldDataFrequencyFilter struct {
 	MinSegmentSize int     `bson:"min_segment_size" json:"min_segment_size"`
 }
 
+func (fdf *FieldDataFrequencyFilter) Clone() *FieldDataFrequencyFilter {
+	if fdf == nil {
+		return nil
+	}
+	res := *fdf
+	return &res
+}
+
 // WithFieldDataFrequencyFilter is a mapping with the
 // field_data_frequency_filter
 //

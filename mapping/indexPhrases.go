@@ -61,5 +61,7 @@ func (cp IndexPhrasesParam) IndexPhrases() bool {
 
 // SetIndexPhrases sets the IndexPhrases value to v
 func (cp *IndexPhrasesParam) SetIndexPhrases(v bool) {
-	cp.IndexPhrasesValue = &v
+	if cp.IndexPhrases() != v {
+		cp.IndexPhrasesValue = &v
+	}
 }

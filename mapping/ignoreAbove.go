@@ -52,5 +52,7 @@ func (ia IgnoreAboveParam) IgnoreAbove() uint {
 
 // SetIgnoreAbove sets the IgnoreAbove value to v
 func (ia IgnoreAboveParam) SetIgnoreAbove(v uint) {
-	ia.IgnoreAboveValue = &v
+	if ia.IgnoreAbove() != v {
+		ia.IgnoreAboveValue = &v
+	}
 }

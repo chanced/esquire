@@ -83,5 +83,7 @@ func (fd FieldDataParam) FieldData() bool {
 
 // SetFieldData sets FieldData to v
 func (fd *FieldDataParam) SetFieldData(v bool) {
-	fd.FieldDataValue = &v
+	if fd.FieldData() != v {
+		fd.FieldDataValue = &v
+	}
 }

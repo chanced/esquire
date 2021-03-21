@@ -47,5 +47,7 @@ func (n NormalizerParam) Normalizer() string {
 // The normalizer property of keyword fields is similar to analyzer except that
 // it guarantees that the analysis chain produces a single token.
 func (n *NormalizerParam) SetNormalizer(v string) {
-	n.NormalizerValue = v
+	if n.Normalizer() != v {
+		n.NormalizerValue = v
+	}
 }

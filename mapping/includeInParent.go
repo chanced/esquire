@@ -39,5 +39,7 @@ func (iip IncludeInParentParam) IncludeInParent() bool {
 
 // SetIncludeInParent sets the IncludeInParent Value to v
 func (iip *IncludeInParentParam) SetIncludeInParent(v bool) {
-	iip.IncludeInParentValue = &v
+	if iip.IncludeInParent() != v {
+		iip.IncludeInParentValue = &v
+	}
 }

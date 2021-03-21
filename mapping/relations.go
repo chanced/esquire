@@ -7,6 +7,16 @@ import "github.com/chanced/dynamic"
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/parent-join.html
 type Relations map[string]dynamic.StringOrArrayOfStrings
 
+func (r Relations) Clone() Relations {
+	res := Relations{}
+	for k, v := range r {
+		if v != nil {
+			res[k] = append(dynamic.StringOrArrayOfStrings{}, v...)
+		}
+	}
+	return res
+}
+
 // WithRelations is a mapping with a relations parameter
 //
 // The relations section defines a set of possible relations within the
@@ -45,6 +55,7 @@ func (r RelationsParam) Relations() Relations {
 
 // SetRelations sets the value of Relations to v
 func (r *RelationsParam) SetRelations(v Relations) {
+
 	r.RelationsValue = v
 }
 

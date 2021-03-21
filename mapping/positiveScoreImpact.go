@@ -28,20 +28,22 @@ type FieldWithPositiveScoreImpact interface {
 // PositiveScoreImpactParam is a mixin that adds the
 // positive_score_impact paramete
 type PositiveScoreImpactParam struct {
-	PositiveScoreValue *bool `bson:"positive_score_impact,omitempty" json:"positive_score_impact,omitempty"`
+	PositiveScoreImpactValue *bool `bson:"positive_score_impact,omitempty" json:"positive_score_impact,omitempty"`
 }
 
 // PositiveScoreImpact is used by rank_feature queries to modify the scoring
 // formula in such a way that the score increases or decreases the value of
 // the feature
 func (psi PositiveScoreImpactParam) PositiveScoreImpact() bool {
-	if psi.PositiveScoreValue == nil {
+	if psi.PositiveScoreImpactValue == nil {
 		return true
 	}
-	return *psi.PositiveScoreValue
+	return *psi.PositiveScoreImpactValue
 }
 
 // SetPositiveScoreImpact sets the PositiveScoreImpact Value to v
 func (psi *PositiveScoreImpactParam) SetPositiveScoreImpact(v bool) {
-	psi.PositiveScoreValue = &v
+	if psi.PositiveScoreImpact() != v {
+		psi.PositiveScoreImpactValue = &v
+	}
 }

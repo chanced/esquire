@@ -29,6 +29,10 @@ type DimensionsParam struct {
 	DimensionsValue int `bson:"dims,omitempty" json:"dims,omitempty"`
 }
 
+func (d DimensionsParam) Dimensions() int {
+	return d.DimensionsValue
+}
+
 // Dims is the number of dimensions in the vector, required parameter.
 func (d DimensionsParam) Dims() int {
 	return d.DimensionsValue
@@ -36,5 +40,8 @@ func (d DimensionsParam) Dims() int {
 
 // SetDims sets the dimensions to v
 func (d *DimensionsParam) SetDims(v int) {
+	d.DimensionsValue = v
+}
+func (d *DimensionsParam) SetDimensions(v int) {
 	d.DimensionsValue = v
 }

@@ -75,6 +75,15 @@ type NestedField struct {
 	IncludeInRootParam   `json:",inline" bson:",inline"`
 }
 
+func (f NestedField) Clone() Field {
+	n := NewNestedField()
+	n.SetDynamic(f.Dynamic())
+	n.SetProperties(f.Properties().Clone())
+	n.SetIncludeInParent(f.IncludeInParent())
+	n.SetIncludeInRoot(f.IncludeInRoot())
+	return n
+}
+
 func NewNestedField() *NestedField {
 	return &NestedField{BaseField: BaseField{MappingType: TypeNested}}
 }

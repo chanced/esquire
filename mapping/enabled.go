@@ -65,5 +65,7 @@ func (ep EnabledParam) Enabled() bool {
 
 // SetEnabled sets Enabled to v
 func (ep *EnabledParam) SetEnabled(v bool) {
-	ep.EnabledValue = &v
+	if ep.Enabled() != v {
+		ep.EnabledValue = &v
+	}
 }

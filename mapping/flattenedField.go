@@ -35,6 +35,18 @@ type FlattenedField struct {
 	SplitQueriesOnWhitespaceParam `json:",inline" bson:",inline"`
 }
 
+func (f FlattenedField) Clone() Field {
+	n := NewFlattenedField()
+	n.SetDocValues(f.DocValues())
+	n.SetEagerGlobalOrdinals(f.EagerGlobalOrdinals())
+	n.SetIgnoreAbove(f.IgnoreAbove())
+	n.SetIndexOptions(f.IndexOptions())
+	n.SetIndex(f.Index())
+	n.SetSimilarity(f.Similarity())
+	n.SetNullValue(f.NullValue())
+	n.SetSplitQueriesOnWhitespace(f.SplitQueriesOnWhitespace())
+	return n
+}
 func NewFlattenedField() *FlattenedField {
 	return &FlattenedField{BaseField: BaseField{MappingType: TypeFlattened}}
 }

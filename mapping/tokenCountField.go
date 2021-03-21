@@ -14,6 +14,18 @@ type TokenCountField struct {
 	StoreParam                    `json:",inline" bson:",inline"`
 }
 
+func (f TokenCountField) Clone() Field {
+	n := NewTokenCountField()
+	n.SetEnablePositionIncrements(f.EnablePositionIncrements())
+	n.SetDocValues(f.DocValues())
+	n.SetNullValue(f.NullValue())
+	n.SetAnalyzer(f.Analyzer())
+	n.SetSearchQuoteAnalyzer(f.SearchQuoteAnalyzer())
+	n.SetSearchAnalyzer(f.SearchAnalyzer())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewTokenCountField() *TokenCountField {
 	return &TokenCountField{BaseField: BaseField{MappingType: TypeTokenCount}}
 }
