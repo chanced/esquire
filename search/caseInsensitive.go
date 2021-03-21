@@ -20,12 +20,12 @@ type QueryWithCaseInsensitive interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
 type CaseInsensitiveParam struct {
-	caseInsensitiveValue *bool
+	CaseInsensitiveValue *bool `json:"case_insensitive,omitempty" bson:"case_insensitive,omitempty"`
 }
 
 func (ci CaseInsensitiveParam) CaseInsensitive() bool {
-	if ci.caseInsensitiveValue == nil {
+	if ci.CaseInsensitiveValue == nil {
 		return false
 	}
-	return *ci.caseInsensitiveValue
+	return *ci.CaseInsensitiveValue
 }

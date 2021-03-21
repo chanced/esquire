@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/tidwall/gjson"
+)
+
 // Term query returns documents that contain an exact term in a provided field.
 //
 // You can use the term query to find documents based on a precise value such as
@@ -21,6 +27,23 @@ type Term struct {
 	Value                string `json:"value" bson:"value"`
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
+}
+
+func (t Term) MarshalJSON() ([]byte, error) {
+	if t.BoostParam.BoostValue == nil && t.CaseInsensitiveParam.CaseInsensitiveValue == nil {
+		return json.Marshal(t.Value)
+	}
+	return json.Marshal(t)
+}
+func (t *Term) UnmarshalJSON(data []byte) error {
+	g := gjson.ParseBytes(data)
+	if g.Type == gjson.String {
+		t.Value = g.String()
+		t.BoostParam = BoostParam{}
+		t.CaseInsensitiveParam = CaseInsensitiveParam{}
+		return nil
+	}
+	return json.Unmarshal(data, t)
 }
 
 func NewTerm() Term {
