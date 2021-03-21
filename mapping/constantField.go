@@ -14,3 +14,9 @@ type ConstantField struct {
 func NewConstantField() *ConstantField {
 	return &ConstantField{BaseField: BaseField{MappingType: TypeConstant}}
 }
+
+// SetConstantValue sets the ConstantValue to v
+func (c *ConstantField) SetConstantValue(v interface{}) *ConstantField {
+	c.ConstantValueParam.SetConstantValue(v)
+	return c
+}

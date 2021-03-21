@@ -8,9 +8,9 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html
 type WithDimensions interface {
 	// Dims is the number of dimensions in the vector, required parameter.
-	Dims() uint8
+	Dims() int
 	// SetDims sets the dimensions to v
-	SetDims(v uint8)
+	SetDims(v int)
 }
 
 // FieldWithDimensions is a Field mapping with the dims parameter
@@ -26,15 +26,15 @@ type FieldWithDimensions interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html
 type DimensionsParam struct {
-	DimensionsValue uint8 `bson:"dims,omitempty" json:"dims,omitempty"`
+	DimensionsValue int `bson:"dims,omitempty" json:"dims,omitempty"`
 }
 
 // Dims is the number of dimensions in the vector, required parameter.
-func (d DimensionsParam) Dims() uint8 {
+func (d DimensionsParam) Dims() int {
 	return d.DimensionsValue
 }
 
 // SetDims sets the dimensions to v
-func (d *DimensionsParam) SetDims(v uint8) {
+func (d *DimensionsParam) SetDims(v int) {
 	d.DimensionsValue = v
 }

@@ -14,11 +14,11 @@ package mapping
 type WithMaxShingleSize interface {
 	// MaxShingleSize is the largest shingle size to create. Valid values are 2
 	// (inclusive) to 4 (inclusive). Defaults to 3.
-	MaxShingleSize() uint8
+	MaxShingleSize() int
 	// SetMaxShingleSize sets the MaxShingleSize to v
 	//
 	// Valid values are 2 (inclusive) to 4 (inclusive). Defaults to 3.
-	SetMaxShingleSize(v uint8)
+	SetMaxShingleSize(v int)
 }
 
 // FieldWithMaxShingleSize is a Field mapping with the max_shingle_size parameter
@@ -39,12 +39,12 @@ type FieldWithMaxShingleSize interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-as-you-type.html#specific-params
 type MaxShingleSizeParam struct {
-	MaxShingleSizeValue *uint8 `bson:"max_shingle_size,omitempty" json:"max_shingle_size,omitempty"`
+	MaxShingleSizeValue *int `bson:"max_shingle_size,omitempty" json:"max_shingle_size,omitempty"`
 }
 
 // MaxShingleSize is the largest shingle size to create. Valid values are 2
 // (inclusive) to 4 (inclusive). Defaults to 3.
-func (mss MaxShingleSizeParam) MaxShingleSize() uint8 {
+func (mss MaxShingleSizeParam) MaxShingleSize() int {
 	if mss.MaxShingleSizeValue == nil {
 		return 3
 	}
@@ -54,6 +54,6 @@ func (mss MaxShingleSizeParam) MaxShingleSize() uint8 {
 // SetMaxShingleSize sets the MaxShingleSize to v
 //
 // Valid values are 2 (inclusive) to 4 (inclusive). Defaults to 3.
-func (mss *MaxShingleSizeParam) SetMaxShingleSize(v uint8) {
+func (mss *MaxShingleSizeParam) SetMaxShingleSize(v int) {
 	mss.MaxShingleSizeValue = &v
 }

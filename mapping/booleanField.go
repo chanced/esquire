@@ -23,3 +23,28 @@ func NewBooleanField() *BooleanField {
 		BaseField: BaseField{MappingType: TypeBoolean},
 	}
 }
+
+func (b *BooleanField) SetDocValues(v bool) *BooleanField {
+	b.DocValuesParam.SetDocValues(v)
+	return b
+}
+
+func (b *BooleanField) SetIndex(v bool) *BooleanField {
+	b.IndexParam.SetIndex(v)
+	return b
+}
+
+func (b *BooleanField) SetNullValue(v interface{}) *BooleanField {
+	b.NullValueParam.SetNullValue(v)
+	return b
+}
+
+func (b *BooleanField) SetStore(v bool) *BooleanField {
+	b.StoreParam.SetStore(v)
+	return b
+}
+
+func (b *BooleanField) SetMetaParam(v map[string]string) *BooleanField {
+	b.MetaParam.SetMeta(v)
+	return b
+}

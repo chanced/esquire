@@ -2,15 +2,31 @@ package mapping
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/tidwall/gjson"
 )
+
+var ErrFieldExists = errors.New("field already exists")
 
 // Fields are a collection of Field mappings
 type Fields map[string]Field
 
 func (flds Fields) Field(key string) Field {
 	return flds[key]
+}
+
+func (flds Fields) SetField(key string, field Field) {
+	flds[key] = field
+}
+
+func (flds Fields) AddField(key string, field Field) error {
+	if _, exists := flds[key]; exists {
+		return fmt.Errorf("%w: %s", ErrFieldExists, key)
+	}
+	flds[key] = field
+	return nil
 }
 
 func (flds *Fields) UnmarshalJSON(data []byte) error {
