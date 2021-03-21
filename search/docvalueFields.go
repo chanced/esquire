@@ -17,3 +17,11 @@ package search
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html
 type DocValueFields Fields
+
+func (f DocValueFields) Clone() DocValueFields {
+	res := make(DocValueFields, len(f))
+	for i, v := range f {
+		res[i] = v
+	}
+	return res
+}

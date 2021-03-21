@@ -13,6 +13,14 @@ var ErrFieldExists = errors.New("field already exists")
 // Fields are a collection of Field mappings
 type Fields map[string]Field
 
+func (flds Fields) Clone() Fields {
+	res := Fields{}
+	for k, v := range flds {
+		res[k] = v.Clone()
+	}
+	return res
+}
+
 func (flds Fields) Field(key string) Field {
 	return flds[key]
 }
@@ -44,7 +52,8 @@ func (flds *Fields) UnmarshalJSON(data []byte) error {
 		}
 		fld := handler()
 		if fld == nil {
-			panic("field is nil")
+			err = ErrInvalidType
+			return false
 		}
 
 		err = json.Unmarshal([]byte(value.Raw), fld)

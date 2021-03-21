@@ -21,6 +21,16 @@ type CompletionField struct {
 	MaxInputLengthParam             `json:",inline" bson:",inline"`
 }
 
+func (f CompletionField) Clone() Field {
+	n := NewCompletionField()
+	n.SetAnalyzer(f.Analyzer())
+	n.SetMaxInputLength(f.MaxInputLength())
+	n.SetPreservePositionIncrements(f.PreservePositionIncrements())
+	n.SetPreserveSeperators(f.PreserveSeperators())
+	n.SetSearchQuoteAnalyzer(f.SearchAnalyzer())
+	return n
+}
+
 func NewCompletionField() *CompletionField {
 	return &CompletionField{BaseField: BaseField{MappingType: TypeCompletion}}
 }

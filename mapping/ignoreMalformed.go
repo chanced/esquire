@@ -58,5 +58,8 @@ func (im IgnoreMalformedParam) IgnoreMalformed() bool {
 
 // SetIgnoreMalformed sets IgnoreMalformed to v
 func (im *IgnoreMalformedParam) SetIgnoreMalformed(v bool) {
-	im.IgnoreMalformedValue = &v
+	if im.IgnoreMalformed() != v {
+		im.IgnoreMalformedValue = &v
+
+	}
 }

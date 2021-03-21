@@ -41,6 +41,17 @@ type LongField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f LongField) Clone() Field {
+	n := NewLongField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewLongField() *LongField {
 	return &LongField{BaseField: BaseField{MappingType: TypeLong}}
 }
@@ -58,6 +69,17 @@ type IntegerField struct {
 	NullValueParam       `bson:",inline" json:",inline"`
 	StoreParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
+}
+
+func (f IntegerField) Clone() Field {
+	n := NewIntegerField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
 }
 
 func NewIntegerField() *IntegerField {
@@ -79,6 +101,17 @@ type ShortField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f ShortField) Clone() Field {
+	n := NewShortField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewShortField() *ShortField {
 	return &ShortField{BaseField: BaseField{MappingType: TypeShort}}
 }
@@ -95,6 +128,17 @@ type ByteField struct {
 	NullValueParam       `bson:",inline" json:",inline"`
 	StoreParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
+}
+
+func (f ByteField) Clone() Field {
+	n := NewByteField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
 }
 
 func NewByteField() *ByteField {
@@ -115,6 +159,17 @@ type DoubleField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f DoubleField) Clone() Field {
+	n := NewDoubleField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewDoubleField() *DoubleField {
 	return &DoubleField{BaseField: BaseField{MappingType: TypeDouble}}
 }
@@ -132,6 +187,17 @@ type FloatField struct {
 	NullValueParam       `bson:",inline" json:",inline"`
 	StoreParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
+}
+
+func (f FloatField) Clone() Field {
+	n := NewFloatField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
 }
 
 func NewFloatField() *FloatField {
@@ -157,6 +223,17 @@ type HalfFloatField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f HalfFloatField) Clone() Field {
+	n := NewHalfFloatField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
+}
+
 func NewHalfFloatField() *HalfFloatField {
 	return &HalfFloatField{
 		BaseField: BaseField{MappingType: TypeHalfFloat},
@@ -179,6 +256,18 @@ type ScaledFloatField struct {
 	ScalingFactorParam   `bson:",inline" json:",inline"`
 }
 
+func (f ScaledFloatField) Clone() Field {
+	n := NewScaledFloatField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	n.SetScalingFactor(f.ScalingFactor())
+	return n
+}
+
 func NewScaledFloatField() *ScaledFloatField {
 	return &ScaledFloatField{BaseField: BaseField{MappingType: TypeScaledFloat}}
 }
@@ -198,6 +287,16 @@ type UnsignedLongField struct {
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
+func (f UnsignedLongField) Clone() Field {
+	n := NewUnsignedLongField()
+	n.SetCoerce(f.Coerce())
+	n.SetDocValues(f.DocValues())
+	n.SetIgnoreMalformed(f.IgnoreMalformed())
+	n.SetIndex(f.Index())
+	n.SetMeta(f.Meta().Clone())
+	n.SetStore(f.Store())
+	return n
+}
 func NewUnsignedLongField() *UnsignedLongField {
 	return &UnsignedLongField{BaseField: BaseField{MappingType: TypeUnsignedLong}}
 }

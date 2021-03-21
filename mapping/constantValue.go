@@ -42,5 +42,7 @@ func (cv ConstantValueParam) ConstantValue() interface{} {
 
 // SetConstantValue sets the ConstantValue to v
 func (cv *ConstantValueParam) SetConstantValue(v interface{}) {
-	cv.ConstantValueValue = v
+	if cv.ConstantValueValue != v {
+		cv.ConstantValueValue = v
+	}
 }

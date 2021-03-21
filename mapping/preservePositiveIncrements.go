@@ -56,5 +56,8 @@ func (ppi PreservePositionIncrementsParam) PreservePositionIncrements() bool {
 // SetPreservePositionIncrements sets the PreservePositionIncrements value
 // to V
 func (ppi *PreservePositionIncrementsParam) SetPreservePositionIncrements(v bool) {
-	ppi.PreservePositionIncrementsValue = &v
+	if ppi.PreservePositionIncrements() != v {
+		ppi.PreservePositionIncrementsValue = &v
+
+	}
 }

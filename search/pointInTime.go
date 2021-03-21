@@ -29,3 +29,18 @@ type PointInTime struct {
 	ID        string     `bson:"id" json:"id"`
 	KeepAlive *time.Time `bson:"keep_alive,omitempty" json:"keep_alive,omitempty"`
 }
+
+func (pit *PointInTime) Clone() *PointInTime {
+	if pit == nil {
+		return nil
+	}
+	n := PointInTime{}
+	if pit.ID != "" {
+		n.ID = pit.ID
+	}
+	if pit.KeepAlive != nil {
+		t := *pit.KeepAlive
+		n.KeepAlive = &t
+	}
+	return &n
+}

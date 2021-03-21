@@ -45,3 +45,8 @@ func NewAliasField() *AliasField {
 		BaseField: BaseField{MappingType: TypeAlias},
 	}
 }
+func (a AliasField) Clone() Field {
+	n := NewAliasField()
+	n.SetPath(a.Path())
+	return n
+}

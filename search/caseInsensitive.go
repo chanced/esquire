@@ -23,9 +23,19 @@ type CaseInsensitiveParam struct {
 	CaseInsensitiveValue *bool `json:"case_insensitive,omitempty" bson:"case_insensitive,omitempty"`
 }
 
+func (ci CaseInsensitiveParam) Default() bool {
+	return false
+}
+
 func (ci CaseInsensitiveParam) CaseInsensitive() bool {
 	if ci.CaseInsensitiveValue == nil {
-		return false
+		return ci.Default()
 	}
 	return *ci.CaseInsensitiveValue
+}
+
+func (ci *CaseInsensitiveParam) SetCaseInsensitive(v bool) {
+	if ci.CaseInsensitive() != v {
+		ci.CaseInsensitiveValue = &v
+	}
 }

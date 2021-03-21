@@ -45,5 +45,8 @@ func (i IndexParam) Index() bool {
 // Index controls whether field values are indexed. It accepts true or false and
 // defaults to true. Fields that are not indexed are not queryable.
 func (i *IndexParam) SetIndex(v bool) {
-	i.IndexValue = &v
+	if i.Index() != v {
+		i.IndexValue = &v
+
+	}
 }

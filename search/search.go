@@ -83,6 +83,9 @@ type Search struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#docvalue-fields
 func (s Search) DocValueFields() DocValueFields {
+	if s.DocValueFieldsValue == nil {
+		s.DocValueFieldsValue = DocValueFields{}
+	}
 	return s.DocValueFieldsValue
 }
 
@@ -101,7 +104,10 @@ func (s *Search) SetDocValueFields(v DocValueFields) *Search {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#search-fields-param
 func (s Search) Fields() Fields {
-	return s.FieldsValue
+	if s.FieldsValue != nil {
+		return s.FieldsValue
+	}
+	return Fields{}
 }
 
 // SetFields sets the FieldsValue to v
@@ -121,7 +127,9 @@ func (s Search) Explain() bool {
 
 // SetExplain sets the ExplainValue to v
 func (s *Search) SetExplain(v bool) *Search {
-	s.ExplainValue = &v
+	if s.Explain() != v {
+		s.ExplainValue = &v
+	}
 	return s
 }
 
@@ -138,12 +146,17 @@ func (s Search) From() int {
 
 // SetFrom sets the FromValue to v
 func (s *Search) SetFrom(v int) *Search {
-	s.FromValue = &v
+	if s.From() != v {
+		s.FromValue = &v
+	}
 	return s
 }
 
 // IndicesBoost buusts the _score of documents from specified indices
 func (s Search) IndicesBoost() IndicesBoost {
+	if s.IndicesBoostValue == nil {
+		s.IndicesBoostValue = IndicesBoost{}
+	}
 	return s.IndicesBoostValue
 }
 
@@ -164,13 +177,16 @@ func (s Search) MinScore() float32 {
 
 // SetMinScore sets the MinScoreValue to v
 func (s *Search) SetMinScore(v float32) *Search {
-	s.MinScoreValue = &v
+	if s.MinScore() != v {
+		s.MinScoreValue = &v
+	}
 	return s
 }
 
 // SetPointInTime sets the PointInTimeValue to v
-func (s *Search) SetPointInTime(v PointInTime) *Search {
-	s.PointInTimeValue = &v
+func (s *Search) SetPointInTime(v *PointInTime) *Search {
+	nv := *v
+	s.PointInTimeValue = &nv
 	return s
 }
 
@@ -188,7 +204,7 @@ func (s Search) PIT() *PointInTime {
 }
 
 // SetPIT is an alias for SetPointInTime
-func (s *Search) SetPIT(v PointInTime) *Search {
+func (s *Search) SetPIT(v *PointInTime) *Search {
 	return s.SetPointInTime(v)
 }
 
@@ -206,10 +222,14 @@ func (s Search) Query() *Query {
 }
 
 func (s Search) RuntimeMappings() RuntimeMappings {
+	if s.RuntimeMappingsValue == nil {
+		s.RuntimeMappingsValue = RuntimeMappings{}
+	}
 	return s.RuntimeMappingsValue
 }
 
 func (s *Search) SetRuntimeMappings(v RuntimeMappings) *Search {
+
 	s.RuntimeMappingsValue = v
 	return s
 }
@@ -223,7 +243,9 @@ func (s Search) SeqNoPrimaryTerm() bool {
 }
 
 func (s *Search) SetSeqNoPrimaryTerm(v bool) *Search {
-	s.SeqNoPrimaryTermValue = &v
+	if s.SeqNoPrimaryTerm() != v {
+		s.SeqNoPrimaryTermValue = &v
+	}
 	return s
 }
 
@@ -239,7 +261,9 @@ func (s Search) Size() int {
 }
 
 func (s *Search) SetSize(v int) *Search {
-	s.SizeValue = &v
+	if s.Size() != v {
+		s.SizeValue = &v
+	}
 	return s
 }
 
@@ -266,16 +290,28 @@ func (s Search) Source() *Source {
 //  nil
 // Note, "true" || "false" get parsed as boolean
 //
-// SetSource panics if v is not one of the types listed above.
+// SetSource panics if v is not one of the types listed above. The expectation
+// is that this method will be utilized in a Builder
+//
+// You can explicitly set the source, such as:
+//  s := NewSearch()
+//  src := &Source{}
+//  err := src.SetValue(v)
+//  _ = err // handle err
+//  s.SourceValue = src
 func (s *Search) SetSource(v interface{}) *Search {
 	switch t := v.(type) {
 	case *Source:
-		s.SourceValue = t
+		ts := *t
+		s.SourceValue = &ts
 	case Source:
 		s.SourceValue = &t
 	default:
 		s.SourceValue = &Source{}
-		s.SourceValue.SetValue(v)
+		err := s.SourceValue.SetValue(v)
+		if err != nil {
+			panic(err)
+		}
 	}
 	return s
 }
@@ -303,7 +339,9 @@ func (s Search) TerminateAfter() int {
 }
 
 func (s *Search) SetTerminateAfter(v int) *Search {
-	s.TerminateAfterValue = &v
+	if s.TerminateAfter() != v {
+		s.TerminateAfterValue = &v
+	}
 	return s
 }
 
@@ -318,7 +356,9 @@ func (s Search) Timeout() time.Duration {
 }
 
 func (s *Search) SetTimeout(v time.Duration) *Search {
-	s.TimeoutValue = &v
+	if s.Timeout() != v {
+		s.TimeoutValue = &v
+	}
 	return s
 }
 
@@ -332,6 +372,29 @@ func (s Search) Version() bool {
 }
 
 func (s *Search) SetVersion(v bool) *Search {
-	s.VersionValue = &v
+	if s.Version() != v {
+		s.VersionValue = &v
+	}
 	return s
+}
+
+func (s *Search) Clone() *Search {
+	n := NewSearch()
+	n.SetDocValueFields(s.DocValueFields().Clone())
+	n.SetExplain(s.Explain())
+	n.SetFields(s.Fields().Clone())
+	n.SetFrom(s.From())
+	n.SetIndicesBoost(s.IndicesBoost().Clone())
+	n.SetMinScore(s.MinScore())
+	n.SetPointInTime(s.PointInTime().Clone())
+	n.SetQuery(s.Query().Clone())
+	n.SetRuntimeMappings(s.RuntimeMappings().Clone())
+	n.SetSeqNoPrimaryTerm(s.SeqNoPrimaryTerm())
+	n.SetSize(s.Size())
+	n.SetSource(s.Source())
+	n.SetStats(s.Stats())
+	n.SetTerminateAfter(s.TerminateAfter())
+	n.SetTimeout(s.Timeout())
+	n.SetVersion(s.Version())
+	return n
 }

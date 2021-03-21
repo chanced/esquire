@@ -42,5 +42,8 @@ func (ps PreserveSeperatorsParam) PreserveSeperators() bool {
 
 // SetPreserveSeperators sets the PreserveSeperatorParam value to v
 func (ps *PreserveSeperatorsParam) SetPreserveSeperators(v bool) {
-	ps.PreserveSeperatorsValue = &v
+	if ps.PreserveSeperators() != v {
+		ps.PreserveSeperatorsValue = &v
+
+	}
 }

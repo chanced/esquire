@@ -1,6 +1,10 @@
 package search
 
-import "github.com/chanced/dynamic"
+import (
+	"fmt"
+
+	"github.com/chanced/dynamic"
+)
 
 type SourceSpecifications struct {
 	Includes dynamic.StringOrArrayOfStrings `bson:"includes,omitempty" json:"includes,omitempty"`
@@ -26,30 +30,26 @@ type Source struct {
 //  *bool
 //  nil
 //
-// SetValue panics if v is not one of the types listed above.
-func (s *Source) SetValue(v interface{}) {
+// SetValue returns an error if v is not one of the types listed above.
+func (s *Source) SetValue(v interface{}) error {
 
 	switch t := v.(type) {
 	case *string:
 		if *t == "true" {
-			s.SetValue(true)
-			return
+			return s.SetValue(true)
 		}
 		if *t == "false" {
-			s.SetValue(false)
-			return
+			return s.SetValue(false)
 		}
 		s.WildcardPattern = dynamic.StringOrArrayOfStrings{*t}
 		s.BoolValue = nil
 		s.Specifications = nil
 	case string:
 		if t == "true" {
-			s.SetValue(true)
-			return
+			return s.SetValue(true)
 		}
 		if t == "false" {
-			s.SetValue(false)
-			return
+			return s.SetValue(false)
 		}
 		s.WildcardPattern = dynamic.StringOrArrayOfStrings{t}
 		s.BoolValue = nil
@@ -88,9 +88,9 @@ func (s *Source) SetValue(v interface{}) {
 		s.WildcardPattern = nil
 		s.Specifications = nil
 	default:
-		panic("unknown type")
+		return fmt.Errorf("%w: %t", ErrInvalidSourceType, v)
 	}
-
+	return nil
 }
 
 // Value indicates which source fields are returned for matching documents.

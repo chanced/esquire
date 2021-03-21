@@ -61,5 +61,7 @@ func (cp CoerceParam) Coerce() bool {
 
 // SetCoerce sets CoerceParam to v
 func (cp *CoerceParam) SetCoerce(v bool) {
-	cp.CoerceValue = &v
+	if cp.Coerce() != v {
+		cp.CoerceValue = &v
+	}
 }

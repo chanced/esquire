@@ -54,6 +54,7 @@ func NewField(t Type) (Field, error) {
 // Field is an elasticsearch field mapping
 type Field interface {
 	Type() Type
+	Clone() Field
 }
 
 // BaseField Mapping

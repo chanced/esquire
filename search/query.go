@@ -19,8 +19,13 @@ package search
 //
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
-
-
-
 type Query struct {
+}
+
+func (q *Query) Clone() *Query {
+	if q == nil {
+		return nil
+	}
+	// TODO: implement this
+	return &Query{}
 }

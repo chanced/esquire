@@ -46,5 +46,8 @@ func (mil MaxInputLengthParam) MaxInputLength() int {
 
 // SetMaxInputLength sets the MaxInputLength value to v
 func (mil *MaxInputLengthParam) SetMaxInputLength(v int) {
-	mil.MaxInputLengthValue = &v
+	if mil.MaxInputLength() != v {
+		mil.MaxInputLengthValue = &v
+
+	}
 }

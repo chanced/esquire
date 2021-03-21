@@ -34,5 +34,7 @@ func (sf ScalingFactorParam) ScalingFactor() float32 {
 
 // SetScalingFactor sets the ScalingFactorValue to v
 func (sf *ScalingFactorParam) SetScalingFactor(v float32) {
-	sf.ScalingFactorValue = v
+	if sf.ScalingFactor() != v {
+		sf.ScalingFactorValue = v
+	}
 }

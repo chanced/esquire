@@ -85,12 +85,18 @@ type RewriteParam struct {
 	RewriteValue *Rewrite `json:"rewrite,omitempty" bson:"rewrite,omitempty"`
 }
 
+func (r RewriteParam) Default() Rewrite {
+	return RewriteConstantScore
+}
+
 func (r RewriteParam) Rewrite() Rewrite {
 	if r.RewriteValue == nil {
-		return RewriteConstantScore
+		r.Default()
 	}
 	return *r.RewriteValue
 }
 func (r *RewriteParam) SetRewrite(v Rewrite) {
-	r.RewriteValue = &v
+	if v != "" && v != r.Rewrite() {
+		r.RewriteValue = &v
+	}
 }

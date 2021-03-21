@@ -1,5 +1,13 @@
 package mapping
 
+func NewBinaryField() *BinaryField {
+	return &BinaryField{
+		BaseField: BaseField{
+			MappingType: TypeBinary,
+		},
+	}
+}
+
 // Whether the field value should be stored and retrievable separately from the _source field. Accepts true or false (default).
 // Binary
 
@@ -12,10 +20,8 @@ type BinaryField struct {
 	StoreParam     `json:",inline" bson:",inline"`
 }
 
-func NewBinaryField() *BinaryField {
-	return &BinaryField{
-		BaseField: BaseField{
-			MappingType: TypeBinary,
-		},
-	}
+func (b BinaryField) Clone() Field {
+	n := NewBinaryField()
+	n.SetDocValues(b.DocValues())
+	return n
 }

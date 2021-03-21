@@ -1,5 +1,11 @@
 package mapping
 
+func NewBooleanField() *BooleanField {
+	return &BooleanField{
+		BaseField: BaseField{MappingType: TypeBoolean},
+	}
+}
+
 // BooleanField is a Field Type
 //
 // Boolean fields accept JSON true and false values, but can also accept strings which are interpreted as either true or false:
@@ -18,8 +24,14 @@ type BooleanField struct {
 	MetaParam      `bson:",inline" json:",inline"`
 }
 
-func NewBooleanField() *BooleanField {
-	return &BooleanField{
-		BaseField: BaseField{MappingType: TypeBoolean},
-	}
+func (b BooleanField) Clone() Field {
+	n := NewBooleanField()
+	n.SetDocValues(b.DocValues())
+	n.SetIndex(b.Index())
+	n.SetMeta(b.Meta())
+	n.SetMetricType(b.MetricType())
+	n.SetNullValue(b.NullValue())
+	n.SetStore(b.Store())
+	n.SetUnit(b.Unit())
+	return n
 }

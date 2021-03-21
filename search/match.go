@@ -2,14 +2,14 @@ package search
 
 import "github.com/chanced/dynamic"
 
-// Match returns documents that match a provided text, number, date or boolean
+// MatchQueryValue returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
 //
 // The match query is the standard query for performing a full-text search,
 // including options for fuzzy matching.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-type Match struct {
+type MatchQueryValue struct {
 	// (Required) Text, number, boolean value or date you wish to find in the
 	// provided <field>.
 	//
@@ -56,7 +56,7 @@ type Match struct {
 	ZeroTermsQueryParam `json:",inline" bson:",inline"`
 }
 
-func (mq *Match) SetQuery(value interface{}) error {
+func (mq *MatchQueryValue) SetQuery(value interface{}) error {
 
 	if snbt, ok := value.(dynamic.StringNumberBoolOrTime); ok {
 		mq.Query = snbt
@@ -71,7 +71,7 @@ func (mq *Match) SetQuery(value interface{}) error {
 
 func NewMatchQuery() MatchQuery {
 	return MatchQuery{
-		Match: map[string]Match{},
+		Match: map[string]MatchQueryValue{},
 	}
 }
 
@@ -83,12 +83,12 @@ func NewMatchQuery() MatchQuery {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	Match map[string]Match `json:"match,omitempty" bson:"match,omitempty"`
+	Match map[string]MatchQueryValue `json:"match,omitempty" bson:"match,omitempty"`
 }
 
-func (m *MatchQuery) AddMatch(field string, match Match) {
+func (m *MatchQuery) AddMatch(field string, match MatchQueryValue) {
 	if m.Match == nil {
-		m.Match = map[string]Match{}
+		m.Match = map[string]MatchQueryValue{}
 	}
 	m.Match[field] = match
 }

@@ -49,3 +49,11 @@ func (f *Field) UnmarshalJSON(data []byte) error {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#search-fields-param
 type Fields []Field
+
+func (f Fields) Clone() Fields {
+	res := make(Fields, len(f))
+	for i, v := range f {
+		res[i] = v
+	}
+	return res
+}

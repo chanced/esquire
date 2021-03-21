@@ -66,7 +66,9 @@ type DocValuesParam struct {
 
 // SetDocValues sets Value to v
 func (dv *DocValuesParam) SetDocValues(v bool) {
-	dv.DocValuesValue = &v
+	if dv.DocValues() != v {
+		dv.DocValuesValue = &v
+	}
 }
 
 // DocValues returns DocValues, defaulted to true

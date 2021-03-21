@@ -11,6 +11,11 @@ type ConstantField struct {
 	ConstantValueParam `bson:",inline" json:",inline"`
 }
 
+func (f ConstantField) Clone() Field {
+	n := NewConstantField()
+	n.SetConstantValue(f.ConstantValue())
+	return n
+}
 func NewConstantField() *ConstantField {
 	return &ConstantField{BaseField: BaseField{MappingType: TypeConstant}}
 }

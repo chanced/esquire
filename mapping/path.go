@@ -23,5 +23,7 @@ func (p PathParam) Path() string {
 
 // SetPath sets the Path Value to v
 func (p *PathParam) SetPath(v string) {
-	p.PathValue = v
+	if p.Path() != v {
+		p.PathValue = v
+	}
 }
