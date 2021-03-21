@@ -28,8 +28,8 @@ type WithFuzziness interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 type FuzzinessParam struct {
-	FuzzinessValue    *string  `json:"fuzziness,omitempty" bson:"fuzziness,omitempty"`
-	FuzzyRewriteValue *Rewrite `json:"fuzzy_rewrite,omitempty" bson:"fuzzy_rewrite,omitempty"`
+	FuzzinessValue    string  `json:"fuzziness,omitempty" bson:"fuzziness,omitempty"`
+	FuzzyRewriteValue Rewrite `json:"fuzzy_rewrite,omitempty" bson:"fuzzy_rewrite,omitempty"`
 }
 
 // Fuzziness is the maximum edit distance allowed for matching. See Fuzziness
@@ -37,15 +37,14 @@ type FuzzinessParam struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 func (f FuzzinessParam) Fuzziness() string {
-	if f.FuzzinessValue == nil {
-		return ""
-	}
-	return *f.FuzzinessValue
+	return f.FuzzinessValue
 }
 
 // SetFuzziness sets the fuzzinessValue to v
 func (f *FuzzinessParam) SetFuzziness(v string) {
-	f.FuzzinessValue = &v
+	if f.Fuzziness() != v {
+		f.FuzzinessValue = v
+	}
 }
 
 // FuzzyRewrite is the method used to rewrite the query. See the rewrite
@@ -54,8 +53,8 @@ func (f *FuzzinessParam) SetFuzziness(v string) {
 // If the fuzziness parameter is not 0, the match query uses a fuzzy_rewrite
 // method of top_terms_blended_freqs_${max_expansions} by default.
 func (f FuzzinessParam) FuzzyRewrite() Rewrite {
-	if f.FuzzyRewriteValue != nil {
-		return *f.FuzzyRewriteValue
+	if f.FuzzyRewriteValue != "" {
+		return f.FuzzyRewriteValue
 	}
 	if f.Fuzziness() != "0" {
 		return RewriteTopTermsBlendedFreqsN
@@ -64,6 +63,12 @@ func (f FuzzinessParam) FuzzyRewrite() Rewrite {
 }
 
 // SetFuzzyRewrite sets the value of FuzzyRewrite to v
-func (f *FuzzinessParam) SetFuzzyRewrite(v Rewrite) {
-	f.FuzzyRewriteValue = &v
+func (f *FuzzinessParam) SetFuzzyRewrite(v Rewrite) error {
+	if !v.IsValid() {
+		return ErrInvalidRewrite
+	}
+	if f.FuzzyRewrite() != v {
+		f.FuzzyRewriteValue = v
+	}
+	return nil
 }

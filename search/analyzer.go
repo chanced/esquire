@@ -32,5 +32,7 @@ func (a AnalyzerParam) Analyzer() string {
 
 // SetAnalyzer sets the Analyzer value to v
 func (a *AnalyzerParam) SetAnalyzer(v string) {
-	a.AnalyzerValue = v
+	if a.Analyzer() != v {
+		a.AnalyzerValue = v
+	}
 }

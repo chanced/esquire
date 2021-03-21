@@ -71,6 +71,24 @@ const (
 	RewriteTopTermsN Rewrite = "top_terms_N"
 )
 
+var Rewrites = []Rewrite{
+	RewriteConstantScore, RewriteConstantScoreBoolean, RewriteConstantScoreBoolean,
+	RewriteScoringBoolean, RewriteTopTermsBlendedFreqsN, RewriteTopTermsBoostN,
+	RewriteTopTermsN,
+}
+
+func (r Rewrite) IsValid() bool {
+	if r == "" {
+		return true
+	}
+	for _, v := range Rewrites {
+		if v == r {
+			return true
+		}
+	}
+	return false
+}
+
 // WithRewrite is a query with the rewrite param
 type WithRewrite interface {
 	Rewrite() Rewrite

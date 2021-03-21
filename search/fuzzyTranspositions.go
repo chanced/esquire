@@ -27,5 +27,7 @@ func (ft FuzzyTranspositionsParam) FuzzyTranspositions() bool {
 
 // SetFuzzyTranspositions sets FuzzyTranspositions to v
 func (ft *FuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
-	ft.FuzzyTranspositionsValue = &v
+	if ft.FuzzyTranspositions() != v {
+		ft.FuzzyTranspositionsValue = &v
+	}
 }

@@ -31,7 +31,8 @@ type PrefixQuery struct {
 
 // Prefix returns documents that contain a specific prefix in a provided field.
 //
-// Prefix panics if Value is not set. It is intended to be used inside of a builder.
+// Prefix panics if Value is not set. It is intended to be used inside of a
+// builder.
 func (p *PrefixQuery) Prefix(v Prefix) {
 	if v.Value == "" {
 		panic(NewQueryError(ErrMissingValue, QueryTypePrefix))

@@ -2,6 +2,55 @@ package search
 
 import "github.com/chanced/dynamic"
 
+// Match returns documents that match a provided text, number, date or boolean
+// value. The provided text is analyzed before matching.
+//
+// The match query is the standard query for performing a full-text search,
+// including options for fuzzy matching.
+//
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
+type Match struct {
+	Query                             interface{}
+	Analyzer                          string
+	NoAutoGenerateSynonymsPhraseQuery bool
+	NoFuzzyTranspositions             bool
+	Fuzziness                         string
+	FuzzyRewrite                      Rewrite
+	Lenient                           bool
+	Operator                          Operator
+	MaxExpansions                     int
+	PrefixLength                      int
+	MinimumShouldMatchParam           string
+	ZeroTermsQuery                    ZeroTermsQuery
+}
+
+func (m Match) MatchQueryValue() (MatchQueryValue, error) {
+	v := MatchQueryValue{}
+	err := v.SetQuery(v)
+	if err != nil {
+		return v, err
+	}
+	v.SetAnalyzer(m.Analyzer)
+	v.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
+	v.SetFuzziness(m.Fuzziness)
+	err = v.SetFuzzyRewrite(m.FuzzyRewrite)
+	if err != nil {
+		return v, err
+	}
+	v.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
+	v.SetLenient(m.Lenient)
+	if m.MaxExpansions != 0 {
+		v.SetMaxExpansions(m.MaxExpansions)
+	}
+	if m.PrefixLength != 0 {
+		v.SetPrefixLength(m.PrefixLength)
+	}
+	if m.ZeroTermsQuery != "" {
+		v.SetZeroTermsQuery(m.ZeroTermsQuery)
+	}
+	return v, nil
+}
+
 // MatchQueryValue returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
 //
@@ -71,7 +120,7 @@ func (mq *MatchQueryValue) SetQuery(value interface{}) error {
 
 func NewMatchQuery() MatchQuery {
 	return MatchQuery{
-		Match: map[string]MatchQueryValue{},
+		MatchQueryValue: map[string]MatchQueryValue{},
 	}
 }
 
@@ -83,16 +132,32 @@ func NewMatchQuery() MatchQuery {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	Match map[string]MatchQueryValue `json:"match,omitempty" bson:"match,omitempty"`
+	MatchQueryValue map[string]MatchQueryValue `json:"match,omitempty" bson:"match,omitempty"`
 }
 
-func (m *MatchQuery) AddMatch(field string, match MatchQueryValue) {
-	if m.Match == nil {
-		m.Match = map[string]MatchQueryValue{}
+// AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
+func (m *MatchQuery) AddMatch(field string, match Match) error {
+	if m.MatchQueryValue == nil {
+		m.MatchQueryValue = map[string]MatchQueryValue{}
 	}
-	m.Match[field] = match
+	if _, exists := m.MatchQueryValue[field]; exists {
+		return QueryError{Err: ErrFieldExists, Field: field, QueryType: QueryTypeMatch}
+	}
+	return m.SetMatch(field, match)
+}
+
+func (m *MatchQuery) SetMatch(field string, match Match) error {
+	if m.MatchQueryValue == nil {
+		m.MatchQueryValue = map[string]MatchQueryValue{}
+	}
+	q, err := match.MatchQueryValue()
+	if err != nil {
+		return QueryError{Err: err, Field: field, QueryType: QueryTypeMatch}
+	}
+	m.MatchQueryValue[field] = q
+	return nil
 }
 
 func (m *MatchQuery) RemoveMatch(field string) {
-	delete(m.Match, field)
+	delete(m.MatchQueryValue, field)
 }

@@ -25,5 +25,7 @@ func (agspq AutoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuer
 
 // SetAutoGenerateSynonymsPhraseQuery sets AutoGenerateSynonymsPhraseQueryValue to v
 func (agspq *AutoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
-	agspq.AutoGenerateSynonymsPhraseQueryValue = &v
+	if agspq.AutoGenerateSynonymsPhraseQuery() != v {
+		agspq.AutoGenerateSynonymsPhraseQueryValue = &v
+	}
 }
