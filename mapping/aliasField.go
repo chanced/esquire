@@ -40,13 +40,14 @@ type AliasField struct {
 	PathParam `bson:",inline" json:",inline"`
 }
 
-func NewAliasField() *AliasField {
-	return &AliasField{
-		BaseField: BaseField{MappingType: TypeAlias},
-	}
-}
 func (a AliasField) Clone() Field {
 	n := NewAliasField()
 	n.SetPath(a.Path())
 	return n
+}
+
+func NewAliasField() *AliasField {
+	return &AliasField{
+		BaseField: BaseField{MappingType: TypeAlias},
+	}
 }
