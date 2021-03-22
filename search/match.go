@@ -24,7 +24,7 @@ type Match struct {
 	ZeroTermsQuery                    ZeroTermsQuery
 }
 
-func (m Match) MatchQueryValue() (MatchQueryValue, error) {
+func (m Match) QueryValue() (MatchQueryValue, error) {
 	v := MatchQueryValue{}
 	err := v.SetQuery(v)
 	if err != nil {
@@ -150,7 +150,7 @@ func (m *MatchQuery) SetMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
 		m.MatchQueryValue = map[string]MatchQueryValue{}
 	}
-	q, err := match.MatchQueryValue()
+	q, err := match.QueryValue()
 	if err != nil {
 		return QueryError{Err: err, Field: field, QueryType: QueryTypeMatch}
 	}

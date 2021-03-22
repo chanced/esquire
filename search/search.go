@@ -378,6 +378,41 @@ func (s *Search) SetVersion(v bool) *Search {
 	return s
 }
 
+// AddMatch adds a match query to the search. It panics if the field already
+// exists or other errors arise (like not setting the query). Use SetMatch to
+// overwrite the field instead.
+//
+// AddMatch panics if there is an error. It is intended to be utilized in a
+// builder. To avoid panics, use the same function on the Query itself:
+//  s := search.NewSearch()
+//  s.AddMatch("field", Match{Query: "example"})
+//  s.AddMatch("field", Match{Query: "example"}) // This will panic
+//  // this will not:
+//  err := s.Query().AddMatch(field, match)
+//  _ = err // handle error
+func (s *Search) AddMatch(field string, match Match) *Search {
+	err := s.Query().AddMatch(field, match)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
+
+// SetMatch assigns a match query to the search. It overwrites the field if it
+// exists. AddMatch will error instead
+//
+// SetMatch panics if there is an error. It is intended to be utilized in a
+// builder. To avoid panics, use the same function on the Query itself:
+//  s := search.NewSearch()
+//  err := s.Query().SetMatch(field, match)
+//  _ = err // handle error
+func (s *Search) SetMatch(field string, match Match) *Search {
+	err := s.Query().SetMatch(field, match)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
 func (s *Search) Clone() *Search {
 	n := NewSearch()
 	n.SetDocValueFields(s.DocValueFields().Clone())

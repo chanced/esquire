@@ -20,8 +20,14 @@ package search
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
+	MatchQuery `json:",inline" bson:",inline"`
 }
 
+func NewQuery() Query {
+	return Query{
+		MatchQuery: NewMatchQuery(),
+	}
+}
 func (q *Query) Clone() *Query {
 	if q == nil {
 		return nil
