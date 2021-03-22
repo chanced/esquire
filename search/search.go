@@ -7,6 +7,8 @@ func NewSearch() *Search {
 }
 
 type Search struct {
+	// Defines the search definition using the Query DSL. (Optional)
+	QueryParam `bson:",inline" json:",inline"`
 	// Array of wildcard (*) patterns. The request returns doc values for field
 	// names matching these patterns in the hits.fields property of the response
 	// (Optional) .
@@ -42,9 +44,6 @@ type Search struct {
 	// Limits the search to a point in time (PIT). If you provide a pit, you
 	// cannot specify a <target> in the request path. (Optional)
 	PointInTimeValue *PointInTime `bson:"pit,omitempty" json:"pit,omitempty"`
-
-	// Defines the search definition using the Query DSL. (Optional)
-	QueryValue *Query `bson:"query,omitempty" json:"query,omitempty"`
 
 	//  Defines a runtime field in the search request that exist only as part of
 	//  the query. Fields defined in the search request take precedence over
@@ -196,6 +195,31 @@ func (s *Search) SetPointInTime(v *PointInTime) *Search {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/point-in-time-api.html
 func (s Search) PointInTime() *PointInTime {
 	return s.PointInTimeValue
+}
+
+func (s Search) PointInTimeID() string {
+	pit := s.PointInTime()
+
+	if pit == nil {
+		return ""
+	}
+	return pit.ID
+}
+
+func (s Search) PITID() string {
+
+	return s.PointInTimeID()
+}
+
+func (s Search) PointInTimeKeepAlive() *time.Time {
+	pit := s.PointInTime()
+	if pit == nil {
+		return nil
+	}
+	return pit.KeepAlive
+}
+func (s Search) PITKeepAlive() *time.Time {
+	return s.PointInTimeKeepAlive()
 }
 
 // PIT is an alias for PointInTime
@@ -390,6 +414,11 @@ func (s *Search) SetVersion(v bool) *Search {
 //  // this will not:
 //  err := s.Query().AddMatch(field, match)
 //  _ = err // handle error
+//  s, err = search.Build(func(s *Search)(*Search, error){
+//      s.AddMatch("field", Match{Query: "example"})
+//      s.AddMatch("field", Match{Query: "example"}) // this will panic but get caught by the builder
+//  })
+//  _ = err // err is the same as the err from s.Query().AddMatch(field, match) above
 func (s *Search) AddMatch(field string, match Match) *Search {
 	err := s.Query().AddMatch(field, match)
 	if err != nil {

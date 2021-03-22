@@ -6,6 +6,10 @@ type Prefix struct {
 	IsCaseInsensitive bool
 }
 
+func (p Prefix) QueryType() QueryType {
+	return QueryTypePrefix
+}
+
 func (p Prefix) Query() PrefixQueryValue {
 	q := PrefixQueryValue{
 		Value: p.Value,

@@ -1,5 +1,9 @@
 package search
 
+type Statement interface {
+	QueryType() QueryType
+}
+
 // Query defines the search definition using the ElasticSearch Query DSL
 //
 // Elasticsearch provides a full Query DSL (Domain Specific Language) based on
@@ -20,7 +24,9 @@ package search
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	MatchQuery `json:",inline" bson:",inline"`
+	MatchQuery  `json:",inline" bson:",inline"`
+	ScriptQuery `json:",inline" bson:",inline"`
+	ExistsQuery `json:",inline" bson:",inline"`
 }
 
 func NewQuery() Query {
@@ -34,4 +40,8 @@ func (q *Query) Clone() *Query {
 	}
 	// TODO: implement this
 	return &Query{}
+}
+
+type QueryParam struct {
+	QueryValue *Query `json:"query,omitempty" bson:"query,omitempty"`
 }
