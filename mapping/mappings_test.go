@@ -3,7 +3,7 @@ package mapping_test
 import (
 	"testing"
 
-	"github.com/chanced/esutil/mapping"
+	"github.com/chanced/esquire/mapping"
 	"github.com/stretchr/testify/require"
 )
 
