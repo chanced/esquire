@@ -1,7 +1,7 @@
 package search
 
 type Statement interface {
-	QueryType() QueryType
+	Type() Type
 }
 
 // Query defines the search definition using the ElasticSearch Query DSL

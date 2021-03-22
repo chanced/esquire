@@ -6,8 +6,8 @@ type Prefix struct {
 	IsCaseInsensitive bool
 }
 
-func (p Prefix) QueryType() QueryType {
-	return QueryTypePrefix
+func (p Prefix) Type() Type {
+	return TypePrefix
 }
 
 func (p Prefix) Query() PrefixQueryValue {
@@ -26,6 +26,10 @@ type PrefixQueryValue struct {
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
+func (p PrefixQueryValue) Type() Type {
+	return TypePrefix
+}
+
 // PrefixQuery returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
@@ -33,13 +37,17 @@ type PrefixQuery struct {
 	PrefixQueryValue `json:"prefix,omitempty" bson:"prefix,omitempty"`
 }
 
-// Prefix returns documents that contain a specific prefix in a provided field.
+func (p PrefixQuery) Type() Type {
+	return TypePrefix
+}
+
+// SetPrefix returns documents that contain a specific prefix in a provided field.
 //
-// Prefix panics if Value is not set. It is intended to be used inside of a
+// SetPrefix panics if Value is not set. It is intended to be used inside of a
 // builder.
-func (p *PrefixQuery) Prefix(v Prefix) {
+func (p *PrefixQuery) SetPrefix(v Prefix) {
 	if v.Value == "" {
-		panic(NewQueryError(ErrMissingValue, QueryTypePrefix))
+		panic(NewQueryError(ErrMissingValue, TypePrefix))
 	}
 	p.PrefixQueryValue = v.Query()
 }

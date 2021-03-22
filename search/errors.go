@@ -6,15 +6,15 @@ import (
 )
 
 type QueryError struct {
-	Field     string
-	Err       error
-	QueryType QueryType
+	Field string
+	Err   error
+	Type  Type
 }
 
-func NewQueryError(err error, queryType QueryType) *QueryError {
+func NewQueryError(err error, queryType Type) *QueryError {
 	return &QueryError{
-		Err:       err,
-		QueryType: queryType,
+		Err:  err,
+		Type: queryType,
 	}
 }
 
@@ -23,7 +23,7 @@ func (s QueryError) Error() string {
 	b := strings.Builder{}
 	b.WriteString(s.Err.Error())
 	b.WriteString(" for ")
-	b.WriteString(s.QueryType.String())
+	b.WriteString(s.Type.String())
 	if s.Field != "" {
 		b.WriteString(" <")
 		b.WriteString(s.Field)

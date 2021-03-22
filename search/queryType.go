@@ -1,21 +1,26 @@
 package search
 
-type QueryType string
+type Type string
 
 const (
-	QueryTypePrefix         QueryType = "prefix"
-	QueryTypeMatch          QueryType = "match"
-	QueryTypeMatchAll       QueryType = "match_all"
-	QueryTypeTerm           QueryType = "term"
-	QueryTypeTerms          QueryType = "terms"
-	QueryTypeRange          QueryType = "range"
-	QueryTypeBoosting       QueryType = "boosting"
-	QueryTypeBoolean        QueryType = "boolean"
-	QueryTypeConstantScore  QueryType = "constant_score"
-	QueryTypeFunctionScore  QueryType = "function_score"
-	QueryTypeDisjunctionMax QueryType = "dis_max"
+	TypePrefix         Type = "prefix"
+	TypeMatch          Type = "match"
+	TypeMatchAll       Type = "match_all"
+	TypeTerm           Type = "term"
+	TypeTerms          Type = "terms"
+	TypeRange          Type = "range"
+	TypeBoosting       Type = "boosting"
+	TypeBoolean        Type = "boolean"
+	TypeConstantScore  Type = "constant_score"
+	TypeFunctionScore  Type = "function_score"
+	TypeDisjunctionMax Type = "dis_max"
 )
 
-func (qt QueryType) String() string {
+var TypeHandlers = map[Type]func() Statement{
+	TypePrefix: func() Statement { return &PrefixQueryValue{} },
+	TypeMatch:  func() Statement { return &MatchQueryValue{} },
+}
+
+func (qt Type) String() string {
 	return string(qt)
 }

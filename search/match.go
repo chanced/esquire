@@ -24,6 +24,10 @@ type Match struct {
 	ZeroTermsQuery                    ZeroTermsQuery
 }
 
+func (m Match) Type() Type {
+	return TypeMatch
+}
+
 func (m Match) QueryValue() (MatchQueryValue, error) {
 	v := MatchQueryValue{}
 	err := v.SetQuery(v)
@@ -105,6 +109,9 @@ type MatchQueryValue struct {
 	ZeroTermsQueryParam `json:",inline" bson:",inline"`
 }
 
+func (mq *MatchQueryValue) Type() Type {
+	return TypeMatch
+}
 func (mq *MatchQueryValue) SetQuery(value interface{}) error {
 
 	if snbt, ok := value.(dynamic.StringNumberBoolOrTime); ok {
@@ -135,13 +142,17 @@ type MatchQuery struct {
 	MatchQueryValue map[string]MatchQueryValue `json:"match,omitempty" bson:"match,omitempty"`
 }
 
+func (m MatchQuery) Type() Type {
+	return TypeMatch
+}
+
 // AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
 func (m *MatchQuery) AddMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
 		m.MatchQueryValue = map[string]MatchQueryValue{}
 	}
 	if _, exists := m.MatchQueryValue[field]; exists {
-		return QueryError{Err: ErrFieldExists, Field: field, QueryType: QueryTypeMatch}
+		return QueryError{Err: ErrFieldExists, Field: field, Type: TypeMatch}
 	}
 	return m.SetMatch(field, match)
 }
@@ -152,7 +163,7 @@ func (m *MatchQuery) SetMatch(field string, match Match) error {
 	}
 	q, err := match.QueryValue()
 	if err != nil {
-		return QueryError{Err: err, Field: field, QueryType: QueryTypeMatch}
+		return QueryError{Err: err, Field: field, Type: TypeMatch}
 	}
 	m.MatchQueryValue[field] = q
 	return nil
