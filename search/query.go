@@ -1,9 +1,5 @@
 package search
 
-type Statement interface {
-	Type() Type
-}
-
 // Query defines the search definition using the ElasticSearch Query DSL
 //
 // Elasticsearch provides a full Query DSL (Domain Specific Language) based on

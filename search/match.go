@@ -28,8 +28,8 @@ func (m Match) Type() Type {
 	return TypeMatch
 }
 
-func (m Match) QueryValue() (MatchQueryValue, error) {
-	v := MatchQueryValue{}
+func (m Match) QueryValue() (MatchRule, error) {
+	v := MatchRule{}
 	err := v.SetQuery(v)
 	if err != nil {
 		return v, err
@@ -55,14 +55,14 @@ func (m Match) QueryValue() (MatchQueryValue, error) {
 	return v, nil
 }
 
-// MatchQueryValue returns documents that match a provided text, number, date or boolean
+// MatchRule returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
 //
 // The match query is the standard query for performing a full-text search,
 // including options for fuzzy matching.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-type MatchQueryValue struct {
+type MatchRule struct {
 	// (Required) Text, number, boolean value or date you wish to find in the
 	// provided <field>.
 	//
@@ -109,10 +109,10 @@ type MatchQueryValue struct {
 	ZeroTermsQueryParam `json:",inline" bson:",inline"`
 }
 
-func (mq *MatchQueryValue) Type() Type {
+func (mq *MatchRule) Type() Type {
 	return TypeMatch
 }
-func (mq *MatchQueryValue) SetQuery(value interface{}) error {
+func (mq *MatchRule) SetQuery(value interface{}) error {
 
 	if snbt, ok := value.(dynamic.StringNumberBoolOrTime); ok {
 		mq.Query = snbt
@@ -127,7 +127,7 @@ func (mq *MatchQueryValue) SetQuery(value interface{}) error {
 
 func NewMatchQuery() MatchQuery {
 	return MatchQuery{
-		MatchQueryValue: map[string]MatchQueryValue{},
+		MatchQueryValue: map[string]MatchRule{},
 	}
 }
 
@@ -139,7 +139,7 @@ func NewMatchQuery() MatchQuery {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	MatchQueryValue map[string]MatchQueryValue `json:"match,omitempty" bson:"match,omitempty"`
+	MatchQueryValue map[string]MatchRule `json:"match,omitempty" bson:"match,omitempty"`
 }
 
 func (m MatchQuery) Type() Type {
@@ -149,7 +149,7 @@ func (m MatchQuery) Type() Type {
 // AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
 func (m *MatchQuery) AddMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]MatchQueryValue{}
+		m.MatchQueryValue = map[string]MatchRule{}
 	}
 	if _, exists := m.MatchQueryValue[field]; exists {
 		return QueryError{Err: ErrFieldExists, Field: field, Type: TypeMatch}
@@ -159,7 +159,7 @@ func (m *MatchQuery) AddMatch(field string, match Match) error {
 
 func (m *MatchQuery) SetMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]MatchQueryValue{}
+		m.MatchQueryValue = map[string]MatchRule{}
 	}
 	q, err := match.QueryValue()
 	if err != nil {

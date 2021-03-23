@@ -17,5 +17,7 @@ func (b BoostParam) Boost() float32 {
 }
 
 func (b *BoostParam) SetBoost(v float32) {
-	b.BoostValue = &v
+	if b.Boost() != v {
+		b.BoostValue = &v
+	}
 }

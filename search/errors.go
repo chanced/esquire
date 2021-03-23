@@ -36,8 +36,9 @@ func (s QueryError) Unwrap() error {
 }
 
 var (
-	ErrMissingValue      = errors.New("error: value is required")
-	ErrMissingQuery      = errors.New("error: query is required")
+	ErrFieldRequired     = errors.New("error: field is required")
+	ErrValueRequired     = errors.New("error: value is required")
+	ErrQueryRequired     = errors.New("error: query is required")
 	ErrInvalidSourceType = errors.New("error: invalid source type")
 	ErrInvalidRewrite    = errors.New("error: invalid rewrite value")
 	ErrFieldExists       = errors.New("error: field exists")

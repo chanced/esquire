@@ -47,7 +47,7 @@ func (p PrefixQuery) Type() Type {
 // builder.
 func (p *PrefixQuery) SetPrefix(v Prefix) {
 	if v.Value == "" {
-		panic(NewQueryError(ErrMissingValue, TypePrefix))
+		panic(NewQueryError(ErrValueRequired, TypePrefix))
 	}
 	p.PrefixQueryValue = v.Query()
 }

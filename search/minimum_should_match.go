@@ -57,16 +57,18 @@ type WithMinimumShouldMatch interface {
 }
 
 type MinimumShouldMatchParam struct {
-	MimimumShouldMatchValue *string `json:"minimum_should_match,omitempty" bson:"minimum_should_match,omitempty"`
+	MimimumShouldMatchValue string `json:"minimum_should_match,omitempty" bson:"minimum_should_match,omitempty"`
 }
 
 func (msm MinimumShouldMatchParam) MinimumShouldMatch() string {
-	if msm.MimimumShouldMatchValue != nil {
-		return *msm.MimimumShouldMatchValue
+	if msm.MimimumShouldMatchValue != "" {
+		return msm.MimimumShouldMatchValue
 	}
 	return "0"
 }
 
 func (msm *MinimumShouldMatchParam) SetMinimumShouldMatch(v string) {
-	msm.MimimumShouldMatchValue = &v
+	if msm.MinimumShouldMatch() != v {
+		msm.MimimumShouldMatchValue = v
+	}
 }

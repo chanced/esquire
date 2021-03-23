@@ -14,11 +14,12 @@ const (
 	TypeConstantScore  Type = "constant_score"
 	TypeFunctionScore  Type = "function_score"
 	TypeDisjunctionMax Type = "dis_max"
+	TypeAllOf          Type = "all_of"
 )
 
-var TypeHandlers = map[Type]func() Statement{
-	TypePrefix: func() Statement { return &PrefixQueryValue{} },
-	TypeMatch:  func() Statement { return &MatchQueryValue{} },
+var TypeHandlers = map[Type]func() Rule{
+	TypePrefix: func() Rule { return &PrefixQueryValue{} },
+	TypeMatch:  func() Rule { return &MatchRule{} },
 }
 
 func (qt Type) String() string {
