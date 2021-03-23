@@ -12,8 +12,11 @@ type Range struct {
 	Boost                float32
 }
 
-func (r Range) QueryValue() (RangeQueryValue, error) {
-	q := RangeQueryValue{}
+func (r Range) Rule() (Rule, error) {
+	return r.Range()
+}
+func (r Range) Range() (*RangeRule, error) {
+	q := &RangeRule{}
 	err := q.SetGreaterThan(r.GreaterThan)
 	if err != nil {
 		return q, err
@@ -40,7 +43,7 @@ func (r Range) Type() Type {
 	return TypeBoolean
 }
 
-type RangeQueryValue struct {
+type RangeRule struct {
 	GreaterThanValue          *dynamic.StringNumberOrTime `json:"gt,omitempty" bson:"gt,omitempty"`
 	GreaterThanOrEqualToValue *dynamic.StringNumberOrTime `json:"gte,omitempty" bson:"gt,omitempty"`
 	LessThanValue             *dynamic.StringNumberOrTime `json:"lt,omitempty" bson:"lt,omitempty"`
@@ -50,22 +53,22 @@ type RangeQueryValue struct {
 	BoostParam                `json:",inline" bson:",inline"`
 }
 
-func (r *RangeQueryValue) GreaterThan() *dynamic.StringNumberOrTime {
+func (r *RangeRule) GreaterThan() *dynamic.StringNumberOrTime {
 	return r.GreaterThanValue
 }
-func (r *RangeQueryValue) GreaterThanOrEqualTo() *dynamic.StringNumberOrTime {
+func (r *RangeRule) GreaterThanOrEqualTo() *dynamic.StringNumberOrTime {
 	return r.GreaterThanValue
 }
 
-func (r *RangeQueryValue) LessThan() *dynamic.StringNumberOrTime {
+func (r *RangeRule) LessThan() *dynamic.StringNumberOrTime {
 	return r.LessThanValue
 }
 
-func (r *RangeQueryValue) LessThanOrEqualTo() *dynamic.StringNumberOrTime {
+func (r *RangeRule) LessThanOrEqualTo() *dynamic.StringNumberOrTime {
 	return r.LessThanOrEqualToValue
 }
 
-func (r *RangeQueryValue) SetGreaterThan(value interface{}) error {
+func (r *RangeRule) SetGreaterThan(value interface{}) error {
 	r.GreaterThanValue = nil
 	v, err := dynamic.NewStringNumberOrTime(value)
 	if err != nil {
@@ -78,7 +81,7 @@ func (r *RangeQueryValue) SetGreaterThan(value interface{}) error {
 	return nil
 }
 
-func (r *RangeQueryValue) SetGreaterThanOrEqualTo(value interface{}) error {
+func (r *RangeRule) SetGreaterThanOrEqualTo(value interface{}) error {
 	r.GreaterThanOrEqualToValue = nil
 	v, err := dynamic.NewStringNumberOrTime(value)
 	if err != nil {
@@ -91,7 +94,7 @@ func (r *RangeQueryValue) SetGreaterThanOrEqualTo(value interface{}) error {
 	return nil
 }
 
-func (r *RangeQueryValue) SetLessThan(value interface{}) error {
+func (r *RangeRule) SetLessThan(value interface{}) error {
 	r.LessThanValue = nil
 	v, err := dynamic.NewStringNumberOrTime(value)
 	if err != nil {
@@ -104,7 +107,7 @@ func (r *RangeQueryValue) SetLessThan(value interface{}) error {
 	return nil
 }
 
-func (r *RangeQueryValue) SetLessThanOrEqualTo(value interface{}) error {
+func (r *RangeRule) SetLessThanOrEqualTo(value interface{}) error {
 	r.LessThanOrEqualToValue = nil
 	v, err := dynamic.NewStringNumberOrTime(value)
 	if err != nil {
@@ -117,17 +120,17 @@ func (r *RangeQueryValue) SetLessThanOrEqualTo(value interface{}) error {
 	return nil
 }
 
-func (r RangeQueryValue) Type() Type {
+func (r RangeRule) Type() Type {
 	return TypeBoolean
 }
 
 type RangeQuery struct {
-	RangeValue map[string]RangeQueryValue `json:"range,omitempty" bson:"range,omitempty"`
+	RangeValue map[string]*RangeRule `json:"range,omitempty" bson:"range,omitempty"`
 }
 
 func (r *RangeQuery) AddRange(field string, value Range) error {
 	if r.RangeValue == nil {
-		r.RangeValue = map[string]RangeQueryValue{}
+		r.RangeValue = map[string]*RangeRule{}
 	}
 	if _, exists := r.RangeValue[field]; exists {
 		return QueryError{
@@ -144,9 +147,9 @@ func (r *RangeQuery) SetRange(field string, value Range) error {
 		return NewQueryError(ErrFieldRequired, TypeRange)
 	}
 	if r.RangeValue == nil {
-		r.RangeValue = map[string]RangeQueryValue{}
+		r.RangeValue = map[string]*RangeRule{}
 	}
-	qv, err := value.QueryValue()
+	qv, err := value.Range()
 	if err != nil {
 		return QueryError{
 			Field: field,

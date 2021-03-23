@@ -11,10 +11,26 @@ type QueryError struct {
 	Type  Type
 }
 
-func NewQueryError(err error, queryType Type) *QueryError {
+type RuleError struct {
+	*QueryError
+	Rule Rule
+}
+
+func NewRuleError(err error, queryType Type, rule Rule, field ...string) *RuleError {
+	return &RuleError{
+		Rule:       rule,
+		QueryError: NewQueryError(err, queryType, field...),
+	}
+}
+func NewQueryError(err error, queryType Type, field ...string) *QueryError {
+	var f string
+	if len(field) > 0 {
+		f = field[0]
+	}
 	return &QueryError{
-		Err:  err,
-		Type: queryType,
+		Err:   err,
+		Type:  queryType,
+		Field: f,
 	}
 }
 
@@ -42,4 +58,5 @@ var (
 	ErrInvalidSourceType = errors.New("error: invalid source type")
 	ErrInvalidRewrite    = errors.New("error: invalid rewrite value")
 	ErrFieldExists       = errors.New("error: field exists")
+	ErrTypeExists        = errors.New("error: type exists")
 )

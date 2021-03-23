@@ -12,8 +12,11 @@ type Term struct {
 	CaseInsensitive bool
 }
 
-func (t Term) Query() (TermQueryValue, error) {
-	q := TermQueryValue{}
+func (t Term) Rule() (Rule, error) {
+	return t.Term()
+}
+func (t Term) Term() (*TermRule, error) {
+	q := &TermRule{}
 	if t.Value == "" {
 		return q, ErrValueRequired
 	}
@@ -27,7 +30,7 @@ func (t Term) Type() Type {
 	return TypeTerm
 }
 
-// TermQueryValue query returns documents that contain an exact term in a provided field.
+// TermRule query returns documents that contain an exact term in a provided field.
 //
 // You can use the term query to find documents based on a precise value such as
 // a price, a product ID, or a username.
@@ -41,30 +44,34 @@ func (t Term) Type() Type {
 // To search text field values, use the match query instead.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-type TermQueryValue struct {
+type TermRule struct {
 	ValueValue           string `json:"value" bson:"value"`
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
-func (t *TermQueryValue) SetValue(v string) {
+func (t *TermRule) Type() Type {
+	return TypeTerm
+}
+
+func (t *TermRule) SetValue(v string) {
 	t.ValueValue = v
 }
 
-func (t TermQueryValue) Value() string {
+func (t TermRule) Value() string {
 	return t.ValueValue
 }
 
-type term TermQueryValue
+type term TermRule
 
-func (t TermQueryValue) MarshalJSON() ([]byte, error) {
+func (t TermRule) MarshalJSON() ([]byte, error) {
 
 	if t.BoostParam.BoostValue == nil && t.CaseInsensitiveParam.CaseInsensitiveValue == nil {
 		return json.Marshal(t.ValueValue)
 	}
 	return json.Marshal(term(t))
 }
-func (t *TermQueryValue) UnmarshalJSON(data []byte) error {
+func (t *TermRule) UnmarshalJSON(data []byte) error {
 
 	// TODO: bson codec
 
@@ -86,8 +93,8 @@ func (t *TermQueryValue) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewTerm() TermQueryValue {
-	return TermQueryValue{}
+func NewTerm() TermRule {
+	return TermRule{}
 }
 
 // TermQuery returns documents that contain an exact term in a provided field.
@@ -105,19 +112,45 @@ func NewTerm() TermQueryValue {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
 type TermQuery struct {
-	TermValue map[string]TermQueryValue `json:"term,omitempty" bson:"term,omitempty"`
+	TermValue map[string]*TermRule `json:"term,omitempty" bson:"term,omitempty"`
 }
 
 func NewTermQuery() TermQuery {
 	return TermQuery{
-		TermValue: map[string]TermQueryValue{},
+		TermValue: map[string]*TermRule{},
 	}
 }
-func (tq *TermQuery) AddTerm(field string, t TermQueryValue) {
+func (tq *TermQuery) AddTerm(field string, term Term) error {
 	if tq.TermValue == nil {
-		tq.TermValue = map[string]TermQueryValue{}
+		tq.TermValue = map[string]*TermRule{}
 	}
+	_, exists := tq.TermValue[field]
+	if exists {
+		return QueryError{
+			Field: field,
+			Err:   ErrFieldExists,
+			Type:  TypeTerm,
+		}
+	}
+	return nil
+}
+
+func (tq *TermQuery) SetTerm(field string, term Term) error {
+	if field == "" {
+		return NewQueryError(ErrFieldRequired, TypeTerm)
+	}
+
+	if tq.TermValue == nil {
+		tq.TermValue = map[string]*TermRule{}
+	}
+	t, err := term.Term()
+	if err != nil {
+		return NewQueryError(err, TypeTerm, field)
+	}
+
 	tq.TermValue[field] = t
+	return nil
+
 }
 
 func (tq *TermQuery) RemoveTerm(field string) {

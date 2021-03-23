@@ -1,32 +1,34 @@
 package search
 
 type Prefix struct {
-	Value             string
-	Rewrite           Rewrite
-	IsCaseInsensitive bool
+	Value           string
+	Rewrite         Rewrite
+	CaseInsensitive bool
 }
 
 func (p Prefix) Type() Type {
 	return TypePrefix
 }
-
-func (p Prefix) Query() PrefixQueryValue {
-	q := PrefixQueryValue{
+func (p Prefix) Rule() (Rule, error) {
+	return p.Query()
+}
+func (p Prefix) Query() (*PrefixRule, error) {
+	q := &PrefixRule{
 		Value: p.Value,
 	}
-	q.SetCaseInsensitive(p.IsCaseInsensitive)
+	q.SetCaseInsensitive(p.CaseInsensitive)
 	q.SetRewrite(p.Rewrite)
-	return q
+	return q, nil
 }
 
-// PrefixQueryValue returns documents that contain a specific prefix in a provided field.
-type PrefixQueryValue struct {
+// PrefixRule returns documents that contain a specific prefix in a provided field.
+type PrefixRule struct {
 	Value                string `json:"value" bson:"value"`
 	RewriteParam         `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
-func (p PrefixQueryValue) Type() Type {
+func (p PrefixRule) Type() Type {
 	return TypePrefix
 }
 
@@ -34,7 +36,7 @@ func (p PrefixQueryValue) Type() Type {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
 type PrefixQuery struct {
-	PrefixQueryValue `json:"prefix,omitempty" bson:"prefix,omitempty"`
+	*PrefixRule `json:"prefix,omitempty" bson:"prefix,omitempty"`
 }
 
 func (p PrefixQuery) Type() Type {
@@ -45,9 +47,14 @@ func (p PrefixQuery) Type() Type {
 //
 // SetPrefix panics if Value is not set. It is intended to be used inside of a
 // builder.
-func (p *PrefixQuery) SetPrefix(v Prefix) {
+func (p *PrefixQuery) SetPrefix(v Prefix) error {
 	if v.Value == "" {
-		panic(NewQueryError(ErrValueRequired, TypePrefix))
+		return NewQueryError(ErrValueRequired, TypePrefix)
 	}
-	p.PrefixQueryValue = v.Query()
+	r, err := v.Query()
+	if err != nil {
+		return err
+	}
+	p.PrefixRule = r
+	return nil
 }

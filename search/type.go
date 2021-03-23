@@ -18,8 +18,10 @@ const (
 )
 
 var TypeHandlers = map[Type]func() Rule{
-	TypePrefix: func() Rule { return &PrefixQueryValue{} },
-	TypeMatch:  func() Rule { return &MatchRule{} },
+	TypePrefix:  func() Rule { return &PrefixRule{} },
+	TypeMatch:   func() Rule { return &MatchRule{} },
+	TypeBoolean: func() Rule { return &BooleanRule{} },
+	TypeTerm:    func() Rule { return &TermRule{} },
 }
 
 func (qt Type) String() string {

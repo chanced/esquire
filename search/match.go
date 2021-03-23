@@ -27,19 +27,21 @@ type Match struct {
 func (m Match) Type() Type {
 	return TypeMatch
 }
-
-func (m Match) QueryValue() (MatchRule, error) {
-	v := MatchRule{}
+func (m Match) Rule() (Rule, error) {
+	return m.Match()
+}
+func (m Match) Match() (*MatchRule, error) {
+	v := &MatchRule{}
 	err := v.SetQuery(v)
 	if err != nil {
-		return v, err
+		return nil, err
 	}
 	v.SetAnalyzer(m.Analyzer)
 	v.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
 	v.SetFuzziness(m.Fuzziness)
 	err = v.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
-		return v, err
+		return nil, err
 	}
 	v.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
 	v.SetLenient(m.Lenient)
@@ -127,7 +129,7 @@ func (mq *MatchRule) SetQuery(value interface{}) error {
 
 func NewMatchQuery() MatchQuery {
 	return MatchQuery{
-		MatchQueryValue: map[string]MatchRule{},
+		MatchQueryValue: map[string]*MatchRule{},
 	}
 }
 
@@ -139,7 +141,7 @@ func NewMatchQuery() MatchQuery {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	MatchQueryValue map[string]MatchRule `json:"match,omitempty" bson:"match,omitempty"`
+	MatchQueryValue map[string]*MatchRule `json:"match,omitempty" bson:"match,omitempty"`
 }
 
 func (m MatchQuery) Type() Type {
@@ -149,7 +151,7 @@ func (m MatchQuery) Type() Type {
 // AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
 func (m *MatchQuery) AddMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]MatchRule{}
+		m.MatchQueryValue = map[string]*MatchRule{}
 	}
 	if _, exists := m.MatchQueryValue[field]; exists {
 		return QueryError{Err: ErrFieldExists, Field: field, Type: TypeMatch}
@@ -159,9 +161,9 @@ func (m *MatchQuery) AddMatch(field string, match Match) error {
 
 func (m *MatchQuery) SetMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]MatchRule{}
+		m.MatchQueryValue = map[string]*MatchRule{}
 	}
-	q, err := match.QueryValue()
+	q, err := match.Match()
 	if err != nil {
 		return QueryError{Err: err, Field: field, Type: TypeMatch}
 	}
