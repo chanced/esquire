@@ -2,8 +2,6 @@ package search
 
 import "fmt"
 
-// TODO: Add defaults
-
 type Builder struct {
 	Defaults *Search
 }
