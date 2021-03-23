@@ -436,7 +436,7 @@ func (s *Search) AddMatch(field string, match Match) *Search {
 //  err := s.Query().SetMatch(field, match)
 //  _ = err // handle error
 func (s *Search) SetMatch(field string, match Match) *Search {
-	err := s.Query().SetMatch(field, match)
+	err := s.Query().AssignMatch(field, match)
 	if err != nil {
 		panic(err)
 	}

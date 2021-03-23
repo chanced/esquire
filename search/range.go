@@ -2,7 +2,9 @@ package search
 
 import "github.com/chanced/dynamic"
 
+// Range returns documents that contain terms within a provided range.
 type Range struct {
+	Field                string
 	GreaterThan          interface{}
 	GreaterThanOrEqualTo interface{}
 	LessThan             interface{}
@@ -139,10 +141,21 @@ func (r *RangeQuery) AddRange(field string, value Range) error {
 			Type:  TypeRange,
 		}
 	}
-	return r.SetRange(field, value)
+	return r.AssignRange(field, value)
 }
 
-func (r *RangeQuery) SetRange(field string, value Range) error {
+func (r *RangeQuery) SetRange(ranges map[string]Range) error {
+	r.RangeValue = map[string]*RangeRule{}
+	for k, v := range ranges {
+		err := r.AssignRange(k, v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *RangeQuery) AssignRange(field string, value Range) error {
 	if field == "" {
 		return NewQueryError(ErrFieldRequired, TypeRange)
 	}

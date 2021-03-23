@@ -2,14 +2,14 @@ package mapping
 
 // A GeoPointField accepts latitude-longitude pairs, which can be used:
 //
-// - to find geo-points within a bounding box, within a certain distance of a
+//  	- to find geo-points within a bounding box, within a certain distance of a
 // central point, or within a polygon or within a geo_shape query.
 //
-// - to aggregate documents geographically or by distance from a central point.
+//  	- to aggregate documents geographically or by distance from a central point.
 //
-// - to integrate distance into a document’s relevance score.
+//  	- to integrate distance into a document’s relevance score.
 //
-// - to sort documents by distance.
+//  	- to sort documents by distance.
 //
 //
 // Geo-points expressed as an array or string

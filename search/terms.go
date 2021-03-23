@@ -6,68 +6,66 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type Term struct {
-	Value           string
+// Terms returns documents that contain one or more exact terms in a provided
+// field.
+//
+// The terms query is the same as the term query, except you can search for
+// multiple values.
+type Terms struct {
+	Value           []string
 	Boost           float32
 	CaseInsensitive bool
 }
 
-func (t Term) Rule() (Rule, error) {
-	return t.Term()
+// Termser can either be a pointer to a Terms or a pointer to a Lookup
+//
+// Example:
+//  err := s.AddTerms("color", &Lookup{ID: "1", Index:"my-index-100", Path:"color"})
+//  _ = err // handle err
+//  err = s.AddTerms("user.id", &Terms{ Value: []string{}})
+//  _ = err // handle err
+type Termser interface {
+	Terms() (*TermsRule, error)
 }
-func (t Term) Term() (*TermRule, error) {
-	q := &TermRule{}
-	if t.Value == "" {
-		return q, ErrValueRequired
-	}
+
+func (t Terms) Rule() (Rule, error) {
+	return t.Terms()
+}
+func (t Terms) Terms() (*TermsRule, error) {
+	q := &TermsRule{}
+
 	q.SetValue(t.Value)
 	q.SetBoost(t.Boost)
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
 }
 
-func (t Term) Type() Type {
+func (t Terms) Type() Type {
 	return TypeTerm
 }
 
-// TermRule query returns documents that contain an exact term in a provided field.
-//
-// You can use the term query to find documents based on a precise value such as
-// a price, a product ID, or a username.
-//
-// Avoid using the term query for text fields.
-//
-// By default, Elasticsearch changes the values of text fields as part of
-// analysis. This can make finding exact matches for text field values
-// difficult.
-//
-// To search text field values, use the match query instead.
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-type TermRule struct {
-	TermValue            string `json:"value" bson:"value"`
+type TermsRule struct {
+	TermsValue           []string
+	Field                string
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
-func (t *TermRule) Type() Type {
-	return TypeTerm
+func (t *TermsRule) Type() Type {
+	return TypeTerms
 }
 
-func (t *TermRule) SetValue(v string) {
-	t.TermValue = v
+func (t *TermsRule) SetValue(v []string) {
+	t.TermsValue = v
 }
 
-func (t TermRule) Value() string {
-	return t.TermValue
+func (t TermsRule) Value() []string {
+	return t.TermsValue
 }
 
-type term TermRule
-
-func (t TermRule) MarshalJSON() ([]byte, error) {
-
+func (t TermsRule) MarshalJSON() ([]byte, error) {
 	if t.BoostParam.BoostValue == nil && t.CaseInsensitiveParam.CaseInsensitiveValue == nil {
-		return json.Marshal(t.TermValue)
+		return json.Marshal(t.TermsValue)
 	}
 	return json.Marshal(term(t))
 }
@@ -93,25 +91,13 @@ func (t *TermRule) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func newTerm() TermRule {
-	return TermRule{}
+func newTerms() TermsRule {
+	return TermsRule{
+		TermsValue: []string{},
+	}
 }
 
-// TermQuery returns documents that contain an exact term in a provided field.
-//
-// You can use the term query to find documents based on a precise value such as
-// a price, a product ID, or a username.
-//
-// Avoid using the term query for text fields.
-//
-// By default, Elasticsearch changes the values of text fields as part of
-// analysis. This can make finding exact matches for text field values
-// difficult.
-//
-// To search text field values, use the match query instead.
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-type TermQuery struct {
+type TermsQuery struct {
 	TermValue map[string]*TermRule `json:"term,omitempty" bson:"term,omitempty"`
 }
 

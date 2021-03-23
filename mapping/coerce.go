@@ -10,9 +10,9 @@ package mapping
 // Coercion attempts to clean up dirty values to fit the data type of a field.
 // For instance:
 //
-// - Strings will be coerced to numbers.
+//  	- Strings will be coerced to numbers.
 //
-// - Floating points will be truncated for integer values.
+//  	- Floating points will be truncated for integer values.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/coerce.html
 type FieldWithCoerce interface {
@@ -42,9 +42,9 @@ type WithCoerce interface {
 // Coercion attempts to clean up dirty values to fit the data type of a field.
 // For instance:
 //
-// - Strings will be coerced to numbers.
+//  	- Strings will be coerced to numbers.
 //
-// - Floating points will be truncated for integer values.
+//  	- Floating points will be truncated for integer values.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/coerce.html
 type CoerceParam struct {

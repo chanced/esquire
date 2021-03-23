@@ -127,7 +127,7 @@ func (mq *MatchRule) SetQuery(value interface{}) error {
 	return mq.Query.Set(value)
 }
 
-func NewMatchQuery() MatchQuery {
+func newMatchQuery() MatchQuery {
 	return MatchQuery{
 		MatchQueryValue: map[string]*MatchRule{},
 	}
@@ -147,6 +147,16 @@ type MatchQuery struct {
 func (m MatchQuery) Type() Type {
 	return TypeMatch
 }
+func (m *MatchQuery) SetMatch(match map[string]Match) error {
+	m.MatchQueryValue = map[string]*MatchRule{}
+	for k, v := range match {
+		err := m.AssignMatch(k, v)
+		if err != nil {
+			return NewRuleError(err, TypeMatch, v, k)
+		}
+	}
+	return nil
+}
 
 // AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
 func (m *MatchQuery) AddMatch(field string, match Match) error {
@@ -156,10 +166,10 @@ func (m *MatchQuery) AddMatch(field string, match Match) error {
 	if _, exists := m.MatchQueryValue[field]; exists {
 		return QueryError{Err: ErrFieldExists, Field: field, Type: TypeMatch}
 	}
-	return m.SetMatch(field, match)
+	return m.AssignMatch(field, match)
 }
 
-func (m *MatchQuery) SetMatch(field string, match Match) error {
+func (m *MatchQuery) AssignMatch(field string, match Match) error {
 	if m.MatchQueryValue == nil {
 		m.MatchQueryValue = map[string]*MatchRule{}
 	}

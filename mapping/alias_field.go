@@ -8,15 +8,15 @@ package mapping
 //
 // There are a few restrictions on the target of an alias:
 //
-// - The target must be a concrete field, and not an object or another field
+//  	- The target must be a concrete field, and not an object or another field
 // alias.
 //
-// - The target field must exist at the time the alias is created.
+//  	- The target field must exist at the time the alias is created.
 //
-// - If nested objects are defined, a field alias must have the same nested
+//  	- If nested objects are defined, a field alias must have the same nested
 // scope as its target.
 //
-// - Additionally, a field alias can only have one target. This means that it is
+//  	- Additionally, a field alias can only have one target. This means that it is
 // not possible to use a field alias to query over multiple target fields in a
 // single clause.
 //
