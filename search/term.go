@@ -105,7 +105,11 @@ type TermQuery struct {
 }
 
 func (t TermQuery) MarshalJSON() ([]byte, error) {
-	return sjson.SetBytes([]byte{}, t.TermField, t.TermRule)
+	tr := t.TermRule
+	if tr == nil {
+		tr = &TermRule{}
+	}
+	return sjson.SetBytes([]byte{}, t.TermField, tr)
 }
 
 func (t *TermQuery) UnmarshalJSON(data []byte) error {
@@ -119,15 +123,18 @@ func (t *TermQuery) UnmarshalJSON(data []byte) error {
 		val = value
 		return false
 	})
+	t.TermRule = &TermRule{}
 	switch val.Type {
 	case gjson.JSON:
-		err := unmarshalRule(val, t.TermRule, nil)
+		err := unmarshalRule(val, t.TermRule, func(key, value gjson.Result) error {
+			t.TermRule.SetValue(value.Str)
+			return nil
+		})
 		return err
 	case gjson.String:
-		t.TermRule = &TermRule{
-			TermValue: val.Str,
-		}
+		t.TermRule.SetValue(val.Str)
 	}
+
 	return nil
 }
 

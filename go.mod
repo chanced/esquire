@@ -1,4 +1,4 @@
-module github.com/chanced/esquire
+module github.com/chanced/picker
 
 go 1.13
 

@@ -77,7 +77,7 @@ func unmarshalRule(g gjson.Result, target Rule, fn func(key, value gjson.Result)
 	var err error
 	g.ForEach(func(key, value gjson.Result) bool {
 		var isParam bool
-		isParam, err = unmarshalParam(Param(key.Str), target, value)
+		isParam, err = unmarshalParam(key.Str, target, value)
 		if err != nil {
 			return false
 		}
@@ -85,6 +85,7 @@ func unmarshalRule(g gjson.Result, target Rule, fn func(key, value gjson.Result)
 			return true
 		}
 		if fn != nil {
+			err = fn(key, value)
 			if err != nil {
 				return false
 			}

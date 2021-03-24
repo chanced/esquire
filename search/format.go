@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultFormat = "strict_date_optional_time||epoch_millis"
+
 // WithFormat is a query with a format parameter
 //
 // In JSON documents, dates are represented as strings. Elasticsearch uses a set
@@ -421,7 +423,7 @@ type FormatParam struct {
 // Multiple formats can be seperated by ||
 func (f FormatParam) Format() string {
 	if f.FormatValue == "" {
-		return "strict_date_optional_time||epoch_millis"
+		return DefaultFormat
 	}
 	return f.FormatValue
 }
@@ -437,4 +439,13 @@ func unmarshalFormatParam(value gjson.Result, target interface{}) error {
 		r.SetFormat(value.Str)
 	}
 	return nil
+}
+
+func marshalFormatParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+	if b, ok := source.(WithFormat); ok {
+		if b.Format() != DefaultFormat {
+			data[paramBoost] = b.Format()
+		}
+	}
+	return data, nil
 }

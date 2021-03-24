@@ -2,7 +2,6 @@ package search
 
 import (
 	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
 )
 
 const DefaultBoost = float64(0)
@@ -29,10 +28,10 @@ func (b *BoostParam) SetBoost(v float64) {
 	}
 }
 
-func marshalBoost(data []byte, source interface{}) ([]byte, error) {
+func marshalBoostParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
 	if b, ok := source.(WithBoost); ok {
 		if b.Boost() != DefaultBoost {
-			return sjson.SetBytes(data, "boost", b.Boost())
+			data[paramBoost] = b.Boost()
 		}
 	}
 	return data, nil

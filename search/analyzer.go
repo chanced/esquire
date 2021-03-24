@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultAnalyzer = ""
+
 // WithAnalyzer is a query with the analyzer param
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
@@ -12,13 +14,6 @@ type WithAnalyzer interface {
 	Analyzer() string
 	// SetAnalyzer sets the Analyzer value to v
 	SetAnalyzer(v string)
-}
-
-func unmarshalAnalyzerParam(value gjson.Result, target interface{}) error {
-	if a, ok := target.(WithAnalyzer); ok {
-		a.SetAnalyzer(value.Str)
-	}
-	return nil
 }
 
 // AnalyzerParam is a query mixin that adds the analyzer param
@@ -44,4 +39,19 @@ func (a *AnalyzerParam) SetAnalyzer(v string) {
 	if a.Analyzer() != v {
 		a.AnalyzerValue = v
 	}
+}
+
+func marshalAnalyzerParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+	if a, ok := source.(WithAnalyzer); ok {
+		if a.Analyzer() != DefaultAnalyzer {
+			data[paramAnalyzer] = a.Analyzer()
+		}
+	}
+	return data, nil
+}
+func unmarshalAnalyzerParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithAnalyzer); ok {
+		a.SetAnalyzer(value.Str)
+	}
+	return nil
 }

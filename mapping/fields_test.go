@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/chanced/esquire/mapping"
+	"github.com/chanced/picker/mapping"
 	"github.com/stretchr/testify/require"
 )
 

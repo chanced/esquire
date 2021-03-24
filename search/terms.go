@@ -2,10 +2,8 @@ package search
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
 )
 
 // Termser can be:
@@ -110,28 +108,34 @@ func (t TermsRule) Value() []string {
 }
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
-	data := []byte{}
+
 	var err error
-	data, err = marshalBoost(data, t)
+	var v map[string]interface{}
+	if t.TermsField != "" {
+		if !t.TermsLookup.lookupIsEmpty() {
+			v = map[string]interface{}{
+				t.TermsField: t.TermsLookup,
+			}
+		} else {
+			v = map[string]interface{}{
+				t.TermsField: t.TermsValue,
+			}
+		}
+	} else {
+		v = map[string]interface{}{}
+	}
+
 	if err != nil {
 		return nil, err
 	}
-
-	if t.TermsField != "" {
-		if !t.TermsLookup.lookupIsEmpty() {
-			return sjson.SetBytes(data, t.TermsField, t.TermsLookup)
-		}
-		return sjson.SetBytes(data, t.TermsField, t.TermsValue)
-	}
-	return data, nil
+	return res, nil
 }
 
 func (t *TermsRule) UnmarshalJSON(data []byte) error {
-	g := gjson.GetBytes(data, "terms")
+	g := gjson.ParseBytes(data)
 	if !g.Exists() {
 		return nil
 	}
-
 	t.TermsValue = []string{}
 	t.TermsLookup = TermsLookup{}
 
@@ -161,15 +165,25 @@ func (t TermsRule) MarshalBSON() ([]byte, error) {
 }
 
 type TermsQuery struct {
-	Terms TermsRule `json:",inline" bson:",inline"`
+	*TermsRule `json:",inline" bson:",inline"`
 }
 
 func (t *TermsQuery) UnmarshalJSON(data []byte) error {
-	fmt.Println("inside terms")
-	return nil
+	t.TermsRule = &TermsRule{}
+	g := gjson.ParseBytes(data)
+	err := unmarshalRule(g, t.TermsRule, func(key, value gjson.Result) error {
+		t.TermsRule.TermsField = key.Str
+		if value.IsObject() {
+			return json.Unmarshal([]byte(value.Raw), &t.TermsRule.TermsLookup)
+		}
+		if value.IsArray() {
+			return json.Unmarshal([]byte(value.Raw), &t.TermsRule.TermsValue)
+		}
+		return nil
+	})
+	return err
 }
 
 func (t TermsQuery) SetTerms(field string, value Termser) error {
-
-	return t.Terms.set(value)
+	return t.set(value)
 }

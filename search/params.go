@@ -2,71 +2,78 @@ package search
 
 import "github.com/tidwall/gjson"
 
-type Param String
-
 const (
-	ParamBoost                           Param = "boost"
-	ParamAnalyzer                        Param = "analyzer"
-	ParamFormat                          Param = "format"
-	ParamCaseInsensitive                 Param = "case_insensitive"
-	ParamFuzziness                       Param = "fuzziness"
-	ParamFuzzyRewrite                    Param = "fuzzy_rewrite"
-	ParamFuzzyTranspositions             Param = "fuzzy_transpositions"
-	ParamAutoGenerateSynonymsPhraseQuery Param = "auto_generate_synonyms_phrase_query"
-	ParamLenient                         Param = "lenient"
-	ParamMaxBoost                        Param = "max_boost"
-	ParamMaxExpansions                   Param = "max_expansions"
-	ParamMinShouldMatch                  Param = "minimum_should_match"
-	ParamName                            Param = "_name"
-	ParamOperator                        Param = "operator"
-	ParamPrefixLength                    Param = "prefix_length"
-	ParamRelation                        Param = "relation"
-	ParamRewrite                         Param = "rewrite"
-	ParamZeroTermsQuery                  Param = "zero_terms_query"
-	ParamTranspositions                  Param = "transpositions"
-	ParamTimeZone                        Param = "time_zone"
-	ParamSlop                            Param = "slop"
+	paramBoost                           = "boost"
+	paramAnalyzer                        = "analyzer"
+	paramFormat                          = "format"
+	paramCaseInsensitive                 = "case_insensitive"
+	paramFuzziness                       = "fuzziness"
+	paramFuzzyRewrite                    = "fuzzy_rewrite"
+	paramFuzzyTranspositions             = "fuzzy_transpositions"
+	paramAutoGenerateSynonymsPhraseQuery = "auto_generate_synonyms_phrase_query"
+	paramLenient                         = "lenient"
+	paramMaxBoost                        = "max_boost"
+	ParamMaxExpansions                   = "max_expansions"
+	paramMinShouldMatch                  = "minimum_should_match"
+	paramName                            = "_name"
+	paramOperator                        = "operator"
+	paramPrefixLength                    = "prefix_length"
+	paramRelation                        = "relation"
+	paramRewrite                         = "rewrite"
+	paramZeroTermsQuery                  = "zero_terms_query"
+	paramTranspositions                  = "transpositions"
+	paramTimeZone                        = "time_zone"
+	paramSlop                            = "slop"
 	// ParamQuery                           Param = "query"
 )
 
-type Params []Param
-
-func (p Params) Contains(param string) bool {
-	v := Param(param)
-	for _, k := range p {
-		if k == v {
-			return true
-		}
-	}
-	return false
+var paramMarshalers = map[string]func(data map[string]interface{}, source interface{}) (map[string]interface{}, error){
+	paramBoost:                           marshalBoostParam,
+	paramAnalyzer:                        marshalAnalyzerParam,
+	paramFormat:                          marshalFormatParam,
+	paramCaseInsensitive:                 marshalCaseInsensitiveParam,
+	paramFuzziness:                       marshalFuzzinessParam,
+	paramFuzzyRewrite:                    marshalFuzzyRewriteParam,
+	paramFuzzyTranspositions:             unmarshalFuzzyTranspositionsParam,
+	paramLenient:                         unmarshalLenientParam,
+	paramMaxBoost:                        unmarshalMaxBoostParam,
+	paramMinShouldMatch:                  unmarshalMinShouldMatchParam,
+	paramName:                            unmarshalNameParam,
+	paramOperator:                        unmarshalOperatorParam,
+	paramPrefixLength:                    unmarshalPrefixLengthParam,
+	paramRelation:                        unmarshalRelationParam,
+	paramRewrite:                         unmarshalRewriteParam,
+	paramZeroTermsQuery:                  unmarshalZeroTermsQueryParam,
+	paramTranspositions:                  unmarshalTranspositionsParam,
+	paramTimeZone:                        unmarshalTimeZoneParam,
+	paramSlop:                            unmarshalSlopParam,
+	paramAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
 }
 
-var paramUnmarshalers = map[Param]func(data gjson.Result, target interface{}) error{
-	ParamBoost:                           unmarshalBoostParam,
-	ParamAnalyzer:                        unmarshalAnalyzerParam,
-	ParamFormat:                          unmarshalFormatParam,
-	ParamCaseInsensitive:                 unmarshalCaseInsensitiveParam,
-	ParamFuzziness:                       unmarshalFuzzinessParam,
-	ParamFuzzyRewrite:                    unmarshalFuzzyRewriteParam,
-	ParamFuzzyTranspositions:             unmarshalFuzzyTranspositionsParam,
-	ParamLenient:                         unmarshalLenientParam,
-	ParamMaxBoost:                        unmarshalMaxBoostParam,
-	ParamMinShouldMatch:                  unmarshalMinShouldMatchParam,
-	ParamName:                            unmarshalNameParam,
-	ParamOperator:                        unmarshalOperatorParam,
-	ParamPrefixLength:                    unmarshalPrefixLengthParam,
-	ParamRelation:                        unmarshalRelationParam,
-	ParamRewrite:                         unmarshalRewriteParam,
-	ParamZeroTermsQuery:                  unmarshalZeroTermsQueryParam,
-	ParamTranspositions:                  unmarshalTranspositionsParam,
-	ParamTimeZone:                        unmarshalTimeZoneParam,
-	ParamSlop:                            unmarshalSlopParam,
-	ParamAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
-	// ParamQuery:                           unmarshalQueryParam,
-
+var paramUnmarshalers = map[string]func(data gjson.Result, target interface{}) error{
+	paramBoost:                           unmarshalBoostParam,
+	paramAnalyzer:                        unmarshalAnalyzerParam,
+	paramFormat:                          unmarshalFormatParam,
+	paramCaseInsensitive:                 unmarshalCaseInsensitiveParam,
+	paramFuzziness:                       unmarshalFuzzinessParam,
+	paramFuzzyRewrite:                    unmarshalFuzzyRewriteParam,
+	paramFuzzyTranspositions:             unmarshalFuzzyTranspositionsParam,
+	paramLenient:                         unmarshalLenientParam,
+	paramMaxBoost:                        unmarshalMaxBoostParam,
+	paramMinShouldMatch:                  unmarshalMinShouldMatchParam,
+	paramName:                            unmarshalNameParam,
+	paramOperator:                        unmarshalOperatorParam,
+	paramPrefixLength:                    unmarshalPrefixLengthParam,
+	paramRelation:                        unmarshalRelationParam,
+	paramRewrite:                         unmarshalRewriteParam,
+	paramZeroTermsQuery:                  unmarshalZeroTermsQueryParam,
+	paramTranspositions:                  unmarshalTranspositionsParam,
+	paramTimeZone:                        unmarshalTimeZoneParam,
+	paramSlop:                            unmarshalSlopParam,
+	paramAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
 }
 
-func unmarshalParam(param Param, target interface{}, value gjson.Result) (bool, error) {
+func unmarshalParam(param string, target interface{}, value gjson.Result) (bool, error) {
 	if unmarshal, ok := paramUnmarshalers[param]; ok {
 		return true, unmarshal(value, target)
 	}

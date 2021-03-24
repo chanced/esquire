@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultCaseInsensitive = false
+
 // WithCaseInsensitive is a query mixin that adds the case_insensitive param
 //
 // (Optional, Boolean) Allows ASCII case insensitive matching of the value with
@@ -25,13 +27,9 @@ type CaseInsensitiveParam struct {
 	CaseInsensitiveValue *bool `json:"case_insensitive,omitempty" bson:"case_insensitive,omitempty"`
 }
 
-func (ci CaseInsensitiveParam) Default() bool {
-	return false
-}
-
 func (ci CaseInsensitiveParam) CaseInsensitive() bool {
 	if ci.CaseInsensitiveValue == nil {
-		return ci.Default()
+		return DefaultCaseInsensitive
 	}
 	return *ci.CaseInsensitiveValue
 }
@@ -47,4 +45,13 @@ func unmarshalCaseInsensitiveParam(value gjson.Result, target interface{}) error
 		r.SetCaseInsensitive(value.Bool())
 	}
 	return nil
+}
+
+func marshalCaseInsensitiveParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+	if b, ok := source.(WithCaseInsensitive); ok {
+		if b.CaseInsensitive() != DefaultCaseInsensitive {
+			data[paramCaseInsensitive] = b.CaseInsensitive()
+		}
+	}
+	return data, nil
 }

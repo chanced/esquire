@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultFuzziness = "0"
+
 // WithFuzziness is an interface for queries with fuzziness the parameter
 //
 // Maximum edit distance allowed for matching. See Fuzziness for valid values and more information.
@@ -22,6 +24,7 @@ type WithFuzziness interface {
 	FuzzyRewrite() Rewrite
 	// SetFuzzyRewrite sets the value of FuzzyRewrite to v
 	SetFuzzyRewrite(v Rewrite)
+	DefaultFuzzyRewrite() Rewrite
 }
 
 // FuzzinessParam is a mixin that adds the fuzziness parameter to queries
@@ -58,7 +61,11 @@ func (f FuzzinessParam) FuzzyRewrite() Rewrite {
 	if f.FuzzyRewriteValue != "" {
 		return f.FuzzyRewriteValue
 	}
-	if f.Fuzziness() != "0" {
+	return f.DefaultFuzzyRewrite()
+}
+
+func (f FuzzinessParam) DefaultFuzzyRewrite() Rewrite {
+	if f.Fuzziness() != DefaultFuzziness {
 		return RewriteTopTermsBlendedFreqsN
 	}
 	return RewriteConstantScore
@@ -82,9 +89,25 @@ func unmarshalFuzzinessParam(data gjson.Result, target interface{}) error {
 	return nil
 }
 
+func marshalFuzzinessParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+	if a, ok := source.(WithFuzziness); ok {
+		if a.Fuzziness() != DefaultFuzziness {
+			data[paramFuzziness] = a.Fuzziness()
+		}
+	}
+	return data, nil
+}
 func unmarshalFuzzyRewriteParam(data gjson.Result, target interface{}) error {
 	if r, ok := target.(WithFuzziness); ok {
 		r.SetFuzzyRewrite(Rewrite(data.Str))
 	}
 	return nil
+}
+func marshalFuzzyRewriteParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+	if a, ok := source.(WithFuzziness); ok {
+		if a.FuzzyRewrite() != a.DefaultFuzzyRewrite() {
+			data[paramFuzzyRewrite] = a.FuzzyRewrite()
+		}
+	}
+	return data, nil
 }
