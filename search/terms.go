@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 // Termser can be:
@@ -57,10 +58,18 @@ type TermsLookup struct {
 	TermsRouting string `json:"routing,omitempty" bson:"routing,omitempty"`
 }
 
+func (t TermsLookup) lookupIsEmpty() bool {
+	return len(t.TermsID) == 0 && len(t.TermsIndex) == 0 && len(t.TermsPath) == 0 && len(t.TermsRouting) == 0
+}
+
 type TermsRule struct {
-	TermsValue           []string `json:"-"`
-	TermsField           string   `json:"-"`
-	TermsLookup          `json:",inline" bson:",inline"`
+	TermsLookup `json:"-" bson:"-"`
+	TermsValue  []string `json:"-" bson:"-"`
+	TermsField  string   `json:"-" bson:"-"`
+	TermsParams `json:",inline" bson:",inline"`
+}
+
+type TermsParams struct {
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
@@ -104,13 +113,28 @@ func (t TermsRule) Value() []string {
 }
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
-	panic("not imp")
+	b, err := json.Marshal(t.TermsParams)
+	if err != nil {
+		return nil, err
+	}
+	if t.TermsField != "" {
+		if !t.TermsLookup.lookupIsEmpty() {
+			return sjson.SetBytes(b, t.TermsField, t.TermsLookup)
+		}
+		return sjson.SetBytes(b, t.TermsField, t.TermsValue)
+	}
+	return b, nil
 }
+
 func (t *TermsRule) UnmarshalJSON(data []byte) error {
+	g := gjson.GetBytes(data, "terms")
+	if !g.Exists() {
+		return nil
+	}
+
 	t.TermsValue = []string{}
 	t.TermsLookup = TermsLookup{}
 
-	g := gjson.ParseBytes(data)
 	err := unmarshalRule(g, t, func(key, value gjson.Result) error {
 		t.TermsField = key.Str
 		if value.IsArray() {
@@ -128,12 +152,19 @@ func (t *TermsRule) UnmarshalJSON(data []byte) error {
 	})
 	return err
 }
-
-type TermsQuery struct {
-	TermsRule `json:",inline" bson:",inline"`
+func (t *TermsRule) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
 }
 
-func (t *TermsQuery) SetTerms(field string, value Termser) error {
-	t.TermsField = field
-	return t.set(value)
+func (t TermsRule) MarshalBSON() ([]byte, error) {
+	return t.MarshalJSON()
+}
+
+type TermsQuery struct {
+	Terms TermsRule `json:"terms" bson:"terms"`
+}
+
+func (t TermsQuery) SetTerms(field string, value Termser) error {
+	t.Terms.TermsField = field
+	return t.Terms.set(value)
 }

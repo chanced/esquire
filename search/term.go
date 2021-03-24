@@ -107,10 +107,13 @@ func (t TermQuery) MarshalJSON() ([]byte, error) {
 	return sjson.SetBytes([]byte{}, t.TermField, t.TermRule)
 }
 
-func (t *TermQuery) UnmarshalJSON(data []byte) error {
+func (t TermQuery) UnmarshalJSON(data []byte) error {
+	g := gjson.GetBytes(data, "term")
+	if !g.Exists() {
+		return nil
+	}
 	t.TermField = ""
 	t.TermRule = nil
-	g := gjson.ParseBytes(data)
 	var val gjson.Result
 	g.ForEach(func(key, value gjson.Result) bool {
 		t.TermField = key.Str

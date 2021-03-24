@@ -20,18 +20,14 @@ package search
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	MatchQuery   `json:",inline" bson:",inline"`
-	ScriptQuery  `json:",inline" bson:",inline"`
-	ExistsQuery  `json:",inline" bson:",inline"`
-	BooleanQuery `json:",inline" bson:",inline"`
-	TermQuery    `json:",inline" bson:",inline"`
+	MatchQuery   `json:"match" bson:"match"`
+	ScriptQuery  `json:"script" bson:"script"`
+	ExistsQuery  `json:"exists" bson:"exists"`
+	BooleanQuery `json:"bool" bson:"bool"`
+	TermQuery    `json:"term" bson:"term"`
+	TermsQuery   `json:",inline" bson:",inline"`
 }
 
-func NewQuery() Query {
-	return Query{
-		MatchQuery: newMatchQuery(),
-	}
-}
 func (q *Query) Clone() *Query {
 	if q == nil {
 		return nil
