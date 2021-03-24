@@ -25,7 +25,7 @@ type Query struct {
 	ExistsQuery  `json:"exists" bson:"exists"`
 	BooleanQuery `json:"bool" bson:"bool"`
 	TermQuery    `json:"term" bson:"term"`
-	TermsQuery   `json:",inline" bson:",inline"`
+	TermsQuery   `json:"terms" bson:"terms"`
 }
 
 func (q *Query) Clone() *Query {

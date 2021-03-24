@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -18,7 +19,7 @@ import (
 //  s := search.NewSearch()
 //  err := s.AddTerms(&Lookup{ID: "1", Index:"my-index-100", Path:"color"})
 //  _ = err // handle err
-//  err = s.AddTerms(&Terms{ Field:"", Value: []string{"chanced", "kimchy", "elkbee"}})
+//  err = s.AddTerms(&Terms{ Field:"", Value: []string{"kimchy", "elkbee"}})
 //  _ = err // handle err
 type Termser interface {
 	Terms() (*TermsRule, error)
@@ -63,13 +64,9 @@ func (t TermsLookup) lookupIsEmpty() bool {
 }
 
 type TermsRule struct {
-	TermsLookup `json:"-" bson:"-"`
-	TermsValue  []string `json:"-" bson:"-"`
-	TermsField  string   `json:"-" bson:"-"`
-	TermsParams `json:",inline" bson:",inline"`
-}
-
-type TermsParams struct {
+	TermsLookup          `json:"-" bson:"-"`
+	TermsValue           []string `json:"-" bson:"-"`
+	TermsField           string   `json:"-" bson:"-"`
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
@@ -113,17 +110,20 @@ func (t TermsRule) Value() []string {
 }
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(t.TermsParams)
+	data := []byte{}
+	var err error
+	data, err = marshalBoost(data, t)
 	if err != nil {
 		return nil, err
 	}
+
 	if t.TermsField != "" {
 		if !t.TermsLookup.lookupIsEmpty() {
-			return sjson.SetBytes(b, t.TermsField, t.TermsLookup)
+			return sjson.SetBytes(data, t.TermsField, t.TermsLookup)
 		}
-		return sjson.SetBytes(b, t.TermsField, t.TermsValue)
+		return sjson.SetBytes(data, t.TermsField, t.TermsValue)
 	}
-	return b, nil
+	return data, nil
 }
 
 func (t *TermsRule) UnmarshalJSON(data []byte) error {
@@ -161,10 +161,15 @@ func (t TermsRule) MarshalBSON() ([]byte, error) {
 }
 
 type TermsQuery struct {
-	Terms TermsRule `json:"terms" bson:"terms"`
+	Terms TermsRule `json:",inline" bson:",inline"`
+}
+
+func (t *TermsQuery) UnmarshalJSON(data []byte) error {
+	fmt.Println("inside terms")
+	return nil
 }
 
 func (t TermsQuery) SetTerms(field string, value Termser) error {
-	t.Terms.TermsField = field
+
 	return t.Terms.set(value)
 }

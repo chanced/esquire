@@ -1,6 +1,6 @@
 module github.com/chanced/esquire
 
-go 1.16
+go 1.13
 
 require (
 	github.com/chanced/dynamic v0.0.0-20210323024812-7e99a2fe8c92

@@ -18,10 +18,20 @@ func TestTerms(t *testing.T) {
 	assert.NoError(err)
 	json1, err := ioutil.ReadAll(j1f)
 	assert.NoError(err)
+	_ = json1
+	j1f.Close()
+	json1 = []byte(`{
+		"terms": {
+		  "user.id": ["kimchy", "elkbee"],
+			  "boost": 1.0
+	  }
+  }`)
 	fmt.Println(string(json1))
 	var q search.Query
+	str := string(json1)
+	_ = str
 	err = json.Unmarshal(json1, &q)
 	assert.NoError(err)
 	assert.Equal(float64(1), q.Terms.Boost())
-	fmt.Println(q.TermsQuery)
+	fmt.Println(q.Terms)
 }
