@@ -29,7 +29,7 @@ type Query struct {
 
 func NewQuery() Query {
 	return Query{
-		MatchQuery: NewMatchQuery(),
+		MatchQuery: newMatchQuery(),
 	}
 }
 func (q *Query) Clone() *Query {

@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 type Relation string
 
 const (
@@ -19,6 +21,11 @@ type RelationParam struct {
 	RelationValue Relation `json:"relation,omitempty" bson:"relation,omitempty"`
 }
 
+type WithRelation interface {
+	Relation() Relation
+	SetRelation(v Relation)
+}
+
 // Relation indicates how the range query matches values for range fields.
 func (r RelationParam) Relation() Relation {
 	if r.RelationValue == "" {
@@ -32,4 +39,10 @@ func (r *RelationParam) SetRelation(v Relation) {
 	if r.Relation() != v {
 		r.RelationValue = v
 	}
+}
+func unmarshalRelationParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithRelation); ok {
+		a.SetRelation(Relation(value.String()))
+	}
+	return nil
 }

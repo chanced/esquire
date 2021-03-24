@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithAutoGenerateSynonymsPhraseQuery is an interface for the query mixin that
 // adds auto_generate_synonyms_phrase_query param
 type WithAutoGenerateSynonymsPhraseQuery interface {
@@ -28,4 +30,10 @@ func (agspq *AutoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhrase
 	if agspq.AutoGenerateSynonymsPhraseQuery() != v {
 		agspq.AutoGenerateSynonymsPhraseQueryValue = &v
 	}
+}
+func unmarshalAutoGenerateSynonymsPhraseQueryParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithAutoGenerateSynonymsPhraseQuery); ok {
+		a.SetAutoGenerateSynonymsPhraseQuery(value.Bool())
+	}
+	return nil
 }

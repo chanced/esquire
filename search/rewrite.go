@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // Rewrite as defined by:
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-term-rewrite.html
@@ -117,4 +119,10 @@ func (r *RewriteParam) SetRewrite(v Rewrite) {
 	if v != "" && v != r.Rewrite() {
 		r.RewriteValue = &v
 	}
+}
+func unmarshalRewriteParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithRewrite); ok {
+		a.SetRewrite(Rewrite(value.String()))
+	}
+	return nil
 }

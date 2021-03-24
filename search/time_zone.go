@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 type WithTimeZone interface {
 	TimeZone() string
 	SetTimeZone(v string)
@@ -20,4 +22,10 @@ func (tz TimeZoneParam) TimeZone() string {
 }
 func (tz *TimeZoneParam) SetTimeZone(v string) {
 	tz.TimeZoneValue = v
+}
+func unmarshalTimeZoneParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithTimeZone); ok {
+		a.SetTimeZone(value.String())
+	}
+	return nil
 }

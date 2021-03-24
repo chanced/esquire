@@ -4,7 +4,7 @@ package mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html#scaled-float-params
 type WithScalingFactor interface {
-	ScalingFactor() float32
+	ScalingFactor() float64
 }
 
 // ScalingFactorParam is a mapping with the scaling_factor param
@@ -19,7 +19,7 @@ type WithScalingFactor interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html#scaled-float-params
 type ScalingFactorParam struct {
-	ScalingFactorValue float32 `json:"scaling_factor" bson:"scaling_factor"`
+	ScalingFactorValue float64 `json:"scaling_factor" bson:"scaling_factor"`
 }
 
 // ScalingFactor to use when encoding values. Values will be multiplied by this
@@ -28,12 +28,12 @@ type ScalingFactorParam struct {
 // and all search-time operations (queries, aggregations, sorting) will behave
 // as if the document had a value of 2.3. High values of scaling_factor improve
 // accuracy but also increase space requirements. This parameter is required.
-func (sf ScalingFactorParam) ScalingFactor() float32 {
+func (sf ScalingFactorParam) ScalingFactor() float64 {
 	return sf.ScalingFactorValue
 }
 
 // SetScalingFactor sets the ScalingFactorValue to v
-func (sf *ScalingFactorParam) SetScalingFactor(v float32) {
+func (sf *ScalingFactorParam) SetScalingFactor(v float64) {
 	if sf.ScalingFactor() != v {
 		sf.ScalingFactorValue = v
 	}

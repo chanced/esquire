@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithLenient is a query with the lenient param
 type WithLenient interface {
 	// Lenient determines whether format-based errors, such as providing a text
@@ -29,4 +31,10 @@ func (l LenientParam) Lenient() bool {
 // SetLenient sets Lenient to v
 func (l *LenientParam) SetLenient(v bool) {
 	l.LenientValue = &v
+}
+func unmarshalLenientParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithLenient); ok {
+		a.SetLenient(value.Bool())
+	}
+	return nil
 }

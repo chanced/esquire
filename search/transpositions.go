@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithTranspositions is an interface for queries with the transpositions param
 //
 // (Optional, Boolean) Indicates whether edits include transpositions of two
@@ -28,4 +30,10 @@ func (t TranspositionsParam) Transpositions() bool {
 // SetTranspositions sets the value of Transpositions to v
 func (t *TranspositionsParam) SetTranspositions(v bool) {
 	t.TranspositionsValue = &v
+}
+func unmarshalTranspositionsParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithTranspositions); ok {
+		a.SetTranspositions(value.Bool())
+	}
+	return nil
 }

@@ -39,7 +39,7 @@ type Search struct {
 
 	// Minimum _score for matching documents. Documents with a lower _score are
 	// not included in the search results (Optional, float).
-	MinScoreValue *float32 `bson:"min_score,omitempty" json:"min_score,omitempty"`
+	MinScoreValue *float64 `bson:"min_score,omitempty" json:"min_score,omitempty"`
 
 	// Limits the search to a point in time (PIT). If you provide a pit, you
 	// cannot specify a <target> in the request path. (Optional)
@@ -167,7 +167,7 @@ func (s *Search) SetIndicesBoost(v IndicesBoost) *Search {
 
 // MinScore is the minimum _score for matching documents. Documents with a lower
 // _score are not included in the search results.
-func (s Search) MinScore() float32 {
+func (s Search) MinScore() float64 {
 	if s.MinScoreValue == nil {
 		return 0
 	}
@@ -175,7 +175,7 @@ func (s Search) MinScore() float32 {
 }
 
 // SetMinScore sets the MinScoreValue to v
-func (s *Search) SetMinScore(v float32) *Search {
+func (s *Search) SetMinScore(v float64) *Search {
 	if s.MinScore() != v {
 		s.MinScoreValue = &v
 	}
@@ -402,46 +402,6 @@ func (s *Search) SetVersion(v bool) *Search {
 	return s
 }
 
-// AddMatch adds a match query to the search. It panics if the field already
-// exists or other errors arise (like not setting the query). Use SetMatch to
-// overwrite the field instead.
-//
-// AddMatch panics if there is an error. It is intended to be utilized in a
-// builder. To avoid panics, use the same function on the Query itself:
-//  s := search.NewSearch()
-//  s.AddMatch("field", Match{Query: "example"})
-//  s.AddMatch("field", Match{Query: "example"}) // This will panic
-//  // this will not:
-//  err := s.Query().AddMatch(field, match)
-//  _ = err // handle error
-//  s, err = search.Build(func(s *Search)(*Search, error){
-//      s.AddMatch("field", Match{Query: "example"})
-//      s.AddMatch("field", Match{Query: "example"}) // this will panic but get caught by the builder
-//  })
-//  _ = err // err is the same as the err from s.Query().AddMatch(field, match) above
-func (s *Search) AddMatch(field string, match Match) *Search {
-	err := s.Query().AddMatch(field, match)
-	if err != nil {
-		panic(err)
-	}
-	return s
-}
-
-// SetMatch assigns a match query to the search. It overwrites the field if it
-// exists. AddMatch will error instead
-//
-// SetMatch panics if there is an error. It is intended to be utilized in a
-// builder. To avoid panics, use the same function on the Query itself:
-//  s := search.NewSearch()
-//  err := s.Query().SetMatch(field, match)
-//  _ = err // handle error
-func (s *Search) SetMatch(field string, match Match) *Search {
-	err := s.Query().AssignMatch(field, match)
-	if err != nil {
-		panic(err)
-	}
-	return s
-}
 func (s *Search) Clone() *Search {
 	n := NewSearch()
 	n.SetDocValueFields(s.DocValueFields().Clone())

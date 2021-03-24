@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 type WithName interface {
 	Name() string
 	SetName(string)
@@ -19,4 +21,10 @@ func (n *NameParam) SetName(name string) {
 	if n.Name() != name {
 		n.NameValue = name
 	}
+}
+func unmarshalNameParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithName); ok {
+		a.SetName(value.String())
+	}
+	return nil
 }

@@ -147,40 +147,22 @@ type MatchQuery struct {
 func (m MatchQuery) Type() Type {
 	return TypeMatch
 }
-func (m *MatchQuery) SetMatch(match map[string]Match) error {
+
+func (m *MatchQuery) Match() (key string, value *MatchRule) {
+	for key, value = range m.MatchQueryValue {
+		return key, value
+	}
+	return "", nil
+}
+func (m *MatchQuery) SetMatch(field string, match *Match) error {
 	m.MatchQueryValue = map[string]*MatchRule{}
-	for k, v := range match {
-		err := m.AssignMatch(k, v)
-		if err != nil {
-			return NewRuleError(err, TypeMatch, v, k)
-		}
+	if match == nil {
+		return nil
 	}
-	return nil
-}
-
-// AddMatch returns an error if the field already exists. Use SetMatch to overwrite.
-func (m *MatchQuery) AddMatch(field string, match Match) error {
-	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]*MatchRule{}
-	}
-	if _, exists := m.MatchQueryValue[field]; exists {
-		return QueryError{Err: ErrFieldExists, Field: field, Type: TypeMatch}
-	}
-	return m.AssignMatch(field, match)
-}
-
-func (m *MatchQuery) AssignMatch(field string, match Match) error {
-	if m.MatchQueryValue == nil {
-		m.MatchQueryValue = map[string]*MatchRule{}
-	}
-	q, err := match.Match()
+	r, err := match.Match()
 	if err != nil {
-		return QueryError{Err: err, Field: field, Type: TypeMatch}
+		return NewRuleError(err, TypeMatch, match, field)
 	}
-	m.MatchQueryValue[field] = q
+	m.MatchQueryValue[field] = r
 	return nil
-}
-
-func (m *MatchQuery) RemoveMatch(field string) {
-	delete(m.MatchQueryValue, field)
 }

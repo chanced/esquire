@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 type ZeroTermsQuery string
 
 const (
@@ -34,4 +36,10 @@ func (ztq ZeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
 
 func (ztq *ZeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
 	ztq.ZeroTermsQueryValue = &v
+}
+func unmarshalZeroTermsQueryParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithZeroTermsQuery); ok {
+		a.SetZeroTermsQuery(ZeroTermsQuery(value.Str))
+	}
+	return nil
 }

@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithFuzziness is an interface for queries with fuzziness the parameter
 //
 // Maximum edit distance allowed for matching. See Fuzziness for valid values and more information.
@@ -69,6 +71,20 @@ func (f *FuzzinessParam) SetFuzzyRewrite(v Rewrite) error {
 	}
 	if f.FuzzyRewrite() != v {
 		f.FuzzyRewriteValue = v
+	}
+	return nil
+}
+
+func unmarshalFuzzinessParam(data gjson.Result, target interface{}) error {
+	if r, ok := target.(WithFuzziness); ok {
+		r.SetFuzziness(data.Str)
+	}
+	return nil
+}
+
+func unmarshalFuzzyRewriteParam(data gjson.Result, target interface{}) error {
+	if r, ok := target.(WithFuzziness); ok {
+		r.SetFuzzyRewrite(Rewrite(data.Str))
 	}
 	return nil
 }

@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithFormat is a query with a format parameter
 //
 // In JSON documents, dates are represented as strings. Elasticsearch uses a set
@@ -428,4 +430,11 @@ func (f *FormatParam) SetFormat(v string) {
 	if v != f.Format() {
 		f.FormatValue = v
 	}
+}
+
+func unmarshalFormatParam(value gjson.Result, target interface{}) error {
+	if r, ok := target.(WithFormat); ok {
+		r.SetFormat(value.Str)
+	}
+	return nil
 }

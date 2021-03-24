@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithFuzzyTranspositions is a query with the fuzzy_transpositions param
 //
 // If true, edits for fuzzy matching include transpositions of two adjacent
@@ -30,4 +32,11 @@ func (ft *FuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
 	if ft.FuzzyTranspositions() != v {
 		ft.FuzzyTranspositionsValue = &v
 	}
+}
+
+func unmarshalFuzzyTranspositionsParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithFuzzyTranspositions); ok {
+		a.SetFuzzyTranspositions(value.Bool())
+	}
+	return nil
 }

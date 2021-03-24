@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithAnalyzer is a query with the analyzer param
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
@@ -10,6 +12,13 @@ type WithAnalyzer interface {
 	Analyzer() string
 	// SetAnalyzer sets the Analyzer value to v
 	SetAnalyzer(v string)
+}
+
+func unmarshalAnalyzerParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithAnalyzer); ok {
+		a.SetAnalyzer(value.Str)
+	}
+	return nil
 }
 
 // AnalyzerParam is a query mixin that adds the analyzer param

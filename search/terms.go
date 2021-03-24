@@ -6,47 +6,61 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Termser can be:
+//  *search.Terms
+//  *search.Lookup
+//  search.String
+//  search.Strings
+//
+// Example:
+//  impor
+//  s := search.NewSearch()
+//  err := s.AddTerms(&Lookup{ID: "1", Index:"my-index-100", Path:"color"})
+//  _ = err // handle err
+//  err = s.AddTerms(&Terms{ Field:"", Value: []string{"chanced", "kimchy", "elkbee"}})
+//  _ = err // handle err
+type Termser interface {
+	Terms() (*TermsRule, error)
+}
+
 // Terms returns documents that contain one or more exact terms in a provided
 // field.
 //
 // The terms query is the same as the term query, except you can search for
 // multiple values.
 type Terms struct {
-	Value           []string
-	Boost           float32
+	Values          []string
+	Boost           float64
 	CaseInsensitive bool
-}
-
-// Termser can either be a pointer to a Terms or a pointer to a Lookup
-//
-// Example:
-//  err := s.AddTerms("color", &Lookup{ID: "1", Index:"my-index-100", Path:"color"})
-//  _ = err // handle err
-//  err = s.AddTerms("user.id", &Terms{ Value: []string{}})
-//  _ = err // handle err
-type Termser interface {
-	Terms() (*TermsRule, error)
 }
 
 func (t Terms) Rule() (Rule, error) {
 	return t.Terms()
 }
 func (t Terms) Terms() (*TermsRule, error) {
-	q := &TermsRule{}
-
-	q.SetValue(t.Value)
+	q := &TermsRule{
+		TermsValue: t.Values,
+	}
 	q.SetBoost(t.Boost)
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
 }
 
 func (t Terms) Type() Type {
-	return TypeTerm
+	return TypeTerms
+}
+
+type TermsLookup struct {
+	TermsID      string `json:"id,omitempty" bson:"id,omitempty"`
+	TermsIndex   string `json:"index,omitempty" bson:"index,omitempty"`
+	TermsPath    string `json:"path,omitempty" bson:"path,omitempty"`
+	TermsRouting string `json:"routing,omitempty" bson:"routing,omitempty"`
 }
 
 type TermsRule struct {
-	TermsValue           []string
-	Field                string
+	TermsValue           []string `json:"-"`
+	TermsField           string   `json:"-"`
+	TermsLookup          `json:",inline" bson:",inline"`
 	BoostParam           `json:",inline" bson:",inline"`
 	CaseInsensitiveParam `json:",inline" bson:",inline"`
 }
@@ -55,8 +69,34 @@ func (t *TermsRule) Type() Type {
 	return TypeTerms
 }
 
-func (t *TermsRule) SetValue(v []string) {
-	t.TermsValue = v
+func (t *TermsRule) SetValue(value []string) {
+	t.TermsLookup = TermsLookup{}
+	if value == nil {
+		value = []string{}
+	}
+	t.TermsValue = value
+}
+func (t *TermsRule) SetField(field string) {
+	t.TermsField = field
+}
+func (t *TermsRule) SetLookup(lookup *TermsLookup) {
+	t.SetValue([]string{})
+	if lookup == nil {
+		lookup = &TermsLookup{}
+	}
+	t.TermsLookup = *lookup
+
+}
+func (t *TermsRule) set(v Termser) error {
+	tv, err := v.Terms()
+	if err != nil {
+		return err
+	}
+	t.SetBoost(tv.Boost())
+	t.SetCaseInsensitive(tv.CaseInsensitive())
+	t.TermsLookup = tv.TermsLookup
+	t.TermsValue = tv.TermsValue
+	return nil
 }
 
 func (t TermsRule) Value() []string {
@@ -64,93 +104,36 @@ func (t TermsRule) Value() []string {
 }
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
-	if t.BoostParam.BoostValue == nil && t.CaseInsensitiveParam.CaseInsensitiveValue == nil {
-		return json.Marshal(t.TermsValue)
-	}
-	return json.Marshal(term(t))
+	panic("not imp")
 }
-func (t *TermRule) UnmarshalJSON(data []byte) error {
-
-	// TODO: bson codec
+func (t *TermsRule) UnmarshalJSON(data []byte) error {
+	t.TermsValue = []string{}
+	t.TermsLookup = TermsLookup{}
 
 	g := gjson.ParseBytes(data)
-	if g.Type == gjson.String {
-		t.TermValue = g.String()
-		t.BoostParam = BoostParam{}
-		t.CaseInsensitiveParam = CaseInsensitiveParam{}
+	err := unmarshalRule(g, t, func(key, value gjson.Result) error {
+		t.TermsField = key.Str
+		if value.IsArray() {
+			value.ForEach(func(key, value gjson.Result) bool {
+				t.TermsValue = append(t.TermsValue, value.String())
+				return true
+			})
+		} else {
+			err := json.Unmarshal([]byte(value.Raw), &t.TermsLookup)
+			if err != nil {
+				return err
+			}
+		}
 		return nil
-	}
-	var tt term
-	err := json.Unmarshal(data, &tt)
-	if err != nil {
-		return err
-	}
-	t.BoostParam = tt.BoostParam
-	t.TermValue = tt.TermValue
-	t.CaseInsensitiveParam = tt.CaseInsensitiveParam
-	return nil
-}
-
-func newTerms() TermsRule {
-	return TermsRule{
-		TermsValue: []string{},
-	}
+	})
+	return err
 }
 
 type TermsQuery struct {
-	TermValue map[string]*TermRule `json:"term,omitempty" bson:"term,omitempty"`
+	TermsRule `json:",inline" bson:",inline"`
 }
 
-func NewTermQuery() TermQuery {
-	return TermQuery{
-		TermValue: map[string]*TermRule{},
-	}
-}
-
-func (t *TermQuery) SetTerm(term map[string]Term) error {
-	t.TermValue = map[string]*TermRule{}
-	for k, v := range term {
-		err := t.AssignTerm(k, v)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (t *TermQuery) AddTerm(field string, term Term) error {
-	if t.TermValue == nil {
-		t.TermValue = map[string]*TermRule{}
-	}
-	_, exists := t.TermValue[field]
-	if exists {
-		return QueryError{
-			Field: field,
-			Err:   ErrFieldExists,
-			Type:  TypeTerm,
-		}
-	}
-	return nil
-}
-
-func (t *TermQuery) AssignTerm(field string, term Term) error {
-	if field == "" {
-		return NewQueryError(ErrFieldRequired, TypeTerm)
-	}
-
-	if t.TermValue == nil {
-		t.TermValue = map[string]*TermRule{}
-	}
-	v, err := term.Term()
-	if err != nil {
-		return NewQueryError(err, TypeTerm, field)
-	}
-
-	t.TermValue[field] = v
-	return nil
-
-}
-
-func (t *TermQuery) RemoveTerm(field string) {
-	delete(t.TermValue, field)
+func (t *TermsQuery) SetTerms(field string, value Termser) error {
+	t.TermsField = field
+	return t.set(value)
 }

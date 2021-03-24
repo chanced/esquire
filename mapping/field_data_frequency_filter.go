@@ -2,8 +2,8 @@ package mapping
 
 // FieldDataFrequencyFilter is utilized with mappings
 type FieldDataFrequencyFilter struct {
-	Min            float32 `bson:"min" json:"min"`
-	Max            float32 `bson:"max" json:"max"`
+	Min            float64 `bson:"min" json:"min"`
+	Max            float64 `bson:"max" json:"max"`
 	MinSegmentSize int     `bson:"min_segment_size" json:"min_segment_size"`
 }
 

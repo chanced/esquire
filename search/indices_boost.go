@@ -1,7 +1,7 @@
 package search
 
 // IndicesBoost boosts the _score of documents from specified indices
-type IndicesBoost map[string]float32
+type IndicesBoost map[string]float64
 
 func (ib IndicesBoost) Clone() IndicesBoost {
 	res := IndicesBoost{}
@@ -11,6 +11,6 @@ func (ib IndicesBoost) Clone() IndicesBoost {
 	return res
 }
 
-func NewIndicesBoost() map[string]float32 {
-	return map[string]float32{}
+func NewIndicesBoost() map[string]float64 {
+	return map[string]float64{}
 }

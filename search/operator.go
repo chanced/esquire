@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 type Operator string
 
 const (
@@ -43,4 +45,10 @@ func (o OperatorParam) Operator() Operator {
 // SetOperator sets the Operator to v
 func (o *OperatorParam) SetOperator(v Operator) {
 	o.OperatorValue = &v
+}
+func unmarshalOperatorParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithOperator); ok {
+		a.SetOperator(Operator(value.Str))
+	}
+	return nil
 }

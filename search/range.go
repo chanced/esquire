@@ -11,7 +11,7 @@ type Range struct {
 	LessThanOrEqualTo    interface{}
 	Format               string
 	TimeZone             string
-	Boost                float32
+	Boost                float64
 }
 
 func (r Range) Rule() (Rule, error) {

@@ -72,3 +72,25 @@ func (r *Rules) Add(typ Type, rule Rule) error {
 	*r = append(*r, Clause{Type: typ, Rule: rule})
 	return nil
 }
+
+func unmarshalRule(g gjson.Result, target Rule, fn func(key, value gjson.Result) error) error {
+	var err error
+	g.ForEach(func(key, value gjson.Result) bool {
+		var isParam bool
+		isParam, err = unmarshalParam(Param(key.Str), target, value)
+		if err != nil {
+			return false
+		}
+		if isParam {
+			return true
+		}
+		if fn != nil {
+			if err != nil {
+				return false
+			}
+
+		}
+		return true
+	})
+	return err
+}

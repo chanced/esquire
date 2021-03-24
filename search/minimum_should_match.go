@@ -1,5 +1,7 @@
 package search
 
+import "github.com/tidwall/gjson"
+
 // WithMinimumShouldMatch is a query with the minimum_should_match param
 //
 // Examples of possible values:
@@ -71,4 +73,10 @@ func (msm *MinimumShouldMatchParam) SetMinimumShouldMatch(v string) {
 	if msm.MinimumShouldMatch() != v {
 		msm.MimimumShouldMatchValue = v
 	}
+}
+func unmarshalMinShouldMatchParam(value gjson.Result, target interface{}) error {
+	if a, ok := target.(WithMinimumShouldMatch); ok {
+		a.SetMinimumShouldMatch(value.String())
+	}
+	return nil
 }
