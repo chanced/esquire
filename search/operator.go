@@ -4,6 +4,10 @@ import "github.com/tidwall/gjson"
 
 type Operator string
 
+func (o Operator) String() string { return string(o) }
+
+const DefaultOperator = Or
+
 const (
 	// Or Operator
 	//
@@ -39,7 +43,7 @@ func (o OperatorParam) Operator() Operator {
 	if o.OperatorValue != nil {
 		return *o.OperatorValue
 	}
-	return Or
+	return DefaultOperator
 }
 
 // SetOperator sets the Operator to v
@@ -51,4 +55,12 @@ func unmarshalOperatorParam(value gjson.Result, target interface{}) error {
 		a.SetOperator(Operator(value.Str))
 	}
 	return nil
+}
+func marshalOperatorParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithOperator); ok {
+		if b.Operator() != DefaultOperator {
+			data[paramOperator] = b.Operator()
+		}
+	}
+	return data, nil
 }

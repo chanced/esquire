@@ -89,7 +89,7 @@ func unmarshalFuzzinessParam(data gjson.Result, target interface{}) error {
 	return nil
 }
 
-func marshalFuzzinessParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalFuzzinessParam(data M, source interface{}) (M, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.Fuzziness() != DefaultFuzziness {
 			data[paramFuzziness] = a.Fuzziness()
@@ -103,7 +103,7 @@ func unmarshalFuzzyRewriteParam(data gjson.Result, target interface{}) error {
 	}
 	return nil
 }
-func marshalFuzzyRewriteParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalFuzzyRewriteParam(data M, source interface{}) (M, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.FuzzyRewrite() != a.DefaultFuzzyRewrite() {
 			data[paramFuzzyRewrite] = a.FuzzyRewrite()

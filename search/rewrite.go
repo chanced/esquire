@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultRewrite = RewriteConstantScore
+
 // Rewrite as defined by:
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-term-rewrite.html
@@ -105,13 +107,9 @@ type RewriteParam struct {
 	RewriteValue *Rewrite `json:"rewrite,omitempty" bson:"rewrite,omitempty"`
 }
 
-func (r RewriteParam) Default() Rewrite {
-	return RewriteConstantScore
-}
-
 func (r RewriteParam) Rewrite() Rewrite {
 	if r.RewriteValue == nil {
-		r.Default()
+		return DefaultRewrite
 	}
 	return *r.RewriteValue
 }
@@ -125,4 +123,12 @@ func unmarshalRewriteParam(value gjson.Result, target interface{}) error {
 		a.SetRewrite(Rewrite(value.String()))
 	}
 	return nil
+}
+func marshalRewriteParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithRewrite); ok {
+		if b.Rewrite() != DefaultRewrite {
+			data[paramRewrite] = b.Rewrite()
+		}
+	}
+	return data, nil
 }

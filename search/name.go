@@ -7,6 +7,8 @@ type WithName interface {
 	SetName(string)
 }
 
+const DefaultName = ""
+
 // NameParam is a mixin that adds the _name parameter
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#named-queries
@@ -27,4 +29,13 @@ func unmarshalNameParam(value gjson.Result, target interface{}) error {
 		a.SetName(value.String())
 	}
 	return nil
+}
+
+func marshalNameParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithName); ok {
+		if b.Name() != DefaultName {
+			data[paramName] = b.Name()
+		}
+	}
+	return data, nil
 }

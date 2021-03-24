@@ -14,7 +14,7 @@ const (
 	paramLenient                         = "lenient"
 	paramMaxBoost                        = "max_boost"
 	ParamMaxExpansions                   = "max_expansions"
-	paramMinShouldMatch                  = "minimum_should_match"
+	paramMinimumShouldMatch              = "minimum_should_match"
 	paramName                            = "_name"
 	paramOperator                        = "operator"
 	paramPrefixLength                    = "prefix_length"
@@ -27,27 +27,27 @@ const (
 	// ParamQuery                           Param = "query"
 )
 
-var paramMarshalers = map[string]func(data map[string]interface{}, source interface{}) (map[string]interface{}, error){
+var paramMarshalers = map[string]func(data M, source interface{}) (M, error){
 	paramBoost:                           marshalBoostParam,
 	paramAnalyzer:                        marshalAnalyzerParam,
 	paramFormat:                          marshalFormatParam,
 	paramCaseInsensitive:                 marshalCaseInsensitiveParam,
 	paramFuzziness:                       marshalFuzzinessParam,
 	paramFuzzyRewrite:                    marshalFuzzyRewriteParam,
-	paramFuzzyTranspositions:             unmarshalFuzzyTranspositionsParam,
-	paramLenient:                         unmarshalLenientParam,
-	paramMaxBoost:                        unmarshalMaxBoostParam,
-	paramMinShouldMatch:                  unmarshalMinShouldMatchParam,
-	paramName:                            unmarshalNameParam,
-	paramOperator:                        unmarshalOperatorParam,
-	paramPrefixLength:                    unmarshalPrefixLengthParam,
-	paramRelation:                        unmarshalRelationParam,
-	paramRewrite:                         unmarshalRewriteParam,
-	paramZeroTermsQuery:                  unmarshalZeroTermsQueryParam,
-	paramTranspositions:                  unmarshalTranspositionsParam,
-	paramTimeZone:                        unmarshalTimeZoneParam,
-	paramSlop:                            unmarshalSlopParam,
-	paramAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
+	paramFuzzyTranspositions:             marshalFuzzyTranspositionsParam,
+	paramLenient:                         marshalLenientParam,
+	paramMaxBoost:                        marshalMaxBoostParam,
+	paramMinimumShouldMatch:              marshalMinimumShouldMatchParam,
+	paramName:                            marshalNameParam,
+	paramOperator:                        marshalOperatorParam,
+	paramPrefixLength:                    marshalPrefixLengthParam,
+	paramRelation:                        marshalRelationParam,
+	paramRewrite:                         marshalRewriteParam,
+	paramZeroTermsQuery:                  marshalZeroTermsQueryParam,
+	paramTranspositions:                  marshalTranspositionsParam,
+	paramTimeZone:                        marshalTimeZoneParam,
+	paramSlop:                            marshalSlopParam,
+	paramAutoGenerateSynonymsPhraseQuery: marshalAutoGenerateSynonymsPhraseQueryParam,
 }
 
 var paramUnmarshalers = map[string]func(data gjson.Result, target interface{}) error{
@@ -60,7 +60,7 @@ var paramUnmarshalers = map[string]func(data gjson.Result, target interface{}) e
 	paramFuzzyTranspositions:             unmarshalFuzzyTranspositionsParam,
 	paramLenient:                         unmarshalLenientParam,
 	paramMaxBoost:                        unmarshalMaxBoostParam,
-	paramMinShouldMatch:                  unmarshalMinShouldMatchParam,
+	paramMinimumShouldMatch:              unmarshalMinimumShouldMatchParam,
 	paramName:                            unmarshalNameParam,
 	paramOperator:                        unmarshalOperatorParam,
 	paramPrefixLength:                    unmarshalPrefixLengthParam,
@@ -78,4 +78,15 @@ func unmarshalParam(param string, target interface{}, value gjson.Result) (bool,
 		return true, unmarshal(value, target)
 	}
 	return false, nil
+}
+
+func marshalParams(data M, source interface{}) (M, error) {
+	var err error
+	for _, marshal := range paramMarshalers {
+		data, err = marshal(data, source)
+		if err != nil {
+			return data, err
+		}
+	}
+	return data, err
 }

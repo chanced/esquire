@@ -73,6 +73,10 @@ func (r *Rules) Add(typ Type, rule Rule) error {
 	return nil
 }
 
+func marshalRuleParams(data M, source Rule) (M, error) {
+	return marshalParams(data, source)
+}
+
 func unmarshalRule(g gjson.Result, target Rule, fn func(key, value gjson.Result) error) error {
 	var err error
 	g.ForEach(func(key, value gjson.Result) bool {

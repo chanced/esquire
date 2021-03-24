@@ -21,22 +21,20 @@ func TestTerms(t *testing.T) {
 	assert.NoError(err)
 	var q1 search.Query
 
-	fmt.Println("json1:\n\n", string(json1), "\n-----------")
 	err = json.Unmarshal(json1, &q1)
 	assert.NoError(err)
-	assert.Equal(float64(1), q1.TermsQuery.Boost())
-	assert.Equal([]string{"kimchy", "elkbee"}, q1.TermsQuery.TermsValue)
+	assert.Equal(float64(1.2), q1.TermsQuery.Boost())
+	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, q1.TermsQuery.TermsValue)
 	assert.Equal("user.id", q1.TermsField)
-
+	assert.True(q1.CaseInsensitive())
 	json1Res, err := json.MarshalIndent(q1.TermsQuery, "", "  ")
 	assert.NoError(err)
 	var res1 search.TermsRule
-
-	fmt.Println("json1Res:\n", string(json1Res), "\n-----------------")
 	err = json.Unmarshal(json1Res, &res1)
 	assert.NoError(err)
-	assert.Equal(float64(1), res1.Boost())
-	assert.Equal([]string{"kimchy", "elkbee"}, res1.TermsValue)
+	assert.Equal(float64(1.2), res1.Boost())
+	assert.True(res1.CaseInsensitive())
+	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, res1.TermsValue)
 	assert.Equal("user.id", res1.TermsField)
 
 	j2, err := os.Open("./testdata/terms_2.json")

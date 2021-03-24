@@ -2,7 +2,12 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultLenient = false
+
 // WithLenient is a query with the lenient param
+//
+// Lenient determines whether format-based errors, such as providing a text
+// query value for a numeric field, are ignored. Defaults to false.
 type WithLenient interface {
 	// Lenient determines whether format-based errors, such as providing a text
 	// query value for a numeric field, are ignored. Defaults to false.
@@ -16,6 +21,8 @@ type WithLenient interface {
 // if true, format-based errors, such as providing a text query value for a
 // numeric field, are ignored. Defaults to false.
 type LenientParam struct {
+	// Lenient determines whether format-based errors, such as providing a text
+	// query value for a numeric field, are ignored. Defaults to false.
 	LenientValue *bool `json:"lenient,omitempty" bson:"lenient,omitempty"`
 }
 
@@ -25,7 +32,7 @@ func (l LenientParam) Lenient() bool {
 	if l.LenientValue != nil {
 		return *l.LenientValue
 	}
-	return false
+	return DefaultLenient
 }
 
 // SetLenient sets Lenient to v
@@ -37,4 +44,12 @@ func unmarshalLenientParam(value gjson.Result, target interface{}) error {
 		a.SetLenient(value.Bool())
 	}
 	return nil
+}
+func marshalLenientParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithLenient); ok {
+		if b.Lenient() != DefaultLenient {
+			data[paramLenient] = b.Lenient()
+		}
+	}
+	return data, nil
 }

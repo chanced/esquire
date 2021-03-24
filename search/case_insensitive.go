@@ -47,7 +47,7 @@ func unmarshalCaseInsensitiveParam(value gjson.Result, target interface{}) error
 	return nil
 }
 
-func marshalCaseInsensitiveParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalCaseInsensitiveParam(data M, source interface{}) (M, error) {
 	if b, ok := source.(WithCaseInsensitive); ok {
 		if b.CaseInsensitive() != DefaultCaseInsensitive {
 			data[paramCaseInsensitive] = b.CaseInsensitive()

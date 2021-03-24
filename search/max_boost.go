@@ -6,6 +6,8 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+const DefaultMaxBoost = math.MaxFloat32
+
 type WithMaxBoost interface {
 	MaxBoost() float64
 	SetMaxBoost(v float64)
@@ -17,7 +19,7 @@ type MaxBoostParam struct {
 
 func (mb MaxBoostParam) MaxBoost() float64 {
 	if mb.MaxBoostValue == nil {
-		return math.MaxFloat32
+		return DefaultMaxBoost
 	}
 	return *mb.MaxBoostValue
 }
@@ -32,4 +34,12 @@ func unmarshalMaxBoostParam(value gjson.Result, target interface{}) error {
 		a.SetMaxBoost(value.Float())
 	}
 	return nil
+}
+func marshalMaxBoostParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithMaxBoost); ok {
+		if b.MaxBoost() != DefaultMaxBoost {
+			data[paramMaxBoost] = b.MaxBoost()
+		}
+	}
+	return data, nil
 }

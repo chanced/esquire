@@ -441,7 +441,7 @@ func unmarshalFormatParam(value gjson.Result, target interface{}) error {
 	return nil
 }
 
-func marshalFormatParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalFormatParam(data M, source interface{}) (M, error) {
 	if b, ok := source.(WithFormat); ok {
 		if b.Format() != DefaultFormat {
 			data[paramBoost] = b.Format()

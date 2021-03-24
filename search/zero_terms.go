@@ -2,7 +2,13 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultZeroTermsQuery = ZeroTermsQueryNone
+
 type ZeroTermsQuery string
+
+func (ztq ZeroTermsQuery) String() string {
+	return string(ztq)
+}
 
 const (
 	// ZeroTermsQueryNone - No documents are returned if the analyzer removes all
@@ -31,7 +37,7 @@ func (ztq ZeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
 	if ztq.ZeroTermsQueryValue != nil {
 		return *ztq.ZeroTermsQueryValue
 	}
-	return ZeroTermsQueryNone
+	return DefaultZeroTermsQuery
 }
 
 func (ztq *ZeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
@@ -42,4 +48,12 @@ func unmarshalZeroTermsQueryParam(value gjson.Result, target interface{}) error 
 		a.SetZeroTermsQuery(ZeroTermsQuery(value.Str))
 	}
 	return nil
+}
+func marshalZeroTermsQueryParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithZeroTermsQuery); ok {
+		if b.ZeroTermsQuery() != DefaultZeroTermsQuery {
+			data[paramZeroTermsQuery] = b.ZeroTermsQuery()
+		}
+	}
+	return data, nil
 }

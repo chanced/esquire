@@ -108,9 +108,8 @@ func (t TermsRule) Value() []string {
 }
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
-
-	var err error
 	var v map[string]interface{}
+
 	if t.TermsField != "" {
 		if !t.TermsLookup.lookupIsEmpty() {
 			v = map[string]interface{}{
@@ -124,11 +123,12 @@ func (t TermsRule) MarshalJSON() ([]byte, error) {
 	} else {
 		v = map[string]interface{}{}
 	}
-
+	var err error
+	v, err = marshalRuleParams(v, &t)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return json.Marshal(v)
 }
 
 func (t *TermsRule) UnmarshalJSON(data []byte) error {

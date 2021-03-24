@@ -4,17 +4,56 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-const DefaultBoost = float64(0)
+const DefaultBoost = float64(1)
+
+// WithBoost is an interface with the Boost and SetBoost methods
+//
+// Boost is a floating point number used to decrease or increase the relevance
+// scores of a query. Defaults to 1.0.
+//
+// You can use the boost parameter to adjust relevance scores for searches
+// containing two or more queries.
+//
+// Boost values are relative to the default value of 1.0. A boost value between
+// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
+// the relevance score.
 
 type WithBoost interface {
+	// Boost is a floating point number used to decrease or increase the relevance
+	// scores of a query. Defaults to 1.0.
+	//
+	// You can use the boost parameter to adjust relevance scores for searches
+	// containing two or more queries.
+	//
+	// Boost values are relative to the default value of 1.0. A boost value between
+	// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
+	// the relevance score.
 	Boost() float64
 	SetBoost(v float64)
 }
 
 type BoostParam struct {
+	// BoostValue is a floating point number used to decrease or increase the relevance
+	// scores of a query. Defaults to 1.0.
+	//
+	// You can use the boost parameter to adjust relevance scores for searches
+	// containing two or more queries.
+	//
+	// Boost values are relative to the default value of 1.0. A boost value between
+	// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
+	// the relevance score.
 	BoostValue *float64 `bson:"boost,omitempty" json:"boost,omitempty"`
 }
 
+// Boost is a floating point number used to decrease or increase the relevance
+// scores of a query. Defaults to 1.0.
+//
+// You can use the boost parameter to adjust relevance scores for searches
+// containing two or more queries.
+//
+// Boost values are relative to the default value of 1.0. A boost value between
+// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
+// the relevance score.
 func (b BoostParam) Boost() float64 {
 	if b.BoostValue == nil {
 		return DefaultBoost
@@ -22,13 +61,14 @@ func (b BoostParam) Boost() float64 {
 	return *b.BoostValue
 }
 
+// SetBoost sets Boost to v
 func (b *BoostParam) SetBoost(v float64) {
 	if b.Boost() != v {
 		b.BoostValue = &v
 	}
 }
 
-func marshalBoostParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalBoostParam(data M, source interface{}) (M, error) {
 	if b, ok := source.(WithBoost); ok {
 		if b.Boost() != DefaultBoost {
 			data[paramBoost] = b.Boost()

@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultAutoGenerateSynonymsPhraseQuery = true
+
 // WithAutoGenerateSynonymsPhraseQuery is an interface for the query mixin that
 // adds auto_generate_synonyms_phrase_query param
 type WithAutoGenerateSynonymsPhraseQuery interface {
@@ -20,7 +22,7 @@ type AutoGenerateSynonymsPhraseQueryParam struct {
 // automatically created for multi-term synonyms. Defaults to true.
 func (agspq AutoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
 	if agspq.AutoGenerateSynonymsPhraseQueryValue == nil {
-		return true
+		return DefaultAutoGenerateSynonymsPhraseQuery
 	}
 	return *agspq.AutoGenerateSynonymsPhraseQueryValue
 }
@@ -36,4 +38,12 @@ func unmarshalAutoGenerateSynonymsPhraseQueryParam(value gjson.Result, target in
 		a.SetAutoGenerateSynonymsPhraseQuery(value.Bool())
 	}
 	return nil
+}
+func marshalAutoGenerateSynonymsPhraseQueryParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithAutoGenerateSynonymsPhraseQuery); ok {
+		if b.AutoGenerateSynonymsPhraseQuery() != DefaultAutoGenerateSynonymsPhraseQuery {
+			data[paramAutoGenerateSynonymsPhraseQuery] = b.AutoGenerateSynonymsPhraseQuery()
+		}
+	}
+	return data, nil
 }

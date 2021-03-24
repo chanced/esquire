@@ -4,6 +4,12 @@ import "github.com/tidwall/gjson"
 
 type Relation string
 
+func (r Relation) String() string {
+	return string(r)
+}
+
+const DefaultRelation = RelationIntersects
+
 const (
 	//RelationIntersects matches documents with a range field value that
 	//intersects the query’s range.
@@ -29,7 +35,7 @@ type WithRelation interface {
 // Relation indicates how the range query matches values for range fields.
 func (r RelationParam) Relation() Relation {
 	if r.RelationValue == "" {
-		return RelationIntersects
+		return DefaultRelation
 	}
 	return r.RelationValue
 }
@@ -45,4 +51,13 @@ func unmarshalRelationParam(value gjson.Result, target interface{}) error {
 		a.SetRelation(Relation(value.String()))
 	}
 	return nil
+}
+
+func marshalRelationParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithRelation); ok {
+		if b.Relation() != DefaultRelation {
+			data[paramRelation] = b.Relation()
+		}
+	}
+	return data, nil
 }

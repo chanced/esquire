@@ -41,7 +41,7 @@ func (a *AnalyzerParam) SetAnalyzer(v string) {
 	}
 }
 
-func marshalAnalyzerParam(data map[string]interface{}, source interface{}) (map[string]interface{}, error) {
+func marshalAnalyzerParam(data M, source interface{}) (M, error) {
 	if a, ok := source.(WithAnalyzer); ok {
 		if a.Analyzer() != DefaultAnalyzer {
 			data[paramAnalyzer] = a.Analyzer()

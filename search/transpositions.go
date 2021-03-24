@@ -2,6 +2,8 @@ package search
 
 import "github.com/tidwall/gjson"
 
+const DefaultTranspositions = true
+
 // WithTranspositions is an interface for queries with the transpositions param
 //
 // (Optional, Boolean) Indicates whether edits include transpositions of two
@@ -22,7 +24,7 @@ type TranspositionsParam struct {
 // adjacent characters (ab → ba). Defaults to true.
 func (t TranspositionsParam) Transpositions() bool {
 	if t.TranspositionsValue == nil {
-		return true
+		return DefaultTranspositions
 	}
 	return *t.TranspositionsValue
 }
@@ -36,4 +38,12 @@ func unmarshalTranspositionsParam(value gjson.Result, target interface{}) error 
 		a.SetTranspositions(value.Bool())
 	}
 	return nil
+}
+func marshalTranspositionsParam(data M, source interface{}) (M, error) {
+	if b, ok := source.(WithTranspositions); ok {
+		if b.Transpositions() != DefaultTranspositions {
+			data[paramTranspositions] = b.Transpositions()
+		}
+	}
+	return data, nil
 }
