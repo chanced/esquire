@@ -110,7 +110,7 @@ type TermQuery struct {
 }
 
 func (t TermQuery) MarshalJSON() ([]byte, error) {
-	if t.HasTermRule() {
+	if !t.HasTermRule() {
 		return jsonutil.Nil, nil
 	}
 	m := M{}
