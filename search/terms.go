@@ -62,11 +62,11 @@ func (t TermsLookup) lookupIsEmpty() bool {
 }
 
 type TermsRule struct {
-	TermsLookup          `json:"-" bson:"-"`
-	TermsValue           []string `json:"-" bson:"-"`
-	TermsField           string   `json:"-" bson:"-"`
-	BoostParam           `json:",inline" bson:",inline"`
-	CaseInsensitiveParam `json:",inline" bson:",inline"`
+	TermsLookup
+	TermsValue []string
+	TermsField string
+	boostParam
+	caseInsensitiveParam
 }
 
 func (t *TermsRule) Type() Type {
@@ -110,19 +110,20 @@ func (t TermsRule) Value() []string {
 func (t TermsRule) MarshalJSON() ([]byte, error) {
 	var v map[string]interface{}
 
-	if t.TermsField != "" {
-		if !t.TermsLookup.lookupIsEmpty() {
-			v = map[string]interface{}{
-				t.TermsField: t.TermsLookup,
-			}
-		} else {
-			v = map[string]interface{}{
-				t.TermsField: t.TermsValue,
-			}
+	if t.TermsField == "" {
+		return []byte{}, nil
+	}
+
+	if !t.TermsLookup.lookupIsEmpty() {
+		v = map[string]interface{}{
+			t.TermsField: t.TermsLookup,
 		}
 	} else {
-		v = map[string]interface{}{}
+		v = map[string]interface{}{
+			t.TermsField: t.TermsValue,
+		}
 	}
+
 	var err error
 	v, err = marshalRuleParams(v, &t)
 	if err != nil {
@@ -165,23 +166,7 @@ func (t TermsRule) MarshalBSON() ([]byte, error) {
 }
 
 type TermsQuery struct {
-	*TermsRule `json:",inline" bson:",inline"`
-}
-
-func (t *TermsQuery) UnmarshalJSON(data []byte) error {
-	t.TermsRule = &TermsRule{}
-	g := gjson.ParseBytes(data)
-	err := unmarshalRule(g, t.TermsRule, func(key, value gjson.Result) error {
-		t.TermsRule.TermsField = key.Str
-		if value.IsObject() {
-			return json.Unmarshal([]byte(value.Raw), &t.TermsRule.TermsLookup)
-		}
-		if value.IsArray() {
-			return json.Unmarshal([]byte(value.Raw), &t.TermsRule.TermsValue)
-		}
-		return nil
-	})
-	return err
+	TermsRule `json:",inline" bson:",inline"`
 }
 
 func (t TermsQuery) SetTerms(field string, value Termser) error {

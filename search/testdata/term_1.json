@@ -1,0 +1,9 @@
+{
+  "term": {
+    "user.id": {
+      "value": "chanced",
+      "boost": 0.2,
+      "case_insensitive": true
+    }
+  }
+}

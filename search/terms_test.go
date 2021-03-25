@@ -26,7 +26,7 @@ func TestTerms(t *testing.T) {
 	assert.Equal(float64(1.2), q1.TermsQuery.Boost())
 	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, q1.TermsQuery.TermsValue)
 	assert.Equal("user.id", q1.TermsField)
-	assert.True(q1.CaseInsensitive())
+	assert.True(q1.TermsQuery.CaseInsensitive())
 	json1Res, err := json.MarshalIndent(q1.TermsQuery, "", "  ")
 	assert.NoError(err)
 	var res1 search.TermsRule

@@ -5,13 +5,13 @@ import "github.com/chanced/dynamic"
 // Range returns documents that contain terms within a provided range.
 type Range struct {
 	Field                string
-	GreaterThan          interface{}
-	GreaterThanOrEqualTo interface{}
-	LessThan             interface{}
-	LessThanOrEqualTo    interface{}
+	GreaterThan          dynamic.StringNumberOrTime
+	GreaterThanOrEqualTo dynamic.StringNumberOrTime
+	LessThan             dynamic.StringNumberOrTime
+	LessThanOrEqualTo    dynamic.StringNumberOrTime
 	Format               string
 	TimeZone             string
-	Boost                float64
+	Boost                dynamic.Number
 }
 
 func (r Range) Rule() (Rule, error) {
@@ -36,7 +36,9 @@ func (r Range) Range() (*RangeRule, error) {
 		return q, err
 	}
 	q.SetFormat(r.Format)
-	q.SetBoost(r.Boost)
+	if b, ok := r.Boost.Float(); ok {
+		q.SetBoost(b)
+	}
 	q.SetTimeZone(r.TimeZone)
 	return q, nil
 }
@@ -52,7 +54,7 @@ type RangeRule struct {
 	LessThanOrEqualToValue    *dynamic.StringNumberOrTime `json:"lte,omitempty" bson:"lte,omitempty"`
 	FormatParam               `json:",inline" bson:",inline"`
 	TimeZoneParam             `json:",inline" bson:",inline"`
-	BoostParam                `json:",inline" bson:",inline"`
+	boostParam                `json:",inline" bson:",inline"`
 }
 
 func (r *RangeRule) GreaterThan() *dynamic.StringNumberOrTime {
@@ -72,7 +74,8 @@ func (r *RangeRule) LessThanOrEqualTo() *dynamic.StringNumberOrTime {
 
 func (r *RangeRule) SetGreaterThan(value interface{}) error {
 	r.GreaterThanValue = nil
-	v, err := dynamic.NewStringNumberOrTime(value)
+	v := dynamic.NewStringNumberOrTimePtr()
+	err := v.Set(value)
 	if err != nil {
 		return err
 	}
@@ -85,7 +88,8 @@ func (r *RangeRule) SetGreaterThan(value interface{}) error {
 
 func (r *RangeRule) SetGreaterThanOrEqualTo(value interface{}) error {
 	r.GreaterThanOrEqualToValue = nil
-	v, err := dynamic.NewStringNumberOrTime(value)
+	v := dynamic.NewStringNumberOrTimePtr(value)
+	err := v.Set(value)
 	if err != nil {
 		return err
 	}
@@ -98,7 +102,8 @@ func (r *RangeRule) SetGreaterThanOrEqualTo(value interface{}) error {
 
 func (r *RangeRule) SetLessThan(value interface{}) error {
 	r.LessThanValue = nil
-	v, err := dynamic.NewStringNumberOrTime(value)
+	v := dynamic.NewStringNumberOrTimePtr()
+	err := v.Set(value)
 	if err != nil {
 		return err
 	}
@@ -111,7 +116,8 @@ func (r *RangeRule) SetLessThan(value interface{}) error {
 
 func (r *RangeRule) SetLessThanOrEqualTo(value interface{}) error {
 	r.LessThanOrEqualToValue = nil
-	v, err := dynamic.NewStringNumberOrTime(value)
+	v := dynamic.NewStringNumberOrTimePtr()
+	err := v.Set(value)
 	if err != nil {
 		return err
 	}

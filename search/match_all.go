@@ -20,7 +20,7 @@ func (ma MatchAll) MatchAll() *MatchAllRule {
 }
 
 type MatchAllRule struct {
-	BoostParam `json:",inline" bson:",inline"`
+	boostParam `json:",inline" bson:",inline"`
 }
 
 func (MatchAllRule) Type() Type {

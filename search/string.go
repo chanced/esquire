@@ -34,16 +34,13 @@ func (s Strings) Terms() (*TermsRule, error) {
 	return q, nil
 }
 
-type DynamicNumber dynamic.Number
+type number dynamic.Number
 
 // Number returns a new DynamicNumber It panics if v can not be set to a dynamic.Number
 //
 // see https://github.com/chanced/dynamic/blob/main/number.go
-func Number(v interface{}) *DynamicNumber {
-	n, err := dynamic.NewNumber(v)
-	if err != nil {
-		panic(err)
-	}
-	dn := DynamicNumber(*n)
+func Number(v interface{}) *number {
+	n := dynamic.NewNumber(v)
+	dn := number(n)
 	return &dn
 }

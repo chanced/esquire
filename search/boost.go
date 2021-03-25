@@ -32,8 +32,8 @@ type WithBoost interface {
 	SetBoost(v float64)
 }
 
-type BoostParam struct {
-	// BoostValue is a floating point number used to decrease or increase the relevance
+type boostParam struct {
+	// boostValue is a floating point number used to decrease or increase the relevance
 	// scores of a query. Defaults to 1.0.
 	//
 	// You can use the boost parameter to adjust relevance scores for searches
@@ -42,7 +42,7 @@ type BoostParam struct {
 	// Boost values are relative to the default value of 1.0. A boost value between
 	// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 	// the relevance score.
-	BoostValue *float64 `bson:"boost,omitempty" json:"boost,omitempty"`
+	boostValue *float64
 }
 
 // Boost is a floating point number used to decrease or increase the relevance
@@ -54,17 +54,17 @@ type BoostParam struct {
 // Boost values are relative to the default value of 1.0. A boost value between
 // 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 // the relevance score.
-func (b BoostParam) Boost() float64 {
-	if b.BoostValue == nil {
+func (b boostParam) Boost() float64 {
+	if b.boostValue == nil {
 		return DefaultBoost
 	}
-	return *b.BoostValue
+	return *b.boostValue
 }
 
 // SetBoost sets Boost to v
-func (b *BoostParam) SetBoost(v float64) {
+func (b *boostParam) SetBoost(v float64) {
 	if b.Boost() != v {
-		b.BoostValue = &v
+		b.boostValue = &v
 	}
 }
 

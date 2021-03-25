@@ -10,7 +10,7 @@ package search
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
 type FunctionScore struct {
-	Query         Query `json:"query,omitempty" bson:"query,omitmepty"`
-	BoostParam    `json:",inline" bson:",inline"`
-	MaxBoostParam `json:",inline" bson:",inline"`
+	Query Query `json:"query,omitempty" bson:"query,omitmepty"`
+	boostParam
+	maxBoostParam
 }

@@ -2,15 +2,15 @@ package search
 
 import (
 	"encoding/json"
-	"fmt"
 
+	"github.com/chanced/dynamic"
+	"github.com/chanced/picker/internal/jsonutil"
 	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
 )
 
 type Term struct {
 	Value           string
-	Boost           float64
+	Boost           dynamic.Number
 	CaseInsensitive bool
 }
 
@@ -23,7 +23,9 @@ func (t Term) Term() (*TermRule, error) {
 		return q, ErrValueRequired
 	}
 	q.SetValue(t.Value)
-	q.SetBoost(t.Boost)
+	if b, ok := t.Boost.Float(); ok {
+		q.SetBoost(b)
+	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
 }
@@ -47,28 +49,31 @@ func (t Term) Type() Type {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
 type TermRule struct {
-	TermValue            string `json:"value" bson:"value"`
-	BoostParam           `json:",inline" bson:",inline"`
-	CaseInsensitiveParam `json:",inline" bson:",inline"`
+	TermValue string
+	boostParam
+	caseInsensitiveParam
+}
+
+func (t TermRule) HasTermRule() bool {
+	return t.TermValue != ""
 }
 
 func (t *TermRule) UnmarshalJSON(data []byte) error {
+	t.TermValue = ""
+	t.boostParam = boostParam{}
+	t.caseInsensitiveParam = caseInsensitiveParam{}
+
 	g := gjson.ParseBytes(data)
 	if g.Type == gjson.String {
-
 		t.TermValue = g.String()
-		t.BoostParam = BoostParam{}
-		t.CaseInsensitiveParam = CaseInsensitiveParam{}
 		return nil
 	}
-	var tt term
-	err := json.Unmarshal(data, &tt)
-	if err != nil {
-		return err
-	}
-	t.BoostParam = tt.BoostParam
-	t.TermValue = tt.TermValue
-	t.CaseInsensitiveParam = tt.CaseInsensitiveParam
+	unmarshalRule(g, t, func(key, value gjson.Result) error {
+		if key.Str == "value" {
+			t.TermValue = value.Str
+		}
+		return nil
+	})
 	return nil
 }
 func (t *TermRule) Type() Type {
@@ -101,40 +106,39 @@ type term TermRule
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
 type TermQuery struct {
 	TermField string
-	TermRule  *TermRule
+	TermRule
 }
 
 func (t TermQuery) MarshalJSON() ([]byte, error) {
-	tr := t.TermRule
-	if tr == nil {
-		tr = &TermRule{}
+	if t.HasTermRule() {
+		return jsonutil.Nil, nil
 	}
-	return sjson.SetBytes([]byte{}, t.TermField, tr)
+	m := M{}
+	m, err := marshalParams(m, &t)
+	if err != nil {
+		return nil, err
+	}
+	m["value"] = t.TermValue
+	return json.Marshal(m)
 }
 
 func (t *TermQuery) UnmarshalJSON(data []byte) error {
-	fmt.Println("inside term")
 	t.TermField = ""
-	t.TermRule = nil
-	g := gjson.ParseBytes(data)
-	var val gjson.Result
-	g.ForEach(func(key, value gjson.Result) bool {
-		t.TermField = key.Str
-		val = value
-		return false
-	})
-	t.TermRule = &TermRule{}
-	switch val.Type {
-	case gjson.JSON:
-		err := unmarshalRule(val, t.TermRule, func(key, value gjson.Result) error {
-			t.TermRule.SetValue(value.Str)
-			return nil
-		})
-		return err
-	case gjson.String:
-		t.TermRule.SetValue(val.Str)
-	}
+	t.TermRule = TermRule{}
 
+	m := map[string]json.RawMessage{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		t.TermField = k
+		err := json.Unmarshal(v, &t.TermRule)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
 	return nil
 }
 
@@ -151,10 +155,10 @@ func (t *TermQuery) SetTerm(field string, term *Term) error {
 		return err
 	}
 	t.TermField = field
-	t.TermRule = r
+	t.TermRule = *r
 	return nil
 }
 func (t *TermQuery) RemoveTerm() {
 	t.TermField = ""
-	t.TermRule = nil
+	t.TermRule = TermRule{}
 }

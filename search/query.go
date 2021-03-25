@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/picker/internal/jsonutil"
+)
+
 // Query defines the search definition using the ElasticSearch Query DSL
 //
 // Elasticsearch provides a full Query DSL (Domain Specific Language) based on
@@ -20,12 +26,56 @@ package search
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	MatchQuery   `json:"match" bson:"match"`
-	ScriptQuery  `json:"script" bson:"script"`
-	ExistsQuery  `json:"exists" bson:"exists"`
-	BooleanQuery `json:"bool" bson:"bool"`
-	TermQuery    `json:"term" bson:"term"`
-	TermsQuery   `json:"terms" bson:"terms"`
+	MatchQuery
+	ScriptQuery
+	ExistsQuery
+	BooleanQuery
+	TermQuery
+	TermsQuery
+}
+
+func (q *Query) UnmarshalJSON(data []byte) error {
+	m := map[string]json.RawMessage{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	if term, ok := m["term"]; ok {
+		err = json.Unmarshal(term, &q.TermQuery)
+		if err != nil {
+			return err
+		}
+	}
+
+	if terms, ok := m["terms"]; ok {
+		err = json.Unmarshal(terms, &q.TermsQuery)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (q Query) MarshalJSON() ([]byte, error) {
+	m := map[string]json.RawMessage{}
+	terms, err := q.TermsQuery.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	if jsonutil.IsNotNil(terms) {
+		m["terms"] = json.RawMessage(terms)
+	}
+
+	term, err := q.TermQuery.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	if jsonutil.IsNotNil(term) {
+		m["term"] = json.RawMessage(term)
+	}
+
+	return json.Marshal(m)
 }
 
 func (q *Query) Clone() *Query {

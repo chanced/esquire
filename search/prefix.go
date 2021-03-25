@@ -25,7 +25,7 @@ func (p Prefix) Query() (*PrefixRule, error) {
 type PrefixRule struct {
 	Value                string `json:"value" bson:"value"`
 	RewriteParam         `json:",inline" bson:",inline"`
-	CaseInsensitiveParam `json:",inline" bson:",inline"`
+	caseInsensitiveParam `json:",inline" bson:",inline"`
 }
 
 func (p PrefixRule) Type() Type {

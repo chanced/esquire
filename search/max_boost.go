@@ -13,20 +13,20 @@ type WithMaxBoost interface {
 	SetMaxBoost(v float64)
 }
 
-type MaxBoostParam struct {
-	MaxBoostValue *float64 `json:"max_boost,omitempty" bson:"max_boost,omitempty"`
+type maxBoostParam struct {
+	maxBoostValue *float64
 }
 
-func (mb MaxBoostParam) MaxBoost() float64 {
-	if mb.MaxBoostValue == nil {
+func (mb maxBoostParam) MaxBoost() float64 {
+	if mb.maxBoostValue == nil {
 		return DefaultMaxBoost
 	}
-	return *mb.MaxBoostValue
+	return *mb.maxBoostValue
 }
 
-func (mb MaxBoostParam) SetMaxBoost(v float64) {
+func (mb maxBoostParam) SetMaxBoost(v float64) {
 	if mb.MaxBoost() != v {
-		mb.MaxBoostValue = &v
+		mb.maxBoostValue = &v
 	}
 }
 func unmarshalMaxBoostParam(value gjson.Result, target interface{}) error {
