@@ -20,12 +20,12 @@ package search
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
 type Fuzzy struct {
-	Value               string `json:"value" bson:"value"`
-	FuzzinessParam      `json:",inline" bson:",inline"`
-	MaxExpansionsParam  `json:",inline" bson:",inline"`
-	PrefixLengthParam   `json:",inline" bson:",inline"`
-	TranspositionsParam `json:",inline" bson:",inline"`
-	RewriteParam        `json:",inline" bson:",inline"`
+	Value string
+	fuzzinessParam
+	maxExpansionsParam
+	prefixLengthParam
+	transpositionsParam
+	rewriteParam
 }
 
 func NewFuzzy() Fuzzy {

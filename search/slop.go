@@ -1,32 +1,37 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultSlop = 0
 
 type WithSlop interface {
-	Slop() int
-	SetSlop(v int)
+	Slop() int64
+	SetSlop(v int64)
 }
 
-type SlopParam struct {
-	SlopValue *int `json:"slop,omitempty" bson:"slop,omitempty"`
+type slopParam struct {
+	slop *int64 `json:"slop,omitempty" bson:"slop,omitempty"`
 }
 
-func (s SlopParam) Slop() int {
-	if s.SlopValue == nil {
+func (s slopParam) Slop() int64 {
+	if s.slop == nil {
 		return DefaultSlop
 	}
-	return *s.SlopValue
+	return *s.slop
 }
 
-func (s *SlopParam) SetSlop(v int) {
-	s.SlopValue = &v
+func (s *slopParam) SetSlop(v int64) {
+	s.slop = &v
 }
 
-func unmarshalSlopParam(value gjson.Result, target interface{}) error {
+func unmarshalSlopParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithSlop); ok {
-		a.SetSlop(int(value.Int()))
+		n := dynamic.NewNumber(data.UnquotedString())
+		if i, ok := n.Int(); ok {
+			a.SetSlop(i)
+		}
 	}
 	return nil
 }

@@ -18,10 +18,14 @@ type Match struct {
 	FuzzyRewrite                      Rewrite
 	Lenient                           bool
 	Operator                          Operator
-	MaxExpansions                     int
-	PrefixLength                      int
+	MaxExpansions                     dynamic.Number
+	PrefixLength                      dynamic.Number
 	MinimumShouldMatchParam           string
 	ZeroTermsQuery                    ZeroTermsQuery
+}
+
+func _() {
+
 }
 
 func (m Match) Type() Type {
@@ -45,11 +49,11 @@ func (m Match) Match() (*MatchRule, error) {
 	}
 	v.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
 	v.SetLenient(m.Lenient)
-	if m.MaxExpansions != 0 {
-		v.SetMaxExpansions(m.MaxExpansions)
+	if n, ok := m.MaxExpansions.Int(); ok {
+		v.SetMaxExpansions(n)
 	}
-	if m.PrefixLength != 0 {
-		v.SetPrefixLength(m.PrefixLength)
+	if n, ok := m.PrefixLength.Int(); ok {
+		v.SetPrefixLength(n)
 	}
 	if m.ZeroTermsQuery != "" {
 		v.SetZeroTermsQuery(m.ZeroTermsQuery)
@@ -83,13 +87,13 @@ type MatchRule struct {
 	AutoGenerateSynonymsPhraseQueryParam `json:",inline" bson:",inline"`
 
 	// Maximum edit distance allowed for matching.
-	FuzzinessParam `json:",inline" bson:",inline"`
+	fuzzinessParam `json:",inline" bson:",inline"`
 
 	// Maximum number of terms to which the query will expand. Defaults to 50.
-	MaxExpansionsParam `json:",inline" bson:",inline"`
+	maxExpansionsParam `json:",inline" bson:",inline"`
 
 	// Number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
-	PrefixLengthParam `json:",inline" bson:",inline"`
+	prefixLengthParam `json:",inline" bson:",inline"`
 
 	// If true, edits for fuzzy matching include transpositions of two adjacent
 	// characters (ab → ba). Defaults to true.
@@ -100,7 +104,7 @@ type MatchRule struct {
 	LenientParam `json:",inline" bson:",inline"`
 
 	// Boolean logic used to interpret text in the query value.
-	OperatorParam `json:",inline" bson:",inline"`
+	operatorParam `json:",inline" bson:",inline"`
 
 	// Minimum number of clauses that must match for a document to be returned
 	//
@@ -108,7 +112,7 @@ type MatchRule struct {
 	MinimumShouldMatchParam `json:",inline" bson:",inline"`
 	// Indicates whether no documents are returned if the analyzer removes all
 	// tokens, such as when using a stop filter.
-	ZeroTermsQueryParam `json:",inline" bson:",inline"`
+	zeroTermsQueryParam `json:",inline" bson:",inline"`
 }
 
 func (mq *MatchRule) Type() Type {

@@ -1,6 +1,10 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 const DefaultAnalyzer = ""
 
@@ -49,9 +53,15 @@ func marshalAnalyzerParam(data M, source interface{}) (M, error) {
 	}
 	return data, nil
 }
-func unmarshalAnalyzerParam(value gjson.Result, target interface{}) error {
+func unmarshalAnalyzerParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithAnalyzer); ok {
-		a.SetAnalyzer(value.Str)
+		if data.IsNull() {
+			return nil
+		}
+		if data.IsString() {
+			a.SetAnalyzer(data.UnquotedString())
+		}
+		return &json.UnmarshalTypeError{Value: data.String()}
 	}
 	return nil
 }

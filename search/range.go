@@ -53,7 +53,7 @@ type RangeRule struct {
 	LessThanValue             *dynamic.StringNumberOrTime `json:"lt,omitempty" bson:"lt,omitempty"`
 	LessThanOrEqualToValue    *dynamic.StringNumberOrTime `json:"lte,omitempty" bson:"lte,omitempty"`
 	FormatParam               `json:",inline" bson:",inline"`
-	TimeZoneParam             `json:",inline" bson:",inline"`
+	timeZoneParam             `json:",inline" bson:",inline"`
 	boostParam                `json:",inline" bson:",inline"`
 }
 

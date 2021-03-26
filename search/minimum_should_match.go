@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultMinimumShouldMatch = "0"
 
@@ -76,9 +78,9 @@ func (msm *MinimumShouldMatchParam) SetMinimumShouldMatch(v string) {
 		msm.MimimumShouldMatchValue = v
 	}
 }
-func unmarshalMinimumShouldMatchParam(value gjson.Result, target interface{}) error {
+func unmarshalMinimumShouldMatchParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithMinimumShouldMatch); ok {
-		a.SetMinimumShouldMatch(value.String())
+		a.SetMinimumShouldMatch(data.UnquotedString())
 	}
 	return nil
 }

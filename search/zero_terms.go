@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultZeroTermsQuery = ZeroTermsQueryNone
 
@@ -25,27 +27,27 @@ type WithZeroTermsQuery interface {
 	SetZeroTermsQuery(v ZeroTermsQuery)
 }
 
-type ZeroTermsQueryParam struct {
-	ZeroTermsQueryValue *ZeroTermsQuery `json:"zero_terms_query,omitempty" bson:"zero_terms_query,omitempty"`
+type zeroTermsQueryParam struct {
+	zeroTermsQueryValue *ZeroTermsQuery
 }
 
 // ZeroTermsQuery indicates  whether no documents are returned if the
 // analyzer removes all tokens, such as when using a stop filter
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html#query-dsl-match-query-zero
-func (ztq ZeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
-	if ztq.ZeroTermsQueryValue != nil {
-		return *ztq.ZeroTermsQueryValue
+func (ztq zeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
+	if ztq.zeroTermsQueryValue != nil {
+		return *ztq.zeroTermsQueryValue
 	}
 	return DefaultZeroTermsQuery
 }
 
-func (ztq *ZeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
-	ztq.ZeroTermsQueryValue = &v
+func (ztq *zeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
+	ztq.zeroTermsQueryValue = &v
 }
-func unmarshalZeroTermsQueryParam(value gjson.Result, target interface{}) error {
+func unmarshalZeroTermsQueryParam(value dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithZeroTermsQuery); ok {
-		a.SetZeroTermsQuery(ZeroTermsQuery(value.Str))
+		a.SetZeroTermsQuery(ZeroTermsQuery(value.UnquotedString()))
 	}
 	return nil
 }

@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultFormat = "strict_date_optional_time||epoch_millis"
 
@@ -434,9 +436,14 @@ func (f *FormatParam) SetFormat(v string) {
 	}
 }
 
-func unmarshalFormatParam(value gjson.Result, target interface{}) error {
+func unmarshalFormatParam(value dynamic.RawJSON, target interface{}) error {
 	if r, ok := target.(WithFormat); ok {
-		r.SetFormat(value.Str)
+		if value.IsNull() {
+			return nil
+		}
+		if value.IsString() {
+			r.SetFormat(value.UnquotedString())
+		}
 	}
 	return nil
 }

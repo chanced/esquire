@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultTranspositions = true
 
@@ -16,26 +18,29 @@ type WithTranspositions interface {
 	SetTranspositions(v bool)
 }
 
-type TranspositionsParam struct {
-	TranspositionsValue *bool `json:"transpositions,omitempty" bson:"transpositions,omitempty"`
+type transpositionsParam struct {
+	transpositions *bool `json:"transpositions,omitempty" bson:"transpositions,omitempty"`
 }
 
 // Transpositions indicates whether edits include transpositions of two
 // adjacent characters (ab → ba). Defaults to true.
-func (t TranspositionsParam) Transpositions() bool {
-	if t.TranspositionsValue == nil {
+func (t transpositionsParam) Transpositions() bool {
+	if t.transpositions == nil {
 		return DefaultTranspositions
 	}
-	return *t.TranspositionsValue
+	return *t.transpositions
 }
 
 // SetTranspositions sets the value of Transpositions to v
-func (t *TranspositionsParam) SetTranspositions(v bool) {
-	t.TranspositionsValue = &v
+func (t *transpositionsParam) SetTranspositions(v bool) {
+	t.transpositions = &v
 }
-func unmarshalTranspositionsParam(value gjson.Result, target interface{}) error {
+func unmarshalTranspositionsParam(value dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithTranspositions); ok {
-		a.SetTranspositions(value.Bool())
+		b := dynamic.NewBool(value)
+		if v, ok := b.Bool(); ok {
+			a.SetTranspositions(v)
+		}
 	}
 	return nil
 }

@@ -64,7 +64,7 @@ type DynamicParam struct {
 // an existing object. Accepts true (default), false and strict.
 func (dp DynamicParam) Dynamic() dynamic.BoolOrString {
 	if dp.DynamicParamValue.String() == "" {
-		return dynamic.BoolOrString("true")
+		return dynamic.NewBoolOrString(true)
 	}
 	return dp.DynamicParamValue
 }

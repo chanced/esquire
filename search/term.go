@@ -63,9 +63,9 @@ func (t *TermRule) UnmarshalJSON(data []byte) error {
 	t.boostParam = boostParam{}
 	t.caseInsensitiveParam = caseInsensitiveParam{}
 
-	g := gjson.ParseBytes(data)
-	if g.Type == gjson.String {
-		t.TermValue = g.String()
+	r := dynamic.RawJSON(data)
+	if r.IsString() {
+		t.TermValue = r.String()
 		return nil
 	}
 	unmarshalRule(g, t, func(key, value gjson.Result) error {

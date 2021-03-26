@@ -32,7 +32,7 @@ type Search struct {
 	// By default, you cannot page through more than 10,000 hits using the from
 	// and size parameters. To page through more hits, use the search_after
 	// parameter.
-	FromValue *int `bson:"from,omitempty" json:"from,omitempty"`
+	FromValue *int64 `bson:"from,omitempty" json:"from,omitempty"`
 
 	// Boosts the _score of documents from specified indices (Optional).
 	IndicesBoostValue IndicesBoost `bson:"indices_boost,omitempty"`
@@ -56,7 +56,7 @@ type Search struct {
 	// The number of hits to return. Defaults to 10. (Optional)
 	//
 	// By default, you cannot page through more than 10,000 hits using the from and size parameters. To page through more hits, use the search_after parameter.
-	SizeValue *int `bson:"size,omitempty" json:"size,omitempty"`
+	SizeValue *int64 `bson:"size,omitempty" json:"size,omitempty"`
 
 	// Indicates which source fields are returned for matching documents. These fields are returned in the hits._source property of the search response. Defaults to true. (Optional)
 	SourceValue *Source `bson:"_source,omitempty" json:"_source,omitempty"`
@@ -64,7 +64,7 @@ type Search struct {
 	// Stats groups to associate with the search. Each group maintains a statistics aggregation for its associated searches. You can retrieve these stats using the indices stats API (Optional).
 	StatsValue []string `bson:"stats,omitempty" json:"stats,omitempty"`
 
-	TerminateAfterValue *int `bson:"terminate_after,omitempty" json:"terminate_after,omitempty"`
+	TerminateAfterValue *int64 `bson:"terminate_after,omitempty" json:"terminate_after,omitempty"`
 
 	TimeoutValue *time.Duration `bson:"timeout,omitempty" json:"timeout,omitempty"`
 
@@ -136,7 +136,7 @@ func (s *Search) SetExplain(v bool) *Search {
 //
 // By default, you cannot page through more than 10,000 hits using the from and
 // size parameters. To page through more hits, use the search_after parameter.
-func (s Search) From() int {
+func (s Search) From() int64 {
 	if s.FromValue == nil {
 		return 0
 	}
@@ -144,7 +144,7 @@ func (s Search) From() int {
 }
 
 // SetFrom sets the FromValue to v
-func (s *Search) SetFrom(v int) *Search {
+func (s *Search) SetFrom(v int64) *Search {
 	if s.From() != v {
 		s.FromValue = &v
 	}
@@ -277,14 +277,14 @@ func (s *Search) SetSeqNoPrimaryTerm(v bool) *Search {
 //
 // By default, you cannot page through more than 10,000 hits using the from and
 // size parameters. To page through more hits, use the search_after parameter.
-func (s Search) Size() int {
+func (s Search) Size() int64 {
 	if s.SizeValue == nil {
 		return 10
 	}
 	return *s.SizeValue
 }
 
-func (s *Search) SetSize(v int) *Search {
+func (s *Search) SetSize(v int64) *Search {
 	if s.Size() != v {
 		s.SizeValue = &v
 	}
@@ -355,14 +355,14 @@ func (s *Search) SetStats(v []string) *Search {
 // reaching which the query execution will terminate early.
 //
 // Defaults to 0, which does not terminate query execution early.
-func (s Search) TerminateAfter() int {
+func (s Search) TerminateAfter() int64 {
 	if s.TerminateAfterValue == nil {
 		return 0
 	}
 	return *s.TerminateAfterValue
 }
 
-func (s *Search) SetTerminateAfter(v int) *Search {
+func (s *Search) SetTerminateAfter(v int64) *Search {
 	if s.TerminateAfter() != v {
 		s.TerminateAfterValue = &v
 	}

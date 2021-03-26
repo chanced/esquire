@@ -1,6 +1,10 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 const DefaultFuzzyTranspositions = true
 
@@ -36,9 +40,16 @@ func (ft *FuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
 	}
 }
 
-func unmarshalFuzzyTranspositionsParam(value gjson.Result, target interface{}) error {
+func unmarshalFuzzyTranspositionsParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithFuzzyTranspositions); ok {
-		a.SetFuzzyTranspositions(value.Bool())
+		b := dynamic.NewBool(data.UnquotedString())
+		if v, ok := b.Bool(); ok {
+			a.SetFuzzyTranspositions(v)
+			return nil
+		}
+		if !ok {
+			return &json.UnmarshalTypeError{Value: data.String()}
+		}
 	}
 	return nil
 }

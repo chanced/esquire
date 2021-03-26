@@ -1,6 +1,10 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 const DefaultPrefixLength = 0
 
@@ -10,30 +14,35 @@ const DefaultPrefixLength = 0
 // PrefixLength is the umber of beginning characters left unchanged when fuzzy
 // matching. Defaults to 0.
 type WithPrefixLength interface {
-	PrefixLength() int
-	SetPrefixLength(v int)
+	PrefixLength() int64
+	SetPrefixLength(v int64)
 }
 
-// PrefixLengthParam is a mixin that adds the prefix_length param
+// prefixLengthParam is a mixin that adds the prefix_length param
 //
 // PrefixLength is the number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
-type PrefixLengthParam struct {
-	PrefixLengthValue *int `json:"prefix_length,omitempty" bson:"prefix_length,omitempty"`
+type prefixLengthParam struct {
+	prefixLengthValue *int64
 }
 
-func (pl PrefixLengthParam) PrefixLength() int {
-	if pl.PrefixLengthValue == nil {
+func (pl prefixLengthParam) PrefixLength() int64 {
+	if pl.prefixLengthValue == nil {
 		return DefaultPrefixLength
 	}
-	return *pl.PrefixLengthValue
+	return *pl.prefixLengthValue
 }
 
-func (pl *PrefixLengthParam) SetPrefixLength(v int) {
-	pl.PrefixLengthValue = &v
+func (pl *prefixLengthParam) SetPrefixLength(v int64) {
+	pl.prefixLengthValue = &v
 }
-func unmarshalPrefixLengthParam(value gjson.Result, target interface{}) error {
+func unmarshalPrefixLengthParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithPrefixLength); ok {
-		a.SetPrefixLength(int(value.Int()))
+		n := dynamic.NewNumber(data.UnquotedString())
+		if v, ok := n.Int(); ok {
+			a.SetPrefixLength(v)
+			return nil
+		}
+		return &json.UnmarshalTypeError{Value: data.String()}
 	}
 	return nil
 }

@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 type Relation string
 
@@ -46,9 +48,9 @@ func (r *RelationParam) SetRelation(v Relation) {
 		r.RelationValue = v
 	}
 }
-func unmarshalRelationParam(value gjson.Result, target interface{}) error {
+func unmarshalRelationParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithRelation); ok {
-		a.SetRelation(Relation(value.String()))
+		a.SetRelation(Relation(data.UnquotedString()))
 	}
 	return nil
 }

@@ -1,7 +1,7 @@
 package search
 
 import (
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 const DefaultBoost = float64(1)
@@ -76,9 +76,28 @@ func marshalBoostParam(data M, source interface{}) (M, error) {
 	}
 	return data, nil
 }
-func unmarshalBoostParam(value gjson.Result, target interface{}) error {
+func unmarshalBoostParam(data dynamic.RawJSON, target interface{}) error {
 	if r, ok := target.(WithBoost); ok {
-		r.SetBoost(value.Num)
+		if data.IsNumber() {
+			f, _ := dynamic.NewNumber(data.String()).Float()
+			r.SetBoost(f)
+			return nil
+		}
+		if data.IsNull() {
+			return nil
+		}
+		if data.IsString() {
+			if data.UnquotedString() == "" {
+				return nil
+			}
+			str := dynamic.NewString(data.UnquotedString())
+			f, err := str.Float64()
+			if err != nil {
+				return err
+			}
+			r.SetBoost(f)
+			return nil
+		}
 	}
 	return nil
 }

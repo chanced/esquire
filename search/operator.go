@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 type Operator string
 
@@ -32,14 +34,14 @@ type WithOperator interface {
 	SetOperator(v Operator)
 }
 
-// OperatorParam is a query mixin that adds the operator param
-type OperatorParam struct {
-	OperatorValue *Operator `json:"operator,omitempty" bson:"operator,omitempty"`
+// operatorParam is a query mixin that adds the operator param
+type operatorParam struct {
+	OperatorValue *Operator
 }
 
 // Operator is the boolean logic used to interpret text in the query value.
 // Defaults to Or
-func (o OperatorParam) Operator() Operator {
+func (o operatorParam) Operator() Operator {
 	if o.OperatorValue != nil {
 		return *o.OperatorValue
 	}
@@ -47,12 +49,12 @@ func (o OperatorParam) Operator() Operator {
 }
 
 // SetOperator sets the Operator to v
-func (o *OperatorParam) SetOperator(v Operator) {
+func (o *operatorParam) SetOperator(v Operator) {
 	o.OperatorValue = &v
 }
-func unmarshalOperatorParam(value gjson.Result, target interface{}) error {
+func unmarshalOperatorParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithOperator); ok {
-		a.SetOperator(Operator(value.Str))
+		a.SetOperator(Operator(data.UnquotedString()))
 	}
 	return nil
 }

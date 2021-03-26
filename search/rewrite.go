@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultRewrite = RewriteConstantScore
 
@@ -99,28 +101,28 @@ type WithRewrite interface {
 	SetRewrite(v Rewrite)
 }
 
-// RewriteParam is a mixin that adds the rewrite param
+// rewriteParam is a mixin that adds the rewrite param
 //
 // Method used to rewrite the query. For valid values and more information, see
 // the rewrite parameter. (Optional)
-type RewriteParam struct {
-	RewriteValue *Rewrite `json:"rewrite,omitempty" bson:"rewrite,omitempty"`
+type rewriteParam struct {
+	rewrite *Rewrite
 }
 
-func (r RewriteParam) Rewrite() Rewrite {
-	if r.RewriteValue == nil {
+func (r rewriteParam) Rewrite() Rewrite {
+	if r.rewrite == nil {
 		return DefaultRewrite
 	}
-	return *r.RewriteValue
+	return *r.rewrite
 }
-func (r *RewriteParam) SetRewrite(v Rewrite) {
+func (r *rewriteParam) SetRewrite(v Rewrite) {
 	if v != "" && v != r.Rewrite() {
-		r.RewriteValue = &v
+		r.rewrite = &v
 	}
 }
-func unmarshalRewriteParam(value gjson.Result, target interface{}) error {
+func unmarshalRewriteParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithRewrite); ok {
-		a.SetRewrite(Rewrite(value.String()))
+		a.SetRewrite(Rewrite(data.UnquotedString()))
 	}
 	return nil
 }

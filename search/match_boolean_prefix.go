@@ -3,10 +3,10 @@ package search
 type MatchBooleanPrefix struct {
 	Query                    string `json:"query" bson:"query"`
 	MinimumShouldMatchParam  `json:",inline" bson:",inline"`
-	OperatorParam            `json:",inline" bson:",inline"`
+	operatorParam            `json:",inline" bson:",inline"`
 	AnalyzerParam            `json:",inline" bson:",inline"`
-	FuzzinessParam           `json:",inline" bson:",inline"`
-	PrefixLengthParam        `json:",inline" bson:",inline"`
+	fuzzinessParam           `json:",inline" bson:",inline"`
+	prefixLengthParam        `json:",inline" bson:",inline"`
 	FuzzyTranspositionsParam `json:",inline" bson:",inline"`
 }
 

@@ -1,9 +1,10 @@
 package search
 
 import (
+	"encoding/json"
 	"math"
 
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 const DefaultMaxBoost = math.MaxFloat32
@@ -29,9 +30,14 @@ func (mb maxBoostParam) SetMaxBoost(v float64) {
 		mb.maxBoostValue = &v
 	}
 }
-func unmarshalMaxBoostParam(value gjson.Result, target interface{}) error {
+func unmarshalMaxBoostParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithMaxBoost); ok {
-		a.SetMaxBoost(value.Float())
+		n := dynamic.NewNumber()
+		if v, ok := n.Float(); ok {
+			a.SetMaxBoost(v)
+			return nil
+		}
+		return &json.UnmarshalTypeError{Value: data.String()}
 	}
 	return nil
 }

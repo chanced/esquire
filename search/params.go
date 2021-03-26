@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const (
 	paramBoost                           = "boost"
@@ -50,7 +52,7 @@ var paramMarshalers = map[string]func(data M, source interface{}) (M, error){
 	paramAutoGenerateSynonymsPhraseQuery: marshalAutoGenerateSynonymsPhraseQueryParam,
 }
 
-var paramUnmarshalers = map[string]func(data gjson.Result, target interface{}) error{
+var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}) error{
 	paramBoost:                           unmarshalBoostParam,
 	paramAnalyzer:                        unmarshalAnalyzerParam,
 	paramFormat:                          unmarshalFormatParam,
@@ -73,9 +75,13 @@ var paramUnmarshalers = map[string]func(data gjson.Result, target interface{}) e
 	paramAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
 }
 
-func unmarshalParam(param string, target interface{}, value gjson.Result) (bool, error) {
+func unmarshalParam(param string, data dynamic.RawJSON, target interface{}) (bool, error) {
+
 	if unmarshal, ok := paramUnmarshalers[param]; ok {
-		return true, unmarshal(value, target)
+		if data.IsNull() {
+			return true, nil
+		}
+		return true, unmarshal(data, target)
 	}
 	return false, nil
 }
@@ -83,6 +89,7 @@ func unmarshalParam(param string, target interface{}, value gjson.Result) (bool,
 func marshalParams(data M, source interface{}) (M, error) {
 	var err error
 	for _, marshal := range paramMarshalers {
+
 		data, err = marshal(data, source)
 		if err != nil {
 			return data, err

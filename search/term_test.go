@@ -40,13 +40,13 @@ func TestTerm(t *testing.T) {
 	assert.NoError(err)
 	fmt.Println(string(json1Res))
 
-	// var res1 search.TermsRule
-	// err = json.Unmarshal(json1Res, &res1)
-	// assert.NoError(err)
-	// assert.Equal(float64(1.2), res1.Boost())
-	// assert.True(res1.CaseInsensitive())
-	// assert.Equal([]string{"chanced", "kimchy", "elkbee"}, res1.TermsValue)
-	// assert.Equal("user.id", res1.TermsField)
+	var res1 search.TermQuery
+	err = json.Unmarshal(json1Res, &res1)
+	assert.NoError(err)
+	assert.Equal(float64(0.2), res1.Boost())
+	assert.True(res1.CaseInsensitive())
+	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, res1.TermValue)
+	assert.Equal("user.id", res1.TermField)
 
 	// j2, err := os.Open("./testdata/terms_2.json")
 	// assert.NoError(err)

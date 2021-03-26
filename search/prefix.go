@@ -23,9 +23,9 @@ func (p Prefix) Query() (*PrefixRule, error) {
 
 // PrefixRule returns documents that contain a specific prefix in a provided field.
 type PrefixRule struct {
-	Value                string `json:"value" bson:"value"`
-	RewriteParam         `json:",inline" bson:",inline"`
-	caseInsensitiveParam `json:",inline" bson:",inline"`
+	Value string `json:"value" bson:"value"`
+	rewriteParam
+	caseInsensitiveParam
 }
 
 func (p PrefixRule) Type() Type {

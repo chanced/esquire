@@ -15,10 +15,10 @@ type WithMaxInputLength interface {
 	// from bloating the underlying datastructure. Most use cases won’t be
 	// influenced by the default value since prefix completions seldom grow
 	// beyond prefixes longer than a handful of characters.
-	MaxInputLength() int
+	MaxInputLength() int64
 
 	// SetMaxInputLength sets the MaxInputLength value to v
-	SetMaxInputLength(v int)
+	SetMaxInputLength(v int64)
 }
 
 // FieldWithMaxInputLength is a Field mapping with the max_input_length parameter
@@ -28,7 +28,7 @@ type FieldWithMaxInputLength interface {
 }
 
 type MaxInputLengthParam struct {
-	MaxInputLengthValue *int `bson:"max_input_length,omitempty" json:"max_input_length,omitempty"`
+	MaxInputLengthValue *int64 `bson:"max_input_length,omitempty" json:"max_input_length,omitempty"`
 }
 
 // MaxInputLength limits the length of a single input, defaults to 50 UTF-16
@@ -37,7 +37,7 @@ type MaxInputLengthParam struct {
 // from bloating the underlying datastructure. Most use cases won’t be
 // influenced by the default value since prefix completions seldom grow
 // beyond prefixes longer than a handful of characters.
-func (mil MaxInputLengthParam) MaxInputLength() int {
+func (mil MaxInputLengthParam) MaxInputLength() int64 {
 	if mil.MaxInputLengthValue == nil {
 		return 50
 	}
@@ -45,7 +45,7 @@ func (mil MaxInputLengthParam) MaxInputLength() int {
 }
 
 // SetMaxInputLength sets the MaxInputLength value to v
-func (mil *MaxInputLengthParam) SetMaxInputLength(v int) {
+func (mil *MaxInputLengthParam) SetMaxInputLength(v int64) {
 	if mil.MaxInputLength() != v {
 		mil.MaxInputLengthValue = &v
 

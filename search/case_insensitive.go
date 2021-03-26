@@ -1,6 +1,10 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 const DefaultCaseInsensitive = false
 
@@ -40,9 +44,31 @@ func (ci *caseInsensitiveParam) SetCaseInsensitive(v bool) {
 	}
 }
 
-func unmarshalCaseInsensitiveParam(value gjson.Result, target interface{}) error {
+func unmarshalCaseInsensitiveParam(data dynamic.RawJSON, target interface{}) error {
 	if r, ok := target.(WithCaseInsensitive); ok {
-		r.SetCaseInsensitive(value.Bool())
+		if data.IsNull() {
+			return nil
+		}
+		var b bool
+		if data.IsBool() {
+			err := json.Unmarshal(data, &b)
+			if err != nil {
+				return err
+			}
+		}
+		if data.IsString() {
+			if data.UnquotedString() == "" {
+				return nil
+			}
+			n := dynamic.NewBool(data.UnquotedString())
+			v, ok := n.Bool()
+			if !ok {
+				return &json.UnmarshalTypeError{Value: data.UnquotedString()}
+			}
+			r.SetCaseInsensitive(v)
+			return nil
+		}
+		return &json.UnmarshalTypeError{Value: data.UnquotedString()}
 	}
 	return nil
 }

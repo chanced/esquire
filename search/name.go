@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 type WithName interface {
 	Name() string
@@ -24,9 +26,9 @@ func (n *NameParam) SetName(name string) {
 		n.NameValue = name
 	}
 }
-func unmarshalNameParam(value gjson.Result, target interface{}) error {
+func unmarshalNameParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithName); ok {
-		a.SetName(value.String())
+		a.SetName(data.UnquotedString())
 	}
 	return nil
 }

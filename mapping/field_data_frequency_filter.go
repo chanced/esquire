@@ -4,7 +4,7 @@ package mapping
 type FieldDataFrequencyFilter struct {
 	Min            float64 `bson:"min" json:"min"`
 	Max            float64 `bson:"max" json:"max"`
-	MinSegmentSize int     `bson:"min_segment_size" json:"min_segment_size"`
+	MinSegmentSize int64   `bson:"min_segment_size" json:"min_segment_size"`
 }
 
 func (fdf *FieldDataFrequencyFilter) Clone() *FieldDataFrequencyFilter {

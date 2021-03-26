@@ -6,6 +6,10 @@ github.com/chanced/dynamic v0.0.0-20210323024812-7e99a2fe8c92 h1:qfTyidLK7eItbqS
 github.com/chanced/dynamic v0.0.0-20210323024812-7e99a2fe8c92/go.mod h1:npOHHN2uUuhBOK1DWzgyTtuQa2X17iiep+IhibyNVpE=
 github.com/chanced/dynamic v0.0.0-20210325052601-10d58de61eac h1:i19PMaqDsls4NneAdGb4i0oyfkBA3cBjMfnk/Sxb6hM=
 github.com/chanced/dynamic v0.0.0-20210325052601-10d58de61eac/go.mod h1:npOHHN2uUuhBOK1DWzgyTtuQa2X17iiep+IhibyNVpE=
+github.com/chanced/dynamic v0.0.0-20210326045807-4bb4674c86cd h1:93Ax0dWIU/ScvHaDZc52OcoLH4nSDXjXKtx4Jf3R/W8=
+github.com/chanced/dynamic v0.0.0-20210326045807-4bb4674c86cd/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210326053232-d996382fa08b h1:JEF9RmYd+DeQtmpWUxo7TkJe8RSVeUEbXkfpJaVgfJg=
+github.com/chanced/dynamic v0.0.0-20210326053232-d996382fa08b/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

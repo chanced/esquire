@@ -1,6 +1,10 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 const DefaultLenient = false
 
@@ -39,9 +43,16 @@ func (l LenientParam) Lenient() bool {
 func (l *LenientParam) SetLenient(v bool) {
 	l.LenientValue = &v
 }
-func unmarshalLenientParam(value gjson.Result, target interface{}) error {
+func unmarshalLenientParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithLenient); ok {
-		a.SetLenient(value.Bool())
+		b := dynamic.NewBool(data.UnquotedString())
+		if v, ok := b.Bool(); ok {
+			a.SetLenient(v)
+			return nil
+		}
+		if !ok {
+			return &json.UnmarshalTypeError{Value: data.String()}
+		}
 	}
 	return nil
 }
