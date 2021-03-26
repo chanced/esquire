@@ -37,8 +37,8 @@ type WithFuzziness interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 type fuzzinessParam struct {
-	fuzziness    string  `json:"fuzziness,omitempty" bson:"fuzziness,omitempty"`
-	fuzzyRewrite Rewrite `json:"fuzzy_rewrite,omitempty" bson:"fuzzy_rewrite,omitempty"`
+	fuzziness    string
+	fuzzyRewrite Rewrite
 }
 
 // Fuzziness is the maximum edit distance allowed for matching. See Fuzziness

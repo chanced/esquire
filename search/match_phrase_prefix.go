@@ -1,11 +1,11 @@
 package search
 
 type MatchPhrasePrefix struct {
-	Query              string `json:"query" bson:"query"`
-	AnalyzerParam      `json:",inline" bson:",inline"`
-	maxExpansionsParam `json:",inline" bson:",inline"`
-	slopParam          `json:",inline" bson:",inline"`
-	ZeroTermsQuery     `json:",inline" bson:",inline"`
+	Query string `json:"query" bson:"query"`
+	analyzerParam
+	maxExpansionsParam
+	slopParam
+	ZeroTermsQuery
 }
 
 func NewMatchPhrasePrefix(query string) MatchPhrasePrefix {

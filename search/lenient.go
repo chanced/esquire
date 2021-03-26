@@ -20,28 +20,28 @@ type WithLenient interface {
 	SetLenient(v bool)
 }
 
-// LenientParam is a query mixin that adds the lenient para
+// lenientParam is a query mixin that adds the lenient para
 //
 // if true, format-based errors, such as providing a text query value for a
 // numeric field, are ignored. Defaults to false.
-type LenientParam struct {
+type lenientParam struct {
 	// Lenient determines whether format-based errors, such as providing a text
 	// query value for a numeric field, are ignored. Defaults to false.
-	LenientValue *bool `json:"lenient,omitempty" bson:"lenient,omitempty"`
+	lenient *bool `json:"lenient,omitempty" bson:"lenient,omitempty"`
 }
 
 // Lenient determines whether format-based errors, such as providing a text
 // query value for a numeric field, are ignored. Defaults to false.
-func (l LenientParam) Lenient() bool {
-	if l.LenientValue != nil {
-		return *l.LenientValue
+func (l lenientParam) Lenient() bool {
+	if l.lenient != nil {
+		return *l.lenient
 	}
 	return DefaultLenient
 }
 
 // SetLenient sets Lenient to v
-func (l *LenientParam) SetLenient(v bool) {
-	l.LenientValue = &v
+func (l *lenientParam) SetLenient(v bool) {
+	l.lenient = &v
 }
 func unmarshalLenientParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithLenient); ok {

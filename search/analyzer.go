@@ -20,28 +20,28 @@ type WithAnalyzer interface {
 	SetAnalyzer(v string)
 }
 
-// AnalyzerParam is a query mixin that adds the analyzer param
+// analyzerParam is a query mixin that adds the analyzer param
 //
 // Analyzer used to convert the text in the query value into tokens.
 // Defaults to the index-time analyzer mapped for the <field>. If no
 // analyzer is mapped, the index’s default analyzer is used. (Optional)
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
-type AnalyzerParam struct {
-	AnalyzerValue string `json:"analyzer,omitempty" bson:"analyzer,omitempty"`
+type analyzerParam struct {
+	analyzer string
 }
 
 // Analyzer used to convert the text in the query value into tokens.
 // Defaults to the index-time analyzer mapped for the <field>. If no
 // analyzer is mapped, the index’s default analyzer is used. (Optional)
-func (a AnalyzerParam) Analyzer() string {
-	return a.AnalyzerValue
+func (a analyzerParam) Analyzer() string {
+	return a.analyzer
 }
 
 // SetAnalyzer sets the Analyzer value to v
-func (a *AnalyzerParam) SetAnalyzer(v string) {
+func (a *analyzerParam) SetAnalyzer(v string) {
 	if a.Analyzer() != v {
-		a.AnalyzerValue = v
+		a.analyzer = v
 	}
 }
 

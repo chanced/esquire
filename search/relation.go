@@ -24,9 +24,9 @@ const (
 	RelationWithin Relation = "WITHIN"
 )
 
-// RelationParam is a mixin that adds the relation parameter
-type RelationParam struct {
-	RelationValue Relation `json:"relation,omitempty" bson:"relation,omitempty"`
+// relationParam is a mixin that adds the relation parameter
+type relationParam struct {
+	relation Relation `json:"relation,omitempty" bson:"relation,omitempty"`
 }
 
 type WithRelation interface {
@@ -35,17 +35,17 @@ type WithRelation interface {
 }
 
 // Relation indicates how the range query matches values for range fields.
-func (r RelationParam) Relation() Relation {
-	if r.RelationValue == "" {
+func (r relationParam) Relation() Relation {
+	if r.relation == "" {
 		return DefaultRelation
 	}
-	return r.RelationValue
+	return r.relation
 }
 
 // SetRelation sets Relation to v
-func (r *RelationParam) SetRelation(v Relation) {
+func (r *relationParam) SetRelation(v Relation) {
 	if r.Relation() != v {
-		r.RelationValue = v
+		r.relation = v
 	}
 }
 func unmarshalRelationParam(data dynamic.RawJSON, target interface{}) error {

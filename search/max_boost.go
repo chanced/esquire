@@ -15,19 +15,19 @@ type WithMaxBoost interface {
 }
 
 type maxBoostParam struct {
-	maxBoostValue *float64
+	maxBoost *float64
 }
 
 func (mb maxBoostParam) MaxBoost() float64 {
-	if mb.maxBoostValue == nil {
+	if mb.maxBoost == nil {
 		return DefaultMaxBoost
 	}
-	return *mb.maxBoostValue
+	return *mb.maxBoost
 }
 
 func (mb maxBoostParam) SetMaxBoost(v float64) {
 	if mb.MaxBoost() != v {
-		mb.maxBoostValue = &v
+		mb.maxBoost = &v
 	}
 }
 func unmarshalMaxBoostParam(data dynamic.RawJSON, target interface{}) error {

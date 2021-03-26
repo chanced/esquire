@@ -1,6 +1,8 @@
 package search
 
-import "github.com/tidwall/gjson"
+import (
+	"github.com/chanced/dynamic"
+)
 
 const DefaultAutoGenerateSynonymsPhraseQuery = true
 
@@ -14,28 +16,31 @@ type WithAutoGenerateSynonymsPhraseQuery interface {
 	SetAutoGenerateSynonymsPhraseQuery(v bool)
 }
 
-type AutoGenerateSynonymsPhraseQueryParam struct {
-	AutoGenerateSynonymsPhraseQueryValue *bool `bson:"auto_generate_synonyms_phrase_query,omitempty" json:"auto_generate_synonyms_phrase_query,omitempty"`
+type autoGenerateSynonymsPhraseQueryParam struct {
+	autoGenerateSynonymsPhraseQuery *bool `bson:"auto_generate_synonyms_phrase_query,omitempty" json:"auto_generate_synonyms_phrase_query,omitempty"`
 }
 
 // AutoGenerateSynonymsPhraseQuery determines if match phrase queries are
 // automatically created for multi-term synonyms. Defaults to true.
-func (agspq AutoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
-	if agspq.AutoGenerateSynonymsPhraseQueryValue == nil {
+func (agspq autoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
+	if agspq.autoGenerateSynonymsPhraseQuery == nil {
 		return DefaultAutoGenerateSynonymsPhraseQuery
 	}
-	return *agspq.AutoGenerateSynonymsPhraseQueryValue
+	return *agspq.autoGenerateSynonymsPhraseQuery
 }
 
 // SetAutoGenerateSynonymsPhraseQuery sets AutoGenerateSynonymsPhraseQueryValue to v
-func (agspq *AutoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
+func (agspq *autoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
 	if agspq.AutoGenerateSynonymsPhraseQuery() != v {
-		agspq.AutoGenerateSynonymsPhraseQueryValue = &v
+		agspq.autoGenerateSynonymsPhraseQuery = &v
 	}
 }
-func unmarshalAutoGenerateSynonymsPhraseQueryParam(value gjson.Result, target interface{}) error {
+func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithAutoGenerateSynonymsPhraseQuery); ok {
-		a.SetAutoGenerateSynonymsPhraseQuery(value.Bool())
+		b := dynamic.NewBool(data.UnquotedString())
+		if v, ok := b.Bool(); ok {
+			a.SetAutoGenerateSynonymsPhraseQuery(v)
+		}
 	}
 	return nil
 }

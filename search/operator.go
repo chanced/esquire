@@ -36,21 +36,21 @@ type WithOperator interface {
 
 // operatorParam is a query mixin that adds the operator param
 type operatorParam struct {
-	OperatorValue *Operator
+	operator *Operator
 }
 
 // Operator is the boolean logic used to interpret text in the query value.
 // Defaults to Or
 func (o operatorParam) Operator() Operator {
-	if o.OperatorValue != nil {
-		return *o.OperatorValue
+	if o.operator != nil {
+		return *o.operator
 	}
 	return DefaultOperator
 }
 
 // SetOperator sets the Operator to v
 func (o *operatorParam) SetOperator(v Operator) {
-	o.OperatorValue = &v
+	o.operator = &v
 }
 func unmarshalOperatorParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithOperator); ok {

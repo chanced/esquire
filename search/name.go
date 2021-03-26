@@ -11,19 +11,19 @@ type WithName interface {
 
 const DefaultName = ""
 
-// NameParam is a mixin that adds the _name parameter
+// nameParam is a mixin that adds the _name parameter
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#named-queries
-type NameParam struct {
-	NameValue string `json:"_name,omitempty" bson:"_name,omitempty"`
+type nameParam struct {
+	name string `json:"_name,omitempty" bson:"_name,omitempty"`
 }
 
-func (n NameParam) Name() string {
-	return n.NameValue
+func (n nameParam) Name() string {
+	return n.name
 }
-func (n *NameParam) SetName(name string) {
+func (n *nameParam) SetName(name string) {
 	if n.Name() != name {
-		n.NameValue = name
+		n.name = name
 	}
 }
 func unmarshalNameParam(data dynamic.RawJSON, target interface{}) error {

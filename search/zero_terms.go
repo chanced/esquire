@@ -28,7 +28,7 @@ type WithZeroTermsQuery interface {
 }
 
 type zeroTermsQueryParam struct {
-	zeroTermsQueryValue *ZeroTermsQuery
+	zeroTermsQuery *ZeroTermsQuery
 }
 
 // ZeroTermsQuery indicates  whether no documents are returned if the
@@ -36,14 +36,14 @@ type zeroTermsQueryParam struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html#query-dsl-match-query-zero
 func (ztq zeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
-	if ztq.zeroTermsQueryValue != nil {
-		return *ztq.zeroTermsQueryValue
+	if ztq.zeroTermsQuery != nil {
+		return *ztq.zeroTermsQuery
 	}
 	return DefaultZeroTermsQuery
 }
 
 func (ztq *zeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
-	ztq.zeroTermsQueryValue = &v
+	ztq.zeroTermsQuery = &v
 }
 func unmarshalZeroTermsQueryParam(value dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithZeroTermsQuery); ok {

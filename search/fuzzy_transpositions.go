@@ -20,23 +20,23 @@ type WithFuzzyTranspositions interface {
 	SetFuzzyTranspositions(v bool)
 }
 
-type FuzzyTranspositionsParam struct {
-	FuzzyTranspositionsValue *bool `json:"fuzzy_transpositions,omitempty" bson:"fuzzy_transpositions,omitempty"`
+type fuzzyTranspositionsParam struct {
+	fuzzyTranspositionsValue *bool
 }
 
 // FuzzyTranspositions edits for fuzzy matching include transpositions of
 // two adjacent characters (ab → ba). Defaults to true
-func (ft FuzzyTranspositionsParam) FuzzyTranspositions() bool {
-	if ft.FuzzyTranspositionsValue == nil {
+func (ft fuzzyTranspositionsParam) FuzzyTranspositions() bool {
+	if ft.fuzzyTranspositionsValue == nil {
 		return DefaultFuzzyTranspositions
 	}
-	return *ft.FuzzyTranspositionsValue
+	return *ft.fuzzyTranspositionsValue
 }
 
 // SetFuzzyTranspositions sets FuzzyTranspositions to v
-func (ft *FuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
+func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
 	if ft.FuzzyTranspositions() != v {
-		ft.FuzzyTranspositionsValue = &v
+		ft.fuzzyTranspositionsValue = &v
 	}
 }
 
