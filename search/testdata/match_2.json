@@ -1,0 +1,12 @@
+{
+  "match": {
+    "message": {
+      "query": "this is a test",
+      "operator": "and",
+      "fuzziness": "AUTO",
+      "zero_terms_query": "all",
+      "cutoff_frequency": 0.001,
+      "auto_generate_synonyms_phrase_query": false
+    }
+  }
+}

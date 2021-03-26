@@ -19,7 +19,7 @@ type WithTranspositions interface {
 }
 
 type transpositionsParam struct {
-	transpositions *bool `json:"transpositions,omitempty" bson:"transpositions,omitempty"`
+	transpositions *bool
 }
 
 // Transpositions indicates whether edits include transpositions of two
@@ -44,9 +44,9 @@ func unmarshalTranspositionsParam(value dynamic.RawJSON, target interface{}) err
 	}
 	return nil
 }
-func marshalTranspositionsParam(data M, source interface{}) (M, error) {
+func marshalTranspositionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithTranspositions); ok {
-		if b.Transpositions() != DefaultTranspositions {
+		if !b.Transpositions() {
 			data[paramTranspositions] = b.Transpositions()
 		}
 	}

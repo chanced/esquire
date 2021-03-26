@@ -29,7 +29,12 @@ const (
 	// ParamQuery                           Param = "query"
 )
 
-var paramMarshalers = map[string]func(data M, source interface{}) (M, error){
+func isKnownParam(v string) bool {
+	_, ok := paramMarshalers[v]
+	return ok
+}
+
+var paramMarshalers = map[string]func(data dynamic.Map, source interface{}) (dynamic.Map, error){
 	paramBoost:                           marshalBoostParam,
 	paramAnalyzer:                        marshalAnalyzerParam,
 	paramFormat:                          marshalFormatParam,
@@ -78,6 +83,7 @@ var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}
 func unmarshalParam(param string, data dynamic.RawJSON, target interface{}) (bool, error) {
 
 	if unmarshal, ok := paramUnmarshalers[param]; ok {
+
 		if data.IsNull() {
 			return true, nil
 		}
@@ -86,7 +92,8 @@ func unmarshalParam(param string, data dynamic.RawJSON, target interface{}) (boo
 	return false, nil
 }
 
-func marshalParams(data M, source interface{}) (M, error) {
+func marshalParams(source interface{}) (dynamic.Map, error) {
+	data := dynamic.Map{}
 	var err error
 	for _, marshal := range paramMarshalers {
 

@@ -63,7 +63,7 @@ type WithMinimumShouldMatch interface {
 }
 
 type minimumShouldMatchParam struct {
-	mimimumShouldMatch string `json:"minimum_should_match,omitempty" bson:"minimum_should_match,omitempty"`
+	mimimumShouldMatch string
 }
 
 func (msm minimumShouldMatchParam) MinimumShouldMatch() string {
@@ -84,7 +84,7 @@ func unmarshalMinimumShouldMatchParam(data dynamic.RawJSON, target interface{}) 
 	}
 	return nil
 }
-func marshalMinimumShouldMatchParam(data M, source interface{}) (M, error) {
+func marshalMinimumShouldMatchParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMinimumShouldMatch); ok {
 		if b.MinimumShouldMatch() != DefaultMinimumShouldMatch {
 			data[paramMinimumShouldMatch] = b.MinimumShouldMatch()

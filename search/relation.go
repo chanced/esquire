@@ -26,7 +26,7 @@ const (
 
 // relationParam is a mixin that adds the relation parameter
 type relationParam struct {
-	relation Relation `json:"relation,omitempty" bson:"relation,omitempty"`
+	relation Relation
 }
 
 type WithRelation interface {
@@ -55,7 +55,7 @@ func unmarshalRelationParam(data dynamic.RawJSON, target interface{}) error {
 	return nil
 }
 
-func marshalRelationParam(data M, source interface{}) (M, error) {
+func marshalRelationParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithRelation); ok {
 		if b.Relation() != DefaultRelation {
 			data[paramRelation] = b.Relation()

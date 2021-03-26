@@ -37,11 +37,11 @@ func unmarshalMaxBoostParam(data dynamic.RawJSON, target interface{}) error {
 			a.SetMaxBoost(v)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String()}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
 	}
 	return nil
 }
-func marshalMaxBoostParam(data M, source interface{}) (M, error) {
+func marshalMaxBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMaxBoost); ok {
 		if b.MaxBoost() != DefaultMaxBoost {
 			data[paramMaxBoost] = b.MaxBoost()

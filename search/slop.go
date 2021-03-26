@@ -35,7 +35,7 @@ func unmarshalSlopParam(data dynamic.RawJSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalSlopParam(data M, source interface{}) (M, error) {
+func marshalSlopParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithSlop); ok {
 		if b.Slop() != DefaultSlop {
 			data[paramSlop] = b.Slop()

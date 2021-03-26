@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/chanced/dynamic"
-	"github.com/chanced/picker/internal/jsonutil"
-	"github.com/tidwall/gjson"
 )
 
 type Term struct {
@@ -54,41 +52,49 @@ type TermRule struct {
 	caseInsensitiveParam
 }
 
-func (t TermRule) HasTermRule() bool {
-	return t.TermValue != ""
+func (tr TermRule) HasTermRule() bool {
+	return tr.TermValue != ""
 }
 
-func (t *TermRule) UnmarshalJSON(data []byte) error {
-	t.TermValue = ""
-	t.boostParam = boostParam{}
-	t.caseInsensitiveParam = caseInsensitiveParam{}
-
-	r := dynamic.RawJSON(data)
-	if r.IsString() {
-		t.TermValue = r.String()
-		return nil
+func (tr TermRule) MarshalJSON() ([]byte, error) {
+	if !tr.HasTermRule() {
+		return dynamic.Null, nil
 	}
-	unmarshalRule(g, t, func(key, value gjson.Result) error {
-		if key.Str == "value" {
-			t.TermValue = value.Str
-		}
-		return nil
-	})
+	m, err := marshalParams(&tr)
+	if err != nil {
+		return nil, err
+	}
+	m["value"] = tr.TermValue
+	return json.Marshal(m)
+}
+
+func (tr *TermRule) UnmarshalJSON(data []byte) error {
+	tr.TermValue = ""
+	tr.boostParam = boostParam{}
+	tr.caseInsensitiveParam = caseInsensitiveParam{}
+	fields, err := unmarshalParams(data, tr)
+	if err != nil {
+		return err
+	}
+
+	if v, ok := fields["value"]; ok {
+		tr.TermValue = v.UnquotedString()
+	} else {
+		tr.TermValue = ""
+	}
 	return nil
 }
-func (t *TermRule) Type() Type {
+func (tr *TermRule) Type() Type {
 	return TypeTerm
 }
 
-func (t *TermRule) SetValue(v string) {
-	t.TermValue = v
+func (tr *TermRule) SetValue(v string) {
+	tr.TermValue = v
 }
 
-func (t TermRule) Value() string {
-	return t.TermValue
+func (tr TermRule) Value() string {
+	return tr.TermValue
 }
-
-type term TermRule
 
 // TermQuery returns documents that contain an exact term in a provided field.
 //
@@ -109,22 +115,17 @@ type TermQuery struct {
 	TermRule
 }
 
-func (t TermQuery) MarshalJSON() ([]byte, error) {
-	if !t.HasTermRule() {
-		return jsonutil.Nil, nil
+func (tq TermQuery) MarshalJSON() ([]byte, error) {
+	if !tq.HasTermRule() || tq.TermField == "" {
+		return dynamic.Null, nil
 	}
-	m := M{}
-	m, err := marshalParams(m, &t)
-	if err != nil {
-		return nil, err
-	}
-	m["value"] = t.TermValue
-	return json.Marshal(m)
+
+	return json.Marshal(dynamic.Map{tq.TermField: tq.TermRule})
 }
 
-func (t *TermQuery) UnmarshalJSON(data []byte) error {
-	t.TermField = ""
-	t.TermRule = TermRule{}
+func (tq *TermQuery) UnmarshalJSON(data []byte) error {
+	tq.TermField = ""
+	tq.TermRule = TermRule{}
 
 	m := map[string]json.RawMessage{}
 	err := json.Unmarshal(data, &m)
@@ -132,8 +133,8 @@ func (t *TermQuery) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	for k, v := range m {
-		t.TermField = k
-		err := json.Unmarshal(v, &t.TermRule)
+		tq.TermField = k
+		err := json.Unmarshal(v, &tq.TermRule)
 		if err != nil {
 			return err
 		}
@@ -142,9 +143,9 @@ func (t *TermQuery) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (t *TermQuery) SetTerm(field string, term *Term) error {
+func (tq *TermQuery) SetTerm(field string, term *Term) error {
 	if term == nil {
-		t.RemoveTerm()
+		tq.RemoveTerm()
 		return nil
 	}
 	if field == "" {
@@ -154,11 +155,11 @@ func (t *TermQuery) SetTerm(field string, term *Term) error {
 	if err != nil {
 		return err
 	}
-	t.TermField = field
-	t.TermRule = *r
+	tq.TermField = field
+	tq.TermRule = *r
 	return nil
 }
-func (t *TermQuery) RemoveTerm() {
-	t.TermField = ""
-	t.TermRule = TermRule{}
+func (tq *TermQuery) RemoveTerm() {
+	tq.TermField = ""
+	tq.TermRule = TermRule{}
 }

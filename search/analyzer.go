@@ -45,7 +45,7 @@ func (a *analyzerParam) SetAnalyzer(v string) {
 	}
 }
 
-func marshalAnalyzerParam(data M, source interface{}) (M, error) {
+func marshalAnalyzerParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithAnalyzer); ok {
 		if a.Analyzer() != DefaultAnalyzer {
 			data[paramAnalyzer] = a.Analyzer()
@@ -61,7 +61,7 @@ func unmarshalAnalyzerParam(data dynamic.RawJSON, target interface{}) error {
 		if data.IsString() {
 			a.SetAnalyzer(data.UnquotedString())
 		}
-		return &json.UnmarshalTypeError{Value: data.String()}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 	}
 	return nil
 }

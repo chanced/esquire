@@ -2,12 +2,12 @@ package search
 
 type MatchBooleanPrefix struct {
 	Query                    string `json:"query" bson:"query"`
-	MinimumShouldMatchParam  `json:",inline" bson:",inline"`
+	minimumShouldMatchParam  `json:",inline" bson:",inline"`
 	operatorParam            `json:",inline" bson:",inline"`
-	AnalyzerParam            `json:",inline" bson:",inline"`
+	analyzerParam            `json:",inline" bson:",inline"`
 	fuzzinessParam           `json:",inline" bson:",inline"`
 	prefixLengthParam        `json:",inline" bson:",inline"`
-	FuzzyTranspositionsParam `json:",inline" bson:",inline"`
+	fuzzyTranspositionsParam `json:",inline" bson:",inline"`
 }
 
 type MatchBooleanPrefixQuery struct {

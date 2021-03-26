@@ -45,16 +45,18 @@ func (ci *caseInsensitiveParam) SetCaseInsensitive(v bool) {
 }
 
 func unmarshalCaseInsensitiveParam(data dynamic.RawJSON, target interface{}) error {
-	if r, ok := target.(WithCaseInsensitive); ok {
+	if p, ok := target.(WithCaseInsensitive); ok {
 		if data.IsNull() {
 			return nil
 		}
-		var b bool
 		if data.IsBool() {
+			var b bool
 			err := json.Unmarshal(data, &b)
 			if err != nil {
 				return err
 			}
+			p.SetCaseInsensitive(b)
+			return nil
 		}
 		if data.IsString() {
 			if data.UnquotedString() == "" {
@@ -63,17 +65,17 @@ func unmarshalCaseInsensitiveParam(data dynamic.RawJSON, target interface{}) err
 			n := dynamic.NewBool(data.UnquotedString())
 			v, ok := n.Bool()
 			if !ok {
-				return &json.UnmarshalTypeError{Value: data.UnquotedString()}
+				return &json.UnmarshalTypeError{Value: data.UnquotedString(), Type: typeBool}
 			}
-			r.SetCaseInsensitive(v)
+			p.SetCaseInsensitive(v)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.UnquotedString()}
+		return &json.UnmarshalTypeError{Value: data.UnquotedString(), Type: typeBool}
 	}
 	return nil
 }
 
-func marshalCaseInsensitiveParam(data M, source interface{}) (M, error) {
+func marshalCaseInsensitiveParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithCaseInsensitive); ok {
 		if b.CaseInsensitive() {
 			data[paramCaseInsensitive] = b.CaseInsensitive()

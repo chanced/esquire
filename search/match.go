@@ -1,6 +1,10 @@
 package search
 
-import "github.com/chanced/dynamic"
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
 
 // Match returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
@@ -10,22 +14,47 @@ import "github.com/chanced/dynamic"
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type Match struct {
-	Query                             interface{}
-	Analyzer                          string
+	// (Required) Text, number, boolean value or date you wish to find in the
+	// provided <field>.
+	//
+	// The match query analyzes any provided text before performing a search.
+	// This means the match query can search text fields for analyzed tokens
+	// rather than an exact term.
+	Query dynamic.StringNumberBoolOrTime
+	// Analyzer used to convert the text in the query value into tokens.
+	// Defaults to the index-time analyzer mapped for the <field>. If no
+	// analyzer is mapped, the index’s default analyzer is used.
+	Analyzer string
+	// If true, match phrase queries are NOT automatically created for
+	// multi-term synonyms.
+	//
+	// If true, auto_generate_synonyms_phrase_query is set to false
 	NoAutoGenerateSynonymsPhraseQuery bool
-	NoFuzzyTranspositions             bool
-	Fuzziness                         string
-	FuzzyRewrite                      Rewrite
-	Lenient                           bool
-	Operator                          Operator
-	MaxExpansions                     dynamic.Number
-	PrefixLength                      dynamic.Number
-	MinimumShouldMatchParam           string
-	ZeroTermsQuery                    ZeroTermsQuery
-}
-
-func _() {
-
+	// If true, edits for fuzzy matching DO NOT include transpositions of two
+	// adjacent characters (ab → ba).
+	//
+	// if true, fuzzy_transpositions is set to false
+	NoFuzzyTranspositions bool
+	// Maximum edit distance allowed for matching.
+	Fuzziness    string
+	FuzzyRewrite Rewrite
+	//  If true, format-based errors, such as providing a text query value for a
+	//  numeric field, are ignored. Defaults to false.
+	Lenient bool
+	// Boolean logic used to interpret text in the query value. Defaults to OR
+	Operator Operator
+	// Maximum number of terms to which the query will expand. Defaults to 50.
+	MaxExpansions dynamic.Number
+	// Number of beginning characters left unchanged for fuzzy matching.
+	// Defaults to 0.
+	PrefixLength dynamic.Number
+	// Minimum number of clauses that must match for a document to be returned
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-minimum-should-match.html
+	MinimumShouldMatchParam string
+	// Indicates whether no documents are returned if the analyzer removes all
+	// tokens, such as when using a stop filter.
+	ZeroTermsQuery ZeroTermsQuery
 }
 
 func (m Match) Type() Type {
@@ -36,7 +65,7 @@ func (m Match) Rule() (Rule, error) {
 }
 func (m Match) Match() (*MatchRule, error) {
 	v := &MatchRule{}
-	err := v.SetQuery(v)
+	err := v.SetQuery(m.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -69,72 +98,75 @@ func (m Match) Match() (*MatchRule, error) {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchRule struct {
-	// (Required) Text, number, boolean value or date you wish to find in the
-	// provided <field>.
-	//
-	// The match query analyzes any provided text before performing a search.
-	// This means the match query can search text fields for analyzed tokens
-	// rather than an exact term.
-	Query dynamic.StringNumberBoolOrTime `json:"query" bson:"query"`
-
-	// Analyzer used to convert the text in the query value into tokens.
-	// Defaults to the index-time analyzer mapped for the <field>. If no
-	// analyzer is mapped, the index’s default analyzer is used.
-	AnalyzerParam `json:",inline" bson:",inline"`
-
-	// If true, match phrase queries are automatically created for multi-term
-	// synonyms. Defaults to true.
-	AutoGenerateSynonymsPhraseQueryParam `json:",inline" bson:",inline"`
-
-	// Maximum edit distance allowed for matching.
-	fuzzinessParam `json:",inline" bson:",inline"`
-
-	// Maximum number of terms to which the query will expand. Defaults to 50.
-	maxExpansionsParam `json:",inline" bson:",inline"`
-
-	// Number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
-	prefixLengthParam `json:",inline" bson:",inline"`
-
-	// If true, edits for fuzzy matching include transpositions of two adjacent
-	// characters (ab → ba). Defaults to true.
-	FuzzyTranspositionsParam `json:",inline" bson:",inline"`
-
-	//  If true, format-based errors, such as providing a text query value for a
-	//  numeric field, are ignored. Defaults to false.
-	LenientParam `json:",inline" bson:",inline"`
-
-	// Boolean logic used to interpret text in the query value.
-	operatorParam `json:",inline" bson:",inline"`
-
-	// Minimum number of clauses that must match for a document to be returned
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-minimum-should-match.html
-	MinimumShouldMatchParam `json:",inline" bson:",inline"`
-	// Indicates whether no documents are returned if the analyzer removes all
-	// tokens, such as when using a stop filter.
-	zeroTermsQueryParam `json:",inline" bson:",inline"`
+	MatchQueryValue dynamic.StringNumberBoolOrTime
+	analyzerParam
+	autoGenerateSynonymsPhraseQueryParam
+	fuzzinessParam
+	maxExpansionsParam
+	prefixLengthParam
+	fuzzyTranspositionsParam
+	lenientParam
+	operatorParam
+	minimumShouldMatchParam
+	zeroTermsQueryParam
 }
 
-func (mq *MatchRule) Type() Type {
+func (mr *MatchRule) Type() Type {
 	return TypeMatch
 }
-func (mq *MatchRule) SetQuery(value interface{}) error {
+func (mr MatchRule) HasMatchRule() bool {
+	return !mr.MatchQueryValue.IsEmptyString()
+}
+func (mr *MatchRule) SetQuery(value interface{}) error {
 
 	if snbt, ok := value.(dynamic.StringNumberBoolOrTime); ok {
-		mq.Query = snbt
+		mr.MatchQueryValue = snbt
 		return nil
 	}
 	if snbt, ok := value.(*dynamic.StringNumberBoolOrTime); ok {
-		mq.Query = *snbt
+		mr.MatchQueryValue = *snbt
 		return nil
 	}
-	return mq.Query.Set(value)
+	return mr.MatchQueryValue.Set(value)
 }
 
-func newMatchQuery() MatchQuery {
-	return MatchQuery{
-		MatchQueryValue: map[string]*MatchRule{},
+func (mr MatchRule) MarshalJSON() ([]byte, error) {
+	if !mr.HasMatchRule() {
+		return dynamic.Null, nil
 	}
+	m, err := marshalParams(&mr)
+	if err != nil {
+		return nil, err
+	}
+	m["query"] = mr.MatchQueryValue
+	return json.Marshal(m)
+}
+
+func (mr *MatchRule) UnmarshalJSON(data []byte) error {
+	mr.MatchQueryValue = dynamic.NewStringNumberBoolOrTime()
+	mr.analyzerParam = analyzerParam{}
+	mr.autoGenerateSynonymsPhraseQueryParam = autoGenerateSynonymsPhraseQueryParam{}
+	mr.fuzzinessParam = fuzzinessParam{}
+	mr.fuzzyTranspositionsParam = fuzzyTranspositionsParam{}
+	mr.lenientParam = lenientParam{}
+	mr.prefixLengthParam = prefixLengthParam{}
+	mr.minimumShouldMatchParam = minimumShouldMatchParam{}
+	mr.operatorParam = operatorParam{}
+	mr.maxExpansionsParam = maxExpansionsParam{}
+	mr.zeroTermsQueryParam = zeroTermsQueryParam{}
+
+	fields, err := unmarshalParams(data, mr)
+	if err != nil {
+		return err
+	}
+
+	if v, ok := fields["query"]; ok {
+		mr.MatchQueryValue = dynamic.NewStringNumberBoolOrTime(v.UnquotedString())
+
+	} else {
+		mr.MatchQueryValue = dynamic.StringNumberBoolOrTime{}
+	}
+	return nil
 }
 
 // MatchQuery returns documents that match a provided text, number, date or
@@ -145,28 +177,64 @@ func newMatchQuery() MatchQuery {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	MatchQueryValue map[string]*MatchRule `json:"match,omitempty" bson:"match,omitempty"`
+	MatchField string
+	MatchRule
 }
 
-func (m MatchQuery) Type() Type {
+func (mq MatchQuery) MarshalJSON() ([]byte, error) {
+	if !mq.HasMatchRule() {
+		return dynamic.Null, nil
+	}
+	m, err := marshalParams(&mq)
+	if err != nil {
+		return nil, err
+	}
+	m["query"] = mq.MatchQueryValue
+
+	return json.Marshal(dynamic.Map{mq.MatchField: m})
+}
+
+func (mq *MatchQuery) UnmarshalJSON(data []byte) error {
+	mq.MatchField = ""
+	mq.MatchRule = MatchRule{}
+
+	m := map[string]json.RawMessage{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		mq.MatchField = k
+		err := json.Unmarshal(v, &mq.MatchRule)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
+func (mq MatchQuery) Type() Type {
 	return TypeMatch
 }
 
-func (m *MatchQuery) Match() (key string, value *MatchRule) {
-	for key, value = range m.MatchQueryValue {
-		return key, value
-	}
-	return "", nil
-}
-func (m *MatchQuery) SetMatch(field string, match *Match) error {
-	m.MatchQueryValue = map[string]*MatchRule{}
+func (mq *MatchQuery) SetMatch(field string, match *Match) error {
 	if match == nil {
+		mq.RemoveMatch()
 		return nil
+	}
+	if field == "" {
+		return NewQueryError(ErrFieldRequired, TypeTerm)
 	}
 	r, err := match.Match()
 	if err != nil {
-		return NewRuleError(err, TypeMatch, match, field)
+		return err
 	}
-	m.MatchQueryValue[field] = r
+	mq.MatchField = field
+	mq.MatchRule = *r
 	return nil
+}
+func (mq *MatchQuery) RemoveMatch() {
+	mq.MatchField = ""
+	mq.MatchRule = MatchRule{}
 }

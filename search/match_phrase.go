@@ -2,7 +2,7 @@ package search
 
 type MatchPhrase struct {
 	Query               string `json:"query" bson:"query"`
-	AnalyzerParam       `json:",inline" bson:",inline"`
+	analyzerParam       `json:",inline" bson:",inline"`
 	zeroTermsQueryParam `json:",inline" bson:",inline"`
 }
 

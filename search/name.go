@@ -4,6 +4,9 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+// WithName is a rule / query that has the _name parameter
+//
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#named-queries
 type WithName interface {
 	Name() string
 	SetName(string)
@@ -11,11 +14,8 @@ type WithName interface {
 
 const DefaultName = ""
 
-// nameParam is a mixin that adds the _name parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html#named-queries
 type nameParam struct {
-	name string `json:"_name,omitempty" bson:"_name,omitempty"`
+	name string
 }
 
 func (n nameParam) Name() string {
@@ -33,7 +33,7 @@ func unmarshalNameParam(data dynamic.RawJSON, target interface{}) error {
 	return nil
 }
 
-func marshalNameParam(data M, source interface{}) (M, error) {
+func marshalNameParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithName); ok {
 		if b.Name() != DefaultName {
 			data[paramName] = b.Name()

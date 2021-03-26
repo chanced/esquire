@@ -3,7 +3,7 @@ package search
 import (
 	"encoding/json"
 
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 // Termser can be:
@@ -109,23 +109,20 @@ func (t TermsRule) Value() []string {
 
 func (t TermsRule) MarshalJSON() ([]byte, error) {
 	var v map[string]interface{}
-
+	v, err := marshalRuleParams(&t)
+	if err != nil {
+		return nil, err
+	}
 	if t.TermsField == "" {
-		return []byte{}, nil
+		return dynamic.Null, nil
 	}
-
+	var q interface{}
 	if !t.TermsLookup.lookupIsEmpty() {
-		v = map[string]interface{}{
-			t.TermsField: t.TermsLookup,
-		}
+		q = t.TermsLookup
 	} else {
-		v = map[string]interface{}{
-			t.TermsField: t.TermsValue,
-		}
+		q = t.TermsValue
 	}
-
-	var err error
-	v, err = marshalRuleParams(v, &t)
+	v[t.TermsField] = q
 	if err != nil {
 		return nil, err
 	}
@@ -133,28 +130,36 @@ func (t TermsRule) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TermsRule) UnmarshalJSON(data []byte) error {
-	g := gjson.ParseBytes(data)
-	if !g.Exists() {
+	g := dynamic.RawJSON(data)
+	if g.IsNull() {
 		return nil
 	}
 	t.TermsValue = []string{}
 	t.TermsLookup = TermsLookup{}
-
-	err := unmarshalRule(g, t, func(key, value gjson.Result) error {
-		t.TermsField = key.Str
-		if value.IsArray() {
-			value.ForEach(func(key, value gjson.Result) bool {
-				t.TermsValue = append(t.TermsValue, value.String())
-				return true
-			})
-		} else {
-			err := json.Unmarshal([]byte(value.Raw), &t.TermsLookup)
+	fields, err := unmarshalParams(data, t)
+	if err != nil {
+		return err
+	}
+	for fld, val := range fields {
+		t.TermsField = fld
+		if val.IsArray() {
+			var sl []string
+			err := json.Unmarshal(val, &sl)
 			if err != nil {
 				return err
 			}
+			t.TermsValue = sl
+			return nil
 		}
+		var tl TermsLookup
+		err := json.Unmarshal(val, &tl)
+		if err != nil {
+			return err
+		}
+		t.TermsLookup = tl
 		return nil
-	})
+	}
+
 	return err
 }
 func (t *TermsRule) UnmarshalBSON(data []byte) error {

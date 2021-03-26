@@ -27,7 +27,7 @@ type WithLenient interface {
 type lenientParam struct {
 	// Lenient determines whether format-based errors, such as providing a text
 	// query value for a numeric field, are ignored. Defaults to false.
-	lenient *bool `json:"lenient,omitempty" bson:"lenient,omitempty"`
+	lenient *bool
 }
 
 // Lenient determines whether format-based errors, such as providing a text
@@ -51,14 +51,14 @@ func unmarshalLenientParam(data dynamic.RawJSON, target interface{}) error {
 			return nil
 		}
 		if !ok {
-			return &json.UnmarshalTypeError{Value: data.String()}
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeBool}
 		}
 	}
 	return nil
 }
-func marshalLenientParam(data M, source interface{}) (M, error) {
+func marshalLenientParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithLenient); ok {
-		if b.Lenient() != DefaultLenient {
+		if b.Lenient() {
 			data[paramLenient] = b.Lenient()
 		}
 	}

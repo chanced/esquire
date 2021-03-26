@@ -17,23 +17,21 @@ type WithAutoGenerateSynonymsPhraseQuery interface {
 }
 
 type autoGenerateSynonymsPhraseQueryParam struct {
-	autoGenerateSynonymsPhraseQuery *bool `bson:"auto_generate_synonyms_phrase_query,omitempty" json:"auto_generate_synonyms_phrase_query,omitempty"`
+	autoGenerateSynonymsPhraseQuery dynamic.Bool
 }
 
 // AutoGenerateSynonymsPhraseQuery determines if match phrase queries are
 // automatically created for multi-term synonyms. Defaults to true.
 func (agspq autoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
-	if agspq.autoGenerateSynonymsPhraseQuery == nil {
-		return DefaultAutoGenerateSynonymsPhraseQuery
+	if v, ok := agspq.autoGenerateSynonymsPhraseQuery.Bool(); ok {
+		return v
 	}
-	return *agspq.autoGenerateSynonymsPhraseQuery
+	return DefaultAutoGenerateSynonymsPhraseQuery
 }
 
 // SetAutoGenerateSynonymsPhraseQuery sets AutoGenerateSynonymsPhraseQueryValue to v
 func (agspq *autoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
-	if agspq.AutoGenerateSynonymsPhraseQuery() != v {
-		agspq.autoGenerateSynonymsPhraseQuery = &v
-	}
+	agspq.autoGenerateSynonymsPhraseQuery.Set(v)
 }
 func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithAutoGenerateSynonymsPhraseQuery); ok {
@@ -44,9 +42,10 @@ func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.RawJSON, target 
 	}
 	return nil
 }
-func marshalAutoGenerateSynonymsPhraseQueryParam(data M, source interface{}) (M, error) {
+
+func marshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithAutoGenerateSynonymsPhraseQuery); ok {
-		if b.AutoGenerateSynonymsPhraseQuery() != DefaultAutoGenerateSynonymsPhraseQuery {
+		if !b.AutoGenerateSynonymsPhraseQuery() {
 			data[paramAutoGenerateSynonymsPhraseQuery] = b.AutoGenerateSynonymsPhraseQuery()
 		}
 	}

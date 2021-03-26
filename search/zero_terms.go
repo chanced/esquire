@@ -51,7 +51,7 @@ func unmarshalZeroTermsQueryParam(value dynamic.RawJSON, target interface{}) err
 	}
 	return nil
 }
-func marshalZeroTermsQueryParam(data M, source interface{}) (M, error) {
+func marshalZeroTermsQueryParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithZeroTermsQuery); ok {
 		if b.ZeroTermsQuery() != DefaultZeroTermsQuery {
 			data[paramZeroTermsQuery] = b.ZeroTermsQuery()

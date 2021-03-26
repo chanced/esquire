@@ -14,9 +14,9 @@ const DefaultFuzziness = "0"
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 type WithFuzziness interface {
-	// Fuzziness is the maximum edit distance allowed for matching. See
-	// Fuzziness for valid values and more information. See Fuzziness in the
-	// match query for an example.
+	// Fuzziness is the maximum edit distance allowed for matching.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 	Fuzziness() string
 	// SetFuzziness sets the FuzzinessValue to v
 	SetFuzziness(str string)
@@ -95,12 +95,12 @@ func unmarshalFuzzinessParam(data dynamic.RawJSON, target interface{}) error {
 			r.SetFuzziness(data.UnquotedString())
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String()}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 	}
 	return nil
 }
 
-func marshalFuzzinessParam(data M, source interface{}) (M, error) {
+func marshalFuzzinessParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.Fuzziness() != DefaultFuzziness {
 			data[paramFuzziness] = a.Fuzziness()
@@ -117,11 +117,11 @@ func unmarshalFuzzyRewriteParam(data dynamic.RawJSON, target interface{}) error 
 			r.SetFuzzyRewrite(Rewrite(data.UnquotedString()))
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String()}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 	}
 	return nil
 }
-func marshalFuzzyRewriteParam(data M, source interface{}) (M, error) {
+func marshalFuzzyRewriteParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.FuzzyRewrite() != a.DefaultFuzzyRewrite() {
 			data[paramFuzzyRewrite] = a.FuzzyRewrite()

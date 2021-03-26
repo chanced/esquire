@@ -68,7 +68,7 @@ func (b *boostParam) SetBoost(v float64) {
 	}
 }
 
-func marshalBoostParam(data M, source interface{}) (M, error) {
+func marshalBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithBoost); ok {
 		if b.Boost() != DefaultBoost {
 			data[paramBoost] = b.Boost()

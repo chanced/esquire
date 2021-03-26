@@ -34,7 +34,7 @@ func unmarshalTimeZoneParam(data dynamic.RawJSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalTimeZoneParam(data M, source interface{}) (M, error) {
+func marshalTimeZoneParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithTimeZone); ok {
 		if b.TimeZone() != "" {
 			data[paramTimeZone] = b.TimeZone()

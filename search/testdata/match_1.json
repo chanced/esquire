@@ -1,0 +1,7 @@
+{
+  "match": {
+    "message": {
+      "query": "this is a test"
+    }
+  }
+}

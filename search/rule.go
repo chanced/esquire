@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/chanced/dynamic"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
@@ -73,30 +74,25 @@ func (r *Rules) Add(typ Type, rule Rule) error {
 	return nil
 }
 
-func marshalRuleParams(data M, source Rule) (M, error) {
-	return marshalParams(data, source)
+func marshalRuleParams(source Rule) (dynamic.Map, error) {
+	return marshalParams(source)
 }
 
-func unmarshalRule(data []byte, target Rule, fn func(key, value gjson.Result) error) error {
-	var err error
-
-	g.ForEach(func(key, value gjson.Result) bool {
-		var isParam bool
-		isParam, err = unmarshalParam(key.Str, target, value)
+func unmarshalParams(data []byte, target Rule) (map[string]dynamic.RawJSON, error) {
+	var raw map[string]dynamic.RawJSON
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
+		return nil, err
+	}
+	res := map[string]dynamic.RawJSON{}
+	for key, value := range raw {
+		isParam, err := unmarshalParam(key, value, target)
 		if err != nil {
-			return false
+			return nil, err
 		}
-		if isParam {
-			return true
+		if !isParam {
+			res[key] = value
 		}
-		if fn != nil {
-			err = fn(key, value)
-			if err != nil {
-				return false
-			}
-
-		}
-		return true
-	})
-	return err
+	}
+	return res, nil
 }

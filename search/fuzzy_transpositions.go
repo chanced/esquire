@@ -48,14 +48,14 @@ func unmarshalFuzzyTranspositionsParam(data dynamic.RawJSON, target interface{})
 			return nil
 		}
 		if !ok {
-			return &json.UnmarshalTypeError{Value: data.String()}
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 		}
 	}
 	return nil
 }
-func marshalFuzzyTranspositionsParam(data M, source interface{}) (M, error) {
+func marshalFuzzyTranspositionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithFuzzyTranspositions); ok {
-		if a.FuzzyTranspositions() != DefaultFuzzyTranspositions {
+		if !a.FuzzyTranspositions() {
 			data[paramFuzzyTranspositions] = a.FuzzyTranspositions()
 		}
 	}

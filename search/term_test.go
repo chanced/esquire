@@ -35,44 +35,16 @@ func TestTerm(t *testing.T) {
 	assert.Equal("chanced", q1.TermQuery.Value())
 	assert.Equal("user.id", q1.TermField)
 	assert.True(q1.TermQuery.CaseInsensitive())
-	json1Res, err := json.MarshalIndent(q1.TermQuery, "", "  ")
-	fmt.Println("json1res:", string(json1Res))
+	json1Res, err := json.MarshalIndent(q1, "", "  ")
 	assert.NoError(err)
 	fmt.Println(string(json1Res))
 
-	var res1 search.TermQuery
-	err = json.Unmarshal(json1Res, &res1)
+	var rq1 search.Query
+	err = json.Unmarshal(json1Res, &rq1)
 	assert.NoError(err)
-	assert.Equal(float64(0.2), res1.Boost())
-	assert.True(res1.CaseInsensitive())
-	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, res1.TermValue)
-	assert.Equal("user.id", res1.TermField)
-
-	// j2, err := os.Open("./testdata/terms_2.json")
-	// assert.NoError(err)
-	// defer j2.Close()
-	// json2, err := ioutil.ReadAll(j2)
-	// assert.NoError(err)
-	// var q2 search.Query
-
-	// fmt.Println("json2:\n", string(json2))
-	// err = json.Unmarshal(json2, &q2)
-	// assert.NoError(err)
-	// assert.Equal("2", q2.TermsQuery.TermsID)
-	// assert.Equal("my-index-000001", q2.TermsQuery.TermsIndex)
-	// assert.Equal("color", q2.TermsPath)
-	// assert.Equal("color", q2.TermsField)
-
-	// json2Res, err := json.MarshalIndent(q2.TermsQuery, "", "  ")
-	// assert.NoError(err)
-	// var res2 search.TermsRule
-
-	// fmt.Println(string(json2Res))
-	// err = json.Unmarshal(json2Res, &res2)
-	// assert.NoError(err)
-	// assert.Equal("2", res2.TermsID)
-	// assert.Equal("my-index-000001", res2.TermsIndex)
-	// assert.Equal("color", res2.TermsPath)
-	// assert.Equal("color", res2.TermsField)
+	assert.Equal(float64(0.2), rq1.TermQuery.Boost())
+	assert.True(rq1.TermQuery.CaseInsensitive())
+	assert.Equal("chanced", rq1.TermValue)
+	assert.Equal("user.id", rq1.TermField)
 
 }

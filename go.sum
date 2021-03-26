@@ -10,6 +10,14 @@ github.com/chanced/dynamic v0.0.0-20210326045807-4bb4674c86cd h1:93Ax0dWIU/ScvHa
 github.com/chanced/dynamic v0.0.0-20210326045807-4bb4674c86cd/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/chanced/dynamic v0.0.0-20210326053232-d996382fa08b h1:JEF9RmYd+DeQtmpWUxo7TkJe8RSVeUEbXkfpJaVgfJg=
 github.com/chanced/dynamic v0.0.0-20210326053232-d996382fa08b/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210326065252-361e8c77e810 h1:JlPVNW5r6hoquzhMgJPHnR0uPFfPLsUC7Ysz/t4rZvs=
+github.com/chanced/dynamic v0.0.0-20210326065252-361e8c77e810/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210326164122-e0393acb44b5 h1:DZMv81ffnuN+6BlfyVIUe8j2Lo6c2jKRUMnUKaTTzPU=
+github.com/chanced/dynamic v0.0.0-20210326164122-e0393acb44b5/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210326173054-f22ca666c6fd h1:JBlBWWNf2IZCb13ONZtLTSHjiC5gXx3OJKDOcbiYT54=
+github.com/chanced/dynamic v0.0.0-20210326173054-f22ca666c6fd/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210326184528-22a6d03a33ed h1:WSkNLpDVCU++3pzPNmyHx4DGEkomyu2slf1SlhPuU2I=
+github.com/chanced/dynamic v0.0.0-20210326184528-22a6d03a33ed/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

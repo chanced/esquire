@@ -58,7 +58,7 @@ func unmarshalOperatorParam(data dynamic.RawJSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalOperatorParam(data M, source interface{}) (M, error) {
+func marshalOperatorParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithOperator); ok {
 		if b.Operator() != DefaultOperator {
 			data[paramOperator] = b.Operator()

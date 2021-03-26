@@ -42,12 +42,12 @@ func unmarshalPrefixLengthParam(data dynamic.RawJSON, target interface{}) error 
 			a.SetPrefixLength(v)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String()}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
 	}
 	return nil
 }
 
-func marshalPrefixLengthParam(data M, source interface{}) (M, error) {
+func marshalPrefixLengthParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithPrefixLength); ok {
 		if b.PrefixLength() != DefaultPrefixLength {
 			data[paramPrefixLength] = b.PrefixLength()

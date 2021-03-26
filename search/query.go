@@ -3,7 +3,7 @@ package search
 import (
 	"encoding/json"
 
-	"github.com/chanced/picker/internal/jsonutil"
+	"github.com/chanced/dynamic"
 )
 
 // Query defines the search definition using the ElasticSearch Query DSL
@@ -53,7 +53,12 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 			return err
 		}
 	}
-
+	if match, ok := m["match"]; ok {
+		err = json.Unmarshal(match, &q.MatchQuery)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -63,7 +68,7 @@ func (q Query) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if jsonutil.IsNotNil(terms) {
+	if !dynamic.RawJSON(terms).IsNull() {
 		m["terms"] = json.RawMessage(terms)
 	}
 
@@ -71,10 +76,17 @@ func (q Query) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if jsonutil.IsNotNil(term) {
+	if !dynamic.RawJSON(term).IsNull() {
 		m["term"] = json.RawMessage(term)
 	}
 
+	match, err := q.MatchQuery.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	if !dynamic.RawJSON(match).IsNull() {
+		m["match"] = json.RawMessage(match)
+	}
 	return json.Marshal(m)
 }
 

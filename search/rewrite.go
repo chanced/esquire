@@ -126,7 +126,7 @@ func unmarshalRewriteParam(data dynamic.RawJSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalRewriteParam(data M, source interface{}) (M, error) {
+func marshalRewriteParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithRewrite); ok {
 		if b.Rewrite() != DefaultRewrite {
 			data[paramRewrite] = b.Rewrite()
