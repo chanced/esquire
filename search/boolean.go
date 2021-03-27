@@ -5,7 +5,6 @@ package search
 // using one or more boolean clauses, each clause with a typed occurrence.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-
 type Boolean struct {
 	//The clause (query) must appear in matching documents and will contribute
 	//to the score.
@@ -92,6 +91,10 @@ func (b booleanClause) Type() Type {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 type BooleanQuery struct {
 	booleanClause
+}
+
+func (b *BooleanQuery) HasBooleanClause() bool {
+	return len(b.Must) > 0 || len(b.MustNot) > 0 || len(b.Should) > 0 || len(b.Filter) > 0
 }
 
 func (b *BooleanQuery) SetBoolean(v *Boolean) error {

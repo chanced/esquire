@@ -6,6 +6,52 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type QueryParams struct {
+
+	// Term returns documents that contain an exact term in a provided field.
+	//
+	// You can use the term query to find documents based on a precise value such as
+	// a price, a product ID, or a username.
+	//
+	// Avoid using the term query for text fields.
+	//
+	// By default, Elasticsearch changes the values of text fields as part of
+	// analysis. This can make finding exact matches for text field values
+	// difficult.
+	//
+	// To search text field values, use the match query instead.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
+	Term *Term
+
+	// Terms returns documents that contain one or more exact terms in a provided
+	// field.
+	//
+	// The terms query is the same as the term query, except you can search for
+	// multiple values.
+	Terms *Terms
+
+	// Match returns documents that match a provided text, number, date or boolean
+	// value. The provided text is analyzed before matching.
+	//
+	// The match query is the standard query for performing a full-text search,
+	// including options for fuzzy matching.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
+	Match *Match
+
+	// Boolean is a query that matches documents matching boolean combinations
+	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
+	// using one or more boolean clauses, each clause with a typed occurrence.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
+	Boolean *Boolean
+}
+
+func NewQuery(params QueryParams) (*Query, error) {
+	panic("not impl")
+}
+
 // Query defines the search definition using the ElasticSearch Query DSL
 //
 // Elasticsearch provides a full Query DSL (Domain Specific Language) based on
@@ -32,6 +78,16 @@ type Query struct {
 	BooleanQuery
 	TermQuery
 	TermsQuery
+}
+
+func (q Query) HasClauses() bool {
+
+	return q.HasMatchRule() || q.HasTermRule() || q.HasTermsClause() || q.HasBooleanClause()
+
+}
+
+func (q Query) IsEmpty() bool {
+	return !q.HasClauses()
 }
 
 func (q *Query) UnmarshalJSON(data []byte) error {
@@ -96,8 +152,4 @@ func (q *Query) Clone() *Query {
 	}
 	// TODO: implement this
 	return &Query{}
-}
-
-type QueryParam struct {
-	QueryValue *Query `json:"query,omitempty" bson:"query,omitempty"`
 }

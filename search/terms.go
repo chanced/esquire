@@ -139,6 +139,10 @@ func (t termsClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v)
 }
 
+func (t *TermsQuery) HasTermsClause() bool {
+	return (t.Field() != "" || !t.lookupIsEmpty()) || (t.Field() != "" && len(t.TermsValue) > 0) || t.Boost() > 0
+}
+
 func (t *termsClause) UnmarshalJSON(data []byte) error {
 	g := dynamic.RawJSON(data)
 	if g.IsNull() {
@@ -172,6 +176,7 @@ func (t *termsClause) UnmarshalJSON(data []byte) error {
 
 	return err
 }
+
 func (t *termsClause) UnmarshalBSON(data []byte) error {
 	return t.UnmarshalJSON(data)
 }
