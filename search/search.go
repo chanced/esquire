@@ -1,6 +1,7 @@
 package search
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/chanced/dynamic"
@@ -19,7 +20,13 @@ type Params struct {
 	// (Optional) .
 	//
 	// You can specify items in the array as a string or object.
-	DocValueFields DocValueFields
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#docvalue-fields
+	//
+	// See also:
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html
+	DocValueFields Fields
 
 	// Array of wildcard (*) patterns. The request returns values for field
 	// names matching these patterns in the hits.fields property of the response
@@ -129,7 +136,7 @@ func NewSearch(p Params) (*Search, error) {
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
 	query            *Query          // query
-	docValueFields   DocValueFields  // docvalue_fields
+	docValueFields   Fields          // docvalue_fields
 	fields           Fields          // fields
 	explain          bool            // explain
 	from             int64           // from
@@ -146,12 +153,226 @@ type Search struct {
 	version          bool            // version
 }
 
-func (s *Search) UnmarshalJSON(data []byte) error {
-	panic("not impl")
+var zeroSearch = &Search{}
+
+func (s *Search) UnmarshalJSON(data []byte) (err error) {
+	*s = *zeroSearch
+	var m map[string]dynamic.RawJSON
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	if d, ok := m["query"]; ok {
+		var q Query
+		err = json.Unmarshal(d, &q)
+		if err != nil {
+			return err
+		}
+		s.query = &q
+	}
+	if d, ok := m["docvalue_fields"]; ok {
+		var df Fields
+		err = json.Unmarshal(d, &df)
+		if err != nil {
+			return err
+		}
+		s.docValueFields = df
+	}
+	if d, ok := m["fields"]; ok {
+		var f Fields
+		err = json.Unmarshal(d, &f)
+		if err != nil {
+			return err
+		}
+		s.fields = f
+	}
+	if d, ok := m["explain"]; ok {
+		b := dynamic.NewBool(d.UnquotedString())
+		if v, ok := b.Bool(); ok {
+			s.explain = v
+		}
+	}
+	if d, ok := m["from"]; ok {
+		var i int64
+		err := json.Unmarshal(d, &i)
+		if err != nil {
+			return err
+		}
+		s.from = i
+	}
+	if d, ok := m["indices_boost"]; ok {
+		var ib IndicesBoost
+		err = json.Unmarshal(d, &ib)
+		if err != nil {
+			return err
+		}
+		s.indicesBoost = ib
+	}
+	if d, ok := m["min_score"]; ok {
+		var i float64
+		err = json.Unmarshal(d, &i)
+		if err != nil {
+			return err
+		}
+		s.minScore = i
+	}
+	if d, ok := m["pit"]; ok {
+		var pit PointInTime
+		err = json.Unmarshal(d, &pit)
+		if err != nil {
+			return err
+		}
+		s.pointInTime = &pit
+	}
+	if d, ok := m["runtime_mappings"]; ok {
+		var r RuntimeMappings
+		err = json.Unmarshal(d, &r)
+		if err != nil {
+			return err
+		}
+		s.runtimeMappings = r
+	}
+	if d, ok := m["seq_no_primary_term"]; ok {
+		var b bool
+		err = json.Unmarshal(d, &b)
+		if err != nil {
+			return err
+		}
+	}
+	if d, ok := m["size"]; ok {
+		n := dynamic.NewNumber(d.UnquotedString())
+		s.size = n
+	}
+
+	if d, ok := m["_source"]; ok {
+		var v Source
+		err = json.Unmarshal(d, &v)
+		if err != nil {
+			return err
+		}
+		s.source = &v
+	}
+	if d, ok := m["stats"]; ok {
+		var v []string
+		err = json.Unmarshal(d, &v)
+		if err != nil {
+			return err
+		}
+		s.stats = v
+	}
+	if d, ok := m["terminate_after"]; ok {
+		var i int64
+		err = json.Unmarshal(d, &i)
+		if err != nil {
+			return err
+		}
+		s.terminateAfter = i
+	}
+	if d, ok := m["timeout"]; ok {
+		var v time.Duration
+		err = json.Unmarshal(d, &v)
+		if err != nil {
+			return err
+		}
+		s.timeout = v
+	}
+	if d, ok := m["version"]; ok {
+		var v bool
+		err = json.Unmarshal(d, &v)
+		if err != nil {
+			return err
+		}
+		s.version = v
+	}
+	return nil
 }
 
 func (s Search) MarshalJSON() ([]byte, error) {
-	panic("not impl")
+
+	data := map[string]dynamic.RawJSON{}
+	if len(s.docValueFields) > 0 {
+		b, err := json.Marshal(s.docValueFields)
+		if err != nil {
+			return nil, err
+		}
+		data["docvalue_fields"] = b
+	}
+
+	if len(s.fields) > 0 {
+		b, err := json.Marshal(s.fields)
+		if err != nil {
+			return nil, err
+		}
+		data["fields"] = b
+	}
+	if s.minScore > 0 {
+		data["min_score"] = dynamic.NewNumber(s.minScore).Bytes()
+	}
+	if s.explain {
+		data["explain"] = trueBytes
+	}
+	if s.from > 0 {
+		data["from"] = dynamic.NewNumber(s.from).Bytes()
+	}
+	if len(s.indicesBoost) > 0 {
+		b, err := json.Marshal(s.indicesBoost)
+		if err != nil {
+			return nil, err
+		}
+		data["indices_boost"] = b
+	}
+	if s.pointInTime != nil && len(s.pointInTime.ID) > 0 {
+		b, err := json.Marshal(s.pointInTime)
+		if err != nil {
+			return nil, err
+		}
+		data["pit"] = b
+	}
+	if s.query != nil {
+		b, err := json.Marshal(s.query)
+		if err != nil {
+			return nil, err
+		}
+		data["query"] = b
+	}
+	if len(s.runtimeMappings) > 0 {
+		b, err := json.Marshal(s.runtimeMappings)
+		if err != nil {
+			return nil, err
+		}
+		data["runtime_mappings"] = b
+	}
+	if s.seqNoPrimaryTerm {
+		data["seq_no_primary_term"] = trueBytes
+	}
+
+	if i, ok := s.size.Int(); ok && i != 10 && i != 0 {
+		data["size"] = s.size.Bytes()
+	}
+	if s.source != nil {
+		b, err := json.Marshal(s.source)
+		if err != nil {
+			return nil, err
+		}
+		data["_source"] = b
+	}
+	if len(s.stats) > 0 {
+		b, err := json.Marshal(s.stats)
+		if err != nil {
+			return nil, err
+		}
+		data["stats"] = b
+	}
+	if s.terminateAfter > 0 {
+		data["terminate_after"] = dynamic.NewNumber(s.terminateAfter).Bytes()
+	}
+	if s.timeout > 0 {
+		data["timeout"] = append([]byte{'"'}, s.timeout.String()+`"`...)
+	}
+	if s.version {
+		data["version"] = trueBytes
+	}
+	return json.Marshal(data)
 }
 
 // DocValueFields is used to return  return doc values for one or more fields in
@@ -164,15 +385,15 @@ func (s Search) MarshalJSON() ([]byte, error) {
 // You can specify items in the array as a string or object.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#docvalue-fields
-func (s Search) DocValueFields() DocValueFields {
+func (s Search) DocValueFields() Fields {
 	if s.docValueFields == nil {
-		s.docValueFields = DocValueFields{}
+		s.docValueFields = Fields{}
 	}
 	return s.docValueFields
 }
 
 // SetDocValueFields sets DocValueFieldsValue to v
-func (s *Search) SetDocValueFields(v DocValueFields) *Search {
+func (s *Search) SetDocValueFields(v Fields) *Search {
 	s.docValueFields = v
 	return s
 }
