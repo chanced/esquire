@@ -32,7 +32,7 @@ func (mb maxBoostParam) SetMaxBoost(v float64) {
 }
 func unmarshalMaxBoostParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithMaxBoost); ok {
-		n := dynamic.NewNumber()
+		n := dynamic.NewNumber(data.UnquotedString())
 		if v, ok := n.Float(); ok {
 			a.SetMaxBoost(v)
 			return nil

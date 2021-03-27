@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
 const DefaultMaxExpansions = int64(50)
 
 // WithMaxExpansions is a query with the max_expansions param
@@ -36,4 +42,23 @@ func (me *maxExpansionsParam) SetMaxExpansions(v int64) {
 	if me.MaxExpansions() != v {
 		me.maxExpansions = &v
 	}
+}
+func unmarshalMaxExpansionsParam(data dynamic.RawJSON, target interface{}) error {
+	if a, ok := target.(WithMaxExpansions); ok {
+		n := dynamic.NewNumber(data.UnquotedString())
+		if v, ok := n.Int(); ok {
+			a.SetMaxExpansions(v)
+			return nil
+		}
+		return &json.UnmarshalTypeError{Value: data.String(), Type: typeInt64}
+	}
+	return nil
+}
+func marshalMaxExpansionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+	if b, ok := source.(WithMaxExpansions); ok {
+		if b.MaxExpansions() != DefaultMaxExpansions {
+			data[paramMaxExpansions] = b.MaxExpansions()
+		}
+	}
+	return data, nil
 }

@@ -1,6 +1,8 @@
 package search
 
 import (
+	"strings"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -10,6 +12,12 @@ type ZeroTermsQuery string
 
 func (ztq ZeroTermsQuery) String() string {
 	return string(ztq)
+}
+func (ztq ZeroTermsQuery) toLower() ZeroTermsQuery {
+	return ZeroTermsQuery(strings.ToLower(string(ztq)))
+}
+func (ztq ZeroTermsQuery) ref() *ZeroTermsQuery {
+	return &ztq
 }
 
 const (
@@ -43,7 +51,7 @@ func (ztq zeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
 }
 
 func (ztq *zeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
-	ztq.zeroTermsQuery = &v
+	ztq.zeroTermsQuery = v.toLower().ref()
 }
 func unmarshalZeroTermsQueryParam(value dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithZeroTermsQuery); ok {

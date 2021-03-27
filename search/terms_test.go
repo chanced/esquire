@@ -55,7 +55,7 @@ func TestTerms(t *testing.T) {
 
 	json2Res, err := json.MarshalIndent(q2.TermsQuery, "", "  ")
 	assert.NoError(err)
-	var res2 search.TermsRule
+	var res2 search.TermsQuery
 
 	fmt.Println(string(json2Res))
 	err = json.Unmarshal(json2Res, &res2)

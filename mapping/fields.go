@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 var ErrFieldExists = errors.New("field already exists")
@@ -13,57 +13,60 @@ var ErrFieldExists = errors.New("field already exists")
 // Fields are a collection of Field mappings
 type Fields map[string]Field
 
-func (flds Fields) Clone() Fields {
+func (f Fields) Clone() Fields {
 	res := Fields{}
-	for k, v := range flds {
+	for k, v := range f {
 		res[k] = v.Clone()
 	}
 	return res
 }
 
-func (flds Fields) Field(key string) Field {
-	return flds[key]
+func (f Fields) Field(key string) Field {
+	return f[key]
 }
 
-func (flds Fields) SetField(key string, field Field) {
-	flds[key] = field
+func (f Fields) SetField(key string, field Field) {
+	f[key] = field
 }
 
-func (flds Fields) AddField(key string, field Field) error {
-	if _, exists := flds[key]; exists {
+func (f Fields) AddField(key string, field Field) error {
+	if _, exists := f[key]; exists {
 		return fmt.Errorf("%w: %s", ErrFieldExists, key)
 	}
-	flds[key] = field
+	f[key] = field
 	return nil
 }
 
-func (flds *Fields) UnmarshalJSON(data []byte) error {
-	if flds == nil || *flds == nil {
-		*flds = Fields{}
+func (f *Fields) UnmarshalJSON(data []byte) error {
+	var m map[string]dynamic.RawJSON
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
 	}
-	r := gjson.ParseBytes(data)
-	var err error
-	r.ForEach(func(key, value gjson.Result) bool {
-		vt := Type(value.Get("type").String())
-		handler, ok := FieldTypeHandlers[vt]
-		if !ok {
-			err = ErrInvalidType
-			return false
-		}
-		fld := handler()
-		if fld == nil {
-			err = ErrInvalidType
-			return false
-		}
+	*f = make(Fields, len(m))
 
-		err = json.Unmarshal([]byte(value.Raw), fld)
+	for fld, fd := range m {
+		var props map[string]dynamic.RawJSON
+		err := json.Unmarshal(fd, &props)
 		if err != nil {
-			return false
+			return err
 		}
-		(*flds)[key.Str] = fld
-		return true
-	})
-	return err
+		typ, ok := props["type"]
+		if !ok {
+			return errors.New("mapping type is missing for " + fld)
+		}
+		handler, ok := FieldTypeHandlers[Type(typ.UnquotedString())]
+		if !ok {
+			return fmt.Errorf("%w <%s> for field %s", ErrInvalidType, typ, fld)
+		}
+		nf := handler()
+		err = json.Unmarshal(fd, &nf)
+		if err != nil {
+			return err
+		}
+		(*f)[fld] = nf
+	}
+	return nil
 }
 
 // WithFields is a mixin that adds the fields param

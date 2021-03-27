@@ -9,7 +9,7 @@ type Prefix struct {
 func (p Prefix) Type() Type {
 	return TypePrefix
 }
-func (p Prefix) Rule() (Rule, error) {
+func (p Prefix) Rule() (Clause, error) {
 	return p.Query()
 }
 func (p Prefix) Query() (*PrefixRule, error) {

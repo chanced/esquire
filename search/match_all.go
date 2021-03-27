@@ -4,7 +4,7 @@ type MatchAll struct {
 	Boost float64
 }
 
-func (ma MatchAll) Rule() (Rule, error) {
+func (ma MatchAll) Rule() (Clause, error) {
 	r := &MatchAllRule{}
 	r.SetBoost(ma.Boost)
 	return r, nil

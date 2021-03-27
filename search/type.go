@@ -2,6 +2,15 @@ package search
 
 type Type string
 
+func (t Type) String() string {
+	return string(t)
+}
+
+func (t Type) IsValid() bool {
+	_, ok := clauseHandlers[t]
+	return ok
+}
+
 const (
 	TypePrefix         Type = "prefix"
 	TypeMatch          Type = "match"
@@ -17,13 +26,10 @@ const (
 	TypeAllOf          Type = "all_of"
 )
 
-var TypeHandlers = map[Type]func() Rule{
-	TypePrefix:  func() Rule { return &PrefixRule{} },
-	TypeMatch:   func() Rule { return &MatchRule{} },
-	TypeBoolean: func() Rule { return &BooleanRule{} },
-	TypeTerm:    func() Rule { return &TermRule{} },
-}
-
-func (qt Type) String() string {
-	return string(qt)
+var clauseHandlers = map[Type]func() Clause{
+	TypePrefix: func() Clause { return &PrefixRule{} },
+	TypeMatch:  func() Clause { return &MatchQuery{} },
+	TypeTerm:   func() Clause { return &TermQuery{} },
+	TypeTerms:  func() Clause { return &TermsQuery{} },
+	// TypeBoolean: func() Clause { return &BooleanRule{} },
 }

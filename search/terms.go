@@ -20,7 +20,7 @@ import (
 //  err = s.AddTerms(&Terms{ Field:"", Value: []string{"kimchy", "elkbee"}})
 //  _ = err // handle err
 type Termser interface {
-	Terms() (*TermsRule, error)
+	Terms() (*termsClause, error)
 }
 
 // Terms returns documents that contain one or more exact terms in a provided
@@ -29,18 +29,21 @@ type Termser interface {
 // The terms query is the same as the term query, except you can search for
 // multiple values.
 type Terms struct {
+	Field           string
 	Values          []string
 	Boost           float64
 	CaseInsensitive bool
 }
 
-func (t Terms) Rule() (Rule, error) {
+func (t Terms) Rule() (Clause, error) {
 	return t.Terms()
 }
-func (t Terms) Terms() (*TermsRule, error) {
-	q := &TermsRule{
+func (t Terms) Terms() (*termsClause, error) {
+	q := &termsClause{
 		TermsValue: t.Values,
+		TermsField: t.Field,
 	}
+
 	q.SetBoost(t.Boost)
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
@@ -61,7 +64,7 @@ func (t TermsLookup) lookupIsEmpty() bool {
 	return len(t.TermsID) == 0 && len(t.TermsIndex) == 0 && len(t.TermsPath) == 0 && len(t.TermsRouting) == 0
 }
 
-type TermsRule struct {
+type termsClause struct {
 	TermsLookup
 	TermsValue []string
 	TermsField string
@@ -69,21 +72,25 @@ type TermsRule struct {
 	caseInsensitiveParam
 }
 
-func (t *TermsRule) Type() Type {
+func (t termsClause) Field() string {
+	return t.TermsField
+}
+
+func (t termsClause) Type() Type {
 	return TypeTerms
 }
 
-func (t *TermsRule) SetValue(value []string) {
+func (t *termsClause) SetValue(value []string) {
 	t.TermsLookup = TermsLookup{}
 	if value == nil {
 		value = []string{}
 	}
 	t.TermsValue = value
 }
-func (t *TermsRule) SetField(field string) {
+func (t *termsClause) SetField(field string) {
 	t.TermsField = field
 }
-func (t *TermsRule) SetLookup(lookup *TermsLookup) {
+func (t *termsClause) SetLookup(lookup *TermsLookup) {
 	t.SetValue([]string{})
 	if lookup == nil {
 		lookup = &TermsLookup{}
@@ -91,7 +98,7 @@ func (t *TermsRule) SetLookup(lookup *TermsLookup) {
 	t.TermsLookup = *lookup
 
 }
-func (t *TermsRule) set(v Termser) error {
+func (t *termsClause) set(v Termser) error {
 	tv, err := v.Terms()
 	if err != nil {
 		return err
@@ -103,13 +110,15 @@ func (t *TermsRule) set(v Termser) error {
 	return nil
 }
 
-func (t TermsRule) Value() []string {
+func (t termsClause) Value() []string {
 	return t.TermsValue
 }
 
-func (t TermsRule) MarshalJSON() ([]byte, error) {
+func (t termsClause) selfIdentifying() {}
+
+func (t termsClause) MarshalJSON() ([]byte, error) {
 	var v map[string]interface{}
-	v, err := marshalRuleParams(&t)
+	v, err := marshalClauseParams(&t)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +138,7 @@ func (t TermsRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v)
 }
 
-func (t *TermsRule) UnmarshalJSON(data []byte) error {
+func (t *termsClause) UnmarshalJSON(data []byte) error {
 	g := dynamic.RawJSON(data)
 	if g.IsNull() {
 		return nil
@@ -162,16 +171,16 @@ func (t *TermsRule) UnmarshalJSON(data []byte) error {
 
 	return err
 }
-func (t *TermsRule) UnmarshalBSON(data []byte) error {
+func (t *termsClause) UnmarshalBSON(data []byte) error {
 	return t.UnmarshalJSON(data)
 }
 
-func (t TermsRule) MarshalBSON() ([]byte, error) {
+func (t termsClause) MarshalBSON() ([]byte, error) {
 	return t.MarshalJSON()
 }
 
 type TermsQuery struct {
-	TermsRule `json:",inline" bson:",inline"`
+	termsClause `json:",inline" bson:",inline"`
 }
 
 func (t TermsQuery) SetTerms(field string, value Termser) error {

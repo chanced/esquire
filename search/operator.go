@@ -1,6 +1,8 @@
 package search
 
 import (
+	"strings"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -8,19 +10,28 @@ type Operator string
 
 func (o Operator) String() string { return string(o) }
 
-const DefaultOperator = Or
+func (o Operator) toUpper() Operator {
+	return Operator(strings.ToUpper(string(o)))
+}
+func (o Operator) ref() *Operator {
+	return &o
+}
+
+const DefaultOperator = OperatorOr
 
 const (
-	// Or Operator
+	// OperatorOr Operator
 	//
 	// For example, a query value of capital of Hungary is interpreted as
 	// capital OR of OR Hungary.
-	Or Operator = "OR"
-	// And Operator
+	OperatorOr Operator = "OR"
+	// OperatorAnd Operator
 	//
 	// For example, a query value of capital of Hungary is interpreted as capital
 	// AND of AND Hungary.
-	And Operator = "AND"
+	OperatorAnd Operator = "AND"
+	And                  = OperatorAnd
+	Or                   = OperatorOr
 )
 
 // WithOperator is a query with the operator param
@@ -50,7 +61,7 @@ func (o operatorParam) Operator() Operator {
 
 // SetOperator sets the Operator to v
 func (o *operatorParam) SetOperator(v Operator) {
-	o.operator = &v
+	o.operator = v.toUpper().ref()
 }
 func unmarshalOperatorParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithOperator); ok {

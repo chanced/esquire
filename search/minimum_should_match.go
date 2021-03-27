@@ -4,8 +4,6 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-const DefaultMinimumShouldMatch = "0"
-
 // WithMinimumShouldMatch is a query with the minimum_should_match param
 //
 // Examples of possible values:
@@ -70,13 +68,11 @@ func (msm minimumShouldMatchParam) MinimumShouldMatch() string {
 	if msm.mimimumShouldMatch != "" {
 		return msm.mimimumShouldMatch
 	}
-	return DefaultMinimumShouldMatch
+	return ""
 }
 
 func (msm *minimumShouldMatchParam) SetMinimumShouldMatch(v string) {
-	if msm.MinimumShouldMatch() != v {
-		msm.mimimumShouldMatch = v
-	}
+	msm.mimimumShouldMatch = v
 }
 func unmarshalMinimumShouldMatchParam(data dynamic.RawJSON, target interface{}) error {
 	if a, ok := target.(WithMinimumShouldMatch); ok {
@@ -86,7 +82,7 @@ func unmarshalMinimumShouldMatchParam(data dynamic.RawJSON, target interface{}) 
 }
 func marshalMinimumShouldMatchParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMinimumShouldMatch); ok {
-		if b.MinimumShouldMatch() != DefaultMinimumShouldMatch {
+		if b.MinimumShouldMatch() != "" {
 			data[paramMinimumShouldMatch] = b.MinimumShouldMatch()
 		}
 	}

@@ -3,7 +3,7 @@ package search
 import (
 	"encoding/json"
 
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 // Script filters documents based on a provided script. The script query is
@@ -25,22 +25,33 @@ func (s Script) MarshalJSON() ([]byte, error) {
 }
 func (s *Script) UnmarshalJSON(data []byte) error {
 	s.Language = ""
-	s.Params = nil
+	s.Params = map[string]interface{}{}
 	s.Source = ""
-	g := gjson.ParseBytes(data)
-	if g.Type == gjson.String {
-		s.Source = g.String()
+	d := dynamic.RawJSON(data)
+	if d.IsString() {
+		s.Source = d.UnquotedString()
 		return nil
 	}
-	s.Source = g.Get("source").String()
-	s.Language = g.Get("lang").String()
-	params := g.Get("params")
-	if params.Exists() {
-		params.ForEach(func(key, value gjson.Result) bool {
-			s.Params[key.String()] = value.Value()
-			return true
-		})
+	m := map[string]dynamic.RawJSON{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
 	}
+	if src, ok := m["source"]; ok {
+		s.Source = src.UnquotedString()
+	}
+	if lang, ok := m["lang"]; ok {
+		s.Language = lang.UnquotedString()
+	}
+	if params, ok := m["params"]; ok {
+		var p map[string]interface{}
+		err := json.Unmarshal(params, &p)
+		if err != nil {
+			return err
+		}
+		s.Params = p
+	}
+
 	return nil
 }
 

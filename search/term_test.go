@@ -31,6 +31,7 @@ func TestTerm(t *testing.T) {
 
 	err = json.Unmarshal(json1, &q1)
 	assert.NoError(err)
+
 	assert.Equal(float64(0.2), q1.TermQuery.Boost())
 	assert.Equal("chanced", q1.TermQuery.Value())
 	assert.Equal("user.id", q1.TermField)

@@ -60,6 +60,7 @@ func unmarshalAnalyzerParam(data dynamic.RawJSON, target interface{}) error {
 		}
 		if data.IsString() {
 			a.SetAnalyzer(data.UnquotedString())
+			return nil
 		}
 		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 	}

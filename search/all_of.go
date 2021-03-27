@@ -7,6 +7,6 @@ func (ao AllOf) Type() Type {
 	return TypeAllOf
 }
 
-func (ao AllOf) Rule() (Rule, error) {
+func (ao AllOf) Rule() (Clause, error) {
 	return &AllOf{}, nil
 }

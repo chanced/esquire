@@ -15,7 +15,7 @@ const (
 	paramAutoGenerateSynonymsPhraseQuery = "auto_generate_synonyms_phrase_query"
 	paramLenient                         = "lenient"
 	paramMaxBoost                        = "max_boost"
-	ParamMaxExpansions                   = "max_expansions"
+	paramMaxExpansions                   = "max_expansions"
 	paramMinimumShouldMatch              = "minimum_should_match"
 	paramName                            = "_name"
 	paramOperator                        = "operator"
@@ -26,6 +26,7 @@ const (
 	paramTranspositions                  = "transpositions"
 	paramTimeZone                        = "time_zone"
 	paramSlop                            = "slop"
+	paramCutoffFrequency                 = "cutoff_frequency"
 	// ParamQuery                           Param = "query"
 )
 
@@ -55,6 +56,8 @@ var paramMarshalers = map[string]func(data dynamic.Map, source interface{}) (dyn
 	paramTimeZone:                        marshalTimeZoneParam,
 	paramSlop:                            marshalSlopParam,
 	paramAutoGenerateSynonymsPhraseQuery: marshalAutoGenerateSynonymsPhraseQueryParam,
+	paramCutoffFrequency:                 marshalCutoffFrequencyParam,
+	paramMaxExpansions:                   marshalMaxExpansionsParam,
 }
 
 var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}) error{
@@ -78,6 +81,8 @@ var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}
 	paramTimeZone:                        unmarshalTimeZoneParam,
 	paramSlop:                            unmarshalSlopParam,
 	paramAutoGenerateSynonymsPhraseQuery: unmarshalAutoGenerateSynonymsPhraseQueryParam,
+	paramCutoffFrequency:                 unmarshalCutoffFrequencyParam,
+	paramMaxExpansions:                   unmarshalMaxExpansionsParam,
 }
 
 func unmarshalParam(param string, data dynamic.RawJSON, target interface{}) (bool, error) {

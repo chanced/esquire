@@ -27,9 +27,11 @@ type WithFuzziness interface {
 	// method of top_terms_blended_freqs_${max_expansions} by default.
 	FuzzyRewrite() Rewrite
 	// SetFuzzyRewrite sets the value of FuzzyRewrite to v
-	SetFuzzyRewrite(v Rewrite)
+	SetFuzzyRewrite(v Rewrite) error
 	DefaultFuzzyRewrite() Rewrite
 }
+
+var _ WithFuzziness = (*fuzzinessParam)(nil)
 
 // fuzzinessParam is a mixin that adds the fuzziness parameter to queries
 //
@@ -51,9 +53,7 @@ func (f fuzzinessParam) Fuzziness() string {
 
 // SetFuzziness sets the fuzzinessValue to v
 func (f *fuzzinessParam) SetFuzziness(v string) {
-	if f.Fuzziness() != v {
-		f.fuzziness = v
-	}
+	f.fuzziness = v
 }
 
 // FuzzyRewrite is the method used to rewrite the query. See the rewrite

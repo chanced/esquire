@@ -14,7 +14,7 @@ type Range struct {
 	Boost                dynamic.Number
 }
 
-func (r Range) Rule() (Rule, error) {
+func (r Range) Rule() (Clause, error) {
 	return r.Range()
 }
 func (r Range) Range() (*RangeRule, error) {

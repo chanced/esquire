@@ -14,12 +14,12 @@ func (s String) String() string {
 
 // TODO: Split string
 
-func (s String) Terms() (*TermsRule, error) {
+func (s String) Terms() (*termsClause, error) {
 	strs := strings.Split(s.String(), ",")
 	for i, str := range strs {
 		strs[i] = strings.TrimSpace(str)
 	}
-	q := &TermsRule{
+	q := &termsClause{
 		TermsValue: strs,
 	}
 	return q, nil
@@ -27,8 +27,8 @@ func (s String) Terms() (*TermsRule, error) {
 
 type Strings []string
 
-func (s Strings) Terms() (*TermsRule, error) {
-	q := &TermsRule{
+func (s Strings) Terms() (*termsClause, error) {
+	q := &termsClause{
 		TermsValue: s,
 	}
 	return q, nil

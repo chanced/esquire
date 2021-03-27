@@ -16,17 +16,16 @@ type Lookup struct {
 	// Routing value of the document from which to fetch term values. If a
 	// custom routing value was provided when the document was indexed, this
 	// parameter is required. (Optional)
-	Routing string
-
+	Routing         string
 	Boost           float64
 	CaseInsensitive bool
 }
 
-func (l Lookup) Rule() (Rule, error) {
+func (l Lookup) Rule() (Clause, error) {
 	return l.Terms()
 }
-func (l Lookup) Terms() (*TermsRule, error) {
-	q := &TermsRule{}
+func (l Lookup) Terms() (*termsClause, error) {
+	q := &termsClause{}
 	q.SetBoost(l.Boost)
 	q.SetCaseInsensitive(l.CaseInsensitive)
 

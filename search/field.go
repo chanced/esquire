@@ -3,7 +3,7 @@ package search
 import (
 	"encoding/json"
 
-	"github.com/tidwall/gjson"
+	"github.com/chanced/dynamic"
 )
 
 type Field struct {
@@ -30,14 +30,20 @@ func (f Field) MarshalJSON() ([]byte, error) {
 }
 
 func (f *Field) UnmarshalJSON(data []byte) error {
-	res := gjson.ParseBytes(data)
-	if res.Type == gjson.String {
-		f.Field = res.Str
+	d := dynamic.RawJSON(data)
+	if d.IsString() {
+		f.Field = d.UnquotedString()
 		f.Format = ""
 		return nil
 	}
-	f.Field = res.Get("field").Str
-	f.Format = res.Get("format").Str
+
+	var sm map[string]string
+	err := json.Unmarshal(d, &sm)
+	if err != nil {
+		return err
+	}
+	f.Field = sm["field"]
+	f.Format = sm["format"]
 	return nil
 }
 

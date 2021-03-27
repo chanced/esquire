@@ -14,13 +14,23 @@ import (
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type Match struct {
+	// Each query accepts a _name in its top level definition. You can use named
+	// queries to track which queries matched returned documents. If named
+	// queries are used, the response includes a matched_queries property for
+	// each hit.
+	QueryName string
+	// The field which is being matched.
+	//
+	// If you are setting Match explicitly, this does not need to be set. It
+	// does, however, if you are adding it to a set of Clauses.
+	FieldName string
 	// (Required) Text, number, boolean value or date you wish to find in the
 	// provided <field>.
 	//
 	// The match query analyzes any provided text before performing a search.
 	// This means the match query can search text fields for analyzed tokens
 	// rather than an exact term.
-	Query dynamic.StringNumberBoolOrTime
+	Query interface{}
 	// Analyzer used to convert the text in the query value into tokens.
 	// Defaults to the index-time analyzer mapped for the <field>. If no
 	// analyzer is mapped, the index’s default analyzer is used.
@@ -55,16 +65,38 @@ type Match struct {
 	// Indicates whether no documents are returned if the analyzer removes all
 	// tokens, such as when using a stop filter.
 	ZeroTermsQuery ZeroTermsQuery
+
+	//
+	// The match query supports a cutoff_frequency that allows specifying an
+	// absolute or relative document frequency where high frequency terms are
+	// moved into an optional subquery and are only scored if one of the low
+	// frequency (below the cutoff) terms in the case of an or operator or all
+	// of the low frequency terms in the case of an and operator match.
+	//
+	// DEPRECATED in 7.3.0
+	//
+	// This option can be omitted as the Match can skip blocks of documents
+	// efficiently, without any configuration, provided that the total number of
+	// hits is not tracked.
+	CutoffFrequency dynamic.Number
+}
+
+func (m Match) Name() string {
+	return m.QueryName
+}
+
+func (m Match) SetName(name string) {
+	m.QueryName = name
 }
 
 func (m Match) Type() Type {
 	return TypeMatch
 }
-func (m Match) Rule() (Rule, error) {
+func (m Match) Clause() (Clause, error) {
 	return m.Match()
 }
-func (m Match) Match() (*MatchRule, error) {
-	v := &MatchRule{}
+func (m Match) Match() (*matchClause, error) {
+	v := &matchClause{}
 	err := v.SetQuery(m.Query)
 	if err != nil {
 		return nil, err
@@ -87,19 +119,14 @@ func (m Match) Match() (*MatchRule, error) {
 	if m.ZeroTermsQuery != "" {
 		v.SetZeroTermsQuery(m.ZeroTermsQuery)
 	}
+	v.cutoffFrequency = m.CutoffFrequency
 	return v, nil
 }
 
-// MatchRule returns documents that match a provided text, number, date or boolean
-// value. The provided text is analyzed before matching.
-//
-// The match query is the standard query for performing a full-text search,
-// including options for fuzzy matching.
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-type MatchRule struct {
+type matchClause struct {
 	MatchQueryValue dynamic.StringNumberBoolOrTime
 	analyzerParam
+	nameParam
 	autoGenerateSynonymsPhraseQueryParam
 	fuzzinessParam
 	maxExpansionsParam
@@ -109,28 +136,20 @@ type MatchRule struct {
 	operatorParam
 	minimumShouldMatchParam
 	zeroTermsQueryParam
+	cutoffFrequencyParam
 }
 
-func (mr *MatchRule) Type() Type {
+func (mr *matchClause) Type() Type {
 	return TypeMatch
 }
-func (mr MatchRule) HasMatchRule() bool {
+func (mr matchClause) HasMatchRule() bool {
 	return !mr.MatchQueryValue.IsEmptyString()
 }
-func (mr *MatchRule) SetQuery(value interface{}) error {
-
-	if snbt, ok := value.(dynamic.StringNumberBoolOrTime); ok {
-		mr.MatchQueryValue = snbt
-		return nil
-	}
-	if snbt, ok := value.(*dynamic.StringNumberBoolOrTime); ok {
-		mr.MatchQueryValue = *snbt
-		return nil
-	}
+func (mr *matchClause) SetQuery(value interface{}) error {
 	return mr.MatchQueryValue.Set(value)
 }
 
-func (mr MatchRule) MarshalJSON() ([]byte, error) {
+func (mr matchClause) MarshalJSON() ([]byte, error) {
 	if !mr.HasMatchRule() {
 		return dynamic.Null, nil
 	}
@@ -142,7 +161,7 @@ func (mr MatchRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
-func (mr *MatchRule) UnmarshalJSON(data []byte) error {
+func (mr *matchClause) UnmarshalJSON(data []byte) error {
 	mr.MatchQueryValue = dynamic.NewStringNumberBoolOrTime()
 	mr.analyzerParam = analyzerParam{}
 	mr.autoGenerateSynonymsPhraseQueryParam = autoGenerateSynonymsPhraseQueryParam{}
@@ -154,7 +173,7 @@ func (mr *MatchRule) UnmarshalJSON(data []byte) error {
 	mr.operatorParam = operatorParam{}
 	mr.maxExpansionsParam = maxExpansionsParam{}
 	mr.zeroTermsQueryParam = zeroTermsQueryParam{}
-
+	mr.cutoffFrequencyParam = cutoffFrequencyParam{}
 	fields, err := unmarshalParams(data, mr)
 	if err != nil {
 		return err
@@ -178,7 +197,7 @@ func (mr *MatchRule) UnmarshalJSON(data []byte) error {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
 	MatchField string
-	MatchRule
+	matchClause
 }
 
 func (mq MatchQuery) MarshalJSON() ([]byte, error) {
@@ -196,7 +215,7 @@ func (mq MatchQuery) MarshalJSON() ([]byte, error) {
 
 func (mq *MatchQuery) UnmarshalJSON(data []byte) error {
 	mq.MatchField = ""
-	mq.MatchRule = MatchRule{}
+	mq.matchClause = matchClause{}
 
 	m := map[string]json.RawMessage{}
 	err := json.Unmarshal(data, &m)
@@ -205,7 +224,7 @@ func (mq *MatchQuery) UnmarshalJSON(data []byte) error {
 	}
 	for k, v := range m {
 		mq.MatchField = k
-		err := json.Unmarshal(v, &mq.MatchRule)
+		err := json.Unmarshal(v, &mq.matchClause)
 		if err != nil {
 			return err
 		}
@@ -231,10 +250,10 @@ func (mq *MatchQuery) SetMatch(field string, match *Match) error {
 		return err
 	}
 	mq.MatchField = field
-	mq.MatchRule = *r
+	mq.matchClause = *r
 	return nil
 }
 func (mq *MatchQuery) RemoveMatch() {
 	mq.MatchField = ""
-	mq.MatchRule = MatchRule{}
+	mq.matchClause = matchClause{}
 }
