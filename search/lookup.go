@@ -1,6 +1,7 @@
 package search
 
 type Lookup struct {
+	FieldName string
 	// Index (Required, string) Name of the index from which to fetch field
 	// values.
 	Index string
@@ -19,9 +20,15 @@ type Lookup struct {
 	Routing         string
 	Boost           float64
 	CaseInsensitive bool
+
+	QueryName string
 }
 
-func (l Lookup) Rule() (Clause, error) {
+func (l Lookup) Name() string {
+	return l.QueryName
+}
+
+func (l Lookup) Clause() (Clause, error) {
 	return l.Terms()
 }
 func (l Lookup) Terms() (*termsClause, error) {

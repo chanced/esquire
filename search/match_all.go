@@ -1,11 +1,20 @@
 package search
 
 type MatchAll struct {
-	Boost float64
+	Boost     float64
+	QueryName string
 }
 
-func (ma MatchAll) Rule() (Clause, error) {
-	r := &MatchAllRule{}
+func (ma MatchAll) Name() string {
+	return ma.QueryName
+}
+
+func (ma *MatchAll) SetName(name string) {
+	ma.QueryName = name
+}
+
+func (ma MatchAll) Clause() (Clause, error) {
+	r := &matchAllClause{}
 	r.SetBoost(ma.Boost)
 	return r, nil
 }
@@ -13,17 +22,18 @@ func (ma MatchAll) Rule() (Clause, error) {
 func (ma MatchAll) Type() Type {
 	return TypeMatchAll
 }
-func (ma MatchAll) MatchAll() *MatchAllRule {
-	r := &MatchAllRule{}
+func (ma MatchAll) MatchAll() *matchAllClause {
+	r := &matchAllClause{}
 	r.SetBoost(ma.Boost)
 	return r
 }
 
-type MatchAllRule struct {
-	boostParam `json:",inline" bson:",inline"`
+type matchAllClause struct {
+	boostParam
+	nameParam
 }
 
-func (MatchAllRule) Type() Type {
+func (matchAllClause) Type() Type {
 	return TypeMatchAll
 }
 

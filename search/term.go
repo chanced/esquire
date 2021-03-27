@@ -19,10 +19,15 @@ type Term struct {
 	Value           string
 	Boost           dynamic.Number
 	CaseInsensitive bool
+	QueryName       string
 }
 
 func (t Term) FieldName() string {
 	return t.Field
+}
+
+func (t Term) Name() string {
+	return t.QueryName
 }
 
 func (t Term) Clause() (Clause, error) {
@@ -49,6 +54,7 @@ type termClause struct {
 	TermValue string
 	boostParam
 	caseInsensitiveParam
+	nameParam
 }
 
 func (tr termClause) HasTermRule() bool {

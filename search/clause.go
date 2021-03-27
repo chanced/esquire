@@ -9,7 +9,6 @@ import (
 type Clause interface {
 	Type() Type
 	Name() string
-	SetName(name string)
 }
 
 type Fielder interface {

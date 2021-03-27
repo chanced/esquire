@@ -35,7 +35,7 @@ type Terms struct {
 	CaseInsensitive bool
 }
 
-func (t Terms) Rule() (Clause, error) {
+func (t Terms) Clause() (Clause, error) {
 	return t.Terms()
 }
 func (t Terms) Terms() (*termsClause, error) {
@@ -70,6 +70,7 @@ type termsClause struct {
 	TermsField string
 	boostParam
 	caseInsensitiveParam
+	nameParam
 }
 
 func (t termsClause) Field() string {

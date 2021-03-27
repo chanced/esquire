@@ -4,16 +4,21 @@ type Prefix struct {
 	Value           string
 	Rewrite         Rewrite
 	CaseInsensitive bool
+	QueryName       string
 }
 
 func (p Prefix) Type() Type {
 	return TypePrefix
 }
-func (p Prefix) Rule() (Clause, error) {
-	return p.Query()
+func (p Prefix) Name() string {
+	return p.QueryName
 }
-func (p Prefix) Query() (*PrefixRule, error) {
-	q := &PrefixRule{
+
+func (p Prefix) Clause() (Clause, error) {
+	return p.prefix()
+}
+func (p Prefix) prefix() (*prefixClause, error) {
+	q := &prefixClause{
 		Value: p.Value,
 	}
 	q.SetCaseInsensitive(p.CaseInsensitive)
@@ -21,14 +26,15 @@ func (p Prefix) Query() (*PrefixRule, error) {
 	return q, nil
 }
 
-// PrefixRule returns documents that contain a specific prefix in a provided field.
-type PrefixRule struct {
-	Value string `json:"value" bson:"value"`
+// prefixClause returns documents that contain a specific prefix in a provided field.
+type prefixClause struct {
+	Value string
 	rewriteParam
 	caseInsensitiveParam
+	nameParam
 }
 
-func (p PrefixRule) Type() Type {
+func (p prefixClause) Type() Type {
 	return TypePrefix
 }
 
@@ -36,7 +42,7 @@ func (p PrefixRule) Type() Type {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
 type PrefixQuery struct {
-	*PrefixRule `json:"prefix,omitempty" bson:"prefix,omitempty"`
+	*prefixClause
 }
 
 func (p PrefixQuery) Type() Type {
@@ -51,10 +57,10 @@ func (p *PrefixQuery) SetPrefix(v Prefix) error {
 	if v.Value == "" {
 		return NewQueryError(ErrValueRequired, TypePrefix)
 	}
-	r, err := v.Query()
+	r, err := v.prefix()
 	if err != nil {
 		return err
 	}
-	p.PrefixRule = r
+	p.prefixClause = r
 	return nil
 }

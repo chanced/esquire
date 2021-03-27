@@ -27,9 +27,9 @@ const (
 )
 
 var clauseHandlers = map[Type]func() Clause{
-	TypePrefix: func() Clause { return &PrefixRule{} },
-	TypeMatch:  func() Clause { return &MatchQuery{} },
-	TypeTerm:   func() Clause { return &TermQuery{} },
-	TypeTerms:  func() Clause { return &TermsQuery{} },
-	// TypeBoolean: func() Clause { return &BooleanRule{} },
+	TypePrefix:  func() Clause { return &PrefixQuery{} },
+	TypeMatch:   func() Clause { return &MatchQuery{} },
+	TypeTerm:    func() Clause { return &TermQuery{} },
+	TypeTerms:   func() Clause { return &TermsQuery{} },
+	TypeBoolean: func() Clause { return &BooleanQuery{} },
 }

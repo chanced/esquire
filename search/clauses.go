@@ -9,12 +9,12 @@ import (
 
 type Clauses []Clause
 
-func (c *Clauses) MarshalJSON() ([]byte, error) {
-	err := c.unpack()
+func (c Clauses) MarshalJSON() ([]byte, error) {
+	u, err := c.unpack()
 	if err != nil {
 		return nil, err
 	}
-	s := []Clause(*c)
+	s := []Clause(*u)
 	return json.Marshal(s)
 }
 
@@ -56,33 +56,51 @@ func (c *Clauses) UnmarshalJSON(data []byte) error {
 }
 
 func (c *Clauses) Validate() error {
-	return c.unpack()
+	if c == nil {
+		*c = Clauses{}
+	}
+	_, err := c.unpack()
+	return err
 }
 
-func (c *Clauses) unpack() error {
+func (c *Clauses) unpack() (*Clauses, error) {
+	if c == nil {
+		*c = Clauses{}
+	}
 	for i, ce := range *c {
 		if v, ok := ce.(Clauser); ok {
 			r, err := unpackClause(v)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			(*c)[i] = r
 		}
 	}
-	return nil
+	return c, nil
 
 }
-
-func (c *Clauses) Add(clause Clause) error {
+func (c *Clauses) RemoveByName(name string) {
 	if c == nil {
 		*c = Clauses{}
 	}
+	for i, v := range *c {
+		if v.Name() == name {
+			*c = append((*c)[:i], (*c)[i+1:]...)
+		}
+	}
+	return
+}
+func (c *Clauses) Add(clause Clause) error {
+
 	var err error
 	clause, err = unpackClause(clause)
 	if err != nil {
 		return err
 	}
-
+	if c == nil {
+		*c = Clauses{clause}
+		return nil
+	}
 	*c = append(*c, clause)
 	return nil
 }
