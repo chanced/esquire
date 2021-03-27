@@ -142,7 +142,7 @@ type matchClause struct {
 func (mr *matchClause) Type() Type {
 	return TypeMatch
 }
-func (mr matchClause) HasMatchRule() bool {
+func (mr matchClause) HasMatchClause() bool {
 	return !mr.MatchQueryValue.IsEmptyString()
 }
 func (mr *matchClause) SetQuery(value interface{}) error {
@@ -150,7 +150,7 @@ func (mr *matchClause) SetQuery(value interface{}) error {
 }
 
 func (mr matchClause) MarshalJSON() ([]byte, error) {
-	if !mr.HasMatchRule() {
+	if !mr.HasMatchClause() {
 		return dynamic.Null, nil
 	}
 	m, err := marshalParams(&mr)
@@ -201,7 +201,7 @@ type MatchQuery struct {
 }
 
 func (mq MatchQuery) MarshalJSON() ([]byte, error) {
-	if !mq.HasMatchRule() {
+	if !mq.HasMatchClause() {
 		return dynamic.Null, nil
 	}
 	m, err := marshalParams(&mq)

@@ -57,12 +57,12 @@ type termClause struct {
 	nameParam
 }
 
-func (tr termClause) HasTermRule() bool {
+func (tr termClause) HasTermClause() bool {
 	return tr.TermValue != ""
 }
 
 func (tr termClause) MarshalJSON() ([]byte, error) {
-	if !tr.HasTermRule() {
+	if !tr.HasTermClause() {
 		return dynamic.Null, nil
 	}
 	m, err := marshalParams(&tr)
@@ -129,7 +129,7 @@ func (t TermQuery) FieldName() string {
 }
 
 func (t TermQuery) MarshalJSON() ([]byte, error) {
-	if !t.HasTermRule() || t.TermField == "" {
+	if !t.HasTermClause() || t.TermField == "" {
 		return dynamic.Null, nil
 	}
 	return json.Marshal(dynamic.Map{t.TermField: t.termClause})
