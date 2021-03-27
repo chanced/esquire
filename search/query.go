@@ -81,7 +81,6 @@ type Query struct {
 }
 
 func (q Query) HasClauses() bool {
-
 	return q.HasMatchRule() || q.HasTermRule() || q.HasTermsClause() || q.HasBooleanClause()
 
 }
