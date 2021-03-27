@@ -12,7 +12,7 @@ type WithSlop interface {
 }
 
 type slopParam struct {
-	slop *int64 `json:"slop,omitempty" bson:"slop,omitempty"`
+	slop *int64
 }
 
 func (s slopParam) Slop() int64 {

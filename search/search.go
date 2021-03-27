@@ -97,7 +97,44 @@ type Params struct {
 	// If true, returns document version as part of a hit. Defaults to false. (Optional)
 	Version bool
 
-	Query *QueryClauses
+	// Term returns documents that contain an exact term in a provided field.
+	//
+	// You can use the term query to find documents based on a precise value such as
+	// a price, a product ID, or a username.
+	//
+	// Avoid using the term query for text fields.
+	//
+	// By default, Elasticsearch changes the values of text fields as part of
+	// analysis. This can make finding exact matches for text field values
+	// difficult.
+	//
+	// To search text field values, use the match query instead.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
+	Term *Term
+
+	// Terms returns documents that contain one or more exact terms in a provided
+	// field.
+	//
+	// The terms query is the same as the term query, except you can search for
+	// multiple values.
+	Terms *Terms
+
+	// Match returns documents that match a provided text, number, date or boolean
+	// value. The provided text is analyzed before matching.
+	//
+	// The match query is the standard query for performing a full-text search,
+	// including options for fuzzy matching.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
+	Match *Match
+
+	// Boolean is a query that matches documents matching boolean combinations
+	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
+	// using one or more boolean clauses, each clause with a typed occurrence.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
+	Boolean *Boolean
 }
 
 func NewSearch(p Params) (*Search, error) {
@@ -121,11 +158,13 @@ func NewSearch(p Params) (*Search, error) {
 	if p.Size != 0 {
 		s.SetSize(p.Size)
 	}
-	if p.Query == nil {
-		s.query = &Query{}
-		return s, nil
+	qp := QueryParams{
+		Term:    p.Term,
+		Terms:   p.Terms,
+		Match:   p.Match,
+		Boolean: p.Boolean,
 	}
-	q, err := NewQuery(*p.Query)
+	q, err := NewQuery(qp)
 	if err != nil {
 		return nil, err
 	}

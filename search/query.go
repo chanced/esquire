@@ -6,7 +6,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type QueryClauses struct {
+type QueryParams struct {
 
 	// Term returns documents that contain an exact term in a provided field.
 	//
@@ -48,7 +48,7 @@ type QueryClauses struct {
 	Boolean *Boolean
 }
 
-func NewQuery(params QueryClauses) (*Query, error) {
+func NewQuery(params QueryParams) (*Query, error) {
 	panic("not impl")
 }
 
