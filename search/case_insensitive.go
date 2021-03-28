@@ -44,33 +44,27 @@ func (ci *caseInsensitiveParam) SetCaseInsensitive(v bool) {
 	}
 }
 
-func unmarshalCaseInsensitiveParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalCaseInsensitiveParam(data dynamic.JSON, target interface{}) error {
 	if p, ok := target.(WithCaseInsensitive); ok {
-		if data.IsNull() {
-			return nil
+		var b dynamic.Bool
+		var err error
+		switch {
+		case data.IsNull():
+		case data.IsBool():
+			b, err = dynamic.NewBool(data.String())
+		case data.IsString():
+			b, err = dynamic.NewBool(data.UnquotedString())
+		default:
+			err = &json.UnmarshalTypeError{Value: data.String(), Type: typeBool}
 		}
-		if data.IsBool() {
-			var b bool
-			err := json.Unmarshal(data, &b)
-			if err != nil {
-				return err
-			}
-			p.SetCaseInsensitive(b)
-			return nil
+		if err != nil {
+			return err
 		}
-		if data.IsString() {
-			if data.UnquotedString() == "" {
-				return nil
-			}
-			n := dynamic.NewBool(data.UnquotedString())
-			v, ok := n.Bool()
-			if !ok {
-				return &json.UnmarshalTypeError{Value: data.UnquotedString(), Type: typeBool}
-			}
+		if v, ok := b.Bool(); ok {
 			p.SetCaseInsensitive(v)
-			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.UnquotedString(), Type: typeBool}
+		return nil
+
 	}
 	return nil
 }

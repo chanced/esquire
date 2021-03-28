@@ -86,16 +86,18 @@ func (f *fuzzinessParam) SetFuzzyRewrite(v Rewrite) error {
 	return nil
 }
 
-func unmarshalFuzzinessParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalFuzzinessParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithFuzziness); ok {
 		if data.IsNull() {
 			return nil
 		}
-		if data.IsString() {
-			r.SetFuzziness(data.UnquotedString())
-			return nil
+		var str string
+		err := json.Unmarshal(data, &str)
+		if err != nil {
+			return err
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
+		r.SetFuzziness(str)
+		return nil
 	}
 	return nil
 }
@@ -108,13 +110,20 @@ func marshalFuzzinessParam(data dynamic.Map, source interface{}) (dynamic.Map, e
 	}
 	return data, nil
 }
-func unmarshalFuzzyRewriteParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalFuzzyRewriteParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithFuzziness); ok {
-		if data.IsNull() {
+		switch {
+		case data.IsNull():
 			return nil
+		case data.IsString():
+			rw := Rewrite(data.UnquotedString())
+			r.SetFuzzyRewrite(rw)
+		}
+		if data.IsNull() {
+
 		}
 		if data.IsString() {
-			r.SetFuzzyRewrite(Rewrite(data.UnquotedString()))
+
 			return nil
 		}
 		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}

@@ -27,21 +27,36 @@ func (s *Script) UnmarshalJSON(data []byte) error {
 	s.Language = ""
 	s.Params = map[string]interface{}{}
 	s.Source = ""
-	d := dynamic.RawJSON(data)
+	d := dynamic.JSON(data)
 	if d.IsString() {
+		var str string
+		err := json.Unmarshal(d, &str)
+		if err != nil {
+			return err
+		}
 		s.Source = d.UnquotedString()
 		return nil
 	}
-	m := map[string]dynamic.RawJSON{}
+	m := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &m)
 	if err != nil {
 		return err
 	}
 	if src, ok := m["source"]; ok {
-		s.Source = src.UnquotedString()
+		var str string
+		err := json.Unmarshal(src, &str)
+		if err != nil {
+			return err
+		}
+		s.Source = str
 	}
 	if lang, ok := m["lang"]; ok {
-		s.Language = lang.UnquotedString()
+		var str string
+		err := json.Unmarshal(lang, &str)
+		if err != nil {
+			return err
+		}
+		s.Language = str
 	}
 	if params, ok := m["params"]; ok {
 		var p map[string]interface{}

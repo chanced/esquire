@@ -1,6 +1,8 @@
 package search
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -33,9 +35,24 @@ func (agspq autoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuer
 func (agspq *autoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
 	agspq.autoGenerateSynonymsPhraseQuery.Set(v)
 }
-func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithAutoGenerateSynonymsPhraseQuery); ok {
-		b := dynamic.NewBool(data.UnquotedString())
+		var b dynamic.Bool
+		var err error
+		if data.IsBool() {
+			b, err = dynamic.NewBool(data)
+			if err != nil {
+				return err
+			}
+		} else if data.IsString() {
+			var str String
+			err := json.Unmarshal(data, &str)
+			if err != nil {
+				return err
+			}
+
+		}
+
 		if v, ok := b.Bool(); ok {
 			a.SetAutoGenerateSynonymsPhraseQuery(v)
 		}

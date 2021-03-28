@@ -40,16 +40,38 @@ func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
 	}
 }
 
-func unmarshalFuzzyTranspositionsParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithFuzzyTranspositions); ok {
-		b := dynamic.NewBool(data.UnquotedString())
+		if data.IsNull() {
+			return nil
+		}
+		var err error
+		var b dynamic.Bool
+		if data.IsBool() {
+			b, err = dynamic.NewBool(data.String())
+			if err != nil {
+				return err
+			}
+			bv, _ := b.Bool()
+			a.SetFuzzyTranspositions(bv)
+			return nil
+		}
+		var str string
+		err = json.Unmarshal(data, &str)
+		if err != nil {
+			return err
+		}
+		b, err = dynamic.NewBool(str)
+		if err != nil {
+			return err
+		}
 		if v, ok := b.Bool(); ok {
 			a.SetFuzzyTranspositions(v)
 			return nil
-		}
-		if !ok {
+		} else {
 			return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 		}
+
 	}
 	return nil
 }

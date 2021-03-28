@@ -32,10 +32,10 @@ func TestTerm(t *testing.T) {
 	err = json.Unmarshal(json1, &q1)
 	assert.NoError(err)
 
-	assert.Equal(float64(0.2), q1.TermQuery.Boost())
-	assert.Equal("chanced", q1.TermQuery.Value())
-	assert.Equal("user.id", q1.TermField)
-	assert.True(q1.TermQuery.CaseInsensitive())
+	assert.Equal(float64(0.2), q1.Term.Boost())
+	assert.Equal("chanced", q1.Term.Value())
+	assert.Equal("user.id", q1.Term.Field())
+	assert.True(q1.Term.CaseInsensitive())
 	json1Res, err := json.MarshalIndent(q1, "", "  ")
 	assert.NoError(err)
 	fmt.Println(string(json1Res))
@@ -43,9 +43,9 @@ func TestTerm(t *testing.T) {
 	var rq1 search.Query
 	err = json.Unmarshal(json1Res, &rq1)
 	assert.NoError(err)
-	assert.Equal(float64(0.2), rq1.TermQuery.Boost())
-	assert.True(rq1.TermQuery.CaseInsensitive())
-	assert.Equal("chanced", rq1.TermValue)
-	assert.Equal("user.id", rq1.TermField)
+	assert.Equal(float64(0.2), rq1.Term.Boost())
+	assert.True(rq1.Term.CaseInsensitive())
+	assert.Equal("chanced", rq1.Term.Value())
+	assert.Equal("user.id", rq1.Term.Field())
 
 }

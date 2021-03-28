@@ -43,9 +43,13 @@ func (l lenientParam) Lenient() bool {
 func (l *lenientParam) SetLenient(v bool) {
 	l.lenient = &v
 }
-func unmarshalLenientParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalLenientParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithLenient); ok {
-		b := dynamic.NewBool(data.UnquotedString())
+		var b dynamic.Bool
+		err := json.Unmarshal(data, &b)
+		if err != nil {
+			return err
+		}
 		if v, ok := b.Bool(); ok {
 			a.SetLenient(v)
 			return nil

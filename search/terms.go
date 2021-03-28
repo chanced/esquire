@@ -20,7 +20,7 @@ import (
 //  err = s.AddTerms(&Terms{ Field:"", Value: []string{"kimchy", "elkbee"}})
 //  _ = err // handle err
 type Termser interface {
-	Terms() (*termsClause, error)
+	Terms() (TermsQuery, error)
 }
 
 // Terms returns documents that contain one or more exact terms in a provided
@@ -31,20 +31,21 @@ type Termser interface {
 type Terms struct {
 	Field           string
 	Values          []string
-	Boost           float64
+	Boost           dynamic.Number
 	CaseInsensitive bool
 }
 
 func (t Terms) Clause() (Clause, error) {
 	return t.Terms()
 }
-func (t Terms) Terms() (*termsClause, error) {
-	q := &termsClause{
-		TermsValue: t.Values,
-		TermsField: t.Field,
+func (t Terms) Terms() (TermsQuery, error) {
+	q := TermsQuery{
+		value: t.Values,
+		field: t.Field,
 	}
-
-	q.SetBoost(t.Boost)
+	if f, ok := t.Boost.Float(); ok {
+		t.Boost.Set(f)
+	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
 }
@@ -54,141 +55,150 @@ func (t Terms) Type() Type {
 }
 
 type TermsLookup struct {
-	TermsID      string `json:"id,omitempty" bson:"id,omitempty"`
-	TermsIndex   string `json:"index,omitempty" bson:"index,omitempty"`
-	TermsPath    string `json:"path,omitempty" bson:"path,omitempty"`
-	TermsRouting string `json:"routing,omitempty" bson:"routing,omitempty"`
+	ID      string `json:"id,omitempty"`
+	Index   string `json:"index,omitempty"`
+	Path    string `json:"path,omitempty"`
+	Routing string `json:"routing,omitempty"`
 }
 
-func (t TermsLookup) lookupIsEmpty() bool {
-	return len(t.TermsID) == 0 && len(t.TermsIndex) == 0 && len(t.TermsPath) == 0 && len(t.TermsRouting) == 0
+func (t TermsLookup) Validate() error {
+	if len(t.ID) == 0 {
+		return ErrIDRequired
+	}
+	if len(t.Index) == 0 {
+		return ErrIndexRequired
+	}
+	if len(t.Path) == 0 {
+		return ErrPathRequired
+	}
+	return nil
 }
 
-type termsClause struct {
-	TermsLookup
-	TermsValue []string
-	TermsField string
+func (t TermsLookup) IsEmpty() bool {
+	return len(t.ID) == 0 && len(t.Index) == 0 && len(t.Path) == 0 && len(t.Routing) == 0
+}
+
+func (t *TermsQuery) SetField(field string) {
+	t.field = field
+}
+
+// SetValues sets the Terms value to v and clears the lookup
+// It returns an error if v is empty.
+//
+// If you need to to clear Terms, use Clear()
+func (t *TermsQuery) SetValues(v []string) error {
+	t.lookup = TermsLookup{}
+	t.value = v
+	if len(v) == 0 {
+		return ErrValueRequired
+	}
+	return nil
+}
+
+func (t TermsQuery) Value() []string {
+	return t.value
+}
+
+func (t TermsQuery) Lookup() TermsLookup {
+	return t.lookup
+}
+
+// SetLookup sets the Terms query's lookup and unsets values.
+func (t TermsQuery) SetLookup(v TermsLookup) error {
+
+	t.value = []string{}
+	t.lookup = v
+	return nil
+}
+
+func (t TermsQuery) MarshalJSON() ([]byte, error) {
+	if len(t.field) == 0 || t.IsEmpty() {
+		return dynamic.Null, nil
+	}
+	v, err := marshalParams(&t)
+	if err != nil {
+		return nil, err
+	}
+	if !t.lookup.IsEmpty() {
+		v[t.field] = t.lookup
+	} else {
+		v[t.field] = t.value
+	}
+	return json.Marshal(v)
+}
+
+func (t *TermsQuery) unmarshalValueJSON(data dynamic.JSON) error {
+	var val []string
+	err := json.Unmarshal(data, &val)
+	if err != nil {
+		return err
+	}
+	t.value = val
+	return nil
+}
+func (t *TermsQuery) unmarshalLookupJSON(data []byte) error {
+	var tl TermsLookup
+	err := json.Unmarshal(data, &tl)
+	if err != nil {
+		return err
+	}
+	t.lookup = tl
+	return nil
+}
+func (t *TermsQuery) UnmarshalJSON(data []byte) error {
+	*t = TermsQuery{}
+	d := dynamic.JSON(data)
+	if d.IsNull() {
+		return nil
+	}
+	fields, err := unmarshalParams(data, t)
+	if err != nil {
+		return err
+	}
+	for f, fd := range fields {
+		t.field = f
+		if fd.IsArray() {
+			return t.unmarshalValueJSON(fd)
+		}
+		return t.unmarshalLookupJSON(fd)
+	}
+	return err
+}
+
+func (t *TermsQuery) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
+}
+
+type TermsQuery struct {
+	lookup TermsLookup
+	value  []string
+	field  string
 	boostParam
 	caseInsensitiveParam
 	nameParam
 }
 
-func (t termsClause) Field() string {
-	return t.TermsField
+func (t TermsQuery) Field() string {
+	return t.field
 }
 
-func (t termsClause) Type() Type {
-	return TypeTerms
-}
-
-func (t *termsClause) SetValue(value []string) {
-	t.TermsLookup = TermsLookup{}
-	if value == nil {
-		value = []string{}
-	}
-	t.TermsValue = value
-}
-func (t *termsClause) SetField(field string) {
-	t.TermsField = field
-}
-func (t *termsClause) SetLookup(lookup *TermsLookup) {
-	t.SetValue([]string{})
-	if lookup == nil {
-		lookup = &TermsLookup{}
-	}
-	t.TermsLookup = *lookup
-
-}
-func (t *termsClause) set(v Termser) error {
-	tv, err := v.Terms()
+func (t *TermsQuery) Set(field string, clause Termser) error {
+	q, err := clause.Terms()
 	if err != nil {
 		return err
 	}
-	t.SetBoost(tv.Boost())
-	t.SetCaseInsensitive(tv.CaseInsensitive())
-	t.TermsLookup = tv.TermsLookup
-	t.TermsValue = tv.TermsValue
+	*t = q
 	return nil
 }
 
-func (t termsClause) Value() []string {
-	return t.TermsValue
+func (t TermsQuery) Type() Type {
+	return TypeTerms
 }
 
-func (t termsClause) selfIdentifying() {}
-
-func (t termsClause) MarshalJSON() ([]byte, error) {
-	var v map[string]interface{}
-	v, err := marshalClauseParams(&t)
-	if err != nil {
-		return nil, err
-	}
-	if t.TermsField == "" {
-		return dynamic.Null, nil
-	}
-	var q interface{}
-	if !t.TermsLookup.lookupIsEmpty() {
-		q = t.TermsLookup
-	} else {
-		q = t.TermsValue
-	}
-	v[t.TermsField] = q
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(v)
+func (t TermsQuery) IsEmpty() bool {
+	return (len(t.value) == 0 && t.lookup.IsEmpty())
 }
 
-func (t *TermsQuery) HasTermsClause() bool {
-	return (t.Field() != "" || !t.lookupIsEmpty()) || (t.Field() != "" && len(t.TermsValue) > 0) || t.Boost() > 0
-}
-
-func (t *termsClause) UnmarshalJSON(data []byte) error {
-	g := dynamic.RawJSON(data)
-	if g.IsNull() {
-		return nil
-	}
-	t.TermsValue = []string{}
-	t.TermsLookup = TermsLookup{}
-	fields, err := unmarshalParams(data, t)
-	if err != nil {
-		return err
-	}
-	for fld, val := range fields {
-		t.TermsField = fld
-		if val.IsArray() {
-			var sl []string
-			err := json.Unmarshal(val, &sl)
-			if err != nil {
-				return err
-			}
-			t.TermsValue = sl
-			return nil
-		}
-		var tl TermsLookup
-		err := json.Unmarshal(val, &tl)
-		if err != nil {
-			return err
-		}
-		t.TermsLookup = tl
-		return nil
-	}
-
-	return err
-}
-
-func (t *termsClause) UnmarshalBSON(data []byte) error {
-	return t.UnmarshalJSON(data)
-}
-
-func (t termsClause) MarshalBSON() ([]byte, error) {
+func (t TermsQuery) MarshalBSON() ([]byte, error) {
 	return t.MarshalJSON()
-}
-
-type TermsQuery struct {
-	termsClause `json:",inline" bson:",inline"`
-}
-
-func (t TermsQuery) SetTerms(field string, value Termser) error {
-	return t.set(value)
 }

@@ -74,7 +74,7 @@ func (msm minimumShouldMatchParam) MinimumShouldMatch() string {
 func (msm *minimumShouldMatchParam) SetMinimumShouldMatch(v string) {
 	msm.mimimumShouldMatch = v
 }
-func unmarshalMinimumShouldMatchParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalMinimumShouldMatchParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMinimumShouldMatch); ok {
 		a.SetMinimumShouldMatch(data.UnquotedString())
 	}

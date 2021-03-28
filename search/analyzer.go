@@ -53,13 +53,18 @@ func marshalAnalyzerParam(data dynamic.Map, source interface{}) (dynamic.Map, er
 	}
 	return data, nil
 }
-func unmarshalAnalyzerParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalAnalyzerParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithAnalyzer); ok {
 		if data.IsNull() {
 			return nil
 		}
 		if data.IsString() {
-			a.SetAnalyzer(data.UnquotedString())
+			var str string
+			err := json.Unmarshal(data, &str)
+			if err != nil {
+				return err
+			}
+			a.SetAnalyzer(str)
 			return nil
 		}
 		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}

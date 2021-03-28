@@ -60,7 +60,7 @@ var paramMarshalers = map[string]func(data dynamic.Map, source interface{}) (dyn
 	paramMaxExpansions:                   marshalMaxExpansionsParam,
 }
 
-var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}) error{
+var paramUnmarshalers = map[string]func(data dynamic.JSON, target interface{}) error{
 	paramBoost:                           unmarshalBoostParam,
 	paramAnalyzer:                        unmarshalAnalyzerParam,
 	paramFormat:                          unmarshalFormatParam,
@@ -85,7 +85,7 @@ var paramUnmarshalers = map[string]func(data dynamic.RawJSON, target interface{}
 	paramMaxExpansions:                   unmarshalMaxExpansionsParam,
 }
 
-func unmarshalParam(param string, data dynamic.RawJSON, target interface{}) (bool, error) {
+func unmarshalParam(param string, data dynamic.JSON, target interface{}) (bool, error) {
 
 	if unmarshal, ok := paramUnmarshalers[param]; ok {
 
@@ -101,7 +101,6 @@ func marshalParams(source interface{}) (dynamic.Map, error) {
 	data := dynamic.Map{}
 	var err error
 	for _, marshal := range paramMarshalers {
-
 		data, err = marshal(data, source)
 		if err != nil {
 			return data, err

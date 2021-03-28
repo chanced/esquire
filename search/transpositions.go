@@ -35,9 +35,12 @@ func (t transpositionsParam) Transpositions() bool {
 func (t *transpositionsParam) SetTranspositions(v bool) {
 	t.transpositions = &v
 }
-func unmarshalTranspositionsParam(value dynamic.RawJSON, target interface{}) error {
+func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithTranspositions); ok {
-		b := dynamic.NewBool(value)
+		b, err := dynamic.NewBool(value)
+		if err != nil {
+			return err
+		}
 		if v, ok := b.Bool(); ok {
 			a.SetTranspositions(v)
 		}

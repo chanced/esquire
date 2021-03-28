@@ -8,14 +8,23 @@ import (
 
 type Clause interface {
 	Type() Type
+}
+
+type clause interface {
 	Name() string
+	Clause()
 }
 
-type Fielder interface {
-	FieldName() string
+type WithField interface {
+	Field() string
+	SetField() string
 }
 
-type Clauser interface {
+type withField interface {
+	field() string
+}
+
+type clauser interface {
 	Clause
 	Clause() (Clause, error)
 }
@@ -38,13 +47,13 @@ func marshalClauseParams(source Clause) (dynamic.Map, error) {
 	return marshalParams(source)
 }
 
-func unmarshalParams(data []byte, target Clause) (map[string]dynamic.RawJSON, error) {
-	var raw map[string]dynamic.RawJSON
+func unmarshalParams(data []byte, target Clause) (map[string]dynamic.JSON, error) {
+	var raw map[string]dynamic.JSON
 	err := json.Unmarshal(data, &raw)
 	if err != nil {
 		return nil, err
 	}
-	res := map[string]dynamic.RawJSON{}
+	res := map[string]dynamic.JSON{}
 	for key, value := range raw {
 		isParam, err := unmarshalParam(key, value, target)
 		if err != nil {

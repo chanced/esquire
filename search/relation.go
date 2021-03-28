@@ -48,7 +48,7 @@ func (r *relationParam) SetRelation(v Relation) {
 		r.relation = v
 	}
 }
-func unmarshalRelationParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalRelationParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithRelation); ok {
 		a.SetRelation(Relation(data.UnquotedString()))
 	}

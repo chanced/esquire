@@ -1,6 +1,9 @@
 package search
 
 import (
+	"encoding/json"
+	"reflect"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -76,10 +79,20 @@ func marshalBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error
 	}
 	return data, nil
 }
-func unmarshalBoostParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithBoost); ok {
 		if data.IsNumber() {
-			f, _ := dynamic.NewNumber(data.String()).Float()
+			n, err := dynamic.NewNumber(data.String())
+			if err != nil {
+				return err
+			}
+			f, ok := n.Float()
+			if !ok {
+				return &json.UnmarshalTypeError{
+					Value: data.String(),
+					Type:  reflect.TypeOf(float64(0)),
+				}
+			}
 			r.SetBoost(f)
 			return nil
 		}
@@ -87,15 +100,22 @@ func unmarshalBoostParam(data dynamic.RawJSON, target interface{}) error {
 			return nil
 		}
 		if data.IsString() {
-			if data.UnquotedString() == "" {
+			if len(data.UnquotedString()) == 0 {
 				return nil
 			}
-			str := dynamic.NewString(data.UnquotedString())
-			f, err := str.Float64()
+			var str string
+			err := json.Unmarshal(data, &str)
 			if err != nil {
 				return err
 			}
-			r.SetBoost(f)
+			n, err := dynamic.NewNumber(str)
+			if err != nil {
+				return err
+			}
+			f, ok := n.Float()
+			if ok {
+				r.SetBoost(f)
+			}
 			return nil
 		}
 	}

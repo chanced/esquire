@@ -12,26 +12,37 @@ func (s String) String() string {
 	return string(s)
 }
 
-// TODO: Split string
+func (s String) Match() (MatchQuery, error) {
+	q := MatchQuery{}
+	err := q.SetQuery(s.String())
+	return q, err
+}
 
-func (s String) Terms() (*termsClause, error) {
+func (s String) Term() (TermQuery, error) {
+	q := TermQuery{}
+	err := q.SetValue(s.String())
+	return q, err
+}
+
+func (s String) Terms() (TermsQuery, error) {
+	q := TermsQuery{}
 	strs := strings.Split(s.String(), ",")
 	for i, str := range strs {
-		strs[i] = strings.TrimSpace(str)
+		str = strings.TrimSpace(str)
+		if str != "" {
+			strs[i] = str
+		}
 	}
-	q := &termsClause{
-		TermsValue: strs,
-	}
-	return q, nil
+	err := q.SetValues(strs)
+	return q, err
 }
 
 type Strings []string
 
-func (s Strings) Terms() (*termsClause, error) {
-	q := &termsClause{
-		TermsValue: s,
-	}
-	return q, nil
+func (s Strings) Terms() (TermsQuery, error) {
+	q := TermsQuery{}
+	err := q.SetValues(s)
+	return q, err
 }
 
 type number dynamic.Number
@@ -39,8 +50,7 @@ type number dynamic.Number
 // Number returns a new DynamicNumber It panics if v can not be set to a dynamic.Number
 //
 // see https://github.com/chanced/dynamic/blob/main/number.go
-func Number(v interface{}) *number {
-	n := dynamic.NewNumber(v)
+func Number(n dynamic.Number) *number {
 	dn := number(n)
 	return &dn
 }

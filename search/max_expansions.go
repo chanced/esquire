@@ -1,8 +1,6 @@
 package search
 
 import (
-	"encoding/json"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -43,14 +41,17 @@ func (me *maxExpansionsParam) SetMaxExpansions(v int64) {
 		me.maxExpansions = &v
 	}
 }
-func unmarshalMaxExpansionsParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalMaxExpansionsParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMaxExpansions); ok {
-		n := dynamic.NewNumber(data.UnquotedString())
+		n, err := dynamic.NewNumber(data.UnquotedString())
+		if err != nil {
+			return err
+		}
 		if v, ok := n.Int(); ok {
 			a.SetMaxExpansions(v)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeInt64}
+		return nil
 	}
 	return nil
 }

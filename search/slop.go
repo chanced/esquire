@@ -26,9 +26,12 @@ func (s *slopParam) SetSlop(v int64) {
 	s.slop = &v
 }
 
-func unmarshalSlopParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalSlopParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithSlop); ok {
-		n := dynamic.NewNumber(data.UnquotedString())
+		n, err := dynamic.NewNumber(data.UnquotedString())
+		if err != nil {
+			return err
+		}
 		if i, ok := n.Int(); ok {
 			a.SetSlop(i)
 		}

@@ -1,6 +1,7 @@
 package search
 
 import (
+	"encoding/json"
 	"strings"
 
 	"github.com/chanced/dynamic"
@@ -63,9 +64,14 @@ func (o operatorParam) Operator() Operator {
 func (o *operatorParam) SetOperator(v Operator) {
 	o.operator = v.toUpper().ref()
 }
-func unmarshalOperatorParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalOperatorParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithOperator); ok {
-		a.SetOperator(Operator(data.UnquotedString()))
+		var str string
+		err := json.Unmarshal(data, &str)
+		if err != nil {
+			return err
+		}
+		a.SetOperator(Operator(str))
 	}
 	return nil
 }

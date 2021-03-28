@@ -196,7 +196,7 @@ var zeroSearch = &Search{}
 
 func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	*s = *zeroSearch
-	var m map[string]dynamic.RawJSON
+	var m map[string]dynamic.JSON
 	err = json.Unmarshal(data, &m)
 	if err != nil {
 		return err
@@ -226,7 +226,10 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.fields = f
 	}
 	if d, ok := m["explain"]; ok {
-		b := dynamic.NewBool(d.UnquotedString())
+		b, err := dynamic.NewBool(d.UnquotedString())
+		if err != nil {
+			return err
+		}
 		if v, ok := b.Bool(); ok {
 			s.explain = v
 		}
@@ -279,7 +282,10 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 	if d, ok := m["size"]; ok {
-		n := dynamic.NewNumber(d.UnquotedString())
+		n, err := dynamic.NewNumber(d.UnquotedString())
+		if err != nil {
+			return err
+		}
 		s.size = n
 	}
 
@@ -328,7 +334,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 
 func (s Search) MarshalJSON() ([]byte, error) {
 
-	data := map[string]dynamic.RawJSON{}
+	data := map[string]dynamic.JSON{}
 	if len(s.docValueFields) > 0 {
 		b, err := json.Marshal(s.docValueFields)
 		if err != nil {
@@ -345,13 +351,15 @@ func (s Search) MarshalJSON() ([]byte, error) {
 		data["fields"] = b
 	}
 	if s.minScore > 0 {
-		data["min_score"] = dynamic.NewNumber(s.minScore).Bytes()
+		n, _ := dynamic.NewNumber(s.minScore)
+		data["min_score"] = n.Bytes()
 	}
 	if s.explain {
 		data["explain"] = trueBytes
 	}
 	if s.from > 0 {
-		data["from"] = dynamic.NewNumber(s.from).Bytes()
+		n, _ := dynamic.NewNumber(s.from)
+		data["from"] = n.Bytes()
 	}
 	if len(s.indicesBoost) > 0 {
 		b, err := json.Marshal(s.indicesBoost)
@@ -403,10 +411,11 @@ func (s Search) MarshalJSON() ([]byte, error) {
 		data["stats"] = b
 	}
 	if s.terminateAfter > 0 {
-		data["terminate_after"] = dynamic.NewNumber(s.terminateAfter).Bytes()
+		n, _ := dynamic.NewNumber(s.terminateAfter)
+		data["terminate_after"] = n.Bytes()
 	}
 	if s.timeout > 0 {
-		data["timeout"] = append([]byte{'"'}, s.timeout.String()+`"`...)
+		data["timeout"] = append([]byte{'"'}, append([]byte(s.timeout.String()), '"')...)
 	}
 	if s.version {
 		data["version"] = trueBytes
@@ -710,25 +719,4 @@ func (s Search) Version() bool {
 func (s *Search) SetVersion(v bool) *Search {
 	s.version = v
 	return s
-}
-
-func (s *Search) Clone() (*Search, error) {
-	n, _ := NewSearch(Params{})
-	n.SetDocValueFields(s.DocValueFields().Clone())
-	n.SetExplain(s.Explain())
-	n.SetFields(s.Fields().Clone())
-	n.SetFrom(s.From())
-	n.SetIndicesBoost(s.IndicesBoost().Clone())
-	n.SetMinScore(s.MinScore())
-	n.SetPointInTime(s.PointInTime().Clone())
-	n.SetQuery(s.Query().Clone())
-	n.SetRuntimeMappings(s.RuntimeMappings().Clone())
-	n.SetSeqNoPrimaryTerm(s.SeqNoPrimaryTerm())
-	n.SetSize(s.Size())
-	n.SetSource(s.Source())
-	n.SetStats(s.Stats())
-	n.SetTerminateAfter(s.TerminateAfter())
-	n.SetTimeout(s.Timeout())
-	n.SetVersion(s.Version())
-	return n, nil
 }

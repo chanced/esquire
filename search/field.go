@@ -7,17 +7,17 @@ import (
 )
 
 type Field struct {
-	// (Required, string) Wildcard pattern. The request returns doc values for
-	// field names matching this pattern.
-	Field string `bson:"field" json:"field"`
+	// Wildcard pattern. The request returns doc values for
+	// field names matching this pattern. (Required)
+	Field string
 
-	// (Optional, string) Format in which the doc values are returned.
+	//  Format in which the doc values are returned.
 	//
 	// For date fields, you can specify a date date format. For numeric fields
-	// fields, you can specify a DecimalFormat pattern.
+	// fields, you can specify a DecimalFormat pattern. (Optional)
 	//
 	// For other field data types, this parameter is not supported.
-	Format string `bson:"format,omitempty" json:"format,omitempty"`
+	Format string
 }
 
 type field Field
@@ -30,9 +30,14 @@ func (f Field) MarshalJSON() ([]byte, error) {
 }
 
 func (f *Field) UnmarshalJSON(data []byte) error {
-	d := dynamic.RawJSON(data)
+	d := dynamic.JSON(data)
 	if d.IsString() {
-		f.Field = d.UnquotedString()
+		var str string
+		err := json.Unmarshal(d, &str)
+		if err != nil {
+			return err
+		}
+		f.Field = str
 		f.Format = ""
 		return nil
 	}

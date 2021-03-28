@@ -60,4 +60,7 @@ var (
 	ErrFieldExists       = errors.New("error: field exists")
 	ErrTypeRequired      = errors.New("error: rule type is required")
 	ErrUnsupportedType   = errors.New("error: unsupported rule type")
+	ErrPathRequired      = errors.New("error: Path required in lookup")
+	ErrIDRequired        = errors.New("error: ID required for lookup")
+	ErrIndexRequired     = errors.New("error: Index required")
 )

@@ -35,14 +35,15 @@ func (pl prefixLengthParam) PrefixLength() int64 {
 func (pl *prefixLengthParam) SetPrefixLength(v int64) {
 	pl.prefixLengthValue = &v
 }
-func unmarshalPrefixLengthParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalPrefixLengthParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithPrefixLength); ok {
-		n := dynamic.NewNumber(data.UnquotedString())
+		n, err := dynamic.NewNumber(data.UnquotedString())
+		if err != nil {
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
+		}
 		if v, ok := n.Int(); ok {
 			a.SetPrefixLength(v)
-			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
 	}
 	return nil
 }

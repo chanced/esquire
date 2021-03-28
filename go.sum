@@ -2,6 +2,16 @@ github.com/chanced/dynamic v0.0.0-20210326184528-22a6d03a33ed h1:WSkNLpDVCU++3pz
 github.com/chanced/dynamic v0.0.0-20210326184528-22a6d03a33ed/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/chanced/dynamic v0.0.0-20210327055845-c489cb90ac2e h1:AJrX0OOrdqkkasfMJsPNnWdEzvVZZvji42wYqOEfBlU=
 github.com/chanced/dynamic v0.0.0-20210327055845-c489cb90ac2e/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210327165034-94e76c86310c h1:0k+btBfZuQaz4GZNRJCf7wRNxvNmQCot39e4MQHwCGA=
+github.com/chanced/dynamic v0.0.0-20210327165034-94e76c86310c/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210327173844-e0ceb8f861ef h1:Y9R0KED2n2BZ0swFNikdHOn2mxG3OiHKxcy15mzksnc=
+github.com/chanced/dynamic v0.0.0-20210327173844-e0ceb8f861ef/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210327174126-a58c4f7d6112 h1:OA2EIyCiPh1pWy+CiexsvM8Z6BwZCZlBwQ5vM4Gk61I=
+github.com/chanced/dynamic v0.0.0-20210327174126-a58c4f7d6112/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210327182917-ca9aab16a3d8 h1:m4ex3p8qcdjNxsOjopl0Oky4/dBgvrCi+SO0a6uTvho=
+github.com/chanced/dynamic v0.0.0-20210327182917-ca9aab16a3d8/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210328014743-ad2c30219f7b h1:HQW5PLHxhoS00sa9A1J8Co9ybHTUiCfPfhwZJntd/pk=
+github.com/chanced/dynamic v0.0.0-20210328014743-ad2c30219f7b/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

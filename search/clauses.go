@@ -14,22 +14,22 @@ func (c Clauses) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := []Clause(*u)
+	s := []Clause(u)
 	return json.Marshal(s)
 }
 
 func (c *Clauses) UnmarshalJSON(data []byte) error {
 	*c = Clauses{}
 
-	r := dynamic.RawJSON(data)
-	var cm []map[Type]dynamic.RawJSON
+	r := dynamic.JSON(data)
+	var cm []map[Type]dynamic.JSON
 	if r.IsObject() {
-		ce := map[Type]dynamic.RawJSON{}
+		ce := map[Type]dynamic.JSON{}
 		err := json.Unmarshal(r, &ce)
 		if err != nil {
 			return err
 		}
-		cm = []map[Type]dynamic.RawJSON{ce}
+		cm = []map[Type]dynamic.JSON{ce}
 	} else {
 		err := json.Unmarshal(r, &cm)
 		if err != nil {
@@ -63,12 +63,12 @@ func (c *Clauses) Validate() error {
 	return err
 }
 
-func (c *Clauses) unpack() (*Clauses, error) {
+func (c *Clauses) unpack() (Clauses, error) {
 	if c == nil {
 		*c = Clauses{}
 	}
 	for i, ce := range *c {
-		if v, ok := ce.(Clauser); ok {
+		if v, ok := ce.(clauser); ok {
 			r, err := unpackClause(v)
 			if err != nil {
 				return nil, err
@@ -76,19 +76,55 @@ func (c *Clauses) unpack() (*Clauses, error) {
 			(*c)[i] = r
 		}
 	}
-	return c, nil
+	return *c, nil
 
 }
-func (c *Clauses) RemoveByName(name string) {
+
+func (c *Clauses) RemoveIndex(i int) Clause {
+	v := (*c)[i]
+	*c = append((*c)[:i], (*c)[i+1:]...)
+	return v
+}
+
+func (c *Clauses) RemoveAllForField(field string) []Clause {
+	rem := []Clause{}
 	if c == nil {
 		*c = Clauses{}
 	}
 	for i, v := range *c {
-		if v.Name() == name {
-			*c = append((*c)[:i], (*c)[i+1:]...)
+		if wn, ok := v.(WithField); ok {
+			if wn.Field() == field {
+				rem = append(rem, v)
+				c.RemoveIndex(i)
+			}
+		} else if wn, ok := v.(withField); ok {
+			if wn.field() == field {
+				rem = append(rem, v)
+				c.RemoveIndex(i)
+			}
 		}
 	}
-	return
+	return rem
+}
+func (c *Clauses) RemoveAllWithName(name string) []Clause {
+	rem := []Clause{}
+	if c == nil {
+		*c = Clauses{}
+	}
+	for i, v := range *c {
+		if wn, ok := v.(WithName); ok {
+			if wn.Name() == name {
+				rem = append(rem, v)
+				c.RemoveIndex(i)
+			}
+		} else if wn, ok := v.(withName); ok {
+			if wn.name() == name {
+				rem = append(rem, v)
+				c.RemoveIndex(i)
+			}
+		}
+	}
+	return rem
 }
 func (c *Clauses) Add(clause Clause) error {
 
@@ -104,54 +140,19 @@ func (c *Clauses) Add(clause Clause) error {
 	*c = append(*c, clause)
 	return nil
 }
-
-// func (c Clause) MarshalJSON() ([]byte, error) {
-// 	r, err := json.Marshal(c.Rule)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return json.Marshal(map[Type]dynamic.RawJSON{
-// 		c.Rule.Type(): dynamic.RawJSON(r),
-// 	})
-// }
-// func (c *Clause) UnmarshalJSON(data []byte) error {
-// 	var m map[Type]dynamic.RawJSON
-// 	err := json.Unmarshal(data, &m)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	for t, d := range m {
-// 		handler, ok := typeHandlers[t]
-// 		if !ok {
-// 			return ErrUnsupportedType
-// 		}
-// 		r := handler()
-// 		err := json.Unmarshal(d, &r)
-// 		if err != nil {
-// 			return err
-// 		}
-// 		c.Rule = r
-// 		c.Type = t
-// 		return nil
-// 	}
-// 	return nil
-// }
-
-// func (c *Clause) UnmarshalBSON(data []byte) error {
-// 	return c.UnmarshalJSON(data)
-// }
-
-// func (c Clause) MarshalBSON() ([]byte, error) {
-// 	return c.MarshalJSON()
-// }
-
 func unpackClause(clause Clause) (Clause, error) {
 	var err error
-	if v, ok := clause.(Clauser); ok {
+	if v, ok := clause.(clauser); ok {
 		clause, err = v.Clause()
 		if err != nil {
 			return nil, err
 		}
 	}
 	return clause, nil
+}
+func unpackClauses(clauses Clauses) (Clauses, error) {
+	if clauses == nil {
+		return Clauses{}, nil
+	}
+	return clauses.unpack()
 }

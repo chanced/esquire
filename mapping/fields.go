@@ -38,7 +38,7 @@ func (f Fields) AddField(key string, field Field) error {
 }
 
 func (f *Fields) UnmarshalJSON(data []byte) error {
-	var m map[string]dynamic.RawJSON
+	var m map[string]dynamic.JSON
 	err := json.Unmarshal(data, &m)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (f *Fields) UnmarshalJSON(data []byte) error {
 	*f = make(Fields, len(m))
 
 	for fld, fd := range m {
-		var props map[string]dynamic.RawJSON
+		var props map[string]dynamic.JSON
 		err := json.Unmarshal(fd, &props)
 		if err != nil {
 			return err

@@ -1,6 +1,9 @@
 package search
 
 import (
+	"encoding/json"
+	"reflect"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -20,9 +23,30 @@ func (cf *cutoffFrequencyParam) SetCutoffFreuency(n dynamic.Number) {
 	cf.cutoffFrequency = n
 }
 
-func unmarshalCutoffFrequencyParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalCutoffFrequencyParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithCutoffFrequency); ok {
-		n := dynamic.NewNumber(data.UnquotedString())
+		var str string
+		var err error
+		switch {
+		case data.IsNull():
+		case data.IsString():
+			err = json.Unmarshal(data, &str)
+		case data.IsNumber():
+			str = data.UnquotedString()
+		default:
+			err = &json.UnmarshalTypeError{
+				Value: data.String(),
+				Type:  reflect.TypeOf(dynamic.Number{}),
+			}
+		}
+		if err != nil {
+			return err
+		}
+
+		n, err := dynamic.NewNumber(str)
+		if err != nil {
+			return err
+		}
 		a.SetCutoffFreuency(n)
 	}
 	return nil

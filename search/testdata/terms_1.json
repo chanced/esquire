@@ -1,7 +1,0 @@
-{
-  "terms": {
-    "user.id": ["chanced", "kimchy", "elkbee"],
-    "boost": 1.2,
-    "case_insensitive": true
-  }
-}

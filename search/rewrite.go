@@ -120,7 +120,7 @@ func (r *rewriteParam) SetRewrite(v Rewrite) {
 		r.rewrite = &v
 	}
 }
-func unmarshalRewriteParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithRewrite); ok {
 		a.SetRewrite(Rewrite(data.UnquotedString()))
 	}

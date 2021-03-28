@@ -21,8 +21,19 @@ func TestClauses(t *testing.T) {
 	err := json.Unmarshal(json1, &clauses)
 	assert.NotEmpty(clauses)
 	assert.Equal(search.TypeTerm, clauses[0].Type())
-	assert.Equal("chanced", clauses[0].(*search.TermQuery).TermValue)
+	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
 	assert.NoError(err)
+	res1, err := json.Marshal(clauses)
+	assert.NoError(err)
+	fmt.Println(string(res1))
+
+	clauses = search.Clauses{}
+	err = json.Unmarshal(res1, &clauses)
+	assert.NotEmpty(clauses)
+	assert.Equal(search.TypeTerm, clauses[0].Type())
+	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
+	assert.NoError(err)
+
 	json2 := []byte(`[{
         "term" : { "user.id" : "chanced" }
       }]`)
@@ -30,7 +41,7 @@ func TestClauses(t *testing.T) {
 	err = json.Unmarshal(json2, &clauses)
 	assert.Len(clauses, 1)
 	assert.Equal(search.TypeTerm, clauses[0].Type())
-	assert.Equal("chanced", clauses[0].(*search.TermQuery).TermValue)
+	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)
 	assert.NoError(err)

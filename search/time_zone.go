@@ -1,6 +1,8 @@
 package search
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -28,9 +30,14 @@ func (tz timeZoneParam) TimeZone() string {
 func (tz *timeZoneParam) SetTimeZone(v string) {
 	tz.timeZone = v
 }
-func unmarshalTimeZoneParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalTimeZoneParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithTimeZone); ok {
-		a.SetTimeZone(data.UnquotedString())
+		var str string
+		err := json.Unmarshal(data, &str)
+		if err != nil {
+			return err
+		}
+		a.SetTimeZone(str)
 	}
 	return nil
 }

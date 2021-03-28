@@ -53,7 +53,7 @@ func (ztq zeroTermsQueryParam) ZeroTermsQuery() ZeroTermsQuery {
 func (ztq *zeroTermsQueryParam) SetZeroTermsQuery(v ZeroTermsQuery) {
 	ztq.zeroTermsQuery = v.toLower().ref()
 }
-func unmarshalZeroTermsQueryParam(value dynamic.RawJSON, target interface{}) error {
+func unmarshalZeroTermsQueryParam(value dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithZeroTermsQuery); ok {
 		a.SetZeroTermsQuery(ZeroTermsQuery(value.UnquotedString()))
 	}

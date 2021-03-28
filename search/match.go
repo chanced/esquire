@@ -18,12 +18,12 @@ type Match struct {
 	// queries to track which queries matched returned documents. If named
 	// queries are used, the response includes a matched_queries property for
 	// each hit.
-	QueryName string
+	Name string
 	// The field which is being matched.
 	//
 	// If you are setting Match explicitly, this does not need to be set. It
 	// does, however, if you are adding it to a set of Clauses.
-	FieldName string
+	Field string
 	// (Required) Text, number, boolean value or date you wish to find in the
 	// provided <field>.
 	//
@@ -81,12 +81,8 @@ type Match struct {
 	CutoffFrequency dynamic.Number
 }
 
-func (m Match) Name() string {
-	return m.QueryName
-}
-
-func (m Match) SetName(name string) {
-	m.QueryName = name
+func (m Match) name() string {
+	return m.Name
 }
 
 func (m Match) Type() Type {
@@ -95,9 +91,10 @@ func (m Match) Type() Type {
 func (m Match) Clause() (Clause, error) {
 	return m.Match()
 }
-func (m Match) Match() (*matchClause, error) {
-	v := &matchClause{}
+func (m Match) Match() (*MatchQuery, error) {
+	v := &MatchQuery{}
 	err := v.SetQuery(m.Query)
+
 	if err != nil {
 		return nil, err
 	}
@@ -119,73 +116,9 @@ func (m Match) Match() (*matchClause, error) {
 	if m.ZeroTermsQuery != "" {
 		v.SetZeroTermsQuery(m.ZeroTermsQuery)
 	}
+
 	v.cutoffFrequency = m.CutoffFrequency
 	return v, nil
-}
-
-type matchClause struct {
-	MatchQueryValue dynamic.StringNumberBoolOrTime
-	analyzerParam
-	nameParam
-	autoGenerateSynonymsPhraseQueryParam
-	fuzzinessParam
-	maxExpansionsParam
-	prefixLengthParam
-	fuzzyTranspositionsParam
-	lenientParam
-	operatorParam
-	minimumShouldMatchParam
-	zeroTermsQueryParam
-	cutoffFrequencyParam
-}
-
-func (mr *matchClause) Type() Type {
-	return TypeMatch
-}
-func (mr matchClause) HasMatchClause() bool {
-	return !mr.MatchQueryValue.IsEmptyString()
-}
-func (mr *matchClause) SetQuery(value interface{}) error {
-	return mr.MatchQueryValue.Set(value)
-}
-
-func (mr matchClause) MarshalJSON() ([]byte, error) {
-	if !mr.HasMatchClause() {
-		return dynamic.Null, nil
-	}
-	m, err := marshalParams(&mr)
-	if err != nil {
-		return nil, err
-	}
-	m["query"] = mr.MatchQueryValue
-	return json.Marshal(m)
-}
-
-func (mr *matchClause) UnmarshalJSON(data []byte) error {
-	mr.MatchQueryValue = dynamic.NewStringNumberBoolOrTime()
-	mr.analyzerParam = analyzerParam{}
-	mr.autoGenerateSynonymsPhraseQueryParam = autoGenerateSynonymsPhraseQueryParam{}
-	mr.fuzzinessParam = fuzzinessParam{}
-	mr.fuzzyTranspositionsParam = fuzzyTranspositionsParam{}
-	mr.lenientParam = lenientParam{}
-	mr.prefixLengthParam = prefixLengthParam{}
-	mr.minimumShouldMatchParam = minimumShouldMatchParam{}
-	mr.operatorParam = operatorParam{}
-	mr.maxExpansionsParam = maxExpansionsParam{}
-	mr.zeroTermsQueryParam = zeroTermsQueryParam{}
-	mr.cutoffFrequencyParam = cutoffFrequencyParam{}
-	fields, err := unmarshalParams(data, mr)
-	if err != nil {
-		return err
-	}
-
-	if v, ok := fields["query"]; ok {
-		mr.MatchQueryValue = dynamic.NewStringNumberBoolOrTime(v.UnquotedString())
-
-	} else {
-		mr.MatchQueryValue = dynamic.StringNumberBoolOrTime{}
-	}
-	return nil
 }
 
 // MatchQuery returns documents that match a provided text, number, date or
@@ -196,35 +129,85 @@ func (mr *matchClause) UnmarshalJSON(data []byte) error {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	MatchField string
-	matchClause
+	field string
+	query dynamic.StringNumberBoolOrTime
+
+	nameParam
+	lenientParam
+	operatorParam
+	analyzerParam
+	fuzzinessParam
+	prefixLengthParam
+	maxExpansionsParam
+	zeroTermsQueryParam
+	cutoffFrequencyParam
+	minimumShouldMatchParam
+	fuzzyTranspositionsParam
+	autoGenerateSynonymsPhraseQueryParam
 }
 
-func (mq MatchQuery) MarshalJSON() ([]byte, error) {
-	if !mq.HasMatchClause() {
+func (m MatchQuery) Field() string {
+	return m.field
+}
+
+func (m MatchQuery) SetField(field string) {
+	m.field = field
+}
+
+func (m MatchQuery) IsEmpty() bool {
+	return len(m.field) == 0 || m.query.IsEmptyString()
+}
+
+// SetQuery sets the Match's query param. It returns an error if it is nil or
+// empty. If you need to clear match, use Clear()
+func (m *MatchQuery) SetQuery(query interface{}) error {
+	if query == nil {
+		return ErrQueryRequired
+	}
+
+	return nil
+}
+
+func (m *MatchQuery) Query() *dynamic.StringNumberBoolOrTime {
+	return &m.query
+}
+
+func (m MatchQuery) MarshalJSON() ([]byte, error) {
+	if len(m.field) == 0 || m.IsEmpty() {
+		return dynamic.Null, nil
+	}
+
+	data, err := marshalParams(&m)
+	if err != nil {
+		return nil, err
+	}
+	data["query"] = m.query
+	return json.Marshal(data)
+}
+
+func (mq MatchQuery) marshalClauseJSON() ([]byte, error) {
+	if mq.IsEmpty() {
 		return dynamic.Null, nil
 	}
 	m, err := marshalParams(&mq)
 	if err != nil {
 		return nil, err
 	}
-	m["query"] = mq.MatchQueryValue
+	m["query"] = mq.query
 
-	return json.Marshal(dynamic.Map{mq.MatchField: m})
+	return json.Marshal(dynamic.Map{mq.field: m})
 }
+func (m *MatchQuery) UnmarshalJSON(data []byte) error {
+	*m = MatchQuery{}
 
-func (mq *MatchQuery) UnmarshalJSON(data []byte) error {
-	mq.MatchField = ""
-	mq.matchClause = matchClause{}
-
-	m := map[string]json.RawMessage{}
+	dm := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &m)
 	if err != nil {
 		return err
 	}
-	for k, v := range m {
-		mq.MatchField = k
-		err := json.Unmarshal(v, &mq.matchClause)
+	for k, v := range dm {
+		m.field = k
+		err := m.unmarshalClauseJSON(v)
 		if err != nil {
 			return err
 		}
@@ -233,13 +216,29 @@ func (mq *MatchQuery) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+	fields, err := unmarshalParams(data, m)
+	if err != nil {
+		return err
+	}
+	if v, ok := fields["query"]; ok {
+		var q dynamic.StringNumberBoolOrTime
+		err := json.Unmarshal(v, &q)
+		if err != nil {
+			return err
+		}
+		m.query = q
+	}
+	return nil
+}
+
 func (mq MatchQuery) Type() Type {
 	return TypeMatch
 }
 
-func (mq *MatchQuery) SetMatch(field string, match *Match) error {
+func (m *MatchQuery) SetMatch(field string, match *Match) error {
 	if match == nil {
-		mq.RemoveMatch()
+		m.RemoveMatch()
 		return nil
 	}
 	if field == "" {
@@ -249,11 +248,10 @@ func (mq *MatchQuery) SetMatch(field string, match *Match) error {
 	if err != nil {
 		return err
 	}
-	mq.MatchField = field
-	mq.matchClause = *r
+	r.field = field
+	*m = *r
 	return nil
 }
-func (mq *MatchQuery) RemoveMatch() {
-	mq.MatchField = ""
-	mq.matchClause = matchClause{}
+func (m *MatchQuery) RemoveMatch() {
+	*m = MatchQuery{}
 }

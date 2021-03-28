@@ -1,17 +1,27 @@
 package search
 
+// Prefix returns documents that contain a specific prefix in a provided field.
+//
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
 type Prefix struct {
-	Value           string
-	Rewrite         Rewrite
+	// Field which the query is being performed. This is not needed if setting explicitly
+	// but is required if the query is being added to a compound query.
+	Field string
+	// Beginning characters of terms you wish to find in the provided <field>. (Required)
+	Value string
+	// Method used to rewrite the query. For valid values and more information,
+	// see the rewrite parameter. (Optional)
+	Rewrite Rewrite
+	// Allows ASCII case insensitive matching of the value with the indexed
+	// field values when set to true. Default is false which means the case
+	// sensitivity of matching depends on the underlying field’s mapping. (Optional)
 	CaseInsensitive bool
-	QueryName       string
+	// Name of the query (Optional)
+	Name string
 }
 
 func (p Prefix) Type() Type {
 	return TypePrefix
-}
-func (p Prefix) Name() string {
-	return p.QueryName
 }
 
 func (p Prefix) Clause() (Clause, error) {

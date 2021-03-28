@@ -30,14 +30,18 @@ func (mb maxBoostParam) SetMaxBoost(v float64) {
 		mb.maxBoost = &v
 	}
 }
-func unmarshalMaxBoostParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalMaxBoostParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMaxBoost); ok {
-		n := dynamic.NewNumber(data.UnquotedString())
+		var n dynamic.Number
+		err := json.Unmarshal(data, &n)
+		if err != nil {
+			return err
+		}
 		if v, ok := n.Float(); ok {
 			a.SetMaxBoost(v)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
+		return nil
 	}
 	return nil
 }

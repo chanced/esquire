@@ -72,21 +72,16 @@ func NewQuery(params QueryParams) (*Query, error) {
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	MatchQuery
-	ScriptQuery
-	ExistsQuery
-	BooleanQuery
-	TermQuery
-	TermsQuery
-}
-
-func (q Query) HasClauses() bool {
-	return q.HasMatchClause() || q.HasTermsClause() || q.HasTermClause() ||
-		q.HasBooleanClause()
+	Match   MatchQuery
+	Script  ScriptQuery
+	Exists  ExistsQuery
+	Boolean BooleanQuery
+	Term    TermQuery
+	Terms   TermsQuery
 }
 
 func (q Query) IsEmpty() bool {
-	return !q.HasClauses()
+	return !q.Match.IsEmpty() || !q.Terms.IsEmpty() || !q.Term.IsEmpty() || !q.Boolean.IsEmpty()
 }
 
 func (q *Query) UnmarshalJSON(data []byte) error {
@@ -96,20 +91,20 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if term, ok := m["term"]; ok {
-		err = json.Unmarshal(term, &q.TermQuery)
+		err = json.Unmarshal(term, &q.Term)
 		if err != nil {
 			return err
 		}
 	}
 
 	if terms, ok := m["terms"]; ok {
-		err = json.Unmarshal(terms, &q.TermsQuery)
+		err = json.Unmarshal(terms, &q.Terms)
 		if err != nil {
 			return err
 		}
 	}
 	if match, ok := m["match"]; ok {
-		err = json.Unmarshal(match, &q.MatchQuery)
+		err = json.Unmarshal(match, &q.Match)
 		if err != nil {
 			return err
 		}
@@ -117,29 +112,37 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (q *Query) SetTerms(field string, t Termser) error {
+	return q.Terms.Set(field, t)
+}
+
+func (q *Query) SetTerm(field string, t Termer) error {
+	return q.Term.Set(field, t)
+}
+
 func (q Query) MarshalJSON() ([]byte, error) {
 	m := map[string]json.RawMessage{}
-	terms, err := q.TermsQuery.MarshalJSON()
+	terms, err := q.Terms.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
-	if !dynamic.RawJSON(terms).IsNull() {
+	if !dynamic.JSON(terms).IsNull() {
 		m["terms"] = json.RawMessage(terms)
 	}
 
-	term, err := q.TermQuery.MarshalJSON()
+	term, err := q.Term.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
-	if !dynamic.RawJSON(term).IsNull() {
+	if !dynamic.JSON(term).IsNull() {
 		m["term"] = json.RawMessage(term)
 	}
 
-	match, err := q.MatchQuery.MarshalJSON()
+	match, err := q.Match.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}
-	if !dynamic.RawJSON(match).IsNull() {
+	if !dynamic.JSON(match).IsNull() {
 		m["match"] = json.RawMessage(match)
 	}
 	return json.Marshal(m)

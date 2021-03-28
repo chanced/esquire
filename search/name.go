@@ -12,6 +12,10 @@ type WithName interface {
 	SetName(string)
 }
 
+type withName interface {
+	name() string
+}
+
 const DefaultName = ""
 
 type nameParam struct {
@@ -26,7 +30,7 @@ func (n *nameParam) SetName(name string) {
 		n.name = name
 	}
 }
-func unmarshalNameParam(data dynamic.RawJSON, target interface{}) error {
+func unmarshalNameParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithName); ok {
 		a.SetName(data.UnquotedString())
 	}

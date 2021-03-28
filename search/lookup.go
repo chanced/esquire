@@ -1,18 +1,21 @@
 package search
 
 type Lookup struct {
-	FieldName string
-	// Index (Required, string) Name of the index from which to fetch field
-	// values.
+	Field string
+	// Name of the index from which to fetch field
+	// values.(Required)
+
 	Index string
-	// ID (Required, string) ID of the document from which to fetch field
-	// values.
+	// ID of the document from which to fetch field
+	// values. (Required)
 	ID string
-	// Path (Required, string) Name of the field from which to fetch field
-	// values. Elasticsearch uses these values as search terms for the query.
+
+	// Path of the field from which to fetch field values. Elasticsearch
+	// uses these values as search terms for the query.(Required)
 	//
 	// If the field values include an array of nested inner objects, you can
 	// access those objects using dot notation syntax.
+
 	Path string
 	// Routing value of the document from which to fetch term values. If a
 	// custom routing value was provided when the document was indexed, this
@@ -31,11 +34,10 @@ func (l Lookup) Name() string {
 func (l Lookup) Clause() (Clause, error) {
 	return l.Terms()
 }
-func (l Lookup) Terms() (*termsClause, error) {
-	q := &termsClause{}
+func (l Lookup) Terms() (TermQuery, error) {
+	q := TermQuery{}
 	q.SetBoost(l.Boost)
 	q.SetCaseInsensitive(l.CaseInsensitive)
-
 	return q, nil
 }
 
