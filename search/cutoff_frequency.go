@@ -34,9 +34,9 @@ func unmarshalCutoffFrequencyParam(data dynamic.JSON, target interface{}) error 
 		case data.IsNumber():
 			str = data.UnquotedString()
 		default:
-			err = &json.UnmarshalTypeError{
+			err = &json.UnmarshalKindError{
 				Value: data.String(),
-				Type:  reflect.TypeOf(dynamic.Number{}),
+				Kind:  reflect.KindOf(dynamic.Number{}),
 			}
 		}
 		if err != nil {

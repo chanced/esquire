@@ -11,8 +11,8 @@ func (ao AllOf) SetName(name string) {
 	ao.QueryName = name
 }
 
-func (ao AllOf) Type() Type {
-	return TypeAllOf
+func (ao AllOf) Kind() Kind {
+	return KindAllOf
 }
 
 func (ao AllOf) Clause() (Clause, error) {

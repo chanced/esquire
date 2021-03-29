@@ -14,7 +14,7 @@ func (s String) String() string {
 
 func (s String) Match() (MatchQuery, error) {
 	q := MatchQuery{}
-	err := q.SetQuery(s.String())
+	err := q.setQuery(s.String())
 	return q, err
 }
 

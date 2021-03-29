@@ -1,38 +1,38 @@
 package search
 
-type Type string
+type Kind string
 
-func (t Type) String() string {
+func (t Kind) String() string {
 	return string(t)
 }
 
-func (t Type) IsValid() bool {
+func (t Kind) IsValid() bool {
 	_, ok := clauseHandlers[t]
 	return ok
 }
 
 const (
-	TypePrefix         Type = "prefix"
-	TypeMatch          Type = "match"
-	TypeMatchAll       Type = "match_all"
-	TypeTerm           Type = "term"
-	TypeExists         Type = "exists"
-	TypeTerms          Type = "terms"
-	TypeRange          Type = "range"
-	TypeBoosting       Type = "boosting"
-	TypeBoolean        Type = "boolean"
-	TypeConstantScore  Type = "constant_score"
-	TypeFunctionScore  Type = "function_score"
-	TypeDisjunctionMax Type = "dis_max"
-	TypeAllOf          Type = "all_of"
-	TypeFuzzy          Type = "fuzzy"
+	KindPrefix         Kind = "prefix"
+	KindMatch          Kind = "match"
+	KindMatchAll       Kind = "match_all"
+	KindTerm           Kind = "term"
+	KindExists         Kind = "exists"
+	KindTerms          Kind = "terms"
+	KindRange          Kind = "range"
+	KindBoosting       Kind = "boosting"
+	KindBoolean        Kind = "boolean"
+	KindConstantScore  Kind = "constant_score"
+	KindFunctionScore  Kind = "function_score"
+	KindDisjunctionMax Kind = "dis_max"
+	KindAllOf          Kind = "all_of"
+	KindFuzzy          Kind = "fuzzy"
 )
 
-var clauseHandlers = map[Type]func() Clause{
-	TypePrefix:  func() Clause { return &PrefixQuery{} },
-	TypeMatch:   func() Clause { return &MatchQuery{} },
-	TypeTerm:    func() Clause { return &TermQuery{} },
-	TypeTerms:   func() Clause { return &TermsQuery{} },
-	TypeBoolean: func() Clause { return &BooleanQuery{} },
-	TypeExists:  func() Clause { return &ExistsQuery{} },
+var clauseHandlers = map[Kind]func() Clause{
+	KindPrefix:  func() Clause { return &PrefixQuery{} },
+	KindMatch:   func() Clause { return &MatchQuery{} },
+	KindTerm:    func() Clause { return &TermQuery{} },
+	KindTerms:   func() Clause { return &TermsQuery{} },
+	KindBoolean: func() Clause { return &BooleanQuery{} },
+	KindExists:  func() Clause { return &ExistsQuery{} },
 }

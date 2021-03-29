@@ -19,8 +19,8 @@ func (ma MatchAll) Clause() (Clause, error) {
 	return r, nil
 }
 
-func (ma MatchAll) Type() Type {
-	return TypeMatchAll
+func (ma MatchAll) Kind() Kind {
+	return KindMatchAll
 }
 func (ma MatchAll) MatchAll() *matchAllClause {
 	r := &matchAllClause{}
@@ -33,16 +33,16 @@ type matchAllClause struct {
 	nameParam
 }
 
-func (matchAllClause) Type() Type {
-	return TypeMatchAll
+func (matchAllClause) Kind() Kind {
+	return KindMatchAll
 }
 
 type MatchAllQuery struct {
 	MatchAllValue *MatchAll `json:"match_all,omitempty" bson:"match_all,omitempty"`
 }
 
-func (ma MatchAllQuery) Type() Type {
-	return TypeMatchAll
+func (ma MatchAllQuery) Kind() Kind {
+	return KindMatchAll
 }
 
 func (ma *MatchAllQuery) SetMatchAll(v *MatchAll) {

@@ -39,15 +39,15 @@ package mapping
 //
 // Only one join field mapping is allowed per index.
 //
-//  	- Parent and child documents must be indexed on the same shard. This means
+//      - Parent and child documents must be indexed on the same shard. This means
 // that the same routing value needs to be provided when getting, deleting, or
 // updating a child document.
 //
-//  	- An element can have multiple children but only one parent.
+//      - An element can have multiple children but only one parent.
 //
-//  	- It is possible to add a new relation to an existing join field.
+//      - It is possible to add a new relation to an existing join field.
 //
-//  	- It is also possible to add a child to an existing element but only if the
+//      - It is also possible to add a child to an existing element but only if the
 // element is already a parent.
 //
 // Searching with parent-join

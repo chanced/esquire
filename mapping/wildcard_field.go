@@ -2,9 +2,9 @@ package mapping
 
 // A WildcardField stores values optimised for wildcard grep-like queries. Wildcard queries are possible on other field types but suffer from constraints:
 //
-//  	- text fields limit matching of any wildcard expressions to individual tokens rather than the original whole value held in a field
+//      - text fields limit matching of any wildcard expressions to individual tokens rather than the original whole value held in a field
 //
-//  	- keyword fields are untokenized but slow at performing wildcard queries (especially patterns with leading wildcards).
+//      - keyword fields are untokenized but slow at performing wildcard queries (especially patterns with leading wildcards).
 //
 // Internally the wildcard field indexes the whole field value using ngrams and stores the full string. The index is used as a rough filter to cut down the number of values that are then checked by retrieving and checking the full values. This field is especially well suited to run grep-like queries on log lines. Storage costs are typically lower than those of keyword fields but search speeds for exact matches on full terms are slower.
 //

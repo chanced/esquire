@@ -43,20 +43,20 @@ func (b Boolean) Boolean() (BooleanQuery, error) {
 	q := BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
-		return q, NewQueryError(err, TypeBoolean)
+		return q, NewQueryError(err, KindBoolean)
 	}
 	err = q.SetMustNot(b.MustNot)
 	if err != nil {
-		return q, NewQueryError(err, TypeBoolean)
+		return q, NewQueryError(err, KindBoolean)
 	}
 	err = q.SetShould(b.Should)
 	if err != nil {
-		return q, NewQueryError(err, TypeBoolean)
+		return q, NewQueryError(err, KindBoolean)
 	}
 
 	err = q.SetFilter(b.Filter)
 	if err != nil {
-		return q, NewQueryError(err, TypeBoolean)
+		return q, NewQueryError(err, KindBoolean)
 	}
 
 	q.SetName(b.Name)
@@ -64,8 +64,8 @@ func (b Boolean) Boolean() (BooleanQuery, error) {
 	return q, nil
 }
 
-func (b Boolean) Type() Type {
-	return TypeBoolean
+func (b Boolean) Kind() Kind {
+	return KindBoolean
 }
 
 // BooleanQuery is a query that matches documents matching boolean combinations
@@ -82,14 +82,14 @@ type BooleanQuery struct {
 	nameParam
 }
 
-func (b BooleanQuery) Type() Type {
-	return TypeBoolean
+func (b BooleanQuery) Kind() Kind {
+	return KindBoolean
 }
 
 func (b *BooleanQuery) Set(v Booler) error {
 	q, err := v.Boolean()
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	*b = q
 	return nil
@@ -125,7 +125,7 @@ func (b *BooleanQuery) Should() Clauses {
 func (b *BooleanQuery) SetMust(clauses Clauses) error {
 	must, err := unpackClauses(clauses)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	b.must = must
 	return nil
@@ -134,7 +134,7 @@ func (b *BooleanQuery) SetMust(clauses Clauses) error {
 func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
 	mustNot, err := unpackClauses(clauses)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	b.mustNot = mustNot
 	return nil
@@ -143,7 +143,7 @@ func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
 func (b *BooleanQuery) SetShould(clauses Clauses) error {
 	should, err := unpackClauses(clauses)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	b.should = should
 	return nil
@@ -153,7 +153,7 @@ func (b *BooleanQuery) SetShould(clauses Clauses) error {
 func (b *BooleanQuery) SetFilter(clauses Clauses) error {
 	filter, err := unpackClauses(clauses)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	b.filter = filter
 	return nil
@@ -162,7 +162,7 @@ func (b *BooleanQuery) SetFilter(clauses Clauses) error {
 func (b *BooleanQuery) AddMust(c Clause) error {
 	err := b.must.Add(c)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	return nil
 }
@@ -170,7 +170,7 @@ func (b *BooleanQuery) AddMust(c Clause) error {
 func (b *BooleanQuery) AddShould(c Clause) error {
 	err := b.should.Add(c)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	return nil
 }
@@ -178,7 +178,7 @@ func (b *BooleanQuery) AddShould(c Clause) error {
 func (b *BooleanQuery) AddMustNot(c Clause) error {
 	err := b.mustNot.Add(c)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	return nil
 }
@@ -186,7 +186,7 @@ func (b *BooleanQuery) AddMustNot(c Clause) error {
 func (b *BooleanQuery) AddFilter(c Clause) error {
 	err := b.filter.Add(c)
 	if err != nil {
-		return NewQueryError(err, TypeBoolean)
+		return NewQueryError(err, KindBoolean)
 	}
 	return nil
 }

@@ -22,14 +22,14 @@ func (c *Clauses) UnmarshalJSON(data []byte) error {
 	*c = Clauses{}
 
 	d := dynamic.JSON(data)
-	var cm []map[Type]dynamic.JSON
+	var cm []map[Kind]dynamic.JSON
 	if d.IsObject() {
-		var j map[Type]dynamic.JSON
+		var j map[Kind]dynamic.JSON
 		err := json.Unmarshal(d, &j)
 		if err != nil {
 			return err
 		}
-		cm = []map[Type]dynamic.JSON{j}
+		cm = []map[Kind]dynamic.JSON{j}
 	} else {
 		err := json.Unmarshal(d, &cm)
 		if err != nil {
@@ -41,7 +41,7 @@ func (c *Clauses) UnmarshalJSON(data []byte) error {
 		for t, d := range cd {
 			handler, ok := clauseHandlers[t]
 			if !ok {
-				return fmt.Errorf("%w <%s>", ErrUnsupportedType, t)
+				return fmt.Errorf("%w <%s>", ErrUnsupportedKind, t)
 			}
 			ce := handler()
 			err := json.Unmarshal(d, &ce)

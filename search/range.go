@@ -35,35 +35,35 @@ func (r Range) Range() (*RangeQuery, error) {
 	q := &RangeQuery{field: r.Field}
 	err := q.setGreaterThan(r.GreaterThan)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	err = q.setGreaterThan(r.GreaterThanOrEqualTo)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	err = q.setLessThan(r.LessThan)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	err = q.setLessThanOrEqualTo(r.LessThanOrEqualTo)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	err = q.SetRelation(r.Relation)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	q.SetFormat(r.Format)
 	err = q.SetBoost(r.Boost)
 	if err != nil {
-		return q, NewQueryError(err, TypeRange, r.Field)
+		return q, NewQueryError(err, KindRange, r.Field)
 	}
 	q.SetTimeZone(r.TimeZone)
 	return q, nil
 }
 
-func (r Range) Type() Type {
-	return TypeBoolean
+func (r Range) Kind() Kind {
+	return KindBoolean
 }
 
 type RangeQuery struct {
@@ -79,14 +79,14 @@ type RangeQuery struct {
 	nameParam
 }
 
-func (RangeQuery) Type() Type {
-	return TypeRange
+func (RangeQuery) Kind() Kind {
+	return KindRange
 }
 
 func (r *RangeQuery) Set(field string, ranger Ranger) error {
 	q, err := ranger.Range()
 	if err != nil {
-		return NewQueryError(err, TypeRange, field)
+		return NewQueryError(err, KindRange, field)
 	}
 	*r = *q
 	return nil
@@ -99,7 +99,7 @@ func (r RangeQuery) GreaterThan() dynamic.StringNumberOrTime {
 func (r *RangeQuery) setGreaterThan(value interface{}) error {
 	err := r.greaterThan.Set(value)
 	if err != nil {
-		return NewQueryError(err, TypeRange, r.field)
+		return NewQueryError(err, KindRange, r.field)
 	}
 	return nil
 }
@@ -111,7 +111,7 @@ func (r RangeQuery) GreaterThanOrEqualTo() dynamic.StringNumberOrTime {
 func (r *RangeQuery) setGreaterThanOrEqualTo(value interface{}) error {
 	err := r.greaterThanOrEqualTo.Set(value)
 	if err != nil {
-		return NewQueryError(err, TypeRange, r.field)
+		return NewQueryError(err, KindRange, r.field)
 	}
 	return nil
 }
@@ -122,7 +122,7 @@ func (r RangeQuery) LessThan() dynamic.StringNumberOrTime {
 func (r *RangeQuery) setLessThan(value interface{}) error {
 	err := r.lessThan.Set(value)
 	if err != nil {
-		return NewQueryError(err, TypeRange, r.field)
+		return NewQueryError(err, KindRange, r.field)
 	}
 	return nil
 }
@@ -135,7 +135,7 @@ func (r *RangeQuery) setLessThanOrEqualTo(value interface{}) error {
 	err := r.lessThanOrEqualTo.Set(value)
 	if err != nil {
 
-		return NewQueryError(err, TypeRange, r.field)
+		return NewQueryError(err, KindRange, r.field)
 	}
 	return nil
 }

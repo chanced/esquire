@@ -3,15 +3,15 @@ package mapping
 // TermVector indicates which Term vectors, which contain information about the
 // terms produced by the analysis process, including:
 //
-//  	- a list of terms.
+//      - a list of terms.
 //
-//  	- the position (or order) of each term.
+//      - the position (or order) of each term.
 //
-//  	- the start and end character offsets mapping the term to its origin in the original string.
+//      - the start and end character offsets mapping the term to its origin in the original string.
 //
-//  	- payloads (if they are available) — user-defined binary data associated with each term position.
+//      - payloads (if they are available) — user-defined binary data associated with each term position.
 //
-//  	- These term vectors can be stored so that they can be retrieved for a particular document.
+//      - These term vectors can be stored so that they can be retrieved for a particular document.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/term-vector.html
 type TermVector string
@@ -49,14 +49,14 @@ const (
 // process, including:
 //
 //
-//  	- a list of terms.
+//      - a list of terms.
 //
-//  	- the position (or order) of each term.
+//      - the position (or order) of each term.
 //
-//  	- the start and end character offsets mapping the term to its origin in the
+//      - the start and end character offsets mapping the term to its origin in the
 // original string.
 //
-//  	- payloads (if they are available) — user-defined binary data associated with
+//      - payloads (if they are available) — user-defined binary data associated with
 // each term position.
 //
 // These term vectors can be stored so that they can be retrieved for a

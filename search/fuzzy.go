@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
 type Fuzzier interface {
 	Fuzzy() (*FuzzyQuery, error)
 }
@@ -10,13 +16,13 @@ type Fuzzier interface {
 // An edit distance is the number of one-character changes needed to turn one
 // term into another. These changes can include:
 //
-//  	- Changing a character (box → fox)
+//      - Changing a character (box → fox)
 //
-//  	- Removing a character (black → lack)
+//      - Removing a character (black → lack)
 //
-//  	- Inserting a character (sic → sick)
+//      - Inserting a character (sic → sick)
 //
-//  	- Transposing two adjacent characters (act → cat)
+//      - Transposing two adjacent characters (act → cat)
 //
 // To find similar terms, the fuzzy query creates a set of all possible
 // variations, or expansions, of the search term within a specified edit
@@ -62,15 +68,15 @@ func (f Fuzzy) Fuzzy() (*FuzzyQuery, error) {
 	q := &FuzzyQuery{field: f.Field}
 	err := q.setValue(f.Value)
 	if err != nil {
-		return q, NewQueryError(err, TypeFuzzy, f.Field)
+		return q, NewQueryError(err, KindFuzzy, f.Field)
 	}
 	err = q.SetMaxExpansions(f.MaxExpansions)
 	if err != nil {
-		return q, NewQueryError(err, TypeFuzzy, f.Field)
+		return q, NewQueryError(err, KindFuzzy, f.Field)
 	}
 	err = q.SetRewrite(f.Rewrite)
 	if err != nil {
-		return q, NewQueryError(err, TypeFuzzy, f.Field)
+		return q, NewQueryError(err, KindFuzzy, f.Field)
 	}
 	q.SetTranspositions(!f.NoTranspositions)
 	q.SetName(f.Name)
@@ -86,9 +92,9 @@ func (f Fuzzy) Clause() (Clause, error) {
 func NewFuzzyQuery(params Fuzzier) (*FuzzyQuery, error) {
 	q, err := params.Fuzzy()
 	if err != nil {
-		return nil, NewQueryError(err, TypeFuzzy, getField(q, nil))
+		return nil, NewQueryError(err, KindFuzzy, getField(q, nil))
 	}
-	err = checkField(q.field, TypeFuzzy)
+	err = checkField(q.field, KindFuzzy)
 	if err != nil {
 		return nil, err
 	}
@@ -101,13 +107,13 @@ func NewFuzzyQuery(params Fuzzier) (*FuzzyQuery, error) {
 // An edit distance is the number of one-character changes needed to turn one
 // term into another. These changes can include:
 //
-//  	- Changing a character (box → fox)
+//      - Changing a character (box → fox)
 //
-//  	- Removing a character (black → lack)
+//      - Removing a character (black → lack)
 //
-//  	- Inserting a character (sic → sick)
+//      - Inserting a character (sic → sick)
 //
-//  	- Transposing two adjacent characters (act → cat)
+//      - Transposing two adjacent characters (act → cat)
 //
 // To find similar terms, the fuzzy query creates a set of all possible
 // variations, or expansions, of the search term within a specified edit
@@ -125,19 +131,88 @@ type FuzzyQuery struct {
 	nameParam
 }
 
+func (f *FuzzyQuery) Vale() string {
+	return f.value
+}
+
+func (f FuzzyQuery) Field() string {
+	return f.field
+}
+func (f FuzzyQuery) Kind() Kind {
+	return KindFuzzy
+}
+
+func (f *FuzzyQuery) IsEmpty() bool {
+	return !(len(f.field) != 0 || len(f.value) != 0)
+}
+
+func (f *FuzzyQuery) Set(field string, fuzzier Fuzzier) error {
+	q, err := fuzzier.Fuzzy()
+	if err != nil {
+		return NewQueryError(err, KindFuzzy, field)
+	}
+	err = checkField(field, KindFuzzy)
+	if err != nil {
+		return err
+	}
+	q.field = field
+	*f = *q
+	return nil
+}
 func (f *FuzzyQuery) setValue(v string) error {
 	if len(v) == 0 {
 		return ErrValueRequired
 	}
 	return nil
 }
-func (f FuzzyQuery) Field() string {
-	return f.field
-}
-func (f FuzzyQuery) Type() Type {
-	return TypeFuzzy
+
+func (f FuzzyQuery) MarshalJSON() ([]byte, error) {
+	if f.IsEmpty() {
+		return dynamic.Null, nil
+	}
+	data, err := f.marshalClauseJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(dynamic.Map{f.field: data})
 }
 
-func (f *FuzzyQuery) Set(field string, fuzzier Fuzzier) error {
+func (f FuzzyQuery) marshalClauseJSON() (dynamic.JSON, error) {
+	params, err := marshalParams(&f)
+	if err != nil {
+		return nil, err
+	}
+	params["value"] = f.value
+	return json.Marshal(params)
+}
 
+func (f *FuzzyQuery) UnmarshalJSON(data []byte) error {
+	*f = FuzzyQuery{}
+
+	d := map[string]dynamic.JSON{}
+	err := json.Unmarshal(data, &d)
+	if err != nil {
+		return err
+	}
+	for k, v := range d {
+		f.field = k
+		return f.unmarshalClauseJSON(v)
+	}
+	return nil
+}
+
+func (f *FuzzyQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+	fields, err := unmarshalParams(data, f)
+	if err != nil {
+		return err
+	}
+	if v, ok := fields["value"]; ok {
+		var value string
+		err := json.Unmarshal(v, &value)
+		if err != nil {
+			return err
+		}
+		f.value = value
+	}
+	return nil
 }

@@ -38,19 +38,19 @@ func (t Term) Term() (*TermQuery, error) {
 	}
 	err := q.setValue(t.Value)
 	if err != nil {
-		return q, NewQueryError(err, TypeTerm, t.Field)
+		return q, NewQueryError(err, KindTerm, t.Field)
 	}
 	err = q.SetBoost(t.Boost)
 	if err != nil {
-		return q, NewQueryError(err, TypeTerm, t.Field)
+		return q, NewQueryError(err, KindTerm, t.Field)
 	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	q.SetName(t.Name)
 	return q, nil
 }
 
-func (t Term) Type() Type {
-	return TypeTerm
+func (t Term) Kind() Kind {
+	return KindTerm
 }
 
 // NewTermQuery creates a new TermQuery
@@ -72,10 +72,10 @@ func (t Term) Type() Type {
 func NewTermQuery(params Term) (*TermQuery, error) {
 	q, err := params.Term()
 	if err != nil {
-		return nil, NewQueryError(err, TypeTerm, params.Field)
+		return nil, NewQueryError(err, KindTerm, params.Field)
 	}
 	if len(q.field) == 0 {
-		return nil, NewQueryError(ErrFieldRequired, TypeTerm)
+		return nil, NewQueryError(ErrFieldRequired, KindTerm)
 	}
 	return q, nil
 }
@@ -109,8 +109,8 @@ func (t TermQuery) IsEmpty() bool {
 func (t TermQuery) Field() string {
 	return t.field
 }
-func (t TermQuery) Type() Type {
-	return TypeTerm
+func (t TermQuery) Kind() Kind {
+	return KindTerm
 }
 func (t TermQuery) Value() string {
 	return t.value
@@ -118,7 +118,7 @@ func (t TermQuery) Value() string {
 
 func (t *TermQuery) setValue(v string) error {
 	if len(v) == 0 {
-		return NewQueryError(ErrValueRequired, TypeTerm, t.field)
+		return NewQueryError(ErrValueRequired, KindTerm, t.field)
 	}
 	t.value = v
 	return nil
@@ -155,11 +155,11 @@ func (t *TermQuery) Set(field string, clause Termer) error {
 		return nil
 	}
 	if len(field) == 0 {
-		return NewQueryError(ErrFieldRequired, TypeTerm)
+		return NewQueryError(ErrFieldRequired, KindTerm)
 	}
 	q, err := clause.Term()
 	if err != nil {
-		return NewQueryError(err, TypeTerm, field)
+		return NewQueryError(err, KindTerm, field)
 	}
 	*t = *q
 	t.field = field

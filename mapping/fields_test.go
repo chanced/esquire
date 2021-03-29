@@ -20,31 +20,31 @@ func TestJSON(t *testing.T) {
 	assert.NotNil(hv)
 
 	kwraw := []byte(`{
-		"type" : "keyword",
-		"index" : false
-		}`)
+        "type" : "keyword",
+        "index" : false
+        }`)
 
 	var kwf mapping.Field = &mapping.KeywordField{}
 	err = json.Unmarshal(kwraw, kwf)
 	assert.NoError(err)
 	assert.False(kwf.(*mapping.KeywordField).Index())
 	raw1 := []byte(`{
-		"properties" : {
-			"age" : {
-			"type" : "integer"
-			},
-			"email" : {
-			"type" : "keyword"
-			},
-			"employee-id" : {
-			"type" : "keyword",
-			"index" : false
-			},
-			"name" : {
-			"type" : "text"
-			}
-		}
-	}`)
+        "properties" : {
+            "age" : {
+            "type" : "integer"
+            },
+            "email" : {
+            "type" : "keyword"
+            },
+            "employee-id" : {
+            "type" : "keyword",
+            "index" : false
+            },
+            "name" : {
+            "type" : "text"
+            }
+        }
+    }`)
 	_ = raw1
 	m1 := mapping.Mappings{}
 	err = json.Unmarshal(raw1, &m1)

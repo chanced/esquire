@@ -20,7 +20,7 @@ func TestClauses(t *testing.T) {
 
 	err := json.Unmarshal(json1, &clauses)
 	assert.NotEmpty(clauses)
-	assert.Equal(search.TypeTerm, clauses[0].Type())
+	assert.Equal(search.KindTerm, clauses[0].Kind())
 	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
 	assert.NoError(err)
 	res1, err := json.Marshal(clauses)
@@ -30,7 +30,7 @@ func TestClauses(t *testing.T) {
 	clauses = search.Clauses{}
 	err = json.Unmarshal(res1, &clauses)
 	assert.NotEmpty(clauses)
-	assert.Equal(search.TypeTerm, clauses[0].Type())
+	assert.Equal(search.KindTerm, clauses[0].Kind())
 	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
 	assert.NoError(err)
 
@@ -40,7 +40,7 @@ func TestClauses(t *testing.T) {
 
 	err = json.Unmarshal(json2, &clauses)
 	assert.Len(clauses, 1)
-	assert.Equal(search.TypeTerm, clauses[0].Type())
+	assert.Equal(search.KindTerm, clauses[0].Kind())
 	assert.Equal("chanced", clauses[0].(*search.TermQuery).Value())
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)

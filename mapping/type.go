@@ -99,11 +99,11 @@ const (
 
 	// TypeDate is a date in one of the following formats:
 	//
-	//  	- strings containing formatted dates, e.g. "2015-01-01" or "2015/01/01 12:10:30".
+	//      - strings containing formatted dates, e.g. "2015-01-01" or "2015/01/01 12:10:30".
 	//
-	//  	- a long number representing milliseconds-since-the-epoch.
+	//      - a long number representing milliseconds-since-the-epoch.
 	//
-	//  	- an integer representing seconds-since-the-epoch.
+	//      - an integer representing seconds-since-the-epoch.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html
 	TypeDate Type = "date"
@@ -257,13 +257,13 @@ const (
 	//
 	// Fields of type geo_point accept latitude-longitude pairs, which can be used:
 	//
-	//  	- to find geo-points within a bounding box, within a certain distance of a central point, or within a polygon or within a geo_shape query.
+	//      - to find geo-points within a bounding box, within a certain distance of a central point, or within a polygon or within a geo_shape query.
 	//
-	//  	- to aggregate documents geographically or by distance from a central point.
+	//      - to aggregate documents geographically or by distance from a central point.
 	//
-	//  	- to integrate distance into a document’s relevance score.
+	//      - to integrate distance into a document’s relevance score.
 	//
-	//  	- to sort documents by distance.
+	//      - to sort documents by distance.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
 	TypeGeoPoint Type = "geo_point"

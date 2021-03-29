@@ -6,7 +6,7 @@ package mapping
 // properties. These properties may be of any data type, including object and
 // nested. Properties can be added:
 //
-//  	- explicitly by defining them when creating an index. - explicitly by
+//      - explicitly by defining them when creating an index. - explicitly by
 // defining them when adding or updating a mapping type with the PUT mapping
 // API. - dynamically just by indexing documents containing new fields.
 //
@@ -40,7 +40,7 @@ type FieldWithProperties interface {
 // properties. These properties may be of any data type, including object and
 // nested. Properties can be added:
 //
-//  	- explicitly by defining them when creating an index. - explicitly by
+//      - explicitly by defining them when creating an index. - explicitly by
 // defining them when adding or updating a mapping type with the PUT mapping
 // API. - dynamically just by indexing documents containing new fields.
 //

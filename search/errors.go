@@ -9,11 +9,11 @@ var (
 	ErrFieldRequired        = errors.New("picker: field is required")
 	ErrValueRequired        = errors.New("picker: value is required")
 	ErrQueryRequired        = errors.New("picker: query is required")
-	ErrInvalidSourceType    = errors.New("picker: invalid source type")
+	ErrInvalidSourceKind    = errors.New("picker: invalid source type")
 	ErrInvalidRewrite       = errors.New("picker: invalid rewrite value")
 	ErrFieldExists          = errors.New("picker: field exists")
-	ErrTypeRequired         = errors.New("picker: rule type is required")
-	ErrUnsupportedType      = errors.New("picker: unsupported rule type")
+	ErrKindRequired         = errors.New("picker: rule type is required")
+	ErrUnsupportedKind      = errors.New("picker: unsupported rule type")
 	ErrPathRequired         = errors.New("picker: Path required in lookup")
 	ErrIDRequired           = errors.New("picker: ID required for lookup")
 	ErrIndexRequired        = errors.New("picker: Index required")
@@ -27,7 +27,7 @@ var (
 type QueryError struct {
 	Field string
 	Err   error
-	Type  Type
+	Kind  Kind
 }
 
 type RuleError struct {
@@ -35,7 +35,7 @@ type RuleError struct {
 	Rule Clause
 }
 
-func NewQueryError(err error, queryType Type, field ...string) *QueryError {
+func NewQueryError(err error, queryKind Kind, field ...string) *QueryError {
 	var f string
 	if len(field) > 0 {
 		f = field[0]
@@ -45,14 +45,14 @@ func NewQueryError(err error, queryType Type, field ...string) *QueryError {
 		if len(f) != 0 {
 			qe.Field = f
 		}
-		if qe.Type != queryType {
-			qe.Type = queryType
+		if qe.Kind != queryKind {
+			qe.Kind = queryKind
 		}
 		return qe
 	}
 	return &QueryError{
 		Err:   err,
-		Type:  queryType,
+		Kind:  queryKind,
 		Field: f,
 	}
 }
@@ -62,7 +62,7 @@ func (s QueryError) Error() string {
 	b := strings.Builder{}
 	b.WriteString(s.Err.Error())
 	b.WriteString(" for ")
-	b.WriteString(s.Type.String())
+	b.WriteString(s.Kind.String())
 	if s.Field != "" {
 		b.WriteString(" <")
 		b.WriteString(s.Field)

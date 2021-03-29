@@ -55,7 +55,7 @@ func unmarshalCaseInsensitiveParam(data dynamic.JSON, target interface{}) error 
 		case data.IsString():
 			b, err = dynamic.NewBool(data.UnquotedString())
 		default:
-			err = &json.UnmarshalTypeError{Value: data.String(), Type: typeBool}
+			err = &json.UnmarshalKindError{Value: data.String(), Kind: typeBool}
 		}
 		if err != nil {
 			return err

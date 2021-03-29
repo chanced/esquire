@@ -15,13 +15,13 @@ func TestMatch(t *testing.T) {
 	assert := require.New(t)
 
 	json1 := []byte(`{
-		"match": {
-		  "message": {
-			"query": "this is a test"
-		  }
-		}
-	  }`)
-	var q1 search.Query
+        "match": {
+          "message": {
+            "query": "this is a test"
+          }
+        }
+      }`)
+	var q1 search.QueryValues
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
 	assert.Equal("this is a test", q1.Match().Query().String())
@@ -31,7 +31,7 @@ func TestMatch(t *testing.T) {
 	assert.NoError(err)
 	fmt.Println(string(rjson1))
 
-	var rq1 search.Query
+	var rq1 search.QueryValues
 	err = json.Unmarshal(rjson1, &rq1)
 	assert.NoError(err)
 	assert.Equal("this is a test", rq1.Match().Query().String())
@@ -62,7 +62,7 @@ func TestMatch(t *testing.T) {
 
 	json2, err := ioutil.ReadAll(j2)
 	assert.NoError(err)
-	var q2 search.Query
+	var q2 search.QueryValues
 	err = json.Unmarshal(json2, &q2)
 	assert.NoError(err)
 
@@ -84,7 +84,7 @@ func TestMatch(t *testing.T) {
 	assert.NoError(err)
 	fmt.Println(string(rjson2))
 
-	var rq2 search.Query
+	var rq2 search.QueryValues
 	err = json.Unmarshal(rjson2, &rq2)
 	assert.NoError(err)
 	f, ok := rq2.Match().Query().Float()

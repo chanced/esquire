@@ -12,12 +12,12 @@ const DefaultRewrite = RewriteConstantScore
 type Rewrite string
 
 const (
-	// RewriteTypeConstantScore uses the constant_score_boolean method for fewer matching
+	// RewriteKindConstantScore uses the constant_score_boolean method for fewer matching
 	// terms. Otherwise, this method finds all matching terms in sequence and
 	// returns matching documents using a bit set.
 	RewriteConstantScore Rewrite = "constant_score"
 
-	// RewriteTypeConstantScoreBoolean assigns each document a relevance score equal to the
+	// RewriteKindConstantScoreBoolean assigns each document a relevance score equal to the
 	// boost parameter.
 	//
 	// This method changes the original query to a bool query. This bool query
@@ -28,7 +28,7 @@ const (
 	// Elasticsearch returns an error.
 	RewriteConstantScoreBoolean Rewrite = "constant_score_boolean"
 
-	// RewriteTypeScoringBoolean calculates a relevance score for each matching document.
+	// RewriteKindScoringBoolean calculates a relevance score for each matching document.
 	//
 	// This method changes the original query to a bool query. This bool query
 	// contains a should clause and term query for each matching term.
@@ -38,7 +38,7 @@ const (
 	// Elasticsearch returns an error.
 	RewriteScoringBoolean Rewrite = "scoring_boolean"
 
-	// RewriteTypeTopTermsBlendedFreqsN calculates a relevance score for each
+	// RewriteKindTopTermsBlendedFreqsN calculates a relevance score for each
 	// matching document as if all terms had the same frequency. This frequency
 	// is the maximum frequency of all matching terms.
 	//
@@ -53,7 +53,7 @@ const (
 	//
 	RewriteTopTermsBlendedFreqsN Rewrite = "top_terms_blended_freqs_N"
 
-	// RewriteTypeTopTermsBoostN Assigns each matching document a relevance
+	// RewriteKindTopTermsBoostN Assigns each matching document a relevance
 	// score equal to the boost parameter.
 	//
 	// This method changes the original query to a bool query. This bool query

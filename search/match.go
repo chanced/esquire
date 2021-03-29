@@ -92,43 +92,43 @@ func (m Match) field() string {
 	return m.Field
 }
 
-func (m Match) Type() Type {
-	return TypeMatch
+func (m Match) Kind() Kind {
+	return KindMatch
 }
 func (m Match) Clause() (Clause, error) {
 	return m.Match()
 }
 func (m Match) Match() (*MatchQuery, error) {
-	v := &MatchQuery{
+	q := &MatchQuery{
 		field: m.Field,
 	}
-	err := v.SetQuery(m.Query)
+	err := q.setQuery(m.Query)
 	if err != nil {
-		return nil, NewQueryError(err, TypeMatch, m.Field)
+		return q, NewQueryError(err, KindMatch, m.Field)
 	}
-	v.SetAnalyzer(m.Analyzer)
-	v.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
-	v.SetFuzziness(m.Fuzziness)
-	err = v.SetFuzzyRewrite(m.FuzzyRewrite)
+	q.SetAnalyzer(m.Analyzer)
+	q.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
+	q.SetFuzziness(m.Fuzziness)
+	err = q.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
-		return nil, NewQueryError(err, TypeMatch, m.Field)
+		return q, NewQueryError(err, KindMatch, m.Field)
 	}
-	v.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
-	v.SetLenient(m.Lenient)
-	err = v.SetMaxExpansions(m.MaxExpansions)
+	q.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
+	q.SetLenient(m.Lenient)
+	err = q.SetMaxExpansions(m.MaxExpansions)
 	if err != nil {
-		return nil, NewQueryError(err, TypeMatch, m.Field)
+		return q, NewQueryError(err, KindMatch, m.Field)
 	}
-	err = v.SetPrefixLength(m.PrefixLength)
+	err = q.SetPrefixLength(m.PrefixLength)
 	if err != nil {
-		return nil, NewQueryError(err, TypeMatch, m.Field)
+		return q, NewQueryError(err, KindMatch, m.Field)
 	}
-	err = v.SetZeroTermsQuery(m.ZeroTermsQuery)
+	err = q.SetZeroTermsQuery(m.ZeroTermsQuery)
 	if err != nil {
-		return nil, NewQueryError(err, TypeMatch, m.Field)
+		return q, NewQueryError(err, KindMatch, m.Field)
 	}
-	v.cutoffFrequency = m.CutoffFrequency
-	return v, nil
+	q.cutoffFrequency = m.CutoffFrequency
+	return q, nil
 }
 
 // MatchQuery returns documents that match a provided text, number, date or
@@ -160,21 +160,24 @@ func (m MatchQuery) Field() string {
 	return m.field
 }
 
-func (m MatchQuery) SetField(field string) {
-	m.field = field
-}
-
 func (m MatchQuery) IsEmpty() bool {
 	return len(m.field) == 0 || m.query.IsEmptyString()
 }
 
-// SetQuery sets the Match's query param. It returns an error if it is nil or
-// empty. If you need to clear match, use Clear()
-func (m *MatchQuery) SetQuery(query interface{}) error {
-	if query == nil {
-		return ErrQueryRequired
+func (m *MatchQuery) Set(field string, match Matcher) error {
+	if match == nil {
+		m.Clear()
+		return nil
 	}
-
+	if field == "" {
+		return NewQueryError(ErrFieldRequired, KindTerm)
+	}
+	r, err := match.Match()
+	if err != nil {
+		return err
+	}
+	r.field = field
+	*m = *r
 	return nil
 }
 
@@ -233,26 +236,21 @@ func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	return nil
 }
 
-func (m MatchQuery) Type() Type {
-	return TypeMatch
+func (m MatchQuery) Kind() Kind {
+	return KindMatch
+}
+func (m *MatchQuery) Clear() {
+	*m = MatchQuery{}
 }
 
-func (m *MatchQuery) Set(field string, match Matcher) error {
-	if match == nil {
-		m.RemoveMatch()
-		return nil
+// setQuery sets the Match's query param. It returns an error if it is nil or
+// empty. If you need to clear match, use Clear()
+func (m *MatchQuery) setQuery(query interface{}) error {
+	if query == nil {
+		return ErrQueryRequired
 	}
-	if field == "" {
-		return NewQueryError(ErrFieldRequired, TypeTerm)
-	}
-	r, err := match.Match()
-	if err != nil {
-		return err
-	}
-	r.field = field
-	*m = *r
 	return nil
 }
-func (m *MatchQuery) RemoveMatch() {
-	*m = MatchQuery{}
+func (m MatchQuery) setField(field string) {
+	m.field = field
 }

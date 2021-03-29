@@ -15,6 +15,8 @@ var (
 
 // Params are the initial params passed to NewSearch
 type Params struct {
+	Query Query
+
 	// Array of wildcard (*) patterns. The request returns doc values for field
 	// names matching these patterns in the hits.fields property of the response
 	// (Optional) .
@@ -96,45 +98,6 @@ type Params struct {
 
 	// If true, returns document version as part of a hit. Defaults to false. (Optional)
 	Version bool
-
-	// Term returns documents that contain an exact term in a provided field.
-	//
-	// You can use the term query to find documents based on a precise value such as
-	// a price, a product ID, or a username.
-	//
-	// Avoid using the term query for text fields.
-	//
-	// By default, Elasticsearch changes the values of text fields as part of
-	// analysis. This can make finding exact matches for text field values
-	// difficult.
-	//
-	// To search text field values, use the match query instead.
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-	Term *Term
-
-	// Terms returns documents that contain one or more exact terms in a provided
-	// field.
-	//
-	// The terms query is the same as the term query, except you can search for
-	// multiple values.
-	Terms *Terms
-
-	// Match returns documents that match a provided text, number, date or boolean
-	// value. The provided text is analyzed before matching.
-	//
-	// The match query is the standard query for performing a full-text search,
-	// including options for fuzzy matching.
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-	Match *Match
-
-	// Boolean is a query that matches documents matching boolean combinations
-	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
-	// using one or more boolean clauses, each clause with a typed occurrence.
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-	Boolean *Boolean
 }
 
 func NewSearch(p Params) (*Search, error) {
@@ -158,13 +121,8 @@ func NewSearch(p Params) (*Search, error) {
 	if p.Size != 0 {
 		s.SetSize(p.Size)
 	}
-	qp := QueryParams{
-		Term:    p.Term,
-		Terms:   p.Terms,
-		Match:   p.Match,
-		Boolean: p.Boolean,
-	}
-	q, err := NewQuery(qp)
+
+	q, err := newQuery(p.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +132,7 @@ func NewSearch(p Params) (*Search, error) {
 
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
-	query            *Query          // query
+	query            *QueryValues    // query
 	docValueFields   Fields          // docvalue_fields
 	fields           Fields          // fields
 	explain          bool            // explain
@@ -202,7 +160,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		return err
 	}
 	if d, ok := m["query"]; ok {
-		var q Query
+		var q QueryValues
 		err = json.Unmarshal(d, &q)
 		if err != nil {
 			return err
@@ -570,9 +528,9 @@ func (s *Search) SetPIT(v *PointInTime) *Search {
 }
 
 // SetQuery sets QueryValue to v
-func (s *Search) SetQuery(v *Query) *Search {
+func (s *Search) SetQuery(v *QueryValues) *Search {
 	if v == nil {
-		s.query = &Query{}
+		s.query = &QueryValues{}
 	} else {
 		s.query = v
 	}
@@ -582,9 +540,9 @@ func (s *Search) SetQuery(v *Query) *Search {
 // Query defines the search definition using the Query DSL.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-func (s *Search) Query() *Query {
+func (s *Search) Query() *QueryValues {
 	if s.query == nil {
-		s.query = &Query{}
+		s.query = &QueryValues{}
 	}
 	return s.query
 }

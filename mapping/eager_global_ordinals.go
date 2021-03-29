@@ -26,13 +26,13 @@ package mapping
 // Global ordinals are used if a search contains any of the following
 // components:
 //
-//  	- Certain bucket aggregations on keyword, ip, and flattened fields. This
+//      - Certain bucket aggregations on keyword, ip, and flattened fields. This
 // includes terms aggregations as mentioned above, as well as composite,
 // diversified_sampler, and significant_terms.
 //
-//  	- Bucket aggregations on text fields that require fielddata to be enabled.
+//      - Bucket aggregations on text fields that require fielddata to be enabled.
 //
-//  	- Operations on parent and child documents from a join field, including
+//      - Operations on parent and child documents from a join field, including
 // has_child queries and parent aggregations.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/eager-global-ordinals.html
@@ -71,13 +71,13 @@ type FieldWithEagerGlobalOrdinals interface {
 // Global ordinals are used if a search contains any of the following
 // components:
 //
-//  	- Certain bucket aggregations on keyword, ip, and flattened fields. This
+//      - Certain bucket aggregations on keyword, ip, and flattened fields. This
 // includes terms aggregations as mentioned above, as well as composite,
 // diversified_sampler, and significant_terms.
 //
-//  	- Bucket aggregations on text fields that require fielddata to be enabled.
+//      - Bucket aggregations on text fields that require fielddata to be enabled.
 //
-//  	- Operations on parent and child documents from a join field, including
+//      - Operations on parent and child documents from a join field, including
 // has_child queries and parent aggregations.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/eager-global-ordinals.html

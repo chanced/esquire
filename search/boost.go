@@ -98,9 +98,9 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 			}
 			f, ok := n.Float()
 			if !ok {
-				return &json.UnmarshalTypeError{
+				return &json.UnmarshalKindError{
 					Value: data.String(),
-					Type:  reflect.TypeOf(float64(0)),
+					Kind:  reflect.KindOf(float64(0)),
 				}
 			}
 			r.SetBoost(f)

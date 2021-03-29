@@ -24,8 +24,8 @@ type Prefix struct {
 	Name string
 }
 
-func (p Prefix) Type() Type {
-	return TypePrefix
+func (p Prefix) Kind() Kind {
+	return KindPrefix
 }
 
 func (p Prefix) Clause() (Clause, error) {
@@ -36,7 +36,7 @@ func (p Prefix) Prefix() (*PrefixQuery, error) {
 	q.SetCaseInsensitive(p.CaseInsensitive)
 	err := q.SetRewrite(p.Rewrite)
 	if err != nil {
-		return q, NewQueryError(err, TypePrefix, p.Field)
+		return q, NewQueryError(err, KindPrefix, p.Field)
 	}
 	return q, q.setValue(p.Value)
 }
@@ -57,7 +57,7 @@ func (p PrefixQuery) Value() string {
 }
 
 func (p *PrefixQuery) setValue(value string) error {
-	err := checkValue(value, TypePrefix, p.field)
+	err := checkValue(value, KindPrefix, p.field)
 	if err != nil {
 		return err
 	}
@@ -65,8 +65,8 @@ func (p *PrefixQuery) setValue(value string) error {
 	return nil
 }
 
-func (p PrefixQuery) Type() Type {
-	return TypePrefix
+func (p PrefixQuery) Kind() Kind {
+	return KindPrefix
 }
 
 // Set sets the value of PrefixQuery.
@@ -79,13 +79,13 @@ func (p *PrefixQuery) Set(field string, prefixer Prefixer) error {
 	if prefixer == nil {
 		p.Clear()
 	}
-	err := checkField(field, TypePrefix)
+	err := checkField(field, KindPrefix)
 	if err != nil {
-		return NewQueryError(err, TypePrefix, field)
+		return NewQueryError(err, KindPrefix, field)
 	}
 	q, err := prefixer.Prefix()
 	if err != nil {
-		return NewQueryError(err, TypePrefix, field)
+		return NewQueryError(err, KindPrefix, field)
 	}
 	*p = *q
 	return nil

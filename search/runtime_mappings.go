@@ -1,19 +1,19 @@
 package search
 
-type RuntimeMappingType string
+type RuntimeMappingKind string
 
 const (
-	RMTBoolean  RuntimeMappingType = "boolean"
-	RMTDate     RuntimeMappingType = "date"
-	RMTDouble   RuntimeMappingType = "double"
-	RMTGeoPoint RuntimeMappingType = "geo_point"
-	RMTIP       RuntimeMappingType = "ip"
-	RMTKeyword  RuntimeMappingType = "keyword"
-	RMTLong     RuntimeMappingType = "long"
+	RMTBoolean  RuntimeMappingKind = "boolean"
+	RMTDate     RuntimeMappingKind = "date"
+	RMTDouble   RuntimeMappingKind = "double"
+	RMTGeoPoint RuntimeMappingKind = "geo_point"
+	RMTIP       RuntimeMappingKind = "ip"
+	RMTKeyword  RuntimeMappingKind = "keyword"
+	RMTLong     RuntimeMappingKind = "long"
 )
 
 type RuntimeMappingField struct {
-	Type   RuntimeMappingType `bson:"type" json:"type"`
+	Kind   RuntimeMappingKind `bson:"type" json:"type"`
 	Script string             `bson:"script,omitempty" json:"script,omitempty"`
 }
 

@@ -88,7 +88,7 @@ func (s *Source) SetValue(v interface{}) error {
 		s.WildcardPattern = nil
 		s.Specifications = nil
 	default:
-		return fmt.Errorf("%w: %t", ErrInvalidSourceType, v)
+		return fmt.Errorf("%w: %t", ErrInvalidSourceKind, v)
 	}
 	return nil
 }

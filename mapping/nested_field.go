@@ -15,13 +15,13 @@ package mapping
 //
 // Nested documents can be:
 //
-//  	- queried with the nested query.
+//      - queried with the nested query.
 //
-//  	- analyzed with the nested and reverse_nested aggregations.
+//      - analyzed with the nested and reverse_nested aggregations.
 //
-//  	- sorted with nested sorting.
+//      - sorted with nested sorting.
 //
-//  	- retrieved and highlighted with nested inner hits.
+//      - retrieved and highlighted with nested inner hits.
 //
 // IMPORTANT
 //
@@ -46,14 +46,14 @@ package mapping
 // of the expense associated with nested mappings, Elasticsearch puts settings
 // in place to guard against performance problems:
 //
-// 	index.mapping.nested_fields.limit
+//     index.mapping.nested_fields.limit
 // The maximum number of distinct nested mappings in an index. The nested type
 // should only be used in special cases, when arrays of objects need to be
 // queried independently of each other. To safeguard against poorly designed
 // mappings, this setting limits the number of unique nested types per index.
 // Default is 50.
 //
-// 	index.mapping.nested_objects.limit
+//     index.mapping.nested_objects.limit
 // The maximum number of nested JSON objects that a single document can contain
 // across all nested types. This limit helps to prevent out of memory errors
 // when a document contains too many nested objects. Default is 10000.

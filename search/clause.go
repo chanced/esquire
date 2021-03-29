@@ -7,7 +7,7 @@ import (
 )
 
 type Clause interface {
-	Type() Type
+	Kind() Kind
 }
 
 type clause interface {
@@ -31,15 +31,15 @@ type clauser interface {
 // type Rules []Clause
 
 // func (r *Rules) Add(rule Clause) error {
-// 	var err error
-// 	if v, ok := rule.(Clauser); ok {
-// 		rule, err = v.Rule()
-// 		if err != nil {
-// 			return err
-// 		}
-// 	}
-// 	*r = append(*r, rule)
-// 	return nil
+//     var err error
+//     if v, ok := rule.(Clauser); ok {
+//         rule, err = v.Rule()
+//         if err != nil {
+//             return err
+//         }
+//     }
+//     *r = append(*r, rule)
+//     return nil
 // }
 
 func marshalClauseParams(source Clause) (dynamic.Map, error) {

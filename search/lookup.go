@@ -70,8 +70,8 @@ func (l Lookup) Terms() (*TermsQuery, error) {
 	return q, nil
 }
 
-func (l Lookup) Type() Type {
-	return TypeTerms
+func (l Lookup) Kind() Kind {
+	return KindTerms
 }
 
 type LookupValues struct {

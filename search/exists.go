@@ -11,14 +11,14 @@ import (
 // An indexed value may not exist for a document’s field due to a variety of
 // reasons:
 //
-//  	- The field in the source JSON is null or []
+//      - The field in the source JSON is null or []
 //
-//  	- The field has "index" : false set in the mapping
+//      - The field has "index" : false set in the mapping
 //
-//  	- The length of the field value exceeded an ignore_above setting in the
+//      - The length of the field value exceeded an ignore_above setting in the
 // mapping
 //
-//  	- The field value was malformed and ignore_malformed was defined in the
+//      - The field value was malformed and ignore_malformed was defined in the
 // mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
@@ -34,7 +34,7 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 	q := &ExistsQuery{}
 	err := q.SetField(e.Field)
 	if err != nil {
-		return q, NewQueryError(err, TypeExists, e.Field)
+		return q, NewQueryError(err, KindExists, e.Field)
 	}
 	return q, nil
 }
@@ -44,14 +44,14 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 // An indexed value may not exist for a document’s field due to a variety of
 // reasons:
 //
-//  	- The field in the source JSON is null or []
+//      - The field in the source JSON is null or []
 //
-//  	- The field has "index" : false set in the mapping
+//      - The field has "index" : false set in the mapping
 //
-//  	- The length of the field value exceeded an ignore_above setting in the
+//      - The length of the field value exceeded an ignore_above setting in the
 // mapping
 //
-//  	- The field value was malformed and ignore_malformed was defined in the
+//      - The field value was malformed and ignore_malformed was defined in the
 // mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
@@ -76,8 +76,8 @@ func (e *ExistsQuery) IsEmpty() bool {
 	return len(e.field) == 0
 }
 
-func (e ExistsQuery) Type() Type {
-	return TypeExists
+func (e ExistsQuery) Kind() Kind {
+	return KindExists
 }
 
 func (e ExistsQuery) MarshalJSON() ([]byte, error) {
