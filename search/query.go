@@ -22,14 +22,14 @@ type Query struct {
 	// To search text field values, use the match query instead.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-	Term Term
+	Term *Term
 
 	// Terms returns documents that contain one or more exact terms in a provided
 	// field.
 	//
 	// The terms query is the same as the term query, except you can search for
 	// multiple values.
-	Terms Terms
+	Terms *Terms
 
 	// Match returns documents that match a provided text, number, date or boolean
 	// value. The provided text is analyzed before matching.
@@ -38,14 +38,14 @@ type Query struct {
 	// including options for fuzzy matching.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-	Match Match
+	Match *Match
 
 	// Boolean is a query that matches documents matching boolean combinations
 	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
 	// using one or more boolean clauses, each clause with a typed occurrence.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-	Boolean Boolean
+	Boolean *Boolean
 
 	// Fuzzy returns documents that contain terms similar to the search term,
 	// as measured by a Levenshtein edit distance.
@@ -66,12 +66,12 @@ type Query struct {
 	// distance. The query then returns exact matches for each expansion.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
-	Fuzzy Fuzzy
+	Fuzzy *Fuzzy
 
 	// Prefix returns documents that contain a specific prefix in a provided field.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
-	Prefix Prefix
+	Prefix *Prefix
 
 	// FunctionScore  allows you to modify the score of documents that are retrieved
 	// by a query. This can be useful if, for example, a score function is
@@ -80,7 +80,7 @@ type Query struct {
 	//
 	// To use function_score, the user has to define a query and one or more
 	// functions, that compute a new score for each document returned by the query.
-	FunctionScore FunctionScore
+	FunctionScore *FunctionScore
 
 	// Script uses a script to provide a custom score for returned documents.
 	//
@@ -89,7 +89,7 @@ type Query struct {
 	// documents.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
-	Script Script
+	Script *ScriptScore
 }
 
 func newQuery(params Query) (*QueryValues, error) {

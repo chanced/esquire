@@ -49,7 +49,7 @@ type Params struct {
 	From int
 
 	// Boosts the _score of documents from specified indices (Optional).
-	IndicesBoost IndicesBoost
+	IndicesBoost map[string]float64
 
 	// Minimum _score for matching documents. Documents with a lower _score are
 	// not included in the search results (Optional).
@@ -78,7 +78,7 @@ type Params struct {
 	// Indicates which source fields are returned for matching documents. These
 	// fields are returned in the hits._source property of the search response.
 	// Defaults to true. (Optional)
-	Source *Source
+	Source *SearchSource
 
 	// Stats groups to associate with the search. Each group maintains a
 	// statistics aggregation for its associated searches. You can retrieve
@@ -132,22 +132,22 @@ func NewSearch(p Params) (*Search, error) {
 
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
-	query            *QueryValues    // query
-	docValueFields   Fields          // docvalue_fields
-	fields           Fields          // fields
-	explain          bool            // explain
-	from             int             // from
-	indicesBoost     IndicesBoost    // indices_boost
-	minScore         float64         // min_score
-	pointInTime      *PointInTime    // pit
-	runtimeMappings  RuntimeMappings // runtime_mappings
-	seqNoPrimaryTerm bool            // seq_no_primary_term
-	size             dynamic.Number  // size
-	source           *Source         // _source
-	stats            []string        // stats
-	terminateAfter   int             // terminate_after
-	timeout          time.Duration   // timeout
-	version          bool            // version
+	query            *QueryValues       // query
+	docValueFields   Fields             // docvalue_fields
+	fields           Fields             // fields
+	explain          bool               // explain
+	from             int                // from
+	indicesBoost     map[string]float64 // indices_boost
+	minScore         float64            // min_score
+	pointInTime      *PointInTime       // pit
+	runtimeMappings  RuntimeMappings    // runtime_mappings
+	seqNoPrimaryTerm bool               // seq_no_primary_term
+	size             dynamic.Number     // size
+	source           *SearchSource      // _source
+	stats            []string           // stats
+	terminateAfter   int                // terminate_after
+	timeout          time.Duration      // timeout
+	version          bool               // version
 }
 
 var zeroSearch = &Search{}
@@ -201,7 +201,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.from = i
 	}
 	if d, ok := m["indices_boost"]; ok {
-		var ib IndicesBoost
+		var ib map[string]float64
 		err = json.Unmarshal(d, &ib)
 		if err != nil {
 			return err
@@ -248,7 +248,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	if d, ok := m["_source"]; ok {
-		var v Source
+		var v SearchSource
 		err = json.Unmarshal(d, &v)
 		if err != nil {
 			return err
@@ -453,15 +453,15 @@ func (s *Search) SetFrom(v int) *Search {
 }
 
 // IndicesBoost buusts the _score of documents from specified indices
-func (s *Search) IndicesBoost() IndicesBoost {
+func (s *Search) IndicesBoost() map[string]float64 {
 	if s.indicesBoost == nil {
-		s.indicesBoost = IndicesBoost{}
+		s.indicesBoost = map[string]float64{}
 	}
 	return s.indicesBoost
 }
 
 // SetIndicesBoost sets IndicesBoostValue to v
-func (s *Search) SetIndicesBoost(v IndicesBoost) *Search {
+func (s *Search) SetIndicesBoost(v map[string]float64) *Search {
 	s.indicesBoost = v
 	return s
 }
@@ -588,7 +588,7 @@ func (s *Search) SetSize(v int) *Search {
 // Source indicates which source fields are returned for matching documents.
 // These fields are returned in the hits._source property of the search
 // response. Defaults to true.
-func (s Search) Source() *Source {
+func (s Search) Source() *SearchSource {
 	return s.source
 }
 
@@ -614,13 +614,13 @@ func (s Search) Source() *Source {
 //  s.SourceValue = src
 func (s *Search) SetSource(v interface{}) *Search {
 	switch t := v.(type) {
-	case *Source:
+	case *SearchSource:
 		ts := *t
 		s.source = &ts
-	case Source:
+	case SearchSource:
 		s.source = &t
 	default:
-		s.source = &Source{}
+		s.source = &SearchSource{}
 		err := s.source.SetValue(v)
 		if err != nil {
 			panic(err)

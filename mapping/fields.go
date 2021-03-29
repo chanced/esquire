@@ -13,14 +13,6 @@ var ErrFieldExists = errors.New("field already exists")
 // Fields are a collection of Field mappings
 type Fields map[string]Field
 
-func (f Fields) Clone() Fields {
-	res := Fields{}
-	for k, v := range f {
-		res[k] = v.Clone()
-	}
-	return res
-}
-
 func (f Fields) Field(key string) Field {
 	return f[key]
 }

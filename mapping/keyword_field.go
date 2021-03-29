@@ -21,24 +21,6 @@ type KeywordField struct {
 	MetaParam                     `bson:",inline" json:",inline"`
 }
 
-func (f KeywordField) Clone() Field {
-	n := NewKeywordField()
-	n.SetDocValues(f.DocValues())
-	n.SetEagerGlobalOrdinals(f.EagerGlobalOrdinals())
-	n.SetFields(f.Fields().Clone())
-	n.SetIgnoreAbove(f.IgnoreAbove())
-	n.SetIndex(f.Index())
-	n.SetIndexOptions(f.IndexOptions())
-	n.SetMeta(f.Meta().Clone())
-	n.SetNullValue(f.NullValue())
-	n.SetNorms(f.Norms())
-	n.SetNormalizer(f.Normalizer())
-	n.SetSplitQueriesOnWhitespace(f.SplitQueriesOnWhitespace())
-	n.SetSimilarity(f.Similarity())
-	n.SetStore(f.Store())
-	return n
-}
-
 func NewKeywordField() *KeywordField {
 	return &KeywordField{BaseField: BaseField{MappingType: TypeKeyword}}
 }

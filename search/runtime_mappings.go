@@ -18,14 +18,3 @@ type RuntimeMappingField struct {
 }
 
 type RuntimeMappings map[string]RuntimeMappingField
-
-func (rtm RuntimeMappings) Clone() RuntimeMappings {
-	if rtm == nil {
-		return nil
-	}
-	res := RuntimeMappings{}
-	for k, v := range rtm {
-		res[k] = v
-	}
-	return res
-}

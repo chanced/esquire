@@ -11,14 +11,6 @@ type ObjectField struct {
 	DynamicParam    `json:",inline" bson:",inline"`
 }
 
-func (f ObjectField) Clone() Field {
-	n := NewObjectField()
-	n.SetEnabled(f.Enabled())
-	n.SetDynamic(f.Dynamic())
-	n.SetProperties(f.Properties().Clone())
-	return n
-}
-
 func NewObjectField() *ObjectField {
 	return &ObjectField{BaseField: BaseField{MappingType: TypeObject}}
 }
