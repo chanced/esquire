@@ -5,13 +5,8 @@ type MatchPhrasePrefix struct {
 	analyzerParam
 	maxExpansionsParam
 	slopParam
-	ZeroTermsQuery
-}
-
-func NewMatchPhrasePrefix(query string) MatchPhrasePrefix {
-	return MatchPhrasePrefix{Query: query}
+	ZeroTerms
 }
 
 type MatchPhrasePrefixQuery struct {
-	MatchPhrasePrefix map[string]MatchBooleanPrefix `json:"match_phrase_prefix,omitempty" bson:"match_phrase_prefix,omitempty"`
 }

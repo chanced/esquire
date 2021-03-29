@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
 // Exists returns documents that contain an indexed value for a field.
 //
 // An indexed value may not exist for a document’s field due to a variety of
@@ -17,7 +23,20 @@ package search
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
 type Exists struct {
-	Field string `json:"field" bson:"field"`
+	Field string
+}
+
+func (e Exists) Clause() (Clause, error) {
+	return e.Exists()
+}
+
+func (e Exists) Exists() (*ExistsQuery, error) {
+	q := &ExistsQuery{}
+	err := q.SetField(e.Field)
+	if err != nil {
+		return q, NewQueryError(err, TypeExists, e.Field)
+	}
+	return q, nil
 }
 
 // ExistsQuery returns documents that contain an indexed value for a field.
@@ -37,12 +56,54 @@ type Exists struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
 type ExistsQuery struct {
-	ExistsValue *Exists `json:"exists,omitempty" bson:"exists,omitempty"`
+	field string
 }
 
-func (e *ExistsQuery) SetExistsField(field string) {
-	if e.ExistsValue == nil {
-		e.ExistsValue = &Exists{}
+func (e ExistsQuery) Field() string {
+	return e.field
+}
+
+func (e *ExistsQuery) SetField(field string) error {
+	e.field = field
+	return nil
+}
+
+func (e *ExistsQuery) Set(field string) error {
+	return e.SetField(field)
+}
+
+func (e *ExistsQuery) IsEmpty() bool {
+	return len(e.field) == 0
+}
+
+func (e ExistsQuery) Type() Type {
+	return TypeExists
+}
+
+func (e ExistsQuery) MarshalJSON() ([]byte, error) {
+	if e.IsEmpty() {
+		return dynamic.Null, nil
 	}
-	e.ExistsValue.Field = field
+	return json.Marshal(map[string]string{
+		"field": e.field,
+	})
+}
+
+func (e *ExistsQuery) UnmarshalJSON(data []byte) error {
+	*e = ExistsQuery{}
+	d := dynamic.JSON(data)
+	if d.IsNull() {
+		return nil
+	}
+	var m map[string]string
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	e.field = m["field"]
+	return nil
+}
+
+func (e *ExistsQuery) Clear() {
+	*e = ExistsQuery{}
 }

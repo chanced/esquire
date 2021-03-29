@@ -6,6 +6,10 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type Matcher interface {
+	Match() (*MatchQuery, error)
+}
+
 // Match returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
 //
@@ -24,7 +28,7 @@ type Match struct {
 	// If you are setting Match explicitly, this does not need to be set. It
 	// does, however, if you are adding it to a set of Clauses.
 	Field string
-	// (Required) Text, number, boolean value or date you wish to find in the
+	// (Required) Text, number, boolean or date you wish to find in the
 	// provided <field>.
 	//
 	// The match query analyzes any provided text before performing a search.
@@ -54,19 +58,18 @@ type Match struct {
 	// Boolean logic used to interpret text in the query value. Defaults to OR
 	Operator Operator
 	// Maximum number of terms to which the query will expand. Defaults to 50.
-	MaxExpansions dynamic.Number
+	MaxExpansions interface{}
 	// Number of beginning characters left unchanged for fuzzy matching.
 	// Defaults to 0.
-	PrefixLength dynamic.Number
+	PrefixLength interface{}
 	// Minimum number of clauses that must match for a document to be returned
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-minimum-should-match.html
 	MinimumShouldMatchParam string
 	// Indicates whether no documents are returned if the analyzer removes all
 	// tokens, such as when using a stop filter.
-	ZeroTermsQuery ZeroTermsQuery
+	ZeroTermsQuery ZeroTerms
 
-	//
 	// The match query supports a cutoff_frequency that allows specifying an
 	// absolute or relative document frequency where high frequency terms are
 	// moved into an optional subquery and are only scored if one of the low
@@ -85,6 +88,10 @@ func (m Match) name() string {
 	return m.Name
 }
 
+func (m Match) field() string {
+	return m.Field
+}
+
 func (m Match) Type() Type {
 	return TypeMatch
 }
@@ -92,31 +99,34 @@ func (m Match) Clause() (Clause, error) {
 	return m.Match()
 }
 func (m Match) Match() (*MatchQuery, error) {
-	v := &MatchQuery{}
+	v := &MatchQuery{
+		field: m.Field,
+	}
 	err := v.SetQuery(m.Query)
-
 	if err != nil {
-		return nil, err
+		return nil, NewQueryError(err, TypeMatch, m.Field)
 	}
 	v.SetAnalyzer(m.Analyzer)
 	v.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
 	v.SetFuzziness(m.Fuzziness)
 	err = v.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
-		return nil, err
+		return nil, NewQueryError(err, TypeMatch, m.Field)
 	}
 	v.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
 	v.SetLenient(m.Lenient)
-	if n, ok := m.MaxExpansions.Int(); ok {
-		v.SetMaxExpansions(n)
+	err = v.SetMaxExpansions(m.MaxExpansions)
+	if err != nil {
+		return nil, NewQueryError(err, TypeMatch, m.Field)
 	}
-	if n, ok := m.PrefixLength.Int(); ok {
-		v.SetPrefixLength(n)
+	err = v.SetPrefixLength(m.PrefixLength)
+	if err != nil {
+		return nil, NewQueryError(err, TypeMatch, m.Field)
 	}
-	if m.ZeroTermsQuery != "" {
-		v.SetZeroTermsQuery(m.ZeroTermsQuery)
+	err = v.SetZeroTermsQuery(m.ZeroTermsQuery)
+	if err != nil {
+		return nil, NewQueryError(err, TypeMatch, m.Field)
 	}
-
 	v.cutoffFrequency = m.CutoffFrequency
 	return v, nil
 }
@@ -173,45 +183,36 @@ func (m *MatchQuery) Query() *dynamic.StringNumberBoolOrTime {
 }
 
 func (m MatchQuery) MarshalJSON() ([]byte, error) {
-	if len(m.field) == 0 || m.IsEmpty() {
+	if m.IsEmpty() {
 		return dynamic.Null, nil
 	}
-
-	data, err := marshalParams(&m)
+	data, err := m.marshalClauseJSON()
 	if err != nil {
 		return nil, err
 	}
-	data["query"] = m.query
-	return json.Marshal(data)
+	return json.Marshal(dynamic.Map{m.field: data})
 }
 
-func (mq MatchQuery) marshalClauseJSON() ([]byte, error) {
-	if mq.IsEmpty() {
-		return dynamic.Null, nil
-	}
-	m, err := marshalParams(&mq)
+func (m MatchQuery) marshalClauseJSON() (dynamic.JSON, error) {
+	params, err := marshalParams(&m)
 	if err != nil {
 		return nil, err
 	}
-	m["query"] = mq.query
-
-	return json.Marshal(dynamic.Map{mq.field: m})
+	params["query"] = m.query
+	return json.Marshal(params)
 }
+
 func (m *MatchQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchQuery{}
 
-	dm := map[string]dynamic.JSON{}
-	err := json.Unmarshal(data, &m)
+	d := map[string]dynamic.JSON{}
+	err := json.Unmarshal(data, &d)
 	if err != nil {
 		return err
 	}
-	for k, v := range dm {
+	for k, v := range d {
 		m.field = k
-		err := m.unmarshalClauseJSON(v)
-		if err != nil {
-			return err
-		}
-		return nil
+		return m.unmarshalClauseJSON(v)
 	}
 	return nil
 }
@@ -232,11 +233,11 @@ func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	return nil
 }
 
-func (mq MatchQuery) Type() Type {
+func (m MatchQuery) Type() Type {
 	return TypeMatch
 }
 
-func (m *MatchQuery) SetMatch(field string, match *Match) error {
+func (m *MatchQuery) Set(field string, match Matcher) error {
 	if match == nil {
 		m.RemoveMatch()
 		return nil

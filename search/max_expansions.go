@@ -1,6 +1,8 @@
 package search
 
 import (
+	"fmt"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -19,7 +21,17 @@ const DefaultMaxExpansions = int64(50)
 type WithMaxExpansions interface {
 	// MaxExpansions is the maximum number of variations created. Defaults to 50.
 	MaxExpansions() int64
-	SetMaxExpansions(v int64)
+	// SetMaxExpansions sets the max_expansions param
+	//
+	// Maximum number of variations created. Defaults to 50.
+	//
+	// Warning
+	//
+	// Avoid using a high value in the max_expansions parameter, especially if the
+	// prefix_length parameter value is 0. High values in the max_expansions
+	// parameter can cause poor performance due to the high number of variations
+	// examined.
+	SetMaxExpansions(v interface{}) error
 }
 
 // maxExpansionsParam is a mixin that adds the max_expansions param to queries
@@ -36,10 +48,20 @@ func (me maxExpansionsParam) MaxExpansions() int64 {
 	}
 	return *me.maxExpansions
 }
-func (me *maxExpansionsParam) SetMaxExpansions(v int64) {
-	if me.MaxExpansions() != v {
-		me.maxExpansions = &v
+func (me *maxExpansionsParam) SetMaxExpansions(v interface{}) error {
+	n, err := dynamic.NewNumber(v)
+	if err != nil {
+		return err
 	}
+	if n.IsNil() {
+		me.maxExpansions = nil
+		return nil
+	}
+	if i, ok := n.Int(); ok {
+		me.maxExpansions = &i
+		return nil
+	}
+	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)
 }
 func unmarshalMaxExpansionsParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMaxExpansions); ok {

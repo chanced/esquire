@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 
 	"github.com/chanced/dynamic"
@@ -32,7 +33,7 @@ type WithBoost interface {
 	// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 	// the relevance score.
 	Boost() float64
-	SetBoost(v float64)
+	SetBoost(v interface{}) error
 }
 
 type boostParam struct {
@@ -65,10 +66,19 @@ func (b boostParam) Boost() float64 {
 }
 
 // SetBoost sets Boost to v
-func (b *boostParam) SetBoost(v float64) {
-	if b.Boost() != v {
-		b.boostValue = &v
+func (b *boostParam) SetBoost(v interface{}) error {
+	n, err := dynamic.NewNumber(v)
+	if err != nil {
+		return err
 	}
+	if f, ok := n.Float(); ok {
+		b.boostValue = &f
+	} else if n.IsNil() {
+		b.boostValue = nil
+	} else {
+		return fmt.Errorf("%w <%s>", ErrInvalidBoost, v)
+	}
+	return nil
 }
 
 func marshalBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {

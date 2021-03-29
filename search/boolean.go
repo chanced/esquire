@@ -10,8 +10,8 @@ type Booler interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 type Boolean struct {
-	//The clause (query) must appear in matching documents and will contribute
-	//to the score.
+	// The clause (query) must appear in matching documents and will contribute
+	// to the score.
 	Must Clauses
 	// The clause (query) must appear in matching documents. However unlike must
 	// the score of the query will be ignored. Filter clauses are executed in
@@ -43,20 +43,20 @@ func (b Boolean) Boolean() (BooleanQuery, error) {
 	q := BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
-		return q, err
+		return q, NewQueryError(err, TypeBoolean)
 	}
 	err = q.SetMustNot(b.MustNot)
 	if err != nil {
-		return q, err
+		return q, NewQueryError(err, TypeBoolean)
 	}
 	err = q.SetShould(b.Should)
 	if err != nil {
-		return q, err
+		return q, NewQueryError(err, TypeBoolean)
 	}
 
 	err = q.SetFilter(b.Filter)
 	if err != nil {
-		return q, err
+		return q, NewQueryError(err, TypeBoolean)
 	}
 
 	q.SetName(b.Name)
@@ -87,19 +87,45 @@ func (b BooleanQuery) Type() Type {
 }
 
 func (b *BooleanQuery) Set(v Booler) error {
-	*b = BooleanQuery{}
 	q, err := v.Boolean()
 	if err != nil {
-		return err
+		return NewQueryError(err, TypeBoolean)
 	}
 	*b = q
 	return nil
 }
 
+// Must clauses (query) must appear in matching documents and will contribute
+// to the score.
+func (b *BooleanQuery) Must() Clauses {
+	return b.must
+}
+
+// MustNot is a set of clauses (query) where each clause must not appear in the
+// matching documents. Clauses are executed in filter context meaning that
+// scoring is ignored and clauses are considered for caching. Because scoring is
+// ignored, a score of 0 for all documents is returned.
+func (b *BooleanQuery) MustNot() Clauses {
+	return b.mustNot
+}
+
+// Filter clauses (query) that must appear in matching documents. However unlike
+// must the score of the query will be ignored. Filter clauses are executed in
+// filter context, meaning that scoring is ignored and clauses are considered
+// for caching.
+func (b *BooleanQuery) Filter() Clauses {
+	return b.filter
+}
+
+// Should clauses (query) that should appear in the matching document.
+func (b *BooleanQuery) Should() Clauses {
+	return b.should
+}
+
 func (b *BooleanQuery) SetMust(clauses Clauses) error {
 	must, err := unpackClauses(clauses)
 	if err != nil {
-		return err
+		return NewQueryError(err, TypeBoolean)
 	}
 	b.must = must
 	return nil
@@ -108,7 +134,7 @@ func (b *BooleanQuery) SetMust(clauses Clauses) error {
 func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
 	mustNot, err := unpackClauses(clauses)
 	if err != nil {
-		return err
+		return NewQueryError(err, TypeBoolean)
 	}
 	b.mustNot = mustNot
 	return nil
@@ -117,7 +143,7 @@ func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
 func (b *BooleanQuery) SetShould(clauses Clauses) error {
 	should, err := unpackClauses(clauses)
 	if err != nil {
-		return err
+		return NewQueryError(err, TypeBoolean)
 	}
 	b.should = should
 	return nil
@@ -127,27 +153,42 @@ func (b *BooleanQuery) SetShould(clauses Clauses) error {
 func (b *BooleanQuery) SetFilter(clauses Clauses) error {
 	filter, err := unpackClauses(clauses)
 	if err != nil {
-		return err
+		return NewQueryError(err, TypeBoolean)
 	}
 	b.filter = filter
 	return nil
 
 }
-
-func (b *BooleanQuery) AddMust(c Clause) (err error) {
-	return b.must.Add(c)
+func (b *BooleanQuery) AddMust(c Clause) error {
+	err := b.must.Add(c)
+	if err != nil {
+		return NewQueryError(err, TypeBoolean)
+	}
+	return nil
 }
 
-func (b *BooleanQuery) AddShould(c Clause) (err error) {
-	return b.should.Add(c)
+func (b *BooleanQuery) AddShould(c Clause) error {
+	err := b.should.Add(c)
+	if err != nil {
+		return NewQueryError(err, TypeBoolean)
+	}
+	return nil
 }
 
-func (b *BooleanQuery) AddMustNot(c Clause) (err error) {
-	return b.mustNot.Add(c)
+func (b *BooleanQuery) AddMustNot(c Clause) error {
+	err := b.mustNot.Add(c)
+	if err != nil {
+		return NewQueryError(err, TypeBoolean)
+	}
+	return nil
 }
 
-func (b *BooleanQuery) AddFilter(c Clause) (err error) {
-	return b.filter.Add(c)
+func (b *BooleanQuery) AddFilter(c Clause) error {
+	err := b.filter.Add(c)
+	if err != nil {
+		return NewQueryError(err, TypeBoolean)
+	}
+	return nil
 }
 
 func (b *BooleanQuery) IsEmpty() bool {

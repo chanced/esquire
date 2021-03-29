@@ -16,6 +16,7 @@ const (
 	TypeMatch          Type = "match"
 	TypeMatchAll       Type = "match_all"
 	TypeTerm           Type = "term"
+	TypeExists         Type = "exists"
 	TypeTerms          Type = "terms"
 	TypeRange          Type = "range"
 	TypeBoosting       Type = "boosting"
@@ -24,6 +25,7 @@ const (
 	TypeFunctionScore  Type = "function_score"
 	TypeDisjunctionMax Type = "dis_max"
 	TypeAllOf          Type = "all_of"
+	TypeFuzzy          Type = "fuzzy"
 )
 
 var clauseHandlers = map[Type]func() Clause{
@@ -32,4 +34,5 @@ var clauseHandlers = map[Type]func() Clause{
 	TypeTerm:    func() Clause { return &TermQuery{} },
 	TypeTerms:   func() Clause { return &TermsQuery{} },
 	TypeBoolean: func() Clause { return &BooleanQuery{} },
+	TypeExists:  func() Clause { return &ExistsQuery{} },
 }

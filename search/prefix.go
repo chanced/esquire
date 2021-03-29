@@ -1,5 +1,9 @@
 package search
 
+type Prefixer interface {
+	Prefix() (*PrefixQuery, error)
+}
+
 // Prefix returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
@@ -25,52 +29,68 @@ func (p Prefix) Type() Type {
 }
 
 func (p Prefix) Clause() (Clause, error) {
-	return p.prefix()
+	return p.Prefix()
 }
-func (p Prefix) prefix() (*prefixClause, error) {
-	q := &prefixClause{
-		Value: p.Value,
-	}
+func (p Prefix) Prefix() (*PrefixQuery, error) {
+	q := &PrefixQuery{field: p.Field}
 	q.SetCaseInsensitive(p.CaseInsensitive)
-	q.SetRewrite(p.Rewrite)
-	return q, nil
-}
-
-// prefixClause returns documents that contain a specific prefix in a provided field.
-type prefixClause struct {
-	Value string
-	rewriteParam
-	caseInsensitiveParam
-	nameParam
-}
-
-func (p prefixClause) Type() Type {
-	return TypePrefix
+	err := q.SetRewrite(p.Rewrite)
+	if err != nil {
+		return q, NewQueryError(err, TypePrefix, p.Field)
+	}
+	return q, q.setValue(p.Value)
 }
 
 // PrefixQuery returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
 type PrefixQuery struct {
-	*prefixClause
+	value string
+	field string
+	rewriteParam
+	caseInsensitiveParam
+	nameParam
+}
+
+func (p PrefixQuery) Value() string {
+	return p.value
+}
+
+func (p *PrefixQuery) setValue(value string) error {
+	err := checkValue(value, TypePrefix, p.field)
+	if err != nil {
+		return err
+	}
+	p.value = value
+	return nil
 }
 
 func (p PrefixQuery) Type() Type {
 	return TypePrefix
 }
 
-// SetPrefix returns documents that contain a specific prefix in a provided field.
+// Set sets the value of PrefixQuery.
 //
-// SetPrefix panics if Value is not set. It is intended to be used inside of a
-// builder.
-func (p *PrefixQuery) SetPrefix(v Prefix) error {
-	if v.Value == "" {
-		return NewQueryError(ErrValueRequired, TypePrefix)
+// Valid values:
+//  - search.Prefix
+//  - search.String
+//  - nil (clears PrefixQuery)
+func (p *PrefixQuery) Set(field string, prefixer Prefixer) error {
+	if prefixer == nil {
+		p.Clear()
 	}
-	r, err := v.prefix()
+	err := checkField(field, TypePrefix)
 	if err != nil {
-		return err
+		return NewQueryError(err, TypePrefix, field)
 	}
-	p.prefixClause = r
+	q, err := prefixer.Prefix()
+	if err != nil {
+		return NewQueryError(err, TypePrefix, field)
+	}
+	*p = *q
 	return nil
+}
+
+func (p *PrefixQuery) Clear() {
+	*p = PrefixQuery{}
 }

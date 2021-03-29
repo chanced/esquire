@@ -28,7 +28,7 @@ type WithFuzziness interface {
 	FuzzyRewrite() Rewrite
 	// SetFuzzyRewrite sets the value of FuzzyRewrite to v
 	SetFuzzyRewrite(v Rewrite) error
-	DefaultFuzzyRewrite() Rewrite
+	DefaultFuzzyRewrite() Rewrite // Rewrite
 }
 
 var _ WithFuzziness = (*fuzzinessParam)(nil)
@@ -48,6 +48,9 @@ type fuzzinessParam struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness
 func (f fuzzinessParam) Fuzziness() string {
+	if f.fuzziness == "" {
+		return DefaultFuzziness
+	}
 	return f.fuzziness
 }
 
@@ -120,10 +123,6 @@ func unmarshalFuzzyRewriteParam(data dynamic.JSON, target interface{}) error {
 			r.SetFuzzyRewrite(rw)
 		}
 		if data.IsNull() {
-
-		}
-		if data.IsString() {
-
 			return nil
 		}
 		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}

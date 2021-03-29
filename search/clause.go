@@ -17,10 +17,9 @@ type clause interface {
 
 type WithField interface {
 	Field() string
-	SetField() string
 }
 
-type withField interface {
+type withfield interface {
 	field() string
 }
 

@@ -11,16 +11,26 @@ import (
 //  *search.Lookup
 //  search.String
 //  search.Strings
-//
-// Example:
-//  impor
-//  s := search.NewSearch()
-//  err := s.AddTerms(&Lookup{ID: "1", Index:"my-index-100", Path:"color"})
-//  _ = err // handle err
-//  err = s.AddTerms(&Terms{ Field:"", Value: []string{"kimchy", "elkbee"}})
-//  _ = err // handle err
 type Termser interface {
-	Terms() (TermsQuery, error)
+	Terms() (*TermsQuery, error)
+}
+
+// NewTermsQuery returns a new *TermsQuery
+//
+// Valid options are:
+//  - search.Terms
+//  - search.Lookup
+//  - any type which satisfies Termser that sets the Field value
+func NewTermsQuery(params Termser) (*TermsQuery, error) {
+	q, err := params.Terms()
+	if err != nil {
+		return q, NewQueryError(err, TypeTerms, q.field)
+	}
+	err = checkField(q.field, TypeTerms)
+	if err != nil {
+		return q, err
+	}
+	return q, nil
 }
 
 // Terms returns documents that contain one or more exact terms in a provided
@@ -30,21 +40,25 @@ type Termser interface {
 // multiple values.
 type Terms struct {
 	Field           string
-	Values          []string
-	Boost           dynamic.Number
+	Value           []string
+	Boost           interface{}
 	CaseInsensitive bool
 }
 
 func (t Terms) Clause() (Clause, error) {
 	return t.Terms()
 }
-func (t Terms) Terms() (TermsQuery, error) {
-	q := TermsQuery{
-		value: t.Values,
+func (t Terms) Terms() (*TermsQuery, error) {
+	q := &TermsQuery{
 		field: t.Field,
 	}
-	if f, ok := t.Boost.Float(); ok {
-		t.Boost.Set(f)
+	err := q.SetBoost(t.Boost)
+	if err != nil {
+		return q, NewQueryError(err, TypeTerms, t.Field)
+	}
+	err = q.setValue(t.Value)
+	if err != nil {
+		return q, NewQueryError(err, TypeTerms, t.Field)
 	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
@@ -54,60 +68,47 @@ func (t Terms) Type() Type {
 	return TypeTerms
 }
 
-type TermsLookup struct {
-	ID      string `json:"id,omitempty"`
-	Index   string `json:"index,omitempty"`
-	Path    string `json:"path,omitempty"`
-	Routing string `json:"routing,omitempty"`
-}
-
-func (t TermsLookup) Validate() error {
-	if len(t.ID) == 0 {
-		return ErrIDRequired
-	}
-	if len(t.Index) == 0 {
-		return ErrIndexRequired
-	}
-	if len(t.Path) == 0 {
-		return ErrPathRequired
-	}
-	return nil
-}
-
-func (t TermsLookup) IsEmpty() bool {
-	return len(t.ID) == 0 && len(t.Index) == 0 && len(t.Path) == 0 && len(t.Routing) == 0
-}
-
 func (t *TermsQuery) SetField(field string) {
 	t.field = field
 }
 
-// SetValues sets the Terms value to v and clears the lookup
-// It returns an error if v is empty.
-//
-// If you need to to clear Terms, use Clear()
-func (t *TermsQuery) SetValues(v []string) error {
-	t.lookup = TermsLookup{}
-	t.value = v
-	if len(v) == 0 {
-		return ErrValueRequired
+func (t *TermsQuery) setValue(value []string) error {
+	err := checkValues(value, TypeTerms, t.field)
+	if err != nil {
+		return err
 	}
+	t.lookup = LookupValues{}
+	t.value = value
+	return nil
+}
+func (t *TermsQuery) Set(field string, clause Termser) error {
+	q, err := clause.Terms()
+	if err != nil {
+		return NewQueryError(err, TypeTerms, field)
+	}
+	*t = *q
 	return nil
 }
 
+func (t TermsQuery) Type() Type {
+	return TypeTerms
+}
+
+func (t TermsQuery) IsEmpty() bool {
+	return (len(t.value) == 0 && t.lookup.IsEmpty())
+}
+
 func (t TermsQuery) Value() []string {
-	return t.value
+	return t.value[:]
 }
 
-func (t TermsQuery) Lookup() TermsLookup {
-	return t.lookup
+func (t TermsQuery) Lookup() *TermsLookup {
+	return &t.lookup
 }
 
-// SetLookup sets the Terms query's lookup and unsets values.
-func (t TermsQuery) SetLookup(v TermsLookup) error {
-
+func (t TermsQuery) setLookup(value LookupValues) error {
 	t.value = []string{}
-	t.lookup = v
+	t.lookup = value
 	return nil
 }
 
@@ -170,7 +171,7 @@ func (t *TermsQuery) UnmarshalBSON(data []byte) error {
 }
 
 type TermsQuery struct {
-	lookup TermsLookup
+	lookup LookupValues
 	value  []string
 	field  string
 	boostParam
@@ -180,23 +181,6 @@ type TermsQuery struct {
 
 func (t TermsQuery) Field() string {
 	return t.field
-}
-
-func (t *TermsQuery) Set(field string, clause Termser) error {
-	q, err := clause.Terms()
-	if err != nil {
-		return err
-	}
-	*t = q
-	return nil
-}
-
-func (t TermsQuery) Type() Type {
-	return TypeTerms
-}
-
-func (t TermsQuery) IsEmpty() bool {
-	return (len(t.value) == 0 && t.lookup.IsEmpty())
 }
 
 func (t TermsQuery) MarshalBSON() ([]byte, error) {

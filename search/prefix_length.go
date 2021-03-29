@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/chanced/dynamic"
 )
@@ -15,25 +16,37 @@ const DefaultPrefixLength = 0
 // matching. Defaults to 0.
 type WithPrefixLength interface {
 	PrefixLength() int64
-	SetPrefixLength(v int64)
+	SetPrefixLength(v interface{}) error
 }
 
 // prefixLengthParam is a mixin that adds the prefix_length param
 //
 // PrefixLength is the number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
 type prefixLengthParam struct {
-	prefixLengthValue *int64
+	prefixLength *int64
 }
 
 func (pl prefixLengthParam) PrefixLength() int64 {
-	if pl.prefixLengthValue == nil {
+	if pl.prefixLength == nil {
 		return DefaultPrefixLength
 	}
-	return *pl.prefixLengthValue
+	return *pl.prefixLength
 }
 
-func (pl *prefixLengthParam) SetPrefixLength(v int64) {
-	pl.prefixLengthValue = &v
+func (pl *prefixLengthParam) SetPrefixLength(v interface{}) error {
+	n, err := dynamic.NewNumber(v)
+	if err != nil {
+		return err
+	}
+	if n.IsNil() {
+		pl.prefixLength = nil
+		return nil
+	}
+	if i, ok := n.Int(); ok {
+		pl.prefixLength = &i
+		return nil
+	}
+	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)
 }
 func unmarshalPrefixLengthParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithPrefixLength); ok {

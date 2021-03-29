@@ -21,17 +21,17 @@ func (c Clauses) MarshalJSON() ([]byte, error) {
 func (c *Clauses) UnmarshalJSON(data []byte) error {
 	*c = Clauses{}
 
-	r := dynamic.JSON(data)
+	d := dynamic.JSON(data)
 	var cm []map[Type]dynamic.JSON
-	if r.IsObject() {
-		ce := map[Type]dynamic.JSON{}
-		err := json.Unmarshal(r, &ce)
+	if d.IsObject() {
+		var j map[Type]dynamic.JSON
+		err := json.Unmarshal(d, &j)
 		if err != nil {
 			return err
 		}
-		cm = []map[Type]dynamic.JSON{ce}
+		cm = []map[Type]dynamic.JSON{j}
 	} else {
-		err := json.Unmarshal(r, &cm)
+		err := json.Unmarshal(d, &cm)
 		if err != nil {
 			return err
 		}
@@ -97,7 +97,7 @@ func (c *Clauses) RemoveAllForField(field string) []Clause {
 				rem = append(rem, v)
 				c.RemoveIndex(i)
 			}
-		} else if wn, ok := v.(withField); ok {
+		} else if wn, ok := v.(withfield); ok {
 			if wn.field() == field {
 				rem = append(rem, v)
 				c.RemoveIndex(i)

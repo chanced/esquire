@@ -40,7 +40,7 @@ func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.JSON, target int
 		var b dynamic.Bool
 		var err error
 		if data.IsBool() {
-			b, err = dynamic.NewBool(data)
+			b, err = dynamic.NewBool(data.UnquotedString())
 			if err != nil {
 				return err
 			}

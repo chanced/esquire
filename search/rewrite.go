@@ -98,7 +98,7 @@ func (r Rewrite) IsValid() bool {
 // WithRewrite is a query with the rewrite param
 type WithRewrite interface {
 	Rewrite() Rewrite
-	SetRewrite(v Rewrite)
+	SetRewrite(v Rewrite) error
 }
 
 // rewriteParam is a mixin that adds the rewrite param
@@ -115,10 +115,9 @@ func (r rewriteParam) Rewrite() Rewrite {
 	}
 	return *r.rewrite
 }
-func (r *rewriteParam) SetRewrite(v Rewrite) {
-	if v != "" && v != r.Rewrite() {
-		r.rewrite = &v
-	}
+func (r *rewriteParam) SetRewrite(v Rewrite) error {
+	r.rewrite = &v
+	return nil
 }
 func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithRewrite); ok {

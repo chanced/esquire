@@ -5,6 +5,25 @@ import (
 	"strings"
 )
 
+var (
+	ErrFieldRequired        = errors.New("picker: field is required")
+	ErrValueRequired        = errors.New("picker: value is required")
+	ErrQueryRequired        = errors.New("picker: query is required")
+	ErrInvalidSourceType    = errors.New("picker: invalid source type")
+	ErrInvalidRewrite       = errors.New("picker: invalid rewrite value")
+	ErrFieldExists          = errors.New("picker: field exists")
+	ErrTypeRequired         = errors.New("picker: rule type is required")
+	ErrUnsupportedType      = errors.New("picker: unsupported rule type")
+	ErrPathRequired         = errors.New("picker: Path required in lookup")
+	ErrIDRequired           = errors.New("picker: ID required for lookup")
+	ErrIndexRequired        = errors.New("picker: Index required")
+	ErrInvalidBoost         = errors.New("picker: invalid boost value")
+	ErrInvalidMaxExpansions = errors.New("picker: invalid max expansions")
+	ErrInvalidPrefixLength  = errors.New("picker: invalid prefix length")
+	ErrInvalidZeroTermQuery = errors.New("picker: invalid zero terms query")
+	ErrInvalidRelation      = errors.New("picker: invalid relation")
+)
+
 type QueryError struct {
 	Field string
 	Err   error
@@ -16,16 +35,20 @@ type RuleError struct {
 	Rule Clause
 }
 
-func NewRuleError(err error, queryType Type, rule Clause, field ...string) *RuleError {
-	return &RuleError{
-		Rule:       rule,
-		QueryError: NewQueryError(err, queryType, field...),
-	}
-}
 func NewQueryError(err error, queryType Type, field ...string) *QueryError {
 	var f string
 	if len(field) > 0 {
 		f = field[0]
+	}
+	var qe *QueryError
+	if errors.As(err, &qe) {
+		if len(f) != 0 {
+			qe.Field = f
+		}
+		if qe.Type != queryType {
+			qe.Type = queryType
+		}
+		return qe
 	}
 	return &QueryError{
 		Err:   err,
@@ -50,17 +73,3 @@ func (s QueryError) Error() string {
 func (s QueryError) Unwrap() error {
 	return s.Err
 }
-
-var (
-	ErrFieldRequired     = errors.New("error: field is required")
-	ErrValueRequired     = errors.New("error: value is required")
-	ErrQueryRequired     = errors.New("error: query is required")
-	ErrInvalidSourceType = errors.New("error: invalid source type")
-	ErrInvalidRewrite    = errors.New("error: invalid rewrite value")
-	ErrFieldExists       = errors.New("error: field exists")
-	ErrTypeRequired      = errors.New("error: rule type is required")
-	ErrUnsupportedType   = errors.New("error: unsupported rule type")
-	ErrPathRequired      = errors.New("error: Path required in lookup")
-	ErrIDRequired        = errors.New("error: ID required for lookup")
-	ErrIndexRequired     = errors.New("error: Index required")
-)

@@ -20,7 +20,7 @@ func (s String) Match() (MatchQuery, error) {
 
 func (s String) Term() (TermQuery, error) {
 	q := TermQuery{}
-	err := q.SetValue(s.String())
+	err := q.setValue(s.String())
 	return q, err
 }
 
@@ -33,7 +33,7 @@ func (s String) Terms() (TermsQuery, error) {
 			strs[i] = str
 		}
 	}
-	err := q.SetValues(strs)
+	err := q.setValue(strs)
 	return q, err
 }
 
@@ -41,7 +41,7 @@ type Strings []string
 
 func (s Strings) Terms() (TermsQuery, error) {
 	q := TermsQuery{}
-	err := q.SetValues(s)
+	err := q.setValue(s)
 	return q, err
 }
 
