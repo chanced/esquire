@@ -47,7 +47,49 @@ type Query struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 	Boolean Boolean
 
+	// Fuzzy returns documents that contain terms similar to the search term,
+	// as measured by a Levenshtein edit distance.
+	//
+	// An edit distance is the number of one-character changes needed to turn one
+	// term into another. These changes can include:
+	//
+	//      - Changing a character (box → fox)
+	//
+	//      - Removing a character (black → lack)
+	//
+	//      - Inserting a character (sic → sick)
+	//
+	//      - Transposing two adjacent characters (act → cat)
+	//
+	// To find similar terms, the fuzzy query creates a set of all possible
+	// variations, or expansions, of the search term within a specified edit
+	// distance. The query then returns exact matches for each expansion.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
 	Fuzzy Fuzzy
+
+	// Prefix returns documents that contain a specific prefix in a provided field.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
+	Prefix Prefix
+
+	// FunctionScore  allows you to modify the score of documents that are retrieved
+	// by a query. This can be useful if, for example, a score function is
+	// computationally expensive and it is sufficient to compute the score on a
+	// filtered set of documents.
+	//
+	// To use function_score, the user has to define a query and one or more
+	// functions, that compute a new score for each document returned by the query.
+	FunctionScore FunctionScore
+
+	// Script uses a script to provide a custom score for returned documents.
+	//
+	// The script_score query is useful if, for example, a scoring function is
+	// expensive and you only need to calculate the score of a filtered set of
+	// documents.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
+	Script Script
 }
 
 func newQuery(params Query) (*QueryValues, error) {
