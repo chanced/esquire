@@ -2,7 +2,7 @@ package mapping
 
 // FieldTypeHandlers is a map of mapping Type to func that returns a Field instantiated with the appropriate Type
 var FieldTypeHandlers = map[Type]func() Field{
-	TypeAlias:           func() Field { return NewAliasField() },
+	TypeAlias:           func() Field { return NewAliasField(Alias{}) },
 	TypeBinary:          func() Field { return NewBinaryField() },
 	TypeBoolean:         func() Field { return NewBooleanField() },
 	TypeByte:            func() Field { return NewByteField() },
@@ -54,7 +54,6 @@ func NewField(t Type) (Field, error) {
 // Field is an elasticsearch field mapping
 type Field interface {
 	Type() Type
-	Clone() Field
 }
 
 // BaseField Mapping

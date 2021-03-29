@@ -8,9 +8,9 @@ package search
 // To use function_score, the user has to define a query and one or more
 // functions, that compute a new score for each document returned by the query.
 type FunctionScore struct {
-	Query   Query
-	Boost   interface{}
-	Filters []ScoreFunction
+	Query     Query
+	Boost     interface{}
+	Functions Functions
 }
 
 // FunctionScoreQuery allows you to modify the score of documents that are retrieved

@@ -27,6 +27,7 @@ const (
 	paramTimeZone                        = "time_zone"
 	paramSlop                            = "slop"
 	paramCutoffFrequency                 = "cutoff_frequency"
+	paramMinScore                        = "min_score"
 	// ParamQuery                           Param = "query"
 )
 

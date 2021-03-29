@@ -1,5 +1,7 @@
 package mapping
 
+type Alias struct{}
+
 // An AliasField mapping defines an alternate name for a field in the index. The
 // alias can be used in place of the target field in search requests, and
 // selected other APIs like field capabilities.
@@ -40,13 +42,7 @@ type AliasField struct {
 	PathParam `bson:",inline" json:",inline"`
 }
 
-func (a AliasField) Clone() Field {
-	n := NewAliasField()
-	n.SetPath(a.Path())
-	return n
-}
-
-func NewAliasField() *AliasField {
+func NewAliasField(params Alias) *AliasField {
 	return &AliasField{
 		BaseField: BaseField{MappingType: TypeAlias},
 	}

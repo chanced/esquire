@@ -19,25 +19,25 @@ type weightParam struct {
 	weightValue *float64
 }
 
-func (b boostParam) Weight() float64 {
-	if b.boostValue == nil {
+func (b weightParam) Weight() float64 {
+	if b.weightValue == nil {
 		return 0
 	}
-	return *b.boostValue
+	return *b.weightValue
 }
 
 // SetWeight sets Weight to v
-func (b *boostParam) SetWeight(v interface{}) error {
+func (b *weightParam) SetWeight(v interface{}) error {
 	n, err := dynamic.NewNumber(v)
 	if err != nil {
 		return err
 	}
 	if f, ok := n.Float(); ok {
-		b.boostValue = &f
+		b.weightValue = &f
 	} else if n.IsNil() {
-		b.boostValue = nil
+		b.weightValue = nil
 	} else {
-		return fmt.Errorf("%w <%s>", ErrInvalidWeight, v)
+		return fmt.Errorf("%w <%s>", ErrWeightRequired, v)
 	}
 	return nil
 }

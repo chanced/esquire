@@ -22,7 +22,8 @@ var (
 	ErrInvalidPrefixLength  = errors.New("picker: invalid prefix length")
 	ErrInvalidZeroTermQuery = errors.New("picker: invalid zero terms query")
 	ErrInvalidRelation      = errors.New("picker: invalid relation")
-	ErrInvalidWeight        = errors.New("picker: invalid weight")
+	ErrWeightRequired       = errors.New("picker: weight required")
+	ErrScriptRequired       = errors.New("picker: script is required")
 )
 
 type QueryError struct {

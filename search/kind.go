@@ -26,6 +26,7 @@ const (
 	KindDisjunctionMax Kind = "dis_max"
 	KindAllOf          Kind = "all_of"
 	KindFuzzy          Kind = "fuzzy"
+	KindScript         Kind = "script"
 )
 
 var clauseHandlers = map[Kind]func() Clause{

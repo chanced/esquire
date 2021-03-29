@@ -6,113 +6,92 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// Script filters documents based on a provided script. The script query is
-// typically used in a filter context.
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html
-type Script struct {
-	Source   string                 `json:"source" bson:"source"`
-	Language string                 `json:"lang,omitempty" bson:"lang,omitempty"`
-	Params   map[string]interface{} `json:"params,omitempty" bson:"params,omitempty"`
+type Scripter interface {
+	ScriptQuery() (*ScriptQuery, error)
 }
-type script Script
 
-func (s Script) MarshalJSON() ([]byte, error) {
-	if (s.Language == "" || s.Language == "painless") && len(s.Params) == 0 {
-		return json.Marshal(s.Source)
-	}
-	return json.Marshal(script(s))
+// Script uses a script to provide a custom score for returned documents.
+//
+// The script_score query is useful if, for example, a scoring function is
+// expensive and you only need to calculate the score of a filtered set of
+// documents.
+//
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
+type Script struct {
+	// Query used to return documents. (Required)
+	Query Query
+	// Script used to compute the score of documents returned by the query.
+	// (Required)
+	Script string
+	// Documents with a score lower than this floating point number are excluded
+	// from the search results. (Optional)
+	MinScore float64
+	// Documents scores produced by script are multiplied by boost to produce
+	// final documents' scores. Defaults to 1.0. (Optional)
+	Boost  interface{}
+	Params interface{}
+	Name   string
 }
-func (s *Script) UnmarshalJSON(data []byte) error {
-	s.Language = ""
-	s.Params = map[string]interface{}{}
-	s.Source = ""
-	d := dynamic.JSON(data)
-	if d.IsString() {
-		var str string
-		err := json.Unmarshal(d, &str)
-		if err != nil {
-			return err
-		}
-		s.Source = d.UnquotedString()
-		return nil
+
+func (s Script) Clause() (Clause, error) {
+	return s.ScriptQuery()
+}
+func (s Script) ScriptQuery() (*ScriptQuery, error) {
+	q := &ScriptQuery{}
+
+	err := q.setQuery(s.Query)
+	if err != nil {
+		return q, NewQueryError(err, KindScript)
 	}
-	m := map[string]dynamic.JSON{}
-	err := json.Unmarshal(data, &m)
+
+	err = q.setScript(s.Script)
+	if err != nil {
+		return q, NewQueryError(err, KindScript)
+	}
+
+	err = q.SetBoost(s.Boost)
+	if err != nil {
+		return q, NewQueryError(err, KindScript)
+	}
+	q.SetMinScore(s.MinScore)
+	return q, nil
+}
+
+func (Script) Kind() Kind {
+	return KindScript
+}
+
+type ScriptQuery struct {
+	query  QueryValues
+	params dynamic.JSON
+	script string
+	boostParam
+	minScoreParam
+	nameParam
+}
+
+func (ScriptQuery) Kind() Kind {
+	return KindScript
+}
+
+func (s ScriptQuery) DecodeParams(val interface{}) error {
+	return json.Unmarshal(s.params, val)
+}
+
+func (s ScriptQuery) setScript(script string) error {
+	if len(script) == 0 {
+		return ErrScriptRequired
+	}
+	s.script = script
+	return nil
+}
+func (s ScriptQuery) setQuery(query Query) error {
+	qv, err := newQuery(query)
 	if err != nil {
 		return err
 	}
-	if src, ok := m["source"]; ok {
-		var str string
-		err := json.Unmarshal(src, &str)
-		if err != nil {
-			return err
-		}
-		s.Source = str
+	if qv.IsEmpty() {
+		return ErrQueryRequired
 	}
-	if lang, ok := m["lang"]; ok {
-		var str string
-		err := json.Unmarshal(lang, &str)
-		if err != nil {
-			return err
-		}
-		s.Language = str
-	}
-	if params, ok := m["params"]; ok {
-		var p map[string]interface{}
-		err := json.Unmarshal(params, &p)
-		if err != nil {
-			return err
-		}
-		s.Params = p
-	}
-
-	return nil
-}
-
-// ScriptQuery filters documents based on a provided script. The script query is
-// typically used in a filter context.
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html
-type ScriptQuery struct {
-	ScriptValue *Script `json:"script,omitempty" bson:"script,omitempty"`
-}
-
-func (s ScriptQuery) ScriptLanguage() string {
-	if s.ScriptValue == nil {
-		return ""
-	}
-	return s.ScriptValue.Language
-}
-
-func (s ScriptQuery) ScriptParams() map[string]interface{} {
-	if s.ScriptValue == nil {
-		return nil
-	}
-	return s.ScriptValue.Params
-}
-func (s ScriptQuery) ScriptSource() string {
-	if s.ScriptValue == nil {
-		return ""
-	}
-	return s.ScriptValue.Source
-}
-
-func (s *ScriptQuery) SetScriptLanguage(v string) {
-	s.ScriptValue.Language = v
-}
-func (s *ScriptQuery) SetScriptSource(v string) {
-	s.ScriptValue.Source = v
-}
-func (s *ScriptQuery) SetScriptParams(v map[string]interface{}) {
-	s.ScriptValue.Params = v
-}
-func (s *ScriptQuery) SetScriptParam(key string, value interface{}) {
-	if s.ScriptValue.Params == nil {
-		s.ScriptValue.Params = map[string]interface{}{}
-	}
-	s.ScriptValue.Params[key] = value
-}
-func (s *ScriptQuery) RemoveScriptParam(key string) {
-	delete(s.ScriptValue.Params, key)
+	s.query = *qv
 }

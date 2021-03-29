@@ -1,5 +1,8 @@
 package mapping
 
+type Boolean struct {
+}
+
 func NewBooleanField() *BooleanField {
 	return &BooleanField{
 		BaseField: BaseField{MappingType: TypeBoolean},
@@ -21,16 +24,4 @@ type BooleanField struct {
 	NullValueParam `bson:",inline" json:",inline"`
 	StoreParam     `bson:",inline" json:",inline"`
 	MetaParam      `bson:",inline" json:",inline"`
-}
-
-func (b BooleanField) Clone() Field {
-	n := NewBooleanField()
-	n.SetDocValues(b.DocValues())
-	n.SetIndex(b.Index())
-	n.SetMeta(b.Meta())
-	n.SetMetricType(b.MetricType())
-	n.SetNullValue(b.NullValue())
-	n.SetStore(b.Store())
-	n.SetUnit(b.Unit())
-	return n
 }
