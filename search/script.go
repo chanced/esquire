@@ -85,7 +85,7 @@ func (s ScriptQuery) DecodeParams(val interface{}) error {
 	return json.Unmarshal(s.params, val)
 }
 
-func (s ScriptQuery) SetParams(params interface{}) error {
+func (s *ScriptQuery) SetParams(params interface{}) error {
 	if params == nil {
 		s.params = []byte{}
 		return nil
@@ -106,14 +106,14 @@ func (s ScriptQuery) SetParams(params interface{}) error {
 	return nil
 }
 
-func (s ScriptQuery) setScript(script string) error {
+func (s *ScriptQuery) setScript(script string) error {
 	if len(script) == 0 {
 		return ErrScriptRequired
 	}
 	s.script = script
 	return nil
 }
-func (s ScriptQuery) setQuery(query Query) error {
+func (s *ScriptQuery) setQuery(query Query) error {
 	qv, err := newQuery(query)
 	if err != nil {
 		return err
