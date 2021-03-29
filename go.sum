@@ -12,6 +12,8 @@ github.com/chanced/dynamic v0.0.0-20210327182917-ca9aab16a3d8 h1:m4ex3p8qcdjNxsO
 github.com/chanced/dynamic v0.0.0-20210327182917-ca9aab16a3d8/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/chanced/dynamic v0.0.0-20210328014743-ad2c30219f7b h1:HQW5PLHxhoS00sa9A1J8Co9ybHTUiCfPfhwZJntd/pk=
 github.com/chanced/dynamic v0.0.0-20210328014743-ad2c30219f7b/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210329063148-f3de896dc135 h1:HFNAzfjtkCPvHnLxF/zAr0C2sJAoggYOJs/Vi1r1wCE=
+github.com/chanced/dynamic v0.0.0-20210329063148-f3de896dc135/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

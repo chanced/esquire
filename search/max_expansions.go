@@ -6,7 +6,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-const DefaultMaxExpansions = int64(50)
+const DefaultMaxExpansions = int(50)
 
 // WithMaxExpansions is a query with the max_expansions param
 //
@@ -20,7 +20,7 @@ const DefaultMaxExpansions = int64(50)
 // examined.
 type WithMaxExpansions interface {
 	// MaxExpansions is the maximum number of variations created. Defaults to 50.
-	MaxExpansions() int64
+	MaxExpansions() int
 	// SetMaxExpansions sets the max_expansions param
 	//
 	// Maximum number of variations created. Defaults to 50.
@@ -38,11 +38,11 @@ type WithMaxExpansions interface {
 //
 // Maximum number of variations created. Defaults to 50.
 type maxExpansionsParam struct {
-	maxExpansions *int64
+	maxExpansions *int
 }
 
 // MaxExpansions is the maximum number of variations created. Defaults to 50.
-func (me maxExpansionsParam) MaxExpansions() int64 {
+func (me maxExpansionsParam) MaxExpansions() int {
 	if me.maxExpansions == nil {
 		return DefaultMaxExpansions
 	}
@@ -58,7 +58,8 @@ func (me *maxExpansionsParam) SetMaxExpansions(v interface{}) error {
 		return nil
 	}
 	if i, ok := n.Int(); ok {
-		me.maxExpansions = &i
+		iv := int(i)
+		me.maxExpansions = &iv
 		return nil
 	}
 	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)

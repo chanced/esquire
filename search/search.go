@@ -9,8 +9,8 @@ import (
 
 var (
 	DefaultExplain = false
-	DefaultFrom    = int64(0)
-	DefaultSize    = int64(10)
+	DefaultFrom    = int(0)
+	DefaultSize    = int(10)
 )
 
 // Params are the initial params passed to NewSearch
@@ -46,7 +46,7 @@ type Params struct {
 	// By default, you cannot page through more than 10,000 hits using the from
 	// and size parameters. To page through more hits, use the search_after
 	// parameter. (Optional)
-	From int64
+	From int
 
 	// Boosts the _score of documents from specified indices (Optional).
 	IndicesBoost IndicesBoost
@@ -73,7 +73,7 @@ type Params struct {
 	// By default, you cannot page through more than 10,000 hits using the from
 	// and size parameters. To page through more hits, use the search_after
 	// parameter.
-	Size int64
+	Size int
 
 	// Indicates which source fields are returned for matching documents. These
 	// fields are returned in the hits._source property of the search response.
@@ -89,7 +89,7 @@ type Params struct {
 	// which the query execution will terminate early. (Optional)
 	//
 	// Defaults to 0, which does not terminate query execution early.
-	TerminateAfter int64
+	TerminateAfter int
 
 	// Specifies the period of time to wait for a response. If no response is
 	// received before the timeout expires, the request fails and returns an
@@ -136,7 +136,7 @@ type Search struct {
 	docValueFields   Fields          // docvalue_fields
 	fields           Fields          // fields
 	explain          bool            // explain
-	from             int64           // from
+	from             int             // from
 	indicesBoost     IndicesBoost    // indices_boost
 	minScore         float64         // min_score
 	pointInTime      *PointInTime    // pit
@@ -145,7 +145,7 @@ type Search struct {
 	size             dynamic.Number  // size
 	source           *Source         // _source
 	stats            []string        // stats
-	terminateAfter   int64           // terminate_after
+	terminateAfter   int             // terminate_after
 	timeout          time.Duration   // timeout
 	version          bool            // version
 }
@@ -193,7 +193,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 	if d, ok := m["from"]; ok {
-		var i int64
+		var i int
 		err := json.Unmarshal(d, &i)
 		if err != nil {
 			return err
@@ -264,7 +264,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.stats = v
 	}
 	if d, ok := m["terminate_after"]; ok {
-		var i int64
+		var i int
 		err = json.Unmarshal(d, &i)
 		if err != nil {
 			return err
@@ -442,12 +442,12 @@ func (s *Search) SetExplain(v bool) *Search {
 //
 // By default, you cannot page through more than 10,000 hits using the from and
 // size parameters. To page through more hits, use the search_after parameter.
-func (s Search) From() int64 {
+func (s Search) From() int {
 	return s.from
 }
 
 // SetFrom sets the FromValue to v
-func (s *Search) SetFrom(v int64) *Search {
+func (s *Search) SetFrom(v int) *Search {
 	s.from = v
 	return s
 }
@@ -573,14 +573,14 @@ func (s *Search) SetSeqNoPrimaryTerm(v bool) *Search {
 //
 // By default, you cannot page through more than 10,000 hits using the from and
 // size parameters. To page through more hits, use the search_after parameter.
-func (s Search) Size() int64 {
+func (s Search) Size() int {
 	if i, ok := s.size.Int(); ok {
-		return i
+		return int(i)
 	}
 	return DefaultSize
 }
 
-func (s *Search) SetSize(v int64) *Search {
+func (s *Search) SetSize(v int) *Search {
 	s.size.Set(v)
 	return s
 }
@@ -645,11 +645,11 @@ func (s *Search) SetStats(v []string) *Search {
 // reaching which the query execution will terminate early.
 //
 // Defaults to 0, which does not terminate query execution early.
-func (s Search) TerminateAfter() int64 {
+func (s Search) TerminateAfter() int {
 	return s.terminateAfter
 }
 
-func (s *Search) SetTerminateAfter(v int64) *Search {
+func (s *Search) SetTerminateAfter(v int) *Search {
 	s.terminateAfter = v
 	return s
 }

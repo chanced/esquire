@@ -55,7 +55,7 @@ func unmarshalLenientParam(data dynamic.JSON, target interface{}) error {
 			return nil
 		}
 		if !ok {
-			return &json.UnmarshalKindError{Value: data.String(), Kind: typeBool}
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeBool}
 		}
 	}
 	return nil

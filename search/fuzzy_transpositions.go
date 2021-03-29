@@ -69,7 +69,7 @@ func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) er
 			a.SetFuzzyTranspositions(v)
 			return nil
 		} else {
-			return &json.UnmarshalKindError{Value: data.String(), Kind: typeString}
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
 		}
 
 	}

@@ -10,7 +10,7 @@ import (
 
 const DefaultBoost = float64(1)
 
-// WithBoost is an interface with the Boost and SetBoost methods
+// WithBoost is an interface for queries with the boost parameter
 //
 // Boost is a floating point number used to decrease or increase the relevance
 // scores of a query. Defaults to 1.0.
@@ -21,7 +21,6 @@ const DefaultBoost = float64(1)
 // Boost values are relative to the default value of 1.0. A boost value between
 // 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 // the relevance score.
-
 type WithBoost interface {
 	// Boost is a floating point number used to decrease or increase the relevance
 	// scores of a query. Defaults to 1.0.
@@ -98,9 +97,9 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 			}
 			f, ok := n.Float()
 			if !ok {
-				return &json.UnmarshalKindError{
+				return &json.UnmarshalTypeError{
 					Value: data.String(),
-					Kind:  reflect.KindOf(float64(0)),
+					Type:  reflect.TypeOf(float64(0)),
 				}
 			}
 			r.SetBoost(f)

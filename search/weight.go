@@ -1,16 +1,94 @@
 package search
 
-type Weight struct{}
+import (
+	"encoding/json"
+	"fmt"
+	"reflect"
 
-func (w Weight) ScoreKind() ScoreKind {
-	return ScoreWeight
+	"github.com/chanced/dynamic"
+)
+
+var DefaultWeight = float64(0)
+
+type WithWeight interface {
+	Weight() float64
+	SetWeight(v interface{}) error
 }
-func (w Weight) Function() (Function, error) {
-	return &WeightFunction{}, nil
+
+type weightParam struct {
+	weightValue *float64
 }
 
-type WeightFunction struct{}
+func (b boostParam) Weight() float64 {
+	if b.boostValue == nil {
+		return 0
+	}
+	return *b.boostValue
+}
 
-func (WeightFunction) FunctionKind() FunctionKind {
-	return FunctionKindWeight
+// SetWeight sets Weight to v
+func (b *boostParam) SetWeight(v interface{}) error {
+	n, err := dynamic.NewNumber(v)
+	if err != nil {
+		return err
+	}
+	if f, ok := n.Float(); ok {
+		b.boostValue = &f
+	} else if n.IsNil() {
+		b.boostValue = nil
+	} else {
+		return fmt.Errorf("%w <%s>", ErrInvalidWeight, v)
+	}
+	return nil
+}
+
+func marshalWeightParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+	if b, ok := source.(WithWeight); ok {
+		if b.Weight() != DefaultWeight {
+			data["weight"] = b.Weight()
+		}
+	}
+	return data, nil
+}
+func unmarshalWeightParam(data dynamic.JSON, target interface{}) error {
+	if r, ok := target.(WithWeight); ok {
+		if data.IsNumber() {
+			n, err := dynamic.NewNumber(data.String())
+			if err != nil {
+				return err
+			}
+			f, ok := n.Float()
+			if !ok {
+				return &json.UnmarshalTypeError{
+					Value: data.String(),
+					Type:  reflect.TypeOf(float64(0)),
+				}
+			}
+			r.SetWeight(f)
+			return nil
+		}
+		if data.IsNull() {
+			return nil
+		}
+		if data.IsString() {
+			if len(data.UnquotedString()) == 0 {
+				return nil
+			}
+			var str string
+			err := json.Unmarshal(data, &str)
+			if err != nil {
+				return err
+			}
+			n, err := dynamic.NewNumber(str)
+			if err != nil {
+				return err
+			}
+			f, ok := n.Float()
+			if ok {
+				r.SetWeight(f)
+			}
+			return nil
+		}
+	}
+	return nil
 }

@@ -15,7 +15,7 @@ const DefaultPrefixLength = 0
 // PrefixLength is the umber of beginning characters left unchanged when fuzzy
 // matching. Defaults to 0.
 type WithPrefixLength interface {
-	PrefixLength() int64
+	PrefixLength() int
 	SetPrefixLength(v interface{}) error
 }
 
@@ -23,10 +23,10 @@ type WithPrefixLength interface {
 //
 // PrefixLength is the number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
 type prefixLengthParam struct {
-	prefixLength *int64
+	prefixLength *int
 }
 
-func (pl prefixLengthParam) PrefixLength() int64 {
+func (pl prefixLengthParam) PrefixLength() int {
 	if pl.prefixLength == nil {
 		return DefaultPrefixLength
 	}
@@ -43,7 +43,8 @@ func (pl *prefixLengthParam) SetPrefixLength(v interface{}) error {
 		return nil
 	}
 	if i, ok := n.Int(); ok {
-		pl.prefixLength = &i
+		iv := int(i)
+		pl.prefixLength = &iv
 		return nil
 	}
 	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)
@@ -52,7 +53,7 @@ func unmarshalPrefixLengthParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithPrefixLength); ok {
 		n, err := dynamic.NewNumber(data.UnquotedString())
 		if err != nil {
-			return &json.UnmarshalKindError{Value: data.String(), Kind: typeFloat64}
+			return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
 		}
 		if v, ok := n.Int(); ok {
 			a.SetPrefixLength(v)
