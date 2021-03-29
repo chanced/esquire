@@ -54,6 +54,12 @@ func (s Script) ScriptQuery() (*ScriptQuery, error) {
 		return q, NewQueryError(err, KindScript)
 	}
 	q.SetMinScore(s.MinScore)
+
+	err = q.SetParams(s.Params)
+	if err != nil {
+		return q, NewQueryError(err, KindScript)
+	}
+
 	return q, nil
 }
 
@@ -75,7 +81,29 @@ func (ScriptQuery) Kind() Kind {
 }
 
 func (s ScriptQuery) DecodeParams(val interface{}) error {
+
 	return json.Unmarshal(s.params, val)
+}
+
+func (s ScriptQuery) SetParams(params interface{}) error {
+	if params == nil {
+		s.params = []byte{}
+		return nil
+	}
+	d, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+	data := dynamic.JSON(d)
+	if data.IsNull() {
+		s.params = []byte{}
+		return nil
+	}
+	if !data.IsObject() {
+		return ErrInvalidParams
+	}
+	s.params = data
+	return nil
 }
 
 func (s ScriptQuery) setScript(script string) error {
@@ -94,4 +122,5 @@ func (s ScriptQuery) setQuery(query Query) error {
 		return ErrQueryRequired
 	}
 	s.query = *qv
+	return nil
 }

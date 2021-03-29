@@ -24,6 +24,7 @@ var (
 	ErrInvalidRelation      = errors.New("picker: invalid relation")
 	ErrWeightRequired       = errors.New("picker: weight required")
 	ErrScriptRequired       = errors.New("picker: script is required")
+	ErrInvalidParams        = errors.New("picker: params should marshal into a JSON object")
 )
 
 type QueryError struct {
