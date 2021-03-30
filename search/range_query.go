@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/json"
+	"reflect"
 
 	"github.com/chanced/dynamic"
 )
@@ -22,6 +23,7 @@ type Range struct {
 	Boost                interface{}
 	Name                 string
 	Relation             Relation
+	clause
 }
 
 func (r Range) field() string {
@@ -37,7 +39,7 @@ func (r Range) Range() (*RangeQuery, error) {
 	if err != nil {
 		return q, NewQueryError(err, KindRange, r.Field)
 	}
-	err = q.setGreaterThan(r.GreaterThanOrEqualTo)
+	err = q.setGreaterThanOrEqualTo(r.GreaterThanOrEqualTo)
 	if err != nil {
 		return q, NewQueryError(err, KindRange, r.Field)
 	}
@@ -53,11 +55,11 @@ func (r Range) Range() (*RangeQuery, error) {
 	if err != nil {
 		return q, NewQueryError(err, KindRange, r.Field)
 	}
-	q.SetFormat(r.Format)
 	err = q.SetBoost(r.Boost)
 	if err != nil {
 		return q, NewQueryError(err, KindRange, r.Field)
 	}
+	q.SetFormat(r.Format)
 	q.SetTimeZone(r.TimeZone)
 	return q, nil
 }
@@ -139,27 +141,82 @@ func (r *RangeQuery) setLessThanOrEqualTo(value interface{}) error {
 	}
 	return nil
 }
+func (r *RangeQuery) IsEmpty() bool {
+	return r == nil || !(!r.greaterThan.IsNilOrEmpty() ||
+		!r.greaterThanOrEqualTo.IsNilOrEmpty() ||
+		!r.lessThanOrEqualTo.IsNilOrEmpty() ||
+		!r.lessThan.IsNilOrEmpty())
+}
+func (r RangeQuery) values() map[string]dynamic.StringNumberOrTime {
+	return map[string]dynamic.StringNumberOrTime{
+		"gt":  r.greaterThan,
+		"gte": r.greaterThanOrEqualTo,
+		"lt":  r.lessThanOrEqualTo,
+		"lte": r.lessThanOrEqualTo,
+	}
+}
+func (r RangeQuery) MarshalJSON() ([]byte, error) {
+	if r.IsEmpty() {
+		return dynamic.Null, nil
+	}
+	data, err := r.marshalClauseJSON()
+
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(dynamic.Map{r.field: data})
+}
 
 func (r RangeQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	data, err := marshalParams(&r)
 	if err != nil {
 		return nil, err
 	}
-	if !r.greaterThan.IsNilOrEmpty() {
-		data["gt"] = r.greaterThan
-	}
-	if !r.greaterThanOrEqualTo.IsNilOrEmpty() {
-		data["gte"] = r.greaterThanOrEqualTo
-	}
-	if !r.lessThan.IsNilOrEmpty() {
-		data["lt"] = r.lessThan
-	}
-	if !r.lessThanOrEqualTo.IsNilOrEmpty() {
-		data["lte"] = r.lessThanOrEqualTo
+	for key, value := range r.values() {
+		if !value.IsNilOrEmpty() {
+			data[key] = r.greaterThan
+		}
 	}
 	return json.Marshal(data)
 }
 
+func (r *RangeQuery) UnmarshalJSON(data []byte) error {
+	*r = RangeQuery{}
+	obj := dynamic.JSONObject{}
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		return err
+	}
+	for k, v := range obj {
+		r.field = k
+		return r.unmarshalClauseJSON(v)
+	}
+	return nil
+}
+
+func (r *RangeQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+	fields, err := unmarshalParams(data, r)
+	if err != nil {
+		return err
+	}
+	for k, v := range r.values() {
+		if fd, ok := fields[k]; ok {
+			var val interface{}
+			err := json.Unmarshal(fd, &val)
+			if err != nil {
+				return err
+			}
+			err = v.Set(val)
+			if err != nil {
+				return &json.UnmarshalTypeError{
+					Value: string(fd),
+					Type:  reflect.TypeOf(dynamic.StringNumberOrTime{}),
+				}
+			}
+		}
+	}
+	return nil
+}
 func (r *RangeQuery) Clear() {
 	*r = RangeQuery{}
 }

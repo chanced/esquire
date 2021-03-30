@@ -6,6 +6,10 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type Querier interface {
+	Query() (*QueryValues, error)
+}
+
 type Query struct {
 
 	// Term returns documents that contain an exact term in a provided field.
@@ -82,18 +86,114 @@ type Query struct {
 	// functions, that compute a new score for each document returned by the query.
 	FunctionScore *FunctionScore
 
-	// Script uses a script to provide a custom score for returned documents.
+	// ScoreScript uses a script to provide a custom score for returned documents.
 	//
 	// The script_score query is useful if, for example, a scoring function is
 	// expensive and you only need to calculate the score of a filtered set of
 	// documents.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
-	Script *ScriptScore
+	ScriptScore *ScriptScore
+
+	// Range returns documents that contain terms within a provided range.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html
+	Range *Range
+
+	// MatchAll matches all documents, giving them all a _score of 1.0.
+	MatchAll *MatchAll
+
+	// MatchNone is the inverse of the match_all query, which matches no documents.
+	MatchNone *MatchNone
 }
 
-func newQuery(params Query) (*QueryValues, error) {
-	panic("not impl")
+func (q *Query) termClause() (*TermQuery, error) {
+	if q == nil || q.Term == nil {
+		return nil, nil
+	}
+	return q.Term.Term()
+}
+
+func (q *Query) termsClause() (*TermsQuery, error) {
+	if q == nil || q.Terms == nil {
+		return nil, nil
+	}
+	return q.Terms.Terms()
+}
+
+func (q *Query) rangeClause() (*RangeQuery, error) {
+	if q == nil || q.Range == nil {
+		return nil, nil
+	}
+	return q.Range.Range()
+}
+
+func (q *Query) prefixClause() (*PrefixQuery, error) {
+	if q == nil || q.Prefix == nil {
+		return nil, nil
+	}
+	return q.Prefix.Prefix()
+}
+
+func (q *Query) scriptScoreClause() (*ScriptScoreQuery, error) {
+	if q == nil || q.ScriptScore == nil {
+		return nil, nil
+	}
+	return q.ScriptScore.ScriptScore()
+}
+
+func (q *Query) functionScoreClause() (*FunctionScoreQuery, error) {
+	if q == nil || q.FunctionScore == nil {
+		return nil, nil
+	}
+	return q.FunctionScore.FunctionScore()
+}
+
+func (q *Query) matchAllClause() (*MatchAllClause, error) {
+	if q == nil || q.MatchAll == nil {
+		return nil, nil
+	}
+	return q.MatchAll.MatchAll()
+}
+func (q *Query) matchNoneClause() (*MatchNoneClause, error) {
+	if q == nil || q.MatchNone == nil {
+		return nil, nil
+	}
+	return q.MatchNone.MatchNone()
+}
+
+func (q *Query) Query() (*QueryValues, error) {
+
+	qv := QueryValues{}
+
+	term, err := q.termClause()
+	if err != nil {
+		return nil, err
+	}
+	terms, err := q.termsClause()
+	if err != nil {
+		return nil, err
+	}
+	rng, err := q.rangeClause()
+	if err != nil {
+		return nil, err
+	}
+	prefix, err := q.prefixClause()
+	if err != nil {
+		return nil, err
+	}
+	script, err := q.scriptScoreClause()
+	if err != nil {
+		return nil, err
+	}
+	matchAll, err := q.matchAllClause()
+	if err != nil {
+		return nil, err
+	}
+	matchNone, err := q.matchNoneClause()
+	if err != nil {
+		return nil, err
+	}
 }
 
 // QueryValues defines the search definition using the ElasticSearch QueryValues DSL
@@ -116,37 +216,44 @@ func newQuery(params Query) (*QueryValues, error) {
 // QueryValues clauses behave differently depending on whether they are used in query
 // context or filter context.
 type QueryValues struct {
-	match   MatchQuery
-	script  ScriptQuery
-	exists  ExistsQuery
-	boolean BooleanQuery
-	term    TermQuery
-	terms   TermsQuery
+	match       *MatchQuery
+	scriptScore *ScriptScoreQuery
+	exists      *ExistsQuery
+	boolean     *BooleanQuery
+	term        *TermQuery
+	terms       *TermsQuery
+}
+
+func (q QueryValues) Clauses() []QueryClause {
+	return []QueryClause{
+		q.match,
+		q.scriptScore,
+	}
 }
 
 func (q QueryValues) Match() *MatchQuery {
-	return &q.match
+	return q.match
 }
 func (q *QueryValues) SetMatch(field string, matcher Matcher) error {
 	return q.match.Set(field, matcher)
 }
-func (q QueryValues) Script() *ScriptQuery {
-	return &q.script
+func (q QueryValues) Script() *ScriptScoreQuery {
+	return q.scriptScore
 }
 func (q QueryValues) Exists() *ExistsQuery {
-	return &q.exists
+	return q.exists
 }
 func (q QueryValues) Boolean() *BooleanQuery {
-	return &q.boolean
+	return q.boolean
 }
 func (q QueryValues) Terms() *TermsQuery {
-	return &q.terms
+	return q.terms
 }
 func (q *QueryValues) SetTerms(field string, t Termser) error {
 	return q.terms.Set(field, t)
 }
 func (q QueryValues) Term() *TermQuery {
-	return &q.term
+	return q.term
 }
 func (q *QueryValues) SetTerm(field string, t Termer) error {
 	return q.term.Set(field, t)
@@ -155,27 +262,49 @@ func (q QueryValues) IsEmpty() bool {
 	return !q.match.IsEmpty() || !q.terms.IsEmpty() || !q.term.IsEmpty() || !q.boolean.IsEmpty()
 }
 
+func (q *QueryValues) unmarshalTerm(data dynamic.JSONObject) error {
+	if term, ok := data["term"]; ok {
+		return q.term.UnmarshalJSON(term)
+	}
+	return nil
+}
+
+func (q *QueryValues) unmarshalTerms(data dynamic.JSONObject) error {
+	if terms, ok := data["terms"]; ok {
+		return q.terms.UnmarshalJSON(terms)
+	}
+	return nil
+}
+
+func (q *QueryValues) unmarshalMatch(data dynamic.JSONObject) error {
+	if match, ok := data["match"]; ok {
+		return q.match.UnmarshalJSON(match)
+	}
+	return nil
+}
+
+func (q *QueryValues) unmarshalBool(data dynamic.JSONObject) error {
+	if boolean, ok := data["bool"]; ok {
+		return q.boolean.UnmarshalJSON(boolean)
+	}
+	return nil
+}
+
 func (q *QueryValues) UnmarshalJSON(data []byte) error {
-	m := map[string]json.RawMessage{}
+	m := dynamic.JSONObject{}
 	err := json.Unmarshal(data, &m)
 	if err != nil {
 		return err
 	}
-	if term, ok := m["term"]; ok {
-		err = json.Unmarshal(term, &q.term)
-		if err != nil {
-			return err
-		}
+	funcs := []func(dynamic.JSONObject) error{
+		q.unmarshalBool,
+		q.unmarshalMatch,
+		q.unmarshalTerms,
+		q.unmarshalTerm,
 	}
 
-	if terms, ok := m["terms"]; ok {
-		err = json.Unmarshal(terms, &q.terms)
-		if err != nil {
-			return err
-		}
-	}
-	if match, ok := m["match"]; ok {
-		err = json.Unmarshal(match, &q.match)
+	for _, fn := range funcs {
+		err = fn(m)
 		if err != nil {
 			return err
 		}
@@ -183,32 +312,32 @@ func (q *QueryValues) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (q QueryValues) MarshalJSON() ([]byte, error) {
-	m := map[string]json.RawMessage{}
+func (q QueryValues) marshalTerms() (string, dynamic.JSON, error) {
 	terms, err := q.terms.MarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	if !dynamic.JSON(terms).IsNull() {
-		m["terms"] = json.RawMessage(terms)
-	}
-
+	return "terms", terms, err
+}
+func (q QueryValues) marshalTerm() (string, dynamic.JSON, error) {
 	term, err := q.term.MarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	if !dynamic.JSON(term).IsNull() {
-		m["term"] = json.RawMessage(term)
-	}
+	return "term", term, err
+}
 
-	match, err := q.match.MarshalJSON()
-	if err != nil {
-		return nil, err
+func (q QueryValues) MarshalJSON() ([]byte, error) {
+	funcs := []func() (string, dynamic.JSON, error){
+		q.marshalTerms,
+		q.marshalTerm,
 	}
-	if !dynamic.JSON(match).IsNull() {
-		m["match"] = json.RawMessage(match)
+	obj := dynamic.JSONObject{}
+	for _, fn := range funcs {
+		key, val, err := fn()
+		if err != nil {
+			return nil, err
+		}
+		if len(val) == 0 || val.IsNull() {
+			continue
+		}
+		obj[key] = val
 	}
-	return json.Marshal(m)
+	return json.Marshal(obj)
 }
 
 func checkField(field string, typ Kind) error {

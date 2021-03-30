@@ -53,14 +53,14 @@ func marshalWeightParam(data dynamic.Map, source interface{}) (dynamic.Map, erro
 func unmarshalWeightParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithWeight); ok {
 		if data.IsNumber() {
-			n, err := dynamic.NewNumber(data.String())
+			n, err := dynamic.NewNumber(string(data))
 			if err != nil {
 				return err
 			}
 			f, ok := n.Float()
 			if !ok {
 				return &json.UnmarshalTypeError{
-					Value: data.String(),
+					Value: string(data),
 					Type:  reflect.TypeOf(float64(0)),
 				}
 			}

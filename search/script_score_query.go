@@ -81,8 +81,25 @@ func (ScriptScoreQuery) Kind() Kind {
 }
 
 func (s ScriptScoreQuery) DecodeParams(val interface{}) error {
-
 	return json.Unmarshal(s.params, val)
+}
+
+func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
+	if s.IsEmpty() {
+		return dynamic.Null, nil
+	}
+	data, err := marshalParams(&s)
+	if err != nil {
+		return nil, err
+	}
+	if s.params != nil && len(s.params) > 2 {
+		data["params"] = s.params
+	}
+
+}
+
+func (s *ScriptScoreQuery) IsEmpty() bool {
+	return s == nil || len(s.script) == 0
 }
 
 func (s *ScriptScoreQuery) SetParams(params interface{}) error {

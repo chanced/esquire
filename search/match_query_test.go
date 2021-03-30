@@ -3,8 +3,6 @@ package search_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/chanced/picker/search"
@@ -37,30 +35,25 @@ func TestMatch(t *testing.T) {
 	assert.Equal("this is a test", rq1.Match().Query().String())
 	assert.Equal("message", rq1.Match().Field())
 
-	// {
-	//   "Match()": {
-	//     "message": {
-	//       "query": 34.78,
-	//       "operator": "and",
-	//       "fuzziness": "AUTO",
-	//       "zero_terms_query": "all",
-	//       "cutoff_frequency": 0.001,
-	//       "auto_generate_synonyms_phrase_query": false,
-	//       "minimum_should_match": "75%",
-	//       "fuzzy_transpositions": false,
-	//       "prefix_length": 1,
-	//       "lenient": true,
-	//       "max_expansions": 25,
-	//       "analyzer": "test-analyzer"
-	//     }
-	//   }
-	// }
-
-	j2, err := os.Open("./testdata/match_2.json")
-	assert.NoError(err)
-	defer j2.Close()
-
-	json2, err := ioutil.ReadAll(j2)
+	json2 := []byte(`{
+		"match": {
+		  "message": {
+			"query": 34.78,
+			"operator": "and",
+			"fuzziness": "AUTO",
+			"zero_terms_query": "all",
+			"cutoff_frequency": 0.001,
+			"auto_generate_synonyms_phrase_query": false,
+			"minimum_should_match": "75%",
+			"fuzzy_transpositions": false,
+			"prefix_length": 1,
+			"lenient": true,
+			"max_expansions": 25,
+			"analyzer": "test-analyzer"
+		  }
+		}
+	  }
+	  `)
 	assert.NoError(err)
 	var q2 search.QueryValues
 	err = json.Unmarshal(json2, &q2)

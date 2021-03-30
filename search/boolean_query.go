@@ -1,5 +1,11 @@
 package search
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
 type Booler interface {
 	Boolean() (BooleanQuery, error)
 }
@@ -33,6 +39,7 @@ type Boolean struct {
 	// 0.
 	MinimumShouldMatch string
 	Name               string
+	clause
 }
 
 func (b Boolean) Clause() (Clause, error) {
@@ -74,12 +81,13 @@ func (b Boolean) Kind() Kind {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 type BooleanQuery struct {
-	must    Clauses
-	filter  Clauses
-	should  Clauses
-	mustNot Clauses
+	must    QueryClauses
+	filter  QueryClauses
+	should  QueryClauses
+	mustNot QueryClauses
 	minimumShouldMatchParam
 	nameParam
+	clause
 }
 
 func (b BooleanQuery) Kind() Kind {
@@ -97,100 +105,99 @@ func (b *BooleanQuery) Set(v Booler) error {
 
 // Must clauses (query) must appear in matching documents and will contribute
 // to the score.
-func (b *BooleanQuery) Must() Clauses {
-	return b.must
+func (b *BooleanQuery) Must() *QueryClauses {
+	return &b.must
 }
 
 // MustNot is a set of clauses (query) where each clause must not appear in the
 // matching documents. Clauses are executed in filter context meaning that
 // scoring is ignored and clauses are considered for caching. Because scoring is
 // ignored, a score of 0 for all documents is returned.
-func (b *BooleanQuery) MustNot() Clauses {
-	return b.mustNot
+func (b *BooleanQuery) MustNot() *QueryClauses {
+	return &b.mustNot
 }
 
 // Filter clauses (query) that must appear in matching documents. However unlike
 // must the score of the query will be ignored. Filter clauses are executed in
 // filter context, meaning that scoring is ignored and clauses are considered
 // for caching.
-func (b *BooleanQuery) Filter() Clauses {
-	return b.filter
+func (b *BooleanQuery) Filter() *QueryClauses {
+	return &b.filter
 }
 
 // Should clauses (query) that should appear in the matching document.
-func (b *BooleanQuery) Should() Clauses {
-	return b.should
+func (b *BooleanQuery) Should() *QueryClauses {
+	return &b.should
 }
 
 func (b *BooleanQuery) SetMust(clauses Clauses) error {
-	must, err := unpackClauses(clauses)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
-	}
-	b.must = must
-	return nil
+	return b.must.Set(clauses)
 }
 
 func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
-	mustNot, err := unpackClauses(clauses)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
-	}
-	b.mustNot = mustNot
-	return nil
+	return b.mustNot.Set(clauses)
 }
 
 func (b *BooleanQuery) SetShould(clauses Clauses) error {
-	should, err := unpackClauses(clauses)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
-	}
-	b.should = should
-	return nil
-
+	return b.should.Set(clauses)
 }
 
 func (b *BooleanQuery) SetFilter(clauses Clauses) error {
-	filter, err := unpackClauses(clauses)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
-	}
-	b.filter = filter
-	return nil
-
-}
-func (b *BooleanQuery) AddMust(c Clause) error {
-	err := b.must.Add(c)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
-	}
-	return nil
+	return b.filter.Set(clauses)
 }
 
-func (b *BooleanQuery) AddShould(c Clause) error {
-	err := b.should.Add(c)
+func (b *BooleanQuery) UnmarshalJSON(data []byte) error {
+	*b = BooleanQuery{}
+	obj, err := unmarshalParams(data, b)
 	if err != nil {
-		return NewQueryError(err, KindBoolean)
+		return err
 	}
-	return nil
-}
-
-func (b *BooleanQuery) AddMustNot(c Clause) error {
-	err := b.mustNot.Add(c)
+	err = b.filter.UnmarshalJSON(obj["filter"])
 	if err != nil {
-		return NewQueryError(err, KindBoolean)
+		return err
+	}
+	err = b.should.UnmarshalJSON(obj["should"])
+	if err != nil {
+		return err
+	}
+	err = b.must.UnmarshalJSON(obj["must"])
+	if err != nil {
+		return err
+	}
+	err = b.mustNot.UnmarshalJSON(obj["must_not"])
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-func (b *BooleanQuery) AddFilter(c Clause) error {
-	err := b.filter.Add(c)
-	if err != nil {
-		return NewQueryError(err, KindBoolean)
+func (b BooleanQuery) MarshalJSON() ([]byte, error) {
+	if b.IsEmpty() {
+		return dynamic.Null, nil
 	}
-	return nil
+	data, err := marshalClauseParams(&b)
+	if err != nil {
+		return nil, err
+	}
+	if !b.must.IsEmpty() {
+		data["must"] = b.must
+	}
+	if !b.mustNot.IsEmpty() {
+		data["must_not"] = b.mustNot
+	}
+	if !b.should.IsEmpty() {
+		data["should"] = b.should
+	}
+	if !b.filter.IsEmpty() {
+		data["filter"] = b.filter
+	}
+	return json.Marshal(data)
 }
 
 func (b *BooleanQuery) IsEmpty() bool {
-	return !(len(b.must) > 0 || len(b.mustNot) > 0 || len(b.should) > 0 || len(b.filter) > 0)
+	return b == nil || !(!b.must.IsEmpty() || !b.mustNot.IsEmpty() || !b.should.IsEmpty() || !b.filter.IsEmpty())
+}
+
+func (b *BooleanQuery) Clear() {
+	*b = BooleanQuery{}
 }

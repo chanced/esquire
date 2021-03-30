@@ -28,6 +28,7 @@ type Prefix struct {
 	CaseInsensitive bool
 	// Name of the query (Optional)
 	Name string
+	clause
 }
 
 func (p Prefix) Kind() Kind {
@@ -56,6 +57,7 @@ type PrefixQuery struct {
 	rewriteParam
 	caseInsensitiveParam
 	nameParam
+	clause
 }
 
 func (p PrefixQuery) Value() string {
@@ -93,6 +95,37 @@ func (p PrefixQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	}
 	params["value"] = p.value
 	return json.Marshal(params)
+}
+
+func (p *PrefixQuery) UnmarshalJSON(data []byte) error {
+	*p = PrefixQuery{}
+
+	obj := dynamic.JSONObject{}
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		return err
+	}
+	for k, v := range obj {
+		p.field = k
+		return p.unmarshalClauseJSON(v)
+	}
+	return nil
+}
+
+func (p *PrefixQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+	fields, err := unmarshalParams(data, p)
+	if err != nil {
+		return err
+	}
+	if v, ok := fields["query"]; ok {
+		var s string
+		err := json.Unmarshal(v, &s)
+		if err != nil {
+			return err
+		}
+		p.value = s
+	}
+	return nil
 }
 
 // Set sets the value of PrefixQuery.

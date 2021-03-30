@@ -43,6 +43,7 @@ type Terms struct {
 	Value           []string
 	Boost           interface{}
 	CaseInsensitive bool
+	clause
 }
 
 func (t Terms) Clause() (Clause, error) {
@@ -94,8 +95,8 @@ func (t TermsQuery) Kind() Kind {
 	return KindTerms
 }
 
-func (t TermsQuery) IsEmpty() bool {
-	return (len(t.value) == 0 && t.lookup.IsEmpty())
+func (t *TermsQuery) IsEmpty() bool {
+	return t == nil || len(t.field) == 0 || (len(t.value) == 0 && t.lookup.IsEmpty())
 }
 
 func (t TermsQuery) Value() []string {
@@ -148,10 +149,15 @@ func (t *TermsQuery) unmarshalLookupJSON(data []byte) error {
 }
 func (t *TermsQuery) UnmarshalJSON(data []byte) error {
 	*t = TermsQuery{}
+
 	d := dynamic.JSON(data)
+	if len(data) == 0 || d.IsEmptyObject() {
+		return nil
+	}
 	if d.IsNull() {
 		return nil
 	}
+
 	fields, err := unmarshalParams(data, t)
 	if err != nil {
 		return err
@@ -177,6 +183,7 @@ type TermsQuery struct {
 	boostParam
 	caseInsensitiveParam
 	nameParam
+	clause
 }
 
 func (t TermsQuery) Field() string {
@@ -185,4 +192,7 @@ func (t TermsQuery) Field() string {
 
 func (t TermsQuery) MarshalBSON() ([]byte, error) {
 	return t.MarshalJSON()
+}
+func (t *TermsQuery) Clear() {
+	*t = TermsQuery{}
 }

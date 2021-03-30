@@ -67,7 +67,7 @@ func unmarshalAnalyzerParam(data dynamic.JSON, target interface{}) error {
 			a.SetAnalyzer(str)
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
+		return &json.UnmarshalTypeError{Value: string(data), Type: typeString}
 	}
 	return nil
 }

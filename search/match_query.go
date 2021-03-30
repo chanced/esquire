@@ -82,6 +82,8 @@ type Match struct {
 	// efficiently, without any configuration, provided that the total number of
 	// hits is not tracked.
 	CutoffFrequency dynamic.Number
+
+	clause
 }
 
 func (m Match) name() string {
@@ -141,7 +143,7 @@ func (m Match) Match() (*MatchQuery, error) {
 type MatchQuery struct {
 	field string
 	query dynamic.StringNumberBoolOrTime
-
+	clause
 	nameParam
 	lenientParam
 	operatorParam
@@ -160,8 +162,8 @@ func (m MatchQuery) Field() string {
 	return m.field
 }
 
-func (m MatchQuery) IsEmpty() bool {
-	return len(m.field) == 0 || m.query.IsEmptyString()
+func (m *MatchQuery) IsEmpty() bool {
+	return m == nil || len(m.field) == 0 || m.query.IsEmptyString()
 }
 
 func (m *MatchQuery) Set(field string, match Matcher) error {

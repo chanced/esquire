@@ -19,6 +19,7 @@ type Term struct {
 	Boost           interface{}
 	CaseInsensitive bool
 	Name            string
+	clause
 }
 
 func (t Term) name() string {
@@ -100,10 +101,11 @@ type TermQuery struct {
 	boostParam
 	caseInsensitiveParam
 	nameParam
+	clause
 }
 
-func (t TermQuery) IsEmpty() bool {
-	return len(t.value) == 0 || len(t.field) == 0
+func (t *TermQuery) IsEmpty() bool {
+	return t == nil || len(t.value) == 0 || len(t.field) == 0
 }
 
 func (t TermQuery) Field() string {

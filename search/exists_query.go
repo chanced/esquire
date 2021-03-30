@@ -24,6 +24,8 @@ import (
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
 type Exists struct {
 	Field string
+	Name  string
+	clause
 }
 
 func (e Exists) Clause() (Clause, error) {
@@ -36,6 +38,7 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 	if err != nil {
 		return q, NewQueryError(err, KindExists, e.Field)
 	}
+	q.SetName(e.Name)
 	return q, nil
 }
 
@@ -58,6 +61,7 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 type ExistsQuery struct {
 	field string
 	nameParam
+	clause
 }
 
 var _ QueryClause = (*ExistsQuery)(nil)

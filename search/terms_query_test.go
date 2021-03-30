@@ -54,9 +54,9 @@ func TestTerms(t *testing.T) {
 	err = json.Unmarshal(json2, &q2)
 	assert.NoError(err)
 	lookup := q2.Terms().Lookup()
-	assert.Equal("2", lookup.ID)
-	assert.Equal("my-index-000001", lookup.Index)
-	assert.Equal("color", lookup.Path)
+	assert.Equal("2", lookup.ID())
+	assert.Equal("my-index-000001", lookup.Index())
+	assert.Equal("color", lookup.Path())
 	assert.Equal("color", q2.Terms().Field())
 
 	json2Res, err := json.MarshalIndent(q2.Terms(), "", "  ")
@@ -67,9 +67,9 @@ func TestTerms(t *testing.T) {
 	err = json.Unmarshal(json2Res, &res2)
 	assert.NoError(err)
 	lookup = q2.Terms().Lookup()
-	assert.Equal("2", lookup.ID)
-	assert.Equal("my-index-000001", lookup.Index)
-	assert.Equal("color", lookup.Path)
+	assert.Equal("2", lookup.ID())
+	assert.Equal("my-index-000001", lookup.Index())
+	assert.Equal("color", lookup.Path())
 	assert.Equal("color", q2.Terms().Field())
 
 }

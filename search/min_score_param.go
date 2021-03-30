@@ -34,7 +34,7 @@ func unmarshalMinScoreParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMinScore); ok {
 		n, err := dynamic.NewNumber(data.UnquotedString())
 		if err != nil {
-			return &json.UnmarshalTypeError{Value: data.String(), Type: typeFloat64}
+			return &json.UnmarshalTypeError{Value: string(data), Type: typeFloat64}
 		}
 		if v, ok := n.Float(); ok {
 			a.SetMinScore(v)

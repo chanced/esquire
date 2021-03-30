@@ -15,6 +15,7 @@ const (
 	KindPrefix         Kind = "prefix"
 	KindMatch          Kind = "match"
 	KindMatchAll       Kind = "match_all"
+	KindMatchNone      Kind = "match_none"
 	KindTerm           Kind = "term"
 	KindExists         Kind = "exists"
 	KindTerms          Kind = "terms"
@@ -36,4 +37,5 @@ var clauseHandlers = map[Kind]func() QueryClause{
 	KindTerms:   func() QueryClause { return &TermsQuery{} },
 	KindBoolean: func() QueryClause { return &BooleanQuery{} },
 	KindExists:  func() QueryClause { return &ExistsQuery{} },
+	KindRange:   func() QueryClause { return &RangeQuery{} },
 }

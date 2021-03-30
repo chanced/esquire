@@ -125,7 +125,7 @@ func unmarshalFuzzyRewriteParam(data dynamic.JSON, target interface{}) error {
 		if data.IsNull() {
 			return nil
 		}
-		return &json.UnmarshalTypeError{Value: data.String(), Type: typeString}
+		return &json.UnmarshalTypeError{Value: string(data), Type: typeString}
 	}
 	return nil
 }
