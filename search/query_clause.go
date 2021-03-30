@@ -295,3 +295,22 @@ func unpackClause(clause CompleteClause) (QueryClause, error) {
 
 	return nil, errors.New("invalid query")
 }
+
+func unmarshalQueryClause(data []byte) (QueryClause, error) {
+	var v map[Kind]dynamic.JSON
+	err := json.Unmarshal(data, &v)
+	if err != nil {
+		return nil, err
+	}
+
+	for kind, cd := range v {
+		handler := clauseHandlers[kind]
+		if handler == nil {
+			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedKind, kind)
+		}
+		c := handler()
+		err = c.UnmarshalJSON(cd)
+		return c, err
+	}
+	return nil, nil
+}

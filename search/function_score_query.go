@@ -68,9 +68,9 @@ const (
 )
 
 var scoreFunctionHandlers = map[FunctionKind]func() Function{
-	FuncKindExp:              func() Function { return nil },
-	FuncKindGauss:            func() Function { return nil },
-	FuncKindLinear:           func() Function { return nil },
+	FuncKindExp:              func() Function { return &ExpFunction{} },
+	FuncKindGauss:            func() Function { return &GaussFunction{} },
+	FuncKindLinear:           func() Function { return &LinearFunction{} },
 	FuncKindWeight:           func() Function { return &WeightFunction{} },
 	FuncKindScriptScore:      func() Function { return nil },
 	FuncKindRandomScore:      func() Function { return nil },
@@ -89,7 +89,7 @@ type Funcs []Functioner
 type Function interface {
 	FunctionKind() FunctionKind
 	Weight() float64
-	Filter() Clause
+	Filter() QueryClause
 }
 type Functions []Function
 

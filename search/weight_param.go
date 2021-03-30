@@ -2,7 +2,6 @@ package search
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 
 	"github.com/chanced/dynamic"
@@ -16,14 +15,17 @@ type WithWeight interface {
 }
 
 type weightParam struct {
-	weightValue *float64
+	weight *float64
 }
 
-func (b weightParam) Weight() float64 {
-	if b.weightValue == nil {
+func (b *weightParam) Weight() float64 {
+	if b == nil {
 		return 0
 	}
-	return *b.weightValue
+	if b.weight == nil {
+		return 0
+	}
+	return *b.weight
 }
 
 // SetWeight sets Weight to v
@@ -33,11 +35,9 @@ func (b *weightParam) SetWeight(v interface{}) error {
 		return err
 	}
 	if f, ok := n.Float(); ok {
-		b.weightValue = &f
+		b.weight = &f
 	} else if n.IsNil() {
-		b.weightValue = nil
-	} else {
-		return fmt.Errorf("%w <%s>", ErrWeightRequired, v)
+		b.weight = nil
 	}
 	return nil
 }

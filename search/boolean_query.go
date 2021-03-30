@@ -106,6 +106,9 @@ func (b *BooleanQuery) Set(v Booler) error {
 // Must clauses (query) must appear in matching documents and will contribute
 // to the score.
 func (b *BooleanQuery) Must() *QueryClauses {
+	if b == nil {
+		return nil
+	}
 	return &b.must
 }
 
@@ -114,6 +117,9 @@ func (b *BooleanQuery) Must() *QueryClauses {
 // scoring is ignored and clauses are considered for caching. Because scoring is
 // ignored, a score of 0 for all documents is returned.
 func (b *BooleanQuery) MustNot() *QueryClauses {
+	if b == nil {
+		return nil
+	}
 	return &b.mustNot
 }
 
@@ -122,27 +128,45 @@ func (b *BooleanQuery) MustNot() *QueryClauses {
 // filter context, meaning that scoring is ignored and clauses are considered
 // for caching.
 func (b *BooleanQuery) Filter() *QueryClauses {
+	if b == nil {
+		return nil
+	}
 	return &b.filter
 }
 
 // Should clauses (query) that should appear in the matching document.
 func (b *BooleanQuery) Should() *QueryClauses {
+	if b == nil {
+		return nil
+	}
 	return &b.should
 }
 
 func (b *BooleanQuery) SetMust(clauses Clauses) error {
+	if b == nil {
+		*b = BooleanQuery{}
+	}
 	return b.must.Set(clauses)
 }
 
 func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
+	if b == nil {
+		*b = BooleanQuery{}
+	}
 	return b.mustNot.Set(clauses)
 }
 
 func (b *BooleanQuery) SetShould(clauses Clauses) error {
+	if b == nil {
+		*b = BooleanQuery{}
+	}
 	return b.should.Set(clauses)
 }
 
 func (b *BooleanQuery) SetFilter(clauses Clauses) error {
+	if b == nil {
+		*b = BooleanQuery{}
+	}
 	return b.filter.Set(clauses)
 }
 
