@@ -57,7 +57,7 @@ func (ma *MatchNoneClause) IsEmpty() bool {
 
 func (ma *MatchNoneClause) UnmarshalJSON(data []byte) error {
 	*ma = MatchNoneClause{}
-	_, err := unmarshalParams(data, ma)
+	_, err := unmarshalClauseParams(data, ma)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (ma MatchNoneClause) MarshalJSON() ([]byte, error) {
 	if ma.IsEmpty() {
 		return dynamic.Null, nil
 	}
-	data, err := marshalParams(ma)
+	data, err := marshalClauseParams(ma)
 	if err != nil {
 		return nil, err
 	}

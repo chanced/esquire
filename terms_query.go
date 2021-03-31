@@ -117,7 +117,7 @@ func (t TermsClause) MarshalJSON() ([]byte, error) {
 	if len(t.field) == 0 || t.IsEmpty() {
 		return dynamic.Null, nil
 	}
-	v, err := marshalParams(&t)
+	v, err := marshalClauseParams(&t)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (t *TermsClause) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	fields, err := unmarshalParams(data, t)
+	fields, err := unmarshalClauseParams(data, t)
 	if err != nil {
 		return err
 	}

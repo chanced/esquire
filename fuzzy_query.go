@@ -178,7 +178,7 @@ func (f FuzzyClause) MarshalJSON() ([]byte, error) {
 }
 
 func (f FuzzyClause) marshalClauseJSON() (dynamic.JSON, error) {
-	params, err := marshalParams(&f)
+	params, err := marshalClauseParams(&f)
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func (f *FuzzyClause) UnmarshalJSON(data []byte) error {
 }
 
 func (f *FuzzyClause) unmarshalClauseJSON(data dynamic.JSON) error {
-	fields, err := unmarshalParams(data, f)
+	fields, err := unmarshalClauseParams(data, f)
 	if err != nil {
 		return err
 	}
@@ -215,4 +215,8 @@ func (f *FuzzyClause) unmarshalClauseJSON(data dynamic.JSON) error {
 		f.value = value
 	}
 	return nil
+}
+
+func (f *FuzzyClause) Clear() {
+	*f = FuzzyClause{}
 }

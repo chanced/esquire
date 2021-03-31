@@ -50,7 +50,7 @@ func (ao AllOfClause) MarshalJSON() ([]byte, error) {
 }
 func (ao *AllOfClause) UnmarshalJSON(data []byte) error {
 	*ao = AllOfClause{}
-	_, err := unmarshalParams(data, ao)
+	_, err := unmarshalClauseParams(data, ao)
 	if err != nil {
 		return err
 	}

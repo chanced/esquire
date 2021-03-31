@@ -89,7 +89,7 @@ func (p PrefixClause) MarshalJSON() ([]byte, error) {
 }
 
 func (p PrefixClause) marshalClauseJSON() (dynamic.JSON, error) {
-	params, err := marshalParams(&p)
+	params, err := marshalClauseParams(&p)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (p *PrefixClause) UnmarshalJSON(data []byte) error {
 }
 
 func (p *PrefixClause) unmarshalClauseJSON(data dynamic.JSON) error {
-	fields, err := unmarshalParams(data, p)
+	fields, err := unmarshalClauseParams(data, p)
 	if err != nil {
 		return err
 	}

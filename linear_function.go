@@ -213,7 +213,6 @@ func (l *LinearFunction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	unmarshalers := []func(data dynamic.JSONObject) error{
-		l.unmarshalField,
 		l.unmarsahlOffset,
 		l.unmarshalDecay,
 		l.unmarshalScale,
@@ -244,7 +243,6 @@ func (l LinearFunction) MarshalJSON() ([]byte, error) {
 		return dynamic.Null, nil
 	}
 	marshalers := []func() (string, dynamic.JSON, error){
-		l.marshalField,
 		l.marshalDecay,
 		l.marshalOffset,
 		l.marshalScale,

@@ -172,7 +172,7 @@ func (b *BooleanClause) SetFilter(clauses Clauses) error {
 
 func (b *BooleanClause) UnmarshalJSON(data []byte) error {
 	*b = BooleanClause{}
-	obj, err := unmarshalParams(data, b)
+	obj, err := unmarshalClauseParams(data, b)
 	if err != nil {
 		return err
 	}

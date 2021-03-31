@@ -213,7 +213,6 @@ func (e *ExpFunction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	unmarshalers := []func(data dynamic.JSONObject) error{
-		e.unmarshalField,
 		e.unmarsahlOffset,
 		e.unmarshalDecay,
 		e.unmarshalScale,
@@ -244,7 +243,6 @@ func (e ExpFunction) MarshalJSON() ([]byte, error) {
 		return dynamic.Null, nil
 	}
 	marshalers := []func() (string, dynamic.JSON, error){
-		e.marshalField,
 		e.marshalDecay,
 		e.marshalOffset,
 		e.marshalScale,
@@ -264,7 +262,8 @@ func (e ExpFunction) MarshalJSON() ([]byte, error) {
 		}
 		obj[param] = data
 	}
-	return json.Marshal(obj)
+	mv := map[string]dynamic.JSONObject{e.field: obj}
+	return json.Marshal(mv)
 }
 func (e ExpFunction) marshalOrigin() (string, dynamic.JSON, error) {
 	data, err := json.Marshal(e.origin)

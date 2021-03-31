@@ -68,9 +68,7 @@ var queryParamUnmarshalers = map[string]func(data dynamic.JSON, target interface
 }
 
 func unmarshalClauseParam(param string, data dynamic.JSON, target interface{}) (bool, error) {
-
 	if unmarshal, ok := queryParamUnmarshalers[param]; ok {
-
 		if data.IsNull() {
 			return true, nil
 		}

@@ -173,7 +173,7 @@ func (t *TermClause) Clear() {
 
 func (t TermClause) marshalClauseJSON() (dynamic.JSON, error) {
 
-	params, err := marshalParams(&t)
+	params, err := marshalClauseParams(&t)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +192,7 @@ func (t *TermClause) unmarshalJSONString(data []byte) error {
 }
 
 func (t *TermClause) unmarshalJSONObject(data []byte) error {
-	fields, err := unmarshalParams(data, t)
+	fields, err := unmarshalClauseParams(data, t)
 	if err != nil {
 		return err
 	}

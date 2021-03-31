@@ -213,7 +213,7 @@ func (g *GaussFunction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	unmarshalers := []func(data dynamic.JSONObject) error{
-		g.unmarshalField,
+
 		g.unmarsahlOffset,
 		g.unmarshalDecay,
 		g.unmarshalScale,
@@ -244,7 +244,6 @@ func (g GaussFunction) MarshalJSON() ([]byte, error) {
 		return dynamic.Null, nil
 	}
 	marshalers := []func() (string, dynamic.JSON, error){
-		g.marshalField,
 		g.marshalDecay,
 		g.marshalOffset,
 		g.marshalScale,
@@ -264,7 +263,9 @@ func (g GaussFunction) MarshalJSON() ([]byte, error) {
 		}
 		obj[param] = data
 	}
-	return json.Marshal(obj)
+	mv := map[string]dynamic.JSONObject{g.field: obj}
+	return json.Marshal(mv)
+
 }
 func (g GaussFunction) marshalOrigin() (string, dynamic.JSON, error) {
 	data, err := json.Marshal(g.origin)

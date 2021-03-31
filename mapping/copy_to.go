@@ -1,12 +1,12 @@
 package mapping
 
-// FieldWithCopyTo is a Field mapping with a CopyTo param
+// WithCopyTo is a Field mapping with a CopyTo param
 //
 // The copy_to parameter allows you to copy the values of multiple fields into
 // a group field, which can then be queried as a single field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/copy-to.html
-type FieldWithCopyTo interface {
+type WithCopyTo interface {
 	CopyTo() string
 	SetCopyTo(v string)
 }

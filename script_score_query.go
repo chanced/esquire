@@ -96,7 +96,7 @@ func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
 	}
-	data, err := marshalParams(&s)
+	data, err := marshalClauseParams(&s)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 
 func (s *ScriptScoreClause) UnmarshalJSON(data []byte) error {
 	s = &ScriptScoreClause{}
-	params, err := unmarshalParams(data, s)
+	params, err := unmarshalClauseParams(data, s)
 	if err != nil {
 		return err
 	}

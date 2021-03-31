@@ -168,7 +168,7 @@ func (r RangeClause) MarshalJSON() ([]byte, error) {
 }
 
 func (r RangeClause) marshalClauseJSON() (dynamic.JSON, error) {
-	data, err := marshalParams(&r)
+	data, err := marshalClauseParams(&r)
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +195,7 @@ func (r *RangeClause) UnmarshalJSON(data []byte) error {
 }
 
 func (r *RangeClause) unmarshalClauseJSON(data dynamic.JSON) error {
-	fields, err := unmarshalParams(data, r)
+	fields, err := unmarshalClauseParams(data, r)
 	if err != nil {
 		return err
 	}

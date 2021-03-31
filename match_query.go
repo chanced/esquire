@@ -199,7 +199,7 @@ func (m MatchClause) MarshalJSON() ([]byte, error) {
 }
 
 func (m MatchClause) marshalClauseJSON() (dynamic.JSON, error) {
-	params, err := marshalParams(&m)
+	params, err := marshalClauseParams(&m)
 	if err != nil {
 		return nil, err
 	}
@@ -223,7 +223,7 @@ func (m *MatchClause) UnmarshalJSON(data []byte) error {
 }
 
 func (m *MatchClause) unmarshalClauseJSON(data dynamic.JSON) error {
-	fields, err := unmarshalParams(data, m)
+	fields, err := unmarshalClauseParams(data, m)
 	if err != nil {
 		return err
 	}

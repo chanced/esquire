@@ -1,6 +1,12 @@
 package picker
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/chanced/dynamic"
+)
 
 const (
 	// ScoreExp is an exponential decay function
@@ -64,6 +70,18 @@ var scoreFunctionHandlers = map[FuncKind]func() Function{
 //  -
 type Funcs []Functioner
 
+func (f Funcs) functions() (Functions, error) {
+	res := make(Functions, len(f))
+	for i, v := range f {
+		fv, err := v.Function()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = fv
+	}
+	return res, nil
+}
+
 type Function interface {
 	FuncKind() FuncKind
 	Weight() float64
@@ -81,4 +99,58 @@ type FuncKind string
 
 func (f FuncKind) String() string {
 	return string(f)
+}
+func unmarshalFunctions(data dynamic.JSON) (Functions, error) {
+	var fds []dynamic.JSON
+	if data.IsNull() || len(data) == 0 {
+		return nil, nil
+	}
+	if !data.IsArray() {
+		fds = []dynamic.JSON{data}
+	} else {
+		err := json.Unmarshal(data, &fds)
+		if err != nil {
+			return nil, err
+		}
+	}
+	res := make(Functions, len(fds))
+	for i, fd := range fds {
+		f, err := unmarshalFunction(fd)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = f
+	}
+	return res, nil
+}
+
+func unmarshalFunction(data dynamic.JSON) (Function, error) {
+	var params dynamic.JSONObject
+	err := json.Unmarshal(data, &params)
+	if err != nil {
+		return nil, err
+	}
+
+	handlers := map[FuncKind]func() Function{}
+	for k := range params {
+		fk := FuncKind(strings.ToLower(k))
+		if handler, ok := scoreFunctionHandlers[fk]; ok {
+			handlers[fk] = handler
+		}
+	}
+	if len(handlers) > 1 {
+		for k, handler := range handlers {
+			if k != FuncKindWeight {
+				f := handler()
+				err := f.UnmarshalJSON(data)
+				return f, err
+			}
+		}
+	}
+	for _, handler := range handlers {
+		f := handler()
+		err := f.UnmarshalJSON(data)
+		return f, err
+	}
+	return nil, fmt.Errorf("unknown function %s", data)
 }

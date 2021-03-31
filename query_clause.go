@@ -53,7 +53,7 @@ type Clauser interface {
 //     return nil
 // }
 
-func unmarshalParams(data []byte, target Clause) (map[string]dynamic.JSON, error) {
+func unmarshalClauseParams(data []byte, target QueryClause) (map[string]dynamic.JSON, error) {
 	var raw map[string]dynamic.JSON
 	err := json.Unmarshal(data, &raw)
 	if err != nil {
@@ -61,7 +61,7 @@ func unmarshalParams(data []byte, target Clause) (map[string]dynamic.JSON, error
 	}
 	res := map[string]dynamic.JSON{}
 	for key, value := range raw {
-		isParam, err := unmarshalParam(key, value, target)
+		isParam, err := unmarshalClauseParam(key, value, target)
 		if err != nil {
 			return nil, err
 		}
