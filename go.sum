@@ -20,6 +20,8 @@ github.com/chanced/dynamic v0.0.0-20210330053139-9b3b9e7d8722 h1:2T9/7YR+UOIhRSK
 github.com/chanced/dynamic v0.0.0-20210330053139-9b3b9e7d8722/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/chanced/dynamic v0.0.0-20210330210053-c0645b92d107 h1:CscMcCv5BlHdkBpne1i4qeLug3DFGq+BBG8YKzxPPoo=
 github.com/chanced/dynamic v0.0.0-20210330210053-c0645b92d107/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210331171527-d8e9f791257d h1:A1HvIY7qlP5XBFMnpVcRmu8Qyn2aeZVCXNPxx3TIWEg=
+github.com/chanced/dynamic v0.0.0-20210331171527-d8e9f791257d/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/paulmach/go.geojson v1.4.0 h1:5x5moCkCtDo5x8af62P9IOAYGQcYHtxz2QJ3x1DoCgY=

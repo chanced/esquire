@@ -1,6 +1,7 @@
 package picker
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/chanced/dynamic"
@@ -78,11 +79,11 @@ func unmarshalMaxExpansionsParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalMaxExpansionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalMaxExpansionsParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithMaxExpansions); ok {
 		if b.MaxExpansions() != DefaultMaxExpansions {
-			data["max_expansions"] = b.MaxExpansions()
+			return json.Marshal(b.MaxExpansions())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

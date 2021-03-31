@@ -45,11 +45,11 @@ func unmarshalMaxBoostParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalMaxBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalMaxBoostParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithMaxBoost); ok {
 		if b.MaxBoost() != DefaultMaxBoost {
-			data["max_boost"] = b.MaxBoost()
+			return json.Marshal(b.MaxBoost())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

@@ -60,11 +60,11 @@ func unmarshalLenientParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalLenientParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalLenientParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithLenient); ok {
 		if b.Lenient() {
-			data["lenient"] = b.Lenient()
+			return json.Marshal(b.Lenient())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

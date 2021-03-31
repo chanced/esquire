@@ -62,11 +62,11 @@ func unmarshalPrefixLengthParam(data dynamic.JSON, target interface{}) error {
 	return nil
 }
 
-func marshalPrefixLengthParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalPrefixLengthParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithPrefixLength); ok {
 		if b.PrefixLength() != DefaultPrefixLength {
-			data["prefix_length"] = b.PrefixLength()
+			return json.Marshal(b.PrefixLength())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

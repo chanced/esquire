@@ -77,13 +77,13 @@ func (sm *scoreModeParam) ScoreMode() ScoreMode {
 	return sm.scoreMode
 }
 
-func marshalScoreModeParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalScoreModeParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithScoreMode); ok {
 		if b.ScoreMode() != DefaultScoreMode {
-			data["score_mode"] = b.ScoreMode()
+			return json.Marshal(b.ScoreMode().String())
 		}
 	}
-	return data, nil
+	return nil, nil
 }
 
 func unmarshalScoreModeParam(data dynamic.JSON, target interface{}) error {

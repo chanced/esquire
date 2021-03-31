@@ -137,9 +137,12 @@ func (e *ExpFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalDecay(data dynamic.JSONObject) error {
+func (e *ExpFunction) unmarshalDecay(data []byte) error {
 	n := dynamic.Number{}
-	err := n.UnmarshalJSON(data["decay"])
+	if len(data) == 0 {
+		return nil
+	}
+	err := n.UnmarshalJSON(data)
 	if err != nil {
 		return err
 	}
@@ -147,9 +150,12 @@ func (e *ExpFunction) unmarshalDecay(data dynamic.JSONObject) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalOffset(data dynamic.JSONObject) error {
+func (e *ExpFunction) unmarshalOffset(data []byte) error {
 	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
+	if len(data) == 0 {
+		return nil
+	}
+	err := offset.UnmarshalJSON(data)
 	if err != nil {
 		return err
 	}
@@ -157,9 +163,13 @@ func (e *ExpFunction) unmarshalOffset(data dynamic.JSONObject) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalScale(data dynamic.JSONObject) error {
+func (e *ExpFunction) unmarshalScale(data []byte) error {
+
 	scale := dynamic.StringOrNumber{}
-	err := scale.UnmarshalJSON(data["scale"])
+	if len(data) == 0 {
+		return nil
+	}
+	err := scale.UnmarshalJSON(data)
 	if err != nil {
 		return err
 	}
@@ -167,9 +177,12 @@ func (e *ExpFunction) unmarshalScale(data dynamic.JSONObject) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarsahlOffset(data dynamic.JSONObject) error {
+func (e *ExpFunction) unmarsahlOffset(data []byte) error {
 	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
+	if len(data) == 0 {
+		return nil
+	}
+	err := offset.UnmarshalJSON(data)
 	if err != nil {
 		return err
 	}
@@ -177,18 +190,12 @@ func (e *ExpFunction) unmarsahlOffset(data dynamic.JSONObject) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalField(data dynamic.JSONObject) error {
-	var field string
-	err := json.Unmarshal(data["field"], &field)
-	if err != nil {
-		return err
-	}
-	e.field = field
-	return nil
-}
-func (e *ExpFunction) unmarshalWeight(data dynamic.JSONObject) error {
+func (e *ExpFunction) unmarshalWeight(data []byte) error {
 	var weight *float64
-	err := json.Unmarshal(data["weight"], &weight)
+	if len(data) == 0 {
+		return nil
+	}
+	err := json.Unmarshal(data, &weight)
 	if err != nil {
 		return err
 	}
@@ -206,36 +213,7 @@ func (e *ExpFunction) unmarshalFilter(data dynamic.JSONObject) error {
 }
 
 func (e *ExpFunction) UnmarshalJSON(data []byte) error {
-	*e = ExpFunction{}
-	var fn dynamic.JSONObject
-	err := json.Unmarshal(data, &fn)
-	if err != nil {
-		return err
-	}
-	unmarshalers := []func(data dynamic.JSONObject) error{
-		e.unmarsahlOffset,
-		e.unmarshalDecay,
-		e.unmarshalScale,
-		e.unmarshalWeight,
-		e.unmarshalFilter,
-	}
-	for field, d := range fn {
-		var params dynamic.JSONObject
-		err := json.Unmarshal(d, &params)
-		if err != nil {
-			return err
-		}
 
-		e.field = field
-		for _, unmarshaler := range unmarshalers {
-			err = unmarshaler(params)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-	return nil
 }
 
 func (e ExpFunction) MarshalJSON() ([]byte, error) {

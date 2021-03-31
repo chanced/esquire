@@ -80,13 +80,13 @@ func (b *boostParam) SetBoost(v interface{}) error {
 	return nil
 }
 
-func marshalBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalBoostParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithBoost); ok {
 		if b.Boost() != DefaultBoost {
-			data["boost"] = b.Boost()
+			return json.Marshal(b.Boost())
 		}
 	}
-	return data, nil
+	return []byte{}, nil
 }
 func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithBoost); ok {

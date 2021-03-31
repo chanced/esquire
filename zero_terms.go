@@ -94,11 +94,11 @@ func unmarshalZeroTermsQueryParam(value dynamic.JSON, target interface{}) error 
 	}
 	return nil
 }
-func marshalZeroTermsQueryParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalZeroTermsQueryParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithZeroTermsQuery); ok {
 		if b.ZeroTermsQuery() != DefaultZeroTermsQuery && b.ZeroTermsQuery() != "" {
-			data["zero_terms_query"] = b.ZeroTermsQuery()
+			return json.Marshal(b.ZeroTermsQuery().String())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

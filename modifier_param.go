@@ -99,13 +99,13 @@ func (m *modifierParam) Modifier() Modifier {
 	return m.modifier
 }
 
-func marshalModifierParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalModifierParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithModifier); ok {
 		if b.Modifier() != DefaultModifier {
-			data["modifier"] = b.Modifier()
+			return json.Marshal(b.Modifier())
 		}
 	}
-	return data, nil
+	return nil, nil
 }
 func unmarshalModifierParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithModifier); ok {

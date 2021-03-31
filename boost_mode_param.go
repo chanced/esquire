@@ -78,13 +78,13 @@ func (bm *boostModeParam) BoostMode() BoostMode {
 	return bm.boostMode
 }
 
-func marshalBoostModeParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalBoostModeParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithBoostMode); ok {
 		if b.BoostMode() != DefaultBoostMode {
-			data["boost_mode"] = b.BoostMode()
+			return json.Marshal(b.BoostMode().String())
 		}
 	}
-	return data, nil
+	return nil, nil
 }
 func unmarshalBoostModeParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithBoostMode); ok {

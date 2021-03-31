@@ -1,15 +1,23 @@
 package picker
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/chanced/dynamic"
 )
+
+// TODO: accept a subset of params so the handler maps aren't needlessly looped through for types that are not applicable
 
 func isKnownParam(v string) bool {
 	_, ok := queryParamMarshalers[v]
 	return ok
 }
 
-var queryParamMarshalers = map[string]func(data dynamic.Map, source interface{}) (dynamic.Map, error){
+type paramMarshaler func(source interface{}) (dynamic.JSON, error)
+type paramMarshalers map[string]paramMarshaler
+
+var queryParamMarshalers = paramMarshalers{
 	"boost":                               marshalBoostParam,
 	"analyzer":                            marshalAnalyzerParam,
 	"format":                              marshalFormatParam,
@@ -38,7 +46,10 @@ var queryParamMarshalers = map[string]func(data dynamic.Map, source interface{})
 	"modifier":                            marshalModifierParam,
 }
 
-var queryParamUnmarshalers = map[string]func(data dynamic.JSON, target interface{}) error{
+type paramUnmarshaler func(data dynamic.JSON, target interface{}) error
+type paramUnmarshalers map[string]paramUnmarshaler
+
+var queryParamUnmarshalers = paramUnmarshalers{
 	"boost":                               unmarshalBoostParam,
 	"analyzer":                            unmarshalAnalyzerParam,
 	"format":                              unmarshalFormatParam,
@@ -67,8 +78,48 @@ var queryParamUnmarshalers = map[string]func(data dynamic.JSON, target interface
 	"modifier":                            unmarshalModifierParam,
 }
 
-func unmarshalClauseParam(param string, data dynamic.JSON, target interface{}) (bool, error) {
-	if unmarshal, ok := queryParamUnmarshalers[param]; ok {
+func marshalClauseParams(source interface{}) (dynamic.Map, error) {
+	return marshalParams(source, queryParamMarshalers)
+}
+func marshalParams(source interface{}, marshalers paramMarshalers) (dynamic.Map, error) {
+	data := dynamic.Map{}
+	for key, marshal := range marshalers {
+		d, err := marshal(source)
+		if err != nil {
+			return nil, fmt.Errorf("%w for parameter %s", err, key)
+		}
+		if d != nil && !d.IsNull() {
+			if (d.IsString() || d.IsArray() || d.IsObject()) && d.Len() < 3 {
+				continue
+			}
+			data[key] = d
+		}
+	}
+	return data, nil
+}
+
+func unmarshalParams(data []byte, target interface{}, unmarshalers paramUnmarshalers) (dynamic.JSONObject, error) {
+	var raw map[string]dynamic.JSON
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
+		return nil, err
+	}
+	res := map[string]dynamic.JSON{}
+	for key, value := range raw {
+		isParam, err := unmarshalParam(key, value, target, unmarshalers)
+		if err != nil {
+			return nil, err
+		}
+		if !isParam {
+			res[key] = value
+		}
+	}
+	return res, nil
+
+}
+
+func unmarshalParam(param string, data dynamic.JSON, target interface{}, unmarshalers paramUnmarshalers) (bool, error) {
+	if unmarshal, ok := unmarshalers[param]; ok {
 		if data.IsNull() {
 			return true, nil
 		}
@@ -77,14 +128,6 @@ func unmarshalClauseParam(param string, data dynamic.JSON, target interface{}) (
 	return false, nil
 }
 
-func marshalClauseParams(source interface{}) (dynamic.Map, error) {
-	data := dynamic.Map{}
-	var err error
-	for _, marshal := range queryParamMarshalers {
-		data, err = marshal(data, source)
-		if err != nil {
-			return data, err
-		}
-	}
-	return data, err
+func unmarshalClauseParams(data []byte, target QueryClause) (dynamic.JSONObject, error) {
+	return unmarshalParams(data, target, queryParamUnmarshalers)
 }

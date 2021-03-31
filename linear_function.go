@@ -74,9 +74,7 @@ type LinearFunction struct {
 func (LinearFunction) FuncKind() FuncKind {
 	return FuncKindLinear
 }
-func (l LinearFunction) Filter() QueryClause {
-	return l.filter
-}
+
 func (l *LinearFunction) setField(field string) error {
 	if len(field) == 0 {
 		return ErrFieldRequired
@@ -113,7 +111,9 @@ func (l LinearFunction) Origin() interface{} {
 func (l *LinearFunction) Offset() dynamic.StringNumberOrTime {
 	return l.offset
 }
-
+func (l LinearFunction) Filter() QueryClause {
+	return l.filter
+}
 func (l *LinearFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		l.filter = nil
@@ -134,74 +134,6 @@ func (l *LinearFunction) SetOrigin(origin interface{}) error {
 		return ErrOriginRequired
 	}
 	l.origin = origin
-	return nil
-}
-
-func (l *LinearFunction) unmarshalDecay(data dynamic.JSONObject) error {
-	n := dynamic.Number{}
-	err := n.UnmarshalJSON(data["decay"])
-	if err != nil {
-		return err
-	}
-	l.decay = n
-	return nil
-}
-
-func (l *LinearFunction) unmarshalOffset(data dynamic.JSONObject) error {
-	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
-	if err != nil {
-		return err
-	}
-	l.offset = offset
-	return nil
-}
-
-func (l *LinearFunction) unmarshalScale(data dynamic.JSONObject) error {
-	scale := dynamic.StringOrNumber{}
-	err := scale.UnmarshalJSON(data["scale"])
-	if err != nil {
-		return err
-	}
-	l.scale = scale
-	return nil
-}
-
-func (l *LinearFunction) unmarsahlOffset(data dynamic.JSONObject) error {
-	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
-	if err != nil {
-		return err
-	}
-	l.offset = offset
-	return nil
-}
-
-func (l *LinearFunction) unmarshalField(data dynamic.JSONObject) error {
-	var field string
-	err := json.Unmarshal(data["field"], &field)
-	if err != nil {
-		return err
-	}
-	l.field = field
-	return nil
-}
-func (l *LinearFunction) unmarshalWeight(data dynamic.JSONObject) error {
-	var weight *float64
-	err := json.Unmarshal(data["weight"], &weight)
-	if err != nil {
-		return err
-	}
-	l.weight = weight
-	return nil
-}
-
-func (l *LinearFunction) unmarshalFilter(data dynamic.JSONObject) error {
-	filter, err := unmarshalQueryClause(data["filter"])
-	if err != nil {
-		return err
-	}
-	l.filter = filter
 	return nil
 }
 
@@ -263,49 +195,4 @@ func (l LinearFunction) MarshalJSON() ([]byte, error) {
 		obj[param] = data
 	}
 	return json.Marshal(obj)
-}
-func (l LinearFunction) marshalOrigin() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(l.origin)
-	return "origin", data, err
-}
-
-func (l LinearFunction) marshalFilter() (string, dynamic.JSON, error) {
-	if l.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := l.filter.MarshalJSON()
-	return "filter", data, err
-}
-
-func (l LinearFunction) marshalWeight() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(l.weight)
-	return "weight", data, err
-}
-
-func (l LinearFunction) marshalDecay() (string, dynamic.JSON, error) {
-	data, err := l.decay.MarshalJSON()
-	return "decay", data, err
-}
-
-func (l LinearFunction) marshalOffset() (string, dynamic.JSON, error) {
-	data, err := l.offset.MarshalJSON()
-	return "offset", data, err
-}
-
-func (l LinearFunction) marshalField() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(l.field)
-	return "field", data, err
-}
-
-func (l *LinearFunction) marshalScale() (string, dynamic.JSON, error) {
-	data, err := l.scale.MarshalJSON()
-	return "scale", data, err
-}
-
-func (l *LinearFunction) marsahlFilter() (string, dynamic.JSON, error) {
-	if l.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := l.filter.MarshalJSON()
-	return "filter", data, err
 }

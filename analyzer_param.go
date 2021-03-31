@@ -45,13 +45,13 @@ func (a *analyzerParam) SetAnalyzer(v string) {
 	}
 }
 
-func marshalAnalyzerParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalAnalyzerParam(source interface{}) (dynamic.JSON, error) {
 	if a, ok := source.(WithAnalyzer); ok {
 		if a.Analyzer() != DefaultAnalyzer {
-			data["analyzer"] = a.Analyzer()
+			return json.Marshal(a.Analyzer())
 		}
 	}
-	return data, nil
+	return nil, nil
 }
 func unmarshalAnalyzerParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithAnalyzer); ok {

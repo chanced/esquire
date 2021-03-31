@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -80,11 +82,11 @@ func unmarshalMinimumShouldMatchParam(data dynamic.JSON, target interface{}) err
 	}
 	return nil
 }
-func marshalMinimumShouldMatchParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalMinimumShouldMatchParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithMinimumShouldMatch); ok {
 		if b.MinimumShouldMatch() != "" {
-			data["minimum_should_match"] = b.MinimumShouldMatch()
+			return json.Marshal(b.MinimumShouldMatch())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

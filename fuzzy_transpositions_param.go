@@ -75,11 +75,11 @@ func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) er
 	}
 	return nil
 }
-func marshalFuzzyTranspositionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalFuzzyTranspositionsParam(source interface{}) (dynamic.JSON, error) {
 	if a, ok := source.(WithFuzzyTranspositions); ok {
 		if !a.FuzzyTranspositions() {
-			data["fuzzy_transpositions"] = a.FuzzyTranspositions()
+			return json.Marshal(a.FuzzyTranspositions())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

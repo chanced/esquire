@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -47,11 +49,11 @@ func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error 
 	}
 	return nil
 }
-func marshalTranspositionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalTranspositionsParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithTranspositions); ok {
 		if !b.Transpositions() {
-			data["transpositions"] = b.Transpositions()
+			return json.Marshal(b.Transpositions())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

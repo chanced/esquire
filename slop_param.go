@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -38,11 +40,11 @@ func unmarshalSlopParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalSlopParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalSlopParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithSlop); ok {
 		if b.Slop() != DefaultSlop {
-			data["slop"] = b.Slop()
+			return json.Marshal(b.Slop())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

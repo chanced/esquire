@@ -41,11 +41,11 @@ func unmarshalTimeZoneParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalTimeZoneParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalTimeZoneParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithTimeZone); ok {
-		if b.TimeZone() != "" {
-			data["time_zone"] = b.TimeZone()
+		if len(b.TimeZone()) > 0 {
+			return json.Marshal(b.TimeZone())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

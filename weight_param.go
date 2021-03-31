@@ -2,7 +2,6 @@ package picker
 
 import (
 	"encoding/json"
-	"reflect"
 
 	"github.com/chanced/dynamic"
 )
@@ -42,53 +41,22 @@ func (b *weightParam) SetWeight(v interface{}) error {
 	return nil
 }
 
-func marshalWeightParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalWeightParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithWeight); ok {
 		if b.Weight() != DefaultWeight {
-			data["weight"] = b.Weight()
+			return json.Marshal(b.Weight())
 		}
 	}
-	return data, nil
+	return nil, nil
 }
 func unmarshalWeightParam(data dynamic.JSON, target interface{}) error {
 	if r, ok := target.(WithWeight); ok {
-		if data.IsNumber() {
-			n, err := dynamic.NewNumber(string(data))
-			if err != nil {
-				return err
-			}
-			f, ok := n.Float()
-			if !ok {
-				return &json.UnmarshalTypeError{
-					Value: string(data),
-					Type:  reflect.TypeOf(float64(0)),
-				}
-			}
-			r.SetWeight(f)
-			return nil
+		var n dynamic.Number
+		err := json.Unmarshal(data, &n)
+		if err != nil {
+			return err
 		}
-		if data.IsNull() {
-			return nil
-		}
-		if data.IsString() {
-			if len(data.UnquotedString()) == 0 {
-				return nil
-			}
-			var str string
-			err := json.Unmarshal(data, &str)
-			if err != nil {
-				return err
-			}
-			n, err := dynamic.NewNumber(str)
-			if err != nil {
-				return err
-			}
-			f, ok := n.Float()
-			if ok {
-				r.SetWeight(f)
-			}
-			return nil
-		}
+		r.SetWeight(n.Value())
 	}
 	return nil
 }

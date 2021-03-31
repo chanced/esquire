@@ -43,11 +43,11 @@ func unmarshalMinScoreParam(data dynamic.JSON, target interface{}) error {
 	return nil
 }
 
-func marshalMinScoreParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalMinScoreParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithMinScore); ok {
 		if b.MinScore() != DefaultMinScore {
-			data["min_score"] = b.MinScore()
+			return json.Marshal(b.MinScore())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

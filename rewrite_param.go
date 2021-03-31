@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -10,6 +12,10 @@ const DefaultRewrite = RewriteConstantScore
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-term-rewrite.html
 type Rewrite string
+
+func (r Rewrite) String() string {
+	return string(r)
+}
 
 const (
 	// RewriteKindConstantScore uses the constant_score_boolean method for fewer matching
@@ -125,11 +131,11 @@ func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalRewriteParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalRewriteParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithRewrite); ok {
 		if b.Rewrite() != DefaultRewrite {
-			data["rewrite"] = b.Rewrite()
+			return json.Marshal(b.Rewrite().String())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

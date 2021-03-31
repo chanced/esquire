@@ -75,11 +75,11 @@ func unmarshalOperatorParam(data dynamic.JSON, target interface{}) error {
 	}
 	return nil
 }
-func marshalOperatorParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalOperatorParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithOperator); ok {
 		if b.Operator() != DefaultOperator {
-			data["operator"] = b.Operator()
+			return json.Marshal(b.Operator())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

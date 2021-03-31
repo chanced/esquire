@@ -87,11 +87,11 @@ func unmarshalRelationParam(data dynamic.JSON, target interface{}) error {
 	return nil
 }
 
-func marshalRelationParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalRelationParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithRelation); ok {
 		if b.Relation() != DefaultRelation {
-			data["relation"] = b.Relation()
+			return json.Marshal(b.Relation())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

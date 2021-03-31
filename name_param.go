@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
 
@@ -37,11 +39,11 @@ func unmarshalNameParam(data dynamic.JSON, target interface{}) error {
 	return nil
 }
 
-func marshalNameParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
+func marshalNameParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithName); ok {
-		if b.Name() != DefaultName {
-			data["_name"] = b.Name()
+		if len(b.Name()) > 0 {
+			json.Marshal(b.Name())
 		}
 	}
-	return data, nil
+	return nil, nil
 }

@@ -2,8 +2,6 @@ package picker
 
 import (
 	"encoding/json"
-	"fmt"
-	"strings"
 
 	"github.com/chanced/dynamic"
 )
@@ -53,7 +51,6 @@ var scoreFunctionHandlers = map[FuncKind]func() Function{
 	FuncKindExp:              func() Function { return &ExpFunction{} },
 	FuncKindGauss:            func() Function { return &GaussFunction{} },
 	FuncKindLinear:           func() Function { return &LinearFunction{} },
-	FuncKindWeight:           func() Function { return &WeightFunction{} },
 	FuncKindScriptScore:      func() Function { return &ScriptScoreFunction{} },
 	FuncKindRandomScore:      func() Function { return &RandomScoreFunction{} },
 	FuncKindFieldValueFactor: func() Function { return &FieldValueFactorFunction{} },
@@ -85,11 +82,66 @@ func (f Funcs) functions() (Functions, error) {
 type Function interface {
 	FuncKind() FuncKind
 	Weight() float64
+	SetWeight(interface{}) error
 	Filter() QueryClause
+	SetFilter(CompleteClauser) error
 	json.Marshaler
 	json.Unmarshaler
 }
+
+type DecayFunction interface {
+	Function
+	Field() string
+	Origin() interface{}
+	SetOrigin(interface{}) error
+	Offset() dynamic.StringNumberOrTime
+	SetOffset(interface{}) error
+	Scale() dynamic.StringOrNumber
+	SetScale(interface{}) error
+}
+
+type decayFunction interface {
+	DecayFunction
+	setField(string) error
+}
+
 type Functions []Function
+
+// TODO: This needs refactoring. Funcs are a pain to unmarshal
+func (f *Functions) UnmarshalJSON(raw []byte) error {
+	*f = Functions{}
+	var fds []dynamic.JSON
+	data := dynamic.JSON(raw)
+	if data.IsNull() || len(data) == 0 {
+		return nil
+	}
+	if data.IsNull() {
+		return nil
+	}
+
+	if data.IsArray() {
+		err := json.Unmarshal(data, &fds)
+		if err != nil {
+			return err
+		}
+	} else {
+
+		fds = []dynamic.JSON{data}
+	}
+
+	for i, fd := range fds {
+		fn, err := unmarshalFunction(fd)
+		if err != nil {
+			return err
+		}
+		if fn == nil {
+			continue
+		}
+		(*f)[i] = fn
+	}
+
+	return nil
+}
 
 type Functioner interface {
 	Function() (Function, error)
@@ -100,29 +152,6 @@ type FuncKind string
 func (f FuncKind) String() string {
 	return string(f)
 }
-func unmarshalFunctions(data dynamic.JSON) (Functions, error) {
-	var fds []dynamic.JSON
-	if data.IsNull() || len(data) == 0 {
-		return nil, nil
-	}
-	if !data.IsArray() {
-		fds = []dynamic.JSON{data}
-	} else {
-		err := json.Unmarshal(data, &fds)
-		if err != nil {
-			return nil, err
-		}
-	}
-	res := make(Functions, len(fds))
-	for i, fd := range fds {
-		f, err := unmarshalFunction(fd)
-		if err != nil {
-			return nil, err
-		}
-		res[i] = f
-	}
-	return res, nil
-}
 
 func unmarshalFunction(data dynamic.JSON) (Function, error) {
 	var params dynamic.JSONObject
@@ -131,26 +160,46 @@ func unmarshalFunction(data dynamic.JSON) (Function, error) {
 		return nil, err
 	}
 
-	handlers := map[FuncKind]func() Function{}
+	var handler func() Function
+
 	for k := range params {
-		fk := FuncKind(strings.ToLower(k))
-		if handler, ok := scoreFunctionHandlers[fk]; ok {
-			handlers[fk] = handler
+		fk := FuncKind(k)
+		if h, ok := scoreFunctionHandlers[fk]; ok {
+			handler = h
 		}
 	}
-	if len(handlers) > 1 {
-		for k, handler := range handlers {
-			if k != FuncKindWeight {
-				f := handler()
-				err := f.UnmarshalJSON(data)
-				return f, err
-			}
-		}
+	var fn Function
+	if handler == nil {
+		fn = &WeightFunction{}
+	} else {
+		fn = handler()
 	}
-	for _, handler := range handlers {
-		f := handler()
-		err := f.UnmarshalJSON(data)
-		return f, err
+
+}
+
+func unmarshalDecayFuncParams(data dynamic.JSON, fn decayFunction) error {
+	var obj dynamic.JSONObject
+	if len(data) == 0 {
+		// empty? error?
+		return nil
 	}
-	return nil, fmt.Errorf("unknown function %s", data)
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		return err
+	}
+	fn.unmarshalDecay()
+}
+
+func unmarshalDecayFunc(data dynamic.JSON, fn decayFunction) error {
+	var obj dynamic.JSONObject
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		return err
+	}
+	for field, d := range obj {
+		fn.setField(field)
+		return unmarshalDecayFuncParams(d, fn)
+	}
+	// empty? error?
+	return nil
 }

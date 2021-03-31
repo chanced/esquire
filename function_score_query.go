@@ -1,6 +1,8 @@
 package picker
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // FunctionScoreQuery  allows you to modify the score of documents that are retrieved
 // by a query. This can be useful if, for example, a score function is
@@ -43,7 +45,10 @@ func (fs *FunctionScoreQuery) FunctionScore() (*FunctionScoreClause, error) {
 	}
 	c.SetMinScore(fs.MinScore)
 	c.SetMaxBoost(fs.MaxBoost)
-	c.SetFunctions(fs.Functions)
+	err = c.SetFunctions(fs.Functions)
+	if err != nil {
+		return c, err
+	}
 	err = c.SetBoost(fs.Boost)
 	if err != nil {
 		return c, err
@@ -119,11 +124,10 @@ func (fs *FunctionScoreClause) UnmarshalJSON(data []byte) error {
 	}
 	fd := params["functions"]
 	if len(fd) > 0 {
-		funcs, err := unmarshalFunctions(fd)
+		fs.functions.UnmarshalJSON(fd)
 		if err != nil {
 			return err
 		}
-		fs.functions = funcs
 	}
 	qd := params["query"]
 	if len(qd) > 0 {
