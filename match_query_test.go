@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	search "github.com/chanced/picker"
+	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,7 +19,7 @@ func TestMatch(t *testing.T) {
           }
         }
       }`)
-	var q1 search.QueryValues
+	var q1 picker.QueryValues
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
 	assert.Equal("this is a test", q1.Match().Query().String())
@@ -29,7 +29,7 @@ func TestMatch(t *testing.T) {
 	assert.NoError(err)
 	fmt.Println(string(rjson1))
 
-	var rq1 search.QueryValues
+	var rq1 picker.QueryValues
 	err = json.Unmarshal(rjson1, &rq1)
 	assert.NoError(err)
 	assert.Equal("this is a test", rq1.Match().Query().String())
@@ -55,14 +55,14 @@ func TestMatch(t *testing.T) {
 	  }
 	  `)
 	assert.NoError(err)
-	var q2 search.QueryValues
+	var q2 picker.QueryValues
 	err = json.Unmarshal(json2, &q2)
 	assert.NoError(err)
 
-	assert.Equal(search.OperatorAnd, q2.Match().Operator())
-	assert.Equal(search.And, q2.Match().Operator())
+	assert.Equal(picker.OperatorAnd, q2.Match().Operator())
+	assert.Equal(picker.And, q2.Match().Operator())
 	assert.Equal("AUTO", q2.Match().Fuzziness())
-	assert.Equal(search.ZeroTermsAll, q2.Match().ZeroTermsQuery())
+	assert.Equal(picker.ZeroTermsAll, q2.Match().ZeroTermsQuery())
 	assert.Equal(false, q2.Match().AutoGenerateSynonymsPhraseQuery())
 	cutoff, ok := q2.Match().CutoffFrequency().Float()
 	assert.True(ok, "should have a cutoff")
@@ -77,16 +77,16 @@ func TestMatch(t *testing.T) {
 	assert.NoError(err)
 	fmt.Println(string(rjson2))
 
-	var rq2 search.QueryValues
+	var rq2 picker.QueryValues
 	err = json.Unmarshal(rjson2, &rq2)
 	assert.NoError(err)
 	f, ok := rq2.Match().Query().Float()
 	assert.True(ok, "q2 Match() query should be a float")
 	assert.Equal(float64(34.78), f, "q2 Match() query should be 34.78")
-	assert.Equal(search.OperatorAnd, rq2.Match().Operator())
-	assert.Equal(search.And, rq2.Match().Operator())
+	assert.Equal(picker.OperatorAnd, rq2.Match().Operator())
+	assert.Equal(picker.And, rq2.Match().Operator())
 	assert.Equal("AUTO", rq2.Match().Fuzziness())
-	assert.Equal(search.ZeroTermsAll, rq2.Match().ZeroTermsQuery())
+	assert.Equal(picker.ZeroTermsAll, rq2.Match().ZeroTermsQuery())
 	assert.Equal(false, rq2.Match().AutoGenerateSynonymsPhraseQuery())
 	assert.Equal("75%", rq2.Match().MinimumShouldMatch(), "minimum_should_match should be set")
 	assert.Equal(false, rq2.Match().FuzzyTranspositions(), "fuzzy_transpositions should be set")

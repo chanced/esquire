@@ -60,22 +60,22 @@ type boostModeParam struct {
 }
 
 type WithBoostMode interface {
-	SetBoostMode(sm BoostMode) error
+	SetBoostMode(bm BoostMode) error
 	BoostMode() BoostMode
 }
 
-func (sm *boostModeParam) SetBoostMode(boostMode BoostMode) error {
+func (bm *boostModeParam) SetBoostMode(boostMode BoostMode) error {
 	if !boostMode.IsValid() {
 		return ErrInvalidBoostMode
 	}
-	sm.boostMode = boostMode
+	bm.boostMode = boostMode
 	return nil
 }
-func (sm *boostModeParam) BoostMode() BoostMode {
-	if sm.boostMode == BoostModeUnspecified {
+func (bm *boostModeParam) BoostMode() BoostMode {
+	if bm.boostMode == BoostModeUnspecified {
 		return DefaultBoostMode
 	}
-	return sm.boostMode
+	return bm.boostMode
 }
 
 func marshalBoostModeParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
@@ -88,12 +88,12 @@ func marshalBoostModeParam(data dynamic.Map, source interface{}) (dynamic.Map, e
 }
 func unmarshalBoostModeParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithBoostMode); ok {
-		var sm BoostMode
-		err := json.Unmarshal(data, &sm)
+		var bm BoostMode
+		err := json.Unmarshal(data, &bm)
 		if err != nil {
 			return err
 		}
-		return a.SetBoostMode(sm)
+		return a.SetBoostMode(bm)
 	}
 	return nil
 }

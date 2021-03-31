@@ -80,7 +80,7 @@ type Params struct {
 	// Defaults to true. (Optional)
 	Source *SearchSource
 
-	// Stats groups to associate with the search. Each group maintains a
+	// Stats groups to associate with the picker. Each group maintains a
 	// statistics aggregation for its associated searches. You can retrieve
 	// these stats using the indices stats API (Optional).
 	Stats []string
@@ -595,11 +595,11 @@ func (s Search) Source() *SearchSource {
 // SetSource sets the value of Source
 //
 // The options are:
-//  search.Source, *search.Source,
+//  picker.Source, *picker.Source,
 //  string, []string,
 //  dynamic.StringOrArrayOfStrings, *dynamic.StringOrArrayOfStrings,
-//  search.SourceSpecifications
-//  *search.SourceSpecifications
+//  picker.SourceSpecifications
+//  *picker.SourceSpecifications
 //  bool, *bool
 //  nil
 // Note, "true" || "false" get parsed as boolean
@@ -629,7 +629,7 @@ func (s *Search) SetSource(v interface{}) *Search {
 	return s
 }
 
-// Stats groups to associate with the search. Each group maintains a statistics
+// Stats groups to associate with the picker. Each group maintains a statistics
 // aggregation for its associated searches. You can retrieve these stats using
 // the indices stats API (Optional).
 func (s Search) Stats() []string {

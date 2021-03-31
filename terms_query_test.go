@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/chanced/dynamic"
-	search "github.com/chanced/picker"
+	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,7 +24,7 @@ func TestTerms(t *testing.T) {
         }
       }  
     `)
-	var q1 search.QueryValues
+	var q1 picker.QueryValues
 
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
@@ -35,7 +35,7 @@ func TestTerms(t *testing.T) {
 	json1Res, err := json.MarshalIndent(q1, "", "  ")
 	fmt.Println(string(json1Res))
 	assert.NoError(err)
-	var res1 search.QueryValues
+	var res1 picker.QueryValues
 	err = json.Unmarshal(json1Res, &res1)
 	assert.NoError(err)
 	assert.Equal(float64(1.2), res1.Terms().Boost(), "res1")
@@ -48,7 +48,7 @@ func TestTerms(t *testing.T) {
 	defer j2.Close()
 	json2, err := ioutil.ReadAll(j2)
 	assert.NoError(err)
-	var q2 search.QueryValues
+	var q2 picker.QueryValues
 
 	fmt.Println("json2:\n", string(json2))
 	err = json.Unmarshal(json2, &q2)
@@ -61,7 +61,7 @@ func TestTerms(t *testing.T) {
 
 	json2Res, err := json.MarshalIndent(q2.Terms(), "", "  ")
 	assert.NoError(err)
-	var res2 search.TermsQuery
+	var res2 picker.TermsClause
 
 	fmt.Println(string(json2Res))
 	err = json.Unmarshal(json2Res, &res2)

@@ -42,7 +42,7 @@ func (ao AllOfClause) MarshalJSON() ([]byte, error) {
 	if ao.IsEmpty() {
 		return dynamic.Null, nil
 	}
-	p, err := marshalParams(&ao)
+	p, err := marshalClauseParams(&ao)
 	if err != nil {
 		return nil, err
 	}

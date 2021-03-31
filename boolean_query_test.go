@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	search "github.com/chanced/picker"
+	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 
@@ -28,7 +28,7 @@ func TestBoolean(t *testing.T) {
 		}
 	  }`)
 
-	var q1 search.QueryValues
+	var q1 picker.QueryValues
 
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)

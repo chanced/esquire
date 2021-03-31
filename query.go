@@ -26,14 +26,14 @@ type Query struct {
 	// To search text field values, use the match query instead.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-	Term *Term
+	Term *TermQuery
 
 	// Terms returns documents that contain one or more exact terms in a provided
 	// field.
 	//
 	// The terms query is the same as the term query, except you can search for
 	// multiple values.
-	Terms *Terms
+	Terms Termser
 
 	// Match returns documents that match a provided text, number, date or boolean
 	// value. The provided text is analyzed before matching.
@@ -42,14 +42,14 @@ type Query struct {
 	// including options for fuzzy matching.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-	Match *Match
+	Match *MatchQuery
 
 	// Boolean is a query that matches documents matching boolean combinations
 	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
 	// using one or more boolean clauses, each clause with a typed occurrence.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-	Boolean *BooleanQueryParams
+	Boolean *BooleanQuery
 
 	// Fuzzy returns documents that contain terms similar to the search term,
 	// as measured by a Levenshtein edit distance.
@@ -70,7 +70,7 @@ type Query struct {
 	// distance. The query then returns exact matches for each expansion.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
-	Fuzzy *Fuzzy
+	Fuzzy *FuzzyQuery
 
 	// Prefix returns documents that contain a specific prefix in a provided field.
 	//
@@ -84,7 +84,7 @@ type Query struct {
 	//
 	// To use function_score, the user has to define a query and one or more
 	// functions, that compute a new score for each document returned by the query.
-	FunctionScore *FunctionScoreQueryParams
+	FunctionScore *FunctionScoreQuery
 
 	// ScoreScript uses a script to provide a custom score for returned documents.
 	//
@@ -93,7 +93,7 @@ type Query struct {
 	// documents.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
-	ScriptScore *ScriptScore
+	ScriptScore *ScriptScoreQuery
 
 	// Range returns documents that contain terms within a provided range.
 	//
@@ -125,35 +125,42 @@ type Query struct {
 	Exists *Exists
 }
 
-func (q *Query) termClause() (*TermQuery, error) {
+func (q *Query) fuzzyClause() (*FuzzyClause, error) {
+	if q == nil || q.Fuzzy == nil {
+		return nil, nil
+	}
+	return q.Fuzzy.Fuzzy()
+}
+
+func (q *Query) termClause() (*TermClause, error) {
 	if q == nil || q.Term == nil {
 		return nil, nil
 	}
 	return q.Term.Term()
 }
 
-func (q *Query) termsClause() (*TermsQuery, error) {
+func (q *Query) termsClause() (*TermsClause, error) {
 	if q == nil || q.Terms == nil {
 		return nil, nil
 	}
 	return q.Terms.Terms()
 }
 
-func (q *Query) rangeClause() (*RangeQuery, error) {
+func (q *Query) rangeClause() (*RangeClause, error) {
 	if q == nil || q.Range == nil {
 		return nil, nil
 	}
 	return q.Range.Range()
 }
 
-func (q *Query) prefixClause() (*PrefixQuery, error) {
+func (q *Query) prefixClause() (*PrefixClause, error) {
 	if q == nil || q.Prefix == nil {
 		return nil, nil
 	}
 	return q.Prefix.Prefix()
 }
 
-func (q *Query) matchClause() (*MatchQuery, error) {
+func (q *Query) matchClause() (*MatchClause, error) {
 	if q == nil || q.Match == nil {
 		return nil, nil
 	}
@@ -161,34 +168,34 @@ func (q *Query) matchClause() (*MatchQuery, error) {
 
 }
 
-func (q *Query) scriptScoreClause() (*ScriptScoreQuery, error) {
+func (q *Query) scriptScoreClause() (*ScriptScoreClause, error) {
 	if q == nil || q.ScriptScore == nil {
 		return nil, nil
 	}
 	return q.ScriptScore.ScriptScore()
 }
 
-func (q *Query) functionScoreClause() (*FunctionScoreQuery, error) {
+func (q *Query) functionScoreClause() (*FunctionScoreClause, error) {
 	if q == nil || q.FunctionScore == nil {
 		return nil, nil
 	}
 	return q.FunctionScore.FunctionScore()
 }
 
-func (q *Query) matchAllClause() (*MatchAllQuery, error) {
+func (q *Query) matchAllClause() (*MatchAllClause, error) {
 	if q == nil || q.MatchAll == nil {
 		return nil, nil
 	}
 	return q.MatchAll.MatchAll()
 }
-func (q *Query) matchNoneClause() (*MatchNoneQuery, error) {
+func (q *Query) matchNoneClause() (*MatchNoneClause, error) {
 	if q == nil || q.MatchNone == nil {
 		return nil, nil
 	}
 	return q.MatchNone.MatchNone()
 }
 
-func (q *Query) existsClause() (*ExistsQuery, error) {
+func (q *Query) existsClause() (*ExistsClause, error) {
 	if q == nil || q.Exists == nil {
 		return nil, nil
 	}
@@ -232,21 +239,24 @@ func (q *Query) Query() (*QueryValues, error) {
 	if err != nil {
 		return nil, err
 	}
-	scriptScore, err := q.ScriptScore.ScriptScore()
+	scriptScore, err := q.scriptScoreClause()
 	if err != nil {
 		return nil, err
 	}
+	fuzzy, err := q.fuzzyClause()
+
 	qv := &QueryValues{
-		matchQuery:       match,
-		existsQuery:      exists,
-		scriptScoreQuery: scriptScore,
-		booleanQuery:     boolean,
-		termQuery:        term,
-		termsQuery:       terms,
-		rangeQuery:       rng,
-		prefixQuery:      prefix,
-		matchAllQuery:    matchAll,
-		MatchNoneQuery:   matchNone,
+		matchClause:       match,
+		existsClause:      exists,
+		scriptScoreClause: scriptScore,
+		fuzzyClause:       fuzzy,
+		booleanClause:     boolean,
+		termClause:        term,
+		termsClause:       terms,
+		rangeClause:       rng,
+		prefixClause:      prefix,
+		matchAllClause:    matchAll,
+		matchNoneClause:   matchNone,
 	}
 	return qv, nil
 }
@@ -271,85 +281,83 @@ func (q *Query) Query() (*QueryValues, error) {
 // QueryValues clauses behave differently depending on whether they are used in query
 // context or filter context.
 type QueryValues struct {
-	matchQuery       *MatchQuery
-	scriptScoreQuery *ScriptScoreQuery
-	existsQuery      *ExistsQuery
-	booleanQuery     *BooleanQuery
-	termQuery        *TermQuery
-	termsQuery       *TermsQuery
-	rangeQuery       *RangeQuery
-	prefixQuery      *PrefixQuery
-	matchAllQuery    *MatchAllQuery
-	MatchNoneQuery   *MatchNoneQuery
+	matchClause       *MatchClause
+	scriptScoreClause *ScriptScoreClause
+	existsClause      *ExistsClause
+	booleanClause     *BooleanClause
+	termClause        *TermClause
+	termsClause       *TermsClause
+	rangeClause       *RangeClause
+	prefixClause      *PrefixClause
+	fuzzyClause       *FuzzyClause
+	matchAllClause    *MatchAllClause
+	matchNoneClause   *MatchNoneClause
 }
 
-func (q QueryValues) Clauses() []QueryClause {
-	return []QueryClause{
-		q.matchQuery,
-		q.scriptScoreQuery,
-	}
-}
-
-func (q QueryValues) Match() *MatchQuery {
-	return q.matchQuery
+func (q QueryValues) Match() *MatchClause {
+	return q.matchClause
 }
 func (q *QueryValues) SetMatch(field string, matcher Matcher) error {
-	return q.matchQuery.Set(field, matcher)
+	return q.matchClause.Set(field, matcher)
 }
-func (q QueryValues) Script() *ScriptScoreQuery {
-	return q.scriptScoreQuery
+func (q QueryValues) Script() *ScriptScoreClause {
+	return q.scriptScoreClause
 }
-func (q QueryValues) Exists() *ExistsQuery {
-	return q.existsQuery
+func (q QueryValues) Exists() *ExistsClause {
+	return q.existsClause
 }
-func (q QueryValues) Boolean() *BooleanQuery {
-	return q.booleanQuery
+func (q QueryValues) Boolean() *BooleanClause {
+	return q.booleanClause
 }
-func (q QueryValues) Terms() *TermsQuery {
-	return q.termsQuery
+func (q QueryValues) Terms() *TermsClause {
+	return q.termsClause
 }
 func (q *QueryValues) SetTerms(field string, t Termser) error {
-	return q.termsQuery.Set(field, t)
+	return q.termsClause.Set(field, t)
 }
-func (q QueryValues) Term() *TermQuery {
-	return q.termQuery
+func (q QueryValues) Term() *TermClause {
+	return q.termClause
 }
 func (q *QueryValues) SetTerm(field string, t Termer) error {
-	return q.termQuery.Set(field, t)
+	return q.termClause.Set(field, t)
 }
 func (q QueryValues) IsEmpty() bool {
-	return !q.matchQuery.IsEmpty() || !q.termsQuery.IsEmpty() || !q.termQuery.IsEmpty() || !q.booleanQuery.IsEmpty()
+	return !q.matchClause.IsEmpty() || !q.termsClause.IsEmpty() || !q.termClause.IsEmpty() || !q.booleanClause.IsEmpty()
 }
 
 func (q *QueryValues) unmarshalTerm(data dynamic.JSONObject) error {
 	if term, ok := data["term"]; ok {
-		return q.termQuery.UnmarshalJSON(term)
+		return q.termClause.UnmarshalJSON(term)
 	}
 	return nil
 }
 
 func (q *QueryValues) unmarshalTerms(data dynamic.JSONObject) error {
 	if terms, ok := data["terms"]; ok {
-		return q.termsQuery.UnmarshalJSON(terms)
+		return q.termsClause.UnmarshalJSON(terms)
 	}
 	return nil
 }
 
 func (q *QueryValues) unmarshalMatch(data dynamic.JSONObject) error {
 	if match, ok := data["match"]; ok {
-		return q.matchQuery.UnmarshalJSON(match)
+		return q.matchClause.UnmarshalJSON(match)
 	}
 	return nil
 }
 
 func (q *QueryValues) unmarshalBool(data dynamic.JSONObject) error {
 	if boolean, ok := data["bool"]; ok {
-		return q.booleanQuery.UnmarshalJSON(boolean)
+		return q.booleanClause.UnmarshalJSON(boolean)
 	}
 	return nil
 }
 
 func (q *QueryValues) UnmarshalJSON(data []byte) error {
+	*q = QueryValues{}
+	if len(data) == 0 || dynamic.JSON(data).IsNull() {
+		return nil
+	}
 	m := dynamic.JSONObject{}
 	err := json.Unmarshal(data, &m)
 	if err != nil {
@@ -372,11 +380,11 @@ func (q *QueryValues) UnmarshalJSON(data []byte) error {
 }
 
 func (q QueryValues) marshalTerms() (string, dynamic.JSON, error) {
-	terms, err := q.termsQuery.MarshalJSON()
+	terms, err := q.termsClause.MarshalJSON()
 	return "terms", terms, err
 }
 func (q QueryValues) marshalTerm() (string, dynamic.JSON, error) {
-	term, err := q.termQuery.MarshalJSON()
+	term, err := q.termClause.MarshalJSON()
 	return "term", term, err
 }
 

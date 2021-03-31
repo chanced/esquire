@@ -53,10 +53,6 @@ type Clauser interface {
 //     return nil
 // }
 
-func marshalClauseParams(source Clause) (dynamic.Map, error) {
-	return marshalParams(source)
-}
-
 func unmarshalParams(data []byte, target Clause) (map[string]dynamic.JSON, error) {
 	var raw map[string]dynamic.JSON
 	err := json.Unmarshal(data, &raw)

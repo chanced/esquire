@@ -35,6 +35,7 @@ var queryParamMarshalers = map[string]func(data dynamic.Map, source interface{})
 	"score_mode":                          marshalScoreModeParam,
 	"boost_mode":                          marshalBoostModeParam,
 	"min_score":                           marshalMinScoreParam,
+	"modifier":                            marshalModifierParam,
 }
 
 var queryParamUnmarshalers = map[string]func(data dynamic.JSON, target interface{}) error{
@@ -63,9 +64,10 @@ var queryParamUnmarshalers = map[string]func(data dynamic.JSON, target interface
 	"score_mode":                          unmarshalScoreModeParam,
 	"boost_mode":                          unmarshalBoostModeParam,
 	"min_score":                           unmarshalMinScoreParam,
+	"modifier":                            unmarshalModifierParam,
 }
 
-func unmarshalParam(param string, data dynamic.JSON, target interface{}) (bool, error) {
+func unmarshalClauseParam(param string, data dynamic.JSON, target interface{}) (bool, error) {
 
 	if unmarshal, ok := queryParamUnmarshalers[param]; ok {
 
@@ -77,7 +79,7 @@ func unmarshalParam(param string, data dynamic.JSON, target interface{}) (bool, 
 	return false, nil
 }
 
-func marshalParams(source interface{}) (dynamic.Map, error) {
+func marshalClauseParams(source interface{}) (dynamic.Map, error) {
 	data := dynamic.Map{}
 	var err error
 	for _, marshal := range queryParamMarshalers {

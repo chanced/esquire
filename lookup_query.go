@@ -40,7 +40,7 @@ func (l Lookup) Name() string {
 func (l Lookup) Clause() (Clause, error) {
 	return l.Terms()
 }
-func (l Lookup) Terms() (*TermsQuery, error) {
+func (l Lookup) Terms() (*TermsClause, error) {
 	v := LookupValues{}
 	err := v.SetID(l.ID)
 	if err != nil {
@@ -55,7 +55,7 @@ func (l Lookup) Terms() (*TermsQuery, error) {
 		return nil, err
 	}
 
-	q := &TermsQuery{}
+	q := &TermsClause{}
 
 	err = q.setLookup(v)
 	if err != nil {

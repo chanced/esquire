@@ -8,7 +8,7 @@ import (
 )
 
 type Ranger interface {
-	Range() (*RangeQuery, error)
+	Range() (*RangeClause, error)
 }
 
 // Range returns documents that contain terms within a provided range.
@@ -33,8 +33,8 @@ func (r Range) field() string {
 func (r Range) Clause() (Clause, error) {
 	return r.Range()
 }
-func (r Range) Range() (*RangeQuery, error) {
-	q := &RangeQuery{field: r.Field}
+func (r Range) Range() (*RangeClause, error) {
+	q := &RangeClause{field: r.Field}
 	err := q.setGreaterThan(r.GreaterThan)
 	if err != nil {
 		return q, NewQueryError(err, KindRange, r.Field)
@@ -68,7 +68,7 @@ func (r Range) Kind() Kind {
 	return KindBoolean
 }
 
-type RangeQuery struct {
+type RangeClause struct {
 	field                string
 	greaterThan          dynamic.StringNumberOrTime
 	greaterThanOrEqualTo dynamic.StringNumberOrTime
@@ -81,11 +81,11 @@ type RangeQuery struct {
 	nameParam
 }
 
-func (RangeQuery) Kind() Kind {
+func (RangeClause) Kind() Kind {
 	return KindRange
 }
 
-func (r *RangeQuery) Set(field string, ranger Ranger) error {
+func (r *RangeClause) Set(field string, ranger Ranger) error {
 	q, err := ranger.Range()
 	if err != nil {
 		return NewQueryError(err, KindRange, field)
@@ -94,11 +94,11 @@ func (r *RangeQuery) Set(field string, ranger Ranger) error {
 	return nil
 }
 
-func (r RangeQuery) GreaterThan() dynamic.StringNumberOrTime {
+func (r RangeClause) GreaterThan() dynamic.StringNumberOrTime {
 	return r.greaterThan
 }
 
-func (r *RangeQuery) setGreaterThan(value interface{}) error {
+func (r *RangeClause) setGreaterThan(value interface{}) error {
 	err := r.greaterThan.Set(value)
 	if err != nil {
 		return NewQueryError(err, KindRange, r.field)
@@ -106,22 +106,22 @@ func (r *RangeQuery) setGreaterThan(value interface{}) error {
 	return nil
 }
 
-func (r RangeQuery) GreaterThanOrEqualTo() dynamic.StringNumberOrTime {
+func (r RangeClause) GreaterThanOrEqualTo() dynamic.StringNumberOrTime {
 	return r.greaterThan
 }
 
-func (r *RangeQuery) setGreaterThanOrEqualTo(value interface{}) error {
+func (r *RangeClause) setGreaterThanOrEqualTo(value interface{}) error {
 	err := r.greaterThanOrEqualTo.Set(value)
 	if err != nil {
 		return NewQueryError(err, KindRange, r.field)
 	}
 	return nil
 }
-func (r RangeQuery) LessThan() dynamic.StringNumberOrTime {
+func (r RangeClause) LessThan() dynamic.StringNumberOrTime {
 	return r.lessThan
 }
 
-func (r *RangeQuery) setLessThan(value interface{}) error {
+func (r *RangeClause) setLessThan(value interface{}) error {
 	err := r.lessThan.Set(value)
 	if err != nil {
 		return NewQueryError(err, KindRange, r.field)
@@ -129,11 +129,11 @@ func (r *RangeQuery) setLessThan(value interface{}) error {
 	return nil
 }
 
-func (r RangeQuery) LessThanOrEqualTo() dynamic.StringNumberOrTime {
+func (r RangeClause) LessThanOrEqualTo() dynamic.StringNumberOrTime {
 	return r.lessThanOrEqualTo
 }
 
-func (r *RangeQuery) setLessThanOrEqualTo(value interface{}) error {
+func (r *RangeClause) setLessThanOrEqualTo(value interface{}) error {
 	err := r.lessThanOrEqualTo.Set(value)
 	if err != nil {
 
@@ -141,13 +141,13 @@ func (r *RangeQuery) setLessThanOrEqualTo(value interface{}) error {
 	}
 	return nil
 }
-func (r *RangeQuery) IsEmpty() bool {
+func (r *RangeClause) IsEmpty() bool {
 	return r == nil || !(!r.greaterThan.IsNilOrEmpty() ||
 		!r.greaterThanOrEqualTo.IsNilOrEmpty() ||
 		!r.lessThanOrEqualTo.IsNilOrEmpty() ||
 		!r.lessThan.IsNilOrEmpty())
 }
-func (r RangeQuery) values() map[string]dynamic.StringNumberOrTime {
+func (r RangeClause) values() map[string]dynamic.StringNumberOrTime {
 	return map[string]dynamic.StringNumberOrTime{
 		"gt":  r.greaterThan,
 		"gte": r.greaterThanOrEqualTo,
@@ -155,7 +155,7 @@ func (r RangeQuery) values() map[string]dynamic.StringNumberOrTime {
 		"lte": r.lessThanOrEqualTo,
 	}
 }
-func (r RangeQuery) MarshalJSON() ([]byte, error) {
+func (r RangeClause) MarshalJSON() ([]byte, error) {
 	if r.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -167,7 +167,7 @@ func (r RangeQuery) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{r.field: data})
 }
 
-func (r RangeQuery) marshalClauseJSON() (dynamic.JSON, error) {
+func (r RangeClause) marshalClauseJSON() (dynamic.JSON, error) {
 	data, err := marshalParams(&r)
 	if err != nil {
 		return nil, err
@@ -180,8 +180,8 @@ func (r RangeQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(data)
 }
 
-func (r *RangeQuery) UnmarshalJSON(data []byte) error {
-	*r = RangeQuery{}
+func (r *RangeClause) UnmarshalJSON(data []byte) error {
+	*r = RangeClause{}
 	obj := dynamic.JSONObject{}
 	err := json.Unmarshal(data, &obj)
 	if err != nil {
@@ -194,7 +194,7 @@ func (r *RangeQuery) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (r *RangeQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+func (r *RangeClause) unmarshalClauseJSON(data dynamic.JSON) error {
 	fields, err := unmarshalParams(data, r)
 	if err != nil {
 		return err
@@ -217,6 +217,6 @@ func (r *RangeQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	}
 	return nil
 }
-func (r *RangeQuery) Clear() {
-	*r = RangeQuery{}
+func (r *RangeClause) Clear() {
+	*r = RangeClause{}
 }

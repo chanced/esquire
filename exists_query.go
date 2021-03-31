@@ -32,8 +32,8 @@ func (e Exists) Clause() (Clause, error) {
 	return e.Exists()
 }
 
-func (e Exists) Exists() (*ExistsQuery, error) {
-	q := &ExistsQuery{}
+func (e Exists) Exists() (*ExistsClause, error) {
+	q := &ExistsClause{}
 	err := q.SetField(e.Field)
 	if err != nil {
 		return q, NewQueryError(err, KindExists, e.Field)
@@ -42,7 +42,7 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 	return q, nil
 }
 
-// ExistsQuery returns documents that contain an indexed value for a field.
+// ExistsClause returns documents that contain an indexed value for a field.
 //
 // An indexed value may not exist for a document’s field due to a variety of
 // reasons:
@@ -58,36 +58,36 @@ func (e Exists) Exists() (*ExistsQuery, error) {
 // mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
-type ExistsQuery struct {
+type ExistsClause struct {
 	field string
 	nameParam
 	clause
 }
 
-var _ QueryClause = (*ExistsQuery)(nil)
+var _ QueryClause = (*ExistsClause)(nil)
 
-func (e ExistsQuery) Field() string {
+func (e ExistsClause) Field() string {
 	return e.field
 }
 
-func (e *ExistsQuery) SetField(field string) error {
+func (e *ExistsClause) SetField(field string) error {
 	e.field = field
 	return nil
 }
 
-func (e *ExistsQuery) Set(field string) error {
+func (e *ExistsClause) Set(field string) error {
 	return e.SetField(field)
 }
 
-func (e *ExistsQuery) IsEmpty() bool {
+func (e *ExistsClause) IsEmpty() bool {
 	return len(e.field) == 0
 }
 
-func (e ExistsQuery) Kind() Kind {
+func (e ExistsClause) Kind() Kind {
 	return KindExists
 }
 
-func (e ExistsQuery) MarshalJSON() ([]byte, error) {
+func (e ExistsClause) MarshalJSON() ([]byte, error) {
 	if e.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -96,8 +96,8 @@ func (e ExistsQuery) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (e *ExistsQuery) UnmarshalJSON(data []byte) error {
-	*e = ExistsQuery{}
+func (e *ExistsClause) UnmarshalJSON(data []byte) error {
+	*e = ExistsClause{}
 	d := dynamic.JSON(data)
 	if d.IsNull() {
 		return nil
@@ -111,6 +111,6 @@ func (e *ExistsQuery) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (e *ExistsQuery) Clear() {
-	*e = ExistsQuery{}
+func (e *ExistsClause) Clear() {
+	*e = ExistsClause{}
 }

@@ -1,32 +1,44 @@
 package picker
 
-import "encoding/json"
-
-// FunctionScoreQueryParams  allows you to modify the score of documents that are retrieved
+// FunctionScoreQuery  allows you to modify the score of documents that are retrieved
 // by a query. This can be useful if, for example, a score function is
 // computationally expensive and it is sufficient to compute the score on a
 // filtered set of documents.
 //
 // To use function_score, the user has to define a query and one or more
 // functions, that compute a new score for each document returned by the query.
-type FunctionScoreQueryParams struct {
+type FunctionScoreQuery struct {
 	Query Query
 	Boost interface{}
-	// float
-	MinScore  interface{}
+	// Documents with a score lower than this floating point number are excluded
+	// from the search results. (Optional)
+	MinScore  float64
+	MaxBoost  float64
 	BoostMode BoostMode
 	ScoreMode ScoreMode
 	Functions Funcs
 }
 
-func (fs *FunctionScoreQueryParams) FunctionScore() (*FunctionScoreQuery, error) {
-	panic("not implemented")
+func (fs *FunctionScoreQuery) FunctionScore() (*FunctionScoreClause, error) {
+	if fs == nil {
+		return nil, nil
+	}
+	c := &FunctionScoreClause{}
+	err := c.SetBoostMode(fs.BoostMode)
+	if err != nil {
+		return c, err
+	}
+	err = c.SetScoreMode(fs.ScoreMode)
+	if err != nil {
+		return c, err
+	}
+	return c, nil
 }
-func (fs *FunctionScoreQueryParams) Clause() (QueryClause, error) {
-	return fs.Clause()
+func (fs *FunctionScoreQuery) Clause() (QueryClause, error) {
+	return fs.FunctionScore()
 }
 
-// FunctionScoreQuery allows you to modify the score of documents that are retrieved
+// FunctionScoreClause allows you to modify the score of documents that are retrieved
 // by a query. This can be useful if, for example, a score function is
 // computationally expensive and it is sufficient to compute the score on a
 // filtered set of documents.
@@ -35,89 +47,10 @@ func (fs *FunctionScoreQueryParams) Clause() (QueryClause, error) {
 // functions, that compute a new score for each document returned by the query.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
-type FunctionScoreQuery struct {
+type FunctionScoreClause struct {
 	query QueryValues
 	boostModeParam
 	scoreModeParam
-}
-
-const (
-	// ScoreExp is an exponential decay function
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay
-	FuncKindExp FuncKind = "exp"
-	// ScoreGause is normal decay
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay
-	FuncKindGauss FuncKind = "gauss"
-	// FuncKindLinearDecay decay
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay
-	FuncKindLinear FuncKind = "linear"
-	// FuncKindWeight allows you to multiply the score by the provided weight. This
-	// can sometimes be desired since boost value set on specific queries gets
-	// normalized, while for this score function it does not. The number value
-	// is of type float.
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-weight
-	FuncKindWeight FuncKind = "weight"
-	// FuncKindScriptScore allows you to wrap another query and customize the
-	// scoring of it optionally with a computation derived from other numeric
-	// field values in the doc using a script expression.
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-script-score
-	FuncKindScriptScore FuncKind = "script_score"
-	// FuncKindRandomScore generates scores that are uniformly distributed from 0 up to
-	// but not including 1. By default, it uses the internal Lucene doc ids as a
-	// source of randomness, which is very efficient but unfortunately not
-	// reproducible since documents might be renumbered by merges.
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-random
-	FuncKindRandomScore FuncKind = "random_score"
-	// FuncKindFieldValueFactor function allows you to use a field from a document
-	// to influence the score. It’s similar to using the script_score function,
-	// however, it avoids the overhead of scripting. If used on a multi-valued
-	// field, only the first value of the field is used in calculations
-	//
-	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-field-value-factor
-	FuncKindFieldValueFactor FuncKind = "field_value_factor"
-)
-
-var scoreFunctionHandlers = map[FuncKind]func() Function{
-	FuncKindExp:              func() Function { return &ExpFunction{} },
-	FuncKindGauss:            func() Function { return &GaussFunction{} },
-	FuncKindLinear:           func() Function { return &LinearFunction{} },
-	FuncKindWeight:           func() Function { return &WeightFunction{} },
-	FuncKindScriptScore:      func() Function { return nil },
-	FuncKindRandomScore:      func() Function { return &RandomScoreFunction{} },
-	FuncKindFieldValueFactor: func() Function { return nil },
-}
-
-// Funcs is a slice of Functioners, valid options are:
-//
-//  - picker.WeightFunc,
-//  - picker.LinearFunc,
-//  - picker.ExpFunc,
-//  - picker.GaussFunc,
-//  - picker.RandomScoreFunc,
-//  - search.ScriptScoreFunc,
-//  -
-type Funcs []Functioner
-
-type Function interface {
-	FuncKind() FuncKind
-	Weight() float64
-	Filter() QueryClause
-	json.Marshaler
-	json.Unmarshaler
-}
-type Functions []Function
-
-type Functioner interface {
-	Function() (Function, error)
-}
-
-type FuncKind string
-
-func (f FuncKind) String() string {
-	return string(f)
+	maxBoostParam
+	functions Functions
 }

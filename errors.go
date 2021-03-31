@@ -29,6 +29,7 @@ var (
 	ErrScaleRequired        = errors.New("picker: Scale is required")
 	ErrInvalidScoreMode     = errors.New("picker: invalid ScoreMode")
 	ErrInvalidBoostMode     = errors.New("picker: invalid BoostMode")
+	ErrInvalidModifier      = errors.New("picker: Invalid Modifier")
 )
 
 type QueryError struct {

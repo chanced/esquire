@@ -7,7 +7,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-const DefaultMaxBoost = math.MaxFloat32
+const DefaultMaxBoost = float64(math.MaxFloat32)
 
 type WithMaxBoost interface {
 	MaxBoost() float64
@@ -26,7 +26,7 @@ func (mb maxBoostParam) MaxBoost() float64 {
 }
 
 func (mb maxBoostParam) SetMaxBoost(v float64) {
-	if mb.MaxBoost() != v {
+	if mb.MaxBoost() != v && v != 0 {
 		mb.maxBoost = &v
 	}
 }

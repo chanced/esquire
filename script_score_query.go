@@ -7,44 +7,40 @@ import (
 )
 
 type ScriptScorer interface {
-	ScriptScore() (*ScriptScoreQuery, error)
+	ScriptScore() (*ScriptScoreClause, error)
 }
 
-// ScriptScore uses a script to provide a custom score for returned documents.
+// ScriptScoreQuery uses a script to provide a custom score for returned documents.
 //
 // The script_score query is useful if, for example, a scoring function is
 // expensive and you only need to calculate the score of a filtered set of
 // documents.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
-type ScriptScore struct {
+type ScriptScoreQuery struct {
 	// Query used to return documents. (Required)
 	Query *Query
-	// Script used to compute the score of documents returned by the query.
-	// (Required)
-	Script string
 	// Documents with a score lower than this floating point number are excluded
 	// from the search results. (Optional)
 	MinScore float64
 	// Documents scores produced by script are multiplied by boost to produce
 	// final documents' scores. Defaults to 1.0. (Optional)
 	Boost  interface{}
-	Params interface{}
 	Name   string
+	Script *Script
 }
 
-func (s ScriptScore) Clause() (Clause, error) {
+func (s ScriptScoreQuery) Clause() (Clause, error) {
 	return s.ScriptScore()
 }
-func (s ScriptScore) ScriptScore() (*ScriptScoreQuery, error) {
-	q := &ScriptScoreQuery{}
+func (s ScriptScoreQuery) ScriptScore() (*ScriptScoreClause, error) {
+	q := &ScriptScoreClause{}
 
 	err := q.setQuery(s.Query)
 	if err != nil {
 		return q, NewQueryError(err, KindScriptScore)
 	}
 
-	err = q.setScript(s.Script)
 	if err != nil {
 		return q, NewQueryError(err, KindScriptScore)
 	}
@@ -55,7 +51,7 @@ func (s ScriptScore) ScriptScore() (*ScriptScoreQuery, error) {
 	}
 	q.SetMinScore(s.MinScore)
 
-	err = q.SetParams(s.Params)
+	err = q.SetScript(s.Script)
 	if err != nil {
 		return q, NewQueryError(err, KindScriptScore)
 	}
@@ -64,28 +60,39 @@ func (s ScriptScore) ScriptScore() (*ScriptScoreQuery, error) {
 	return q, nil
 }
 
-func (ScriptScore) Kind() Kind {
+func (ScriptScoreQuery) Kind() Kind {
 	return KindScriptScore
 }
 
-type ScriptScoreQuery struct {
-	query  *QueryValues
-	params dynamic.JSON
-	script string
+type ScriptScoreClause struct {
+	query *QueryValues
+	scriptParams
 	boostParam
 	minScoreParam
 	nameParam
 }
 
-func (ScriptScoreQuery) Kind() Kind {
+func (ScriptScoreClause) Kind() Kind {
 	return KindScriptScore
 }
 
-func (s ScriptScoreQuery) DecodeParams(val interface{}) error {
-	return json.Unmarshal(s.params, val)
+// Set sets the ScriptScoreQuery
+// Options include:
+//   - picker.ScriptScoreQuery
+func (s *ScriptScoreClause) Set(scriptScore *ScriptScoreQuery) error {
+	if scriptScore == nil {
+		*s = ScriptScoreClause{}
+		return nil
+	}
+	scr, err := scriptScore.ScriptScore()
+	if err != nil {
+		return NewQueryError(err, KindScriptScore)
+	}
+	*s = *scr
+	return nil
 }
 
-func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
+func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -93,46 +100,43 @@ func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if s.params != nil && len(s.params) > 2 {
-		data["params"] = s.params
+	script := s.scriptParams.marshalScriptParams()
+	if script != nil {
+		data["script"] = script
 	}
-	data["script"] = s.script
+	var query dynamic.JSON
+	query, err = s.query.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	if query != nil && !query.IsNull() {
+		data["query"] = query
+	}
 	return json.Marshal(data)
 }
 
-func (s *ScriptScoreQuery) IsEmpty() bool {
-	return s == nil || len(s.script) == 0
-}
-
-func (s *ScriptScoreQuery) SetParams(params interface{}) error {
-	if params == nil {
-		s.params = []byte{}
-		return nil
-	}
-	d, err := json.Marshal(params)
+func (s *ScriptScoreClause) UnmarshalJSON(data []byte) error {
+	s = &ScriptScoreClause{}
+	params, err := unmarshalParams(data, s)
 	if err != nil {
 		return err
 	}
-	data := dynamic.JSON(d)
-	if data.IsNull() {
-		s.params = []byte{}
-		return nil
+	err = s.scriptParams.unmarshalScriptParams(params["script"])
+	if err != nil {
+		return err
 	}
-	if !data.IsObject() {
-		return ErrInvalidParams
+	err = s.query.UnmarshalJSON(params["query"])
+	if err != nil {
+		return err
 	}
-	s.params = data
 	return nil
 }
 
-func (s *ScriptScoreQuery) setScript(script string) error {
-	if len(script) == 0 {
-		return ErrScriptRequired
-	}
-	s.script = script
-	return nil
+func (s *ScriptScoreClause) IsEmpty() bool {
+	return s == nil || s.scriptParams.IsEmpty()
 }
-func (s *ScriptScoreQuery) setQuery(query *Query) error {
+
+func (s *ScriptScoreClause) setQuery(query *Query) error {
 	if query == nil {
 		return ErrQueryRequired
 	}
@@ -147,6 +151,6 @@ func (s *ScriptScoreQuery) setQuery(query *Query) error {
 	return nil
 }
 
-func (s *ScriptScoreQuery) Clear() {
-	*s = ScriptScoreQuery{}
+func (s *ScriptScoreClause) Clear() {
+	*s = ScriptScoreClause{}
 }

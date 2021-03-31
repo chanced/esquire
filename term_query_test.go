@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/chanced/dynamic"
-	search "github.com/chanced/picker"
+	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +23,7 @@ func TestTerm(t *testing.T) {
         }
       }
       `)
-	var q1 search.QueryValues
+	var q1 picker.QueryValues
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
 
@@ -36,7 +36,7 @@ func TestTerm(t *testing.T) {
 	fmt.Printf("%+v\n", q1.Term())
 	fmt.Println(string(json1Res))
 
-	var rq1 search.QueryValues
+	var rq1 picker.QueryValues
 	err = json.Unmarshal(json1Res, &rq1)
 	assert.NoError(err)
 	assert.Equal("chanced", rq1.Term().Value(), "value should be chanced")
