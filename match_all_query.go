@@ -35,8 +35,12 @@ type MatchAllClause struct {
 	boostParam
 	disabled bool
 	nameParam
+	completeClause
 }
 
+func (ma *MatchAllClause) Clause() (QueryClause, error) {
+	return ma, nil
+}
 func (MatchAllClause) Kind() Kind {
 	return KindMatchAll
 }

@@ -25,7 +25,7 @@ import (
 type Exists struct {
 	Field string
 	Name  string
-	clause
+	completeClause
 }
 
 func (e Exists) Clause() (Clause, error) {
@@ -61,12 +61,19 @@ func (e Exists) Exists() (*ExistsClause, error) {
 type ExistsClause struct {
 	field string
 	nameParam
-	clause
+	completeClause
 }
 
 var _ QueryClause = (*ExistsClause)(nil)
 
-func (e ExistsClause) Field() string {
+func (e *ExistsClause) Clause() (QueryClause, error) {
+	return e, nil
+}
+
+func (e *ExistsClause) Field() string {
+	if e == nil {
+		return ""
+	}
 	return e.field
 }
 

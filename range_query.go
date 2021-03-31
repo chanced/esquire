@@ -23,7 +23,7 @@ type Range struct {
 	Boost                interface{}
 	Name                 string
 	Relation             Relation
-	clause
+	completeClause
 }
 
 func (r Range) field() string {
@@ -79,8 +79,12 @@ type RangeClause struct {
 	timeZoneParam
 	boostParam
 	nameParam
+	completeClause
 }
 
+func (r *RangeClause) Clause() (QueryClause, error) {
+	return r, nil
+}
 func (RangeClause) Kind() Kind {
 	return KindRange
 }

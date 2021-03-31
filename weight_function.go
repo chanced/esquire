@@ -33,6 +33,10 @@ type WeightFunction struct {
 	filter QueryClause
 }
 
+func (WeightFunction) unmarshalParams([]byte) error {
+	return nil
+}
+
 func (WeightFunction) FuncKind() FuncKind {
 	return FuncKindWeight
 }

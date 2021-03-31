@@ -39,7 +39,7 @@ type BooleanQuery struct {
 	// 0.
 	MinimumShouldMatch string
 	Name               string
-	clause
+	completeClause
 }
 
 func (b BooleanQuery) Clause() (Clause, error) {
@@ -87,10 +87,14 @@ type BooleanClause struct {
 	mustNot QueryClauses
 	minimumShouldMatchParam
 	nameParam
-	clause
+	completeClause
 }
 
-func (b BooleanClause) Kind() Kind {
+func (b *BooleanClause) Clause() (QueryClause, error) {
+	return b, nil
+}
+
+func (BooleanClause) Kind() Kind {
 	return KindBoolean
 }
 

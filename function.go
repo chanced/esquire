@@ -47,13 +47,13 @@ const (
 	FuncKindFieldValueFactor FuncKind = "field_value_factor"
 )
 
-var scoreFunctionHandlers = map[FuncKind]func() Function{
-	FuncKindExp:              func() Function { return &ExpFunction{} },
-	FuncKindGauss:            func() Function { return &GaussFunction{} },
-	FuncKindLinear:           func() Function { return &LinearFunction{} },
-	FuncKindScriptScore:      func() Function { return &ScriptScoreFunction{} },
-	FuncKindRandomScore:      func() Function { return &RandomScoreFunction{} },
-	FuncKindFieldValueFactor: func() Function { return &FieldValueFactorFunction{} },
+var scoreFunctionHandlers = map[FuncKind]func() function{
+	FuncKindExp:              func() function { return &ExpFunction{} },
+	FuncKindGauss:            func() function { return &GaussFunction{} },
+	FuncKindLinear:           func() function { return &LinearFunction{} },
+	FuncKindScriptScore:      func() function { return &ScriptScoreFunction{} },
+	FuncKindRandomScore:      func() function { return &RandomScoreFunction{} },
+	FuncKindFieldValueFactor: func() function { return &FieldValueFactorFunction{} },
 }
 
 // Funcs is a slice of Functioners, valid options are:
@@ -88,6 +88,10 @@ type Function interface {
 	json.Marshaler
 	json.Unmarshaler
 }
+type function interface {
+	Function
+	unmarshalParams(data []byte) error
+}
 
 type DecayFunction interface {
 	Function
@@ -98,11 +102,7 @@ type DecayFunction interface {
 	SetOffset(interface{}) error
 	Scale() dynamic.StringOrNumber
 	SetScale(interface{}) error
-}
-
-type decayFunction interface {
-	DecayFunction
-	setField(string) error
+	SetField(string) error
 }
 
 type Functions []Function
@@ -153,31 +153,47 @@ func (f FuncKind) String() string {
 	return string(f)
 }
 
-func unmarshalFunction(data dynamic.JSON) (Function, error) {
+func unmarshalFunction(data dynamic.JSON) (function, error) {
 	var params dynamic.JSONObject
 	err := json.Unmarshal(data, &params)
 	if err != nil {
 		return nil, err
 	}
-
-	var handler func() Function
-
-	for k := range params {
+	var handler func() function
+	var fn function
+	for k, fd := range params {
 		fk := FuncKind(k)
 		if h, ok := scoreFunctionHandlers[fk]; ok {
 			handler = h
+			fn = handler()
+			err := fn.unmarshalParams(fd)
+			if err != nil {
+				return err
+			}
 		}
+
 	}
-	var fn Function
 	if handler == nil {
 		fn = &WeightFunction{}
 	} else {
 		fn = handler()
 	}
+	err = unmarshalWeightParam(params["weight"], fn)
+	if err != nil {
+		return nil, err
+	}
+	filter, err := unmarshalQueryClause(params["filter"])
+	if err != nil {
+		return nil, err
+	}
+	err = fn.SetFilter(filter)
+	if err != nil {
+		return nil, err
+	}
 
 }
 
-func unmarshalDecayFuncParams(data dynamic.JSON, fn decayFunction) error {
+func unmarshalDecayFuncParams(data dynamic.JSON, fn DecayFunction) error {
 	var obj dynamic.JSONObject
 	if len(data) == 0 {
 		// empty? error?
@@ -190,14 +206,14 @@ func unmarshalDecayFuncParams(data dynamic.JSON, fn decayFunction) error {
 	fn.unmarshalDecay()
 }
 
-func unmarshalDecayFunc(data dynamic.JSON, fn decayFunction) error {
+func unmarshalDecayFunc(data dynamic.JSON, fn DecayFunction) error {
 	var obj dynamic.JSONObject
 	err := json.Unmarshal(data, &obj)
 	if err != nil {
 		return err
 	}
 	for field, d := range obj {
-		fn.setField(field)
+		fn.SetField(field)
 		return unmarshalDecayFuncParams(d, fn)
 	}
 	// empty? error?

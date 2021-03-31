@@ -43,7 +43,7 @@ type TermsQuery struct {
 	Value           []string
 	Boost           interface{}
 	CaseInsensitive bool
-	clause
+	completeClause
 }
 
 func (t TermsQuery) Clause() (Clause, error) {
@@ -183,9 +183,12 @@ type TermsClause struct {
 	boostParam
 	caseInsensitiveParam
 	nameParam
-	clause
+	completeClause
 }
 
+func (f *TermsClause) Clause() (QueryClause, error) {
+	return f, nil
+}
 func (t TermsClause) Field() string {
 	return t.field
 }

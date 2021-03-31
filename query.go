@@ -104,7 +104,7 @@ type Query struct {
 	MatchAll *MatchAll
 
 	// MatchNone is the inverse of the match_all query, which matches no documents.
-	MatchNone *MatchNone
+	MatchNone *MatchNoneQuery
 
 	// Exists returns documents that contain an indexed value for a field.
 	//
@@ -304,15 +304,24 @@ type QueryValues struct {
 }
 
 func (q QueryValues) Match() *MatchClause {
+	if q.matchClause == nil {
+		q.matchClause = &MatchClause{}
+	}
 	return q.matchClause
 }
 func (q *QueryValues) SetMatch(field string, matcher Matcher) error {
 	return q.matchClause.Set(field, matcher)
 }
-func (q QueryValues) Script() *ScriptScoreClause {
+func (q *QueryValues) ScriptScore() *ScriptScoreClause {
+	if q.scriptScoreClause == nil {
+		q.scriptScoreClause = &ScriptScoreClause{}
+	}
 	return q.scriptScoreClause
 }
-func (q QueryValues) Exists() *ExistsClause {
+func (q *QueryValues) Exists() *ExistsClause {
+	if q.existsClause == nil {
+		q.existsClause = &ExistsClause{}
+	}
 	return q.existsClause
 }
 func (q QueryValues) Boolean() *BooleanClause {

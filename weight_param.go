@@ -50,6 +50,9 @@ func marshalWeightParam(source interface{}) (dynamic.JSON, error) {
 	return nil, nil
 }
 func unmarshalWeightParam(data dynamic.JSON, target interface{}) error {
+	if len(data) == 0 {
+		return nil
+	}
 	if r, ok := target.(WithWeight); ok {
 		var n dynamic.Number
 		err := json.Unmarshal(data, &n)

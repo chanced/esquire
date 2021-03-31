@@ -78,8 +78,12 @@ type FunctionScoreClause struct {
 	maxBoostParam
 	minScoreParam
 	functions Functions
+	completeClause
 }
 
+func (fs *FunctionScoreClause) Clause() (QueryClause, error) {
+	return fs, nil
+}
 func (fs *FunctionScoreClause) Query() *QueryValues {
 	return fs.query
 }

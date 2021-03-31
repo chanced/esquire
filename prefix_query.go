@@ -28,7 +28,7 @@ type Prefix struct {
 	CaseInsensitive bool
 	// Name of the query (Optional)
 	Name string
-	clause
+	completeClause
 }
 
 func (p Prefix) Kind() Kind {
@@ -57,9 +57,12 @@ type PrefixClause struct {
 	rewriteParam
 	caseInsensitiveParam
 	nameParam
-	clause
+	completeClause
 }
 
+func (r *PrefixClause) Clause() (QueryClause, error) {
+	return r, nil
+}
 func (p PrefixClause) Value() string {
 	return p.value
 }

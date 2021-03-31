@@ -129,8 +129,12 @@ type FuzzyClause struct {
 	transpositionsParam
 	rewriteParam
 	nameParam
+	completeClause
 }
 
+func (f *FuzzyClause) Clause() (QueryClause, error) {
+	return f, nil
+}
 func (f *FuzzyClause) Vale() string {
 	return f.value
 }

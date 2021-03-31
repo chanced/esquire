@@ -31,11 +31,13 @@ const (
 )
 
 var clauseHandlers = map[Kind]func() QueryClause{
-	KindPrefix:  func() QueryClause { return &PrefixClause{} },
-	KindMatch:   func() QueryClause { return &MatchClause{} },
-	KindTerm:    func() QueryClause { return &TermClause{} },
-	KindTerms:   func() QueryClause { return &TermsClause{} },
-	KindBoolean: func() QueryClause { return &BooleanClause{} },
-	KindExists:  func() QueryClause { return &ExistsClause{} },
-	KindRange:   func() QueryClause { return &RangeClause{} },
+	KindPrefix:    func() QueryClause { return &PrefixClause{} },
+	KindMatch:     func() QueryClause { return &MatchClause{} },
+	KindTerm:      func() QueryClause { return &TermClause{} },
+	KindTerms:     func() QueryClause { return &TermsClause{} },
+	KindBoolean:   func() QueryClause { return &BooleanClause{} },
+	KindExists:    func() QueryClause { return &ExistsClause{} },
+	KindRange:     func() QueryClause { return &RangeClause{} },
+	KindMatchAll:  func() QueryClause { return &MatchAllClause{} },
+	KindMatchNone: func() QueryClause { return &MatchNoneClause{} },
 }

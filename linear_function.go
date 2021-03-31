@@ -139,35 +139,7 @@ func (l *LinearFunction) SetOrigin(origin interface{}) error {
 
 func (l *LinearFunction) UnmarshalJSON(data []byte) error {
 	*l = LinearFunction{}
-	var fn dynamic.JSONObject
-	err := json.Unmarshal(data, &fn)
-	if err != nil {
-		return err
-	}
-	unmarshalers := []func(data dynamic.JSONObject) error{
-		l.unmarsahlOffset,
-		l.unmarshalDecay,
-		l.unmarshalScale,
-		l.unmarshalWeight,
-		l.unmarshalFilter,
-	}
-	for field, d := range fn {
-		var params dynamic.JSONObject
-		err := json.Unmarshal(d, &params)
-		if err != nil {
-			return err
-		}
-
-		l.field = field
-		for _, unmarshaler := range unmarshalers {
-			err = unmarshaler(params)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-	return nil
+	return unmarshalFunction()
 }
 
 func (l LinearFunction) MarshalJSON() ([]byte, error) {

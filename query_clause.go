@@ -8,9 +8,9 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type clause struct{}
+type completeClause struct{}
 
-func (clause) _Complete() {}
+func (completeClause) _Complete() {}
 
 type Clause interface {
 	Kind() Kind
@@ -85,10 +85,10 @@ func (c Clauses) unpack() ([]QueryClause, error) {
 }
 
 type QueryClause interface {
-	Kind() Kind
 	Name() string
 	Clear()
 	IsEmpty() bool
+	CompleteClauser
 	json.Marshaler
 	json.Unmarshaler
 }
@@ -274,6 +274,9 @@ func unpackClause(clause CompleteClause) (QueryClause, error) {
 }
 
 func unmarshalQueryClause(data []byte) (QueryClause, error) {
+	if len(data) == 0 {
+		return nil, nil
+	}
 	var v map[Kind]dynamic.JSON
 	err := json.Unmarshal(data, &v)
 	if err != nil {

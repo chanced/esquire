@@ -30,8 +30,12 @@ func (ao AllOf) Clause() (CompleteClause, error) {
 
 type AllOfClause struct {
 	nameParam
-	clause
+	completeClause
 	cleared bool // not great
+}
+
+func (ao *AllOfClause) Clause() (QueryClause, error) {
+	return ao, nil
 }
 
 func (AllOfClause) Kind() Kind {

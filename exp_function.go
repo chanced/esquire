@@ -38,7 +38,7 @@ func (ExpFunc) FuncKind() FuncKind {
 }
 func (e ExpFunc) Function() (Function, error) {
 	f := &ExpFunction{}
-	err := f.setField(e.Field)
+	err := f.SetField(e.Field)
 	if err != nil {
 		return f, err
 	}
@@ -58,6 +58,10 @@ func (e ExpFunc) Function() (Function, error) {
 	if err != nil {
 		return f, err
 	}
+	err = f.SetOffset(e.Offset)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
 }
 
@@ -71,18 +75,25 @@ type ExpFunction struct {
 	scale  dynamic.StringOrNumber
 }
 
-func (ExpFunction) FuncKind() FuncKind {
-	return FuncKindExp
+func (e *ExpFunction) Field() string {
+	if e == nil {
+		return ""
+	}
+	return e.field
 }
-func (e ExpFunction) Filter() QueryClause {
-	return e.filter
-}
-func (e *ExpFunction) setField(field string) error {
+
+func (e *ExpFunction) SetField(field string) error {
 	if len(field) == 0 {
 		return ErrFieldRequired
 	}
 	e.field = field
 	return nil
+}
+func (ExpFunction) FuncKind() FuncKind {
+	return FuncKindExp
+}
+func (e ExpFunction) Filter() QueryClause {
+	return e.filter
 }
 func (e *ExpFunction) SetDecay(value interface{}) error {
 	return e.decay.Set(value)
@@ -114,6 +125,10 @@ func (e *ExpFunction) Offset() dynamic.StringNumberOrTime {
 	return e.offset
 }
 
+func (e *ExpFunction) SetOffset(offset interface{}) error {
+	return e.offset.Set(offset)
+}
+
 func (e *ExpFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		e.filter = nil
@@ -137,96 +152,18 @@ func (e *ExpFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalDecay(data []byte) error {
-	n := dynamic.Number{}
-	if len(data) == 0 {
-		return nil
-	}
-	err := n.UnmarshalJSON(data)
-	if err != nil {
-		return err
-	}
-	e.decay = n
-	return nil
-}
-
-func (e *ExpFunction) unmarshalOffset(data []byte) error {
-	offset := dynamic.StringNumberOrTime{}
-	if len(data) == 0 {
-		return nil
-	}
-	err := offset.UnmarshalJSON(data)
-	if err != nil {
-		return err
-	}
-	e.offset = offset
-	return nil
-}
-
-func (e *ExpFunction) unmarshalScale(data []byte) error {
-
-	scale := dynamic.StringOrNumber{}
-	if len(data) == 0 {
-		return nil
-	}
-	err := scale.UnmarshalJSON(data)
-	if err != nil {
-		return err
-	}
-	e.scale = scale
-	return nil
-}
-
-func (e *ExpFunction) unmarsahlOffset(data []byte) error {
-	offset := dynamic.StringNumberOrTime{}
-	if len(data) == 0 {
-		return nil
-	}
-	err := offset.UnmarshalJSON(data)
-	if err != nil {
-		return err
-	}
-	e.offset = offset
-	return nil
-}
-
-func (e *ExpFunction) unmarshalWeight(data []byte) error {
-	var weight *float64
-	if len(data) == 0 {
-		return nil
-	}
-	err := json.Unmarshal(data, &weight)
-	if err != nil {
-		return err
-	}
-	e.weight = weight
-	return nil
-}
-
-func (e *ExpFunction) unmarshalFilter(data dynamic.JSONObject) error {
-	filter, err := unmarshalQueryClause(data["filter"])
-	if err != nil {
-		return err
-	}
-	e.filter = filter
-	return nil
+func (e *ExpFunction) unmarshalParams(data []byte) error {
+	return unmarshalDecayFunc(data, e)
 }
 
 func (e *ExpFunction) UnmarshalJSON(data []byte) error {
-
+	*e = ExpFunction{}
+	unmarshalFunction()
 }
 
 func (e ExpFunction) MarshalJSON() ([]byte, error) {
 	if e.field == "" {
 		return dynamic.Null, nil
-	}
-	marshalers := []func() (string, dynamic.JSON, error){
-		e.marshalDecay,
-		e.marshalOffset,
-		e.marshalScale,
-		e.marshalOrigin,
-		e.marshalFilter,
-		e.marshalWeight,
 	}
 	obj := dynamic.JSONObject{}
 
@@ -242,49 +179,4 @@ func (e ExpFunction) MarshalJSON() ([]byte, error) {
 	}
 	mv := map[string]dynamic.JSONObject{e.field: obj}
 	return json.Marshal(mv)
-}
-func (e ExpFunction) marshalOrigin() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(e.origin)
-	return "origin", data, err
-}
-
-func (e ExpFunction) marshalFilter() (string, dynamic.JSON, error) {
-	if e.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := e.filter.MarshalJSON()
-	return "filter", data, err
-}
-
-func (e ExpFunction) marshalWeight() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(e.weight)
-	return "weight", data, err
-}
-
-func (e ExpFunction) marshalDecay() (string, dynamic.JSON, error) {
-	data, err := e.decay.MarshalJSON()
-	return "decay", data, err
-}
-
-func (e ExpFunction) marshalOffset() (string, dynamic.JSON, error) {
-	data, err := e.offset.MarshalJSON()
-	return "offset", data, err
-}
-
-func (e ExpFunction) marshalField() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(e.field)
-	return "field", data, err
-}
-
-func (e *ExpFunction) marshalScale() (string, dynamic.JSON, error) {
-	data, err := e.scale.MarshalJSON()
-	return "scale", data, err
-}
-
-func (e *ExpFunction) marsahlFilter() (string, dynamic.JSON, error) {
-	if e.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := e.filter.MarshalJSON()
-	return "filter", data, err
 }

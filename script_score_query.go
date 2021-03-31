@@ -30,7 +30,7 @@ type ScriptScoreQuery struct {
 	Script *Script
 }
 
-func (s ScriptScoreQuery) Clause() (Clause, error) {
+func (s ScriptScoreQuery) Clause() (QueryClause, error) {
 	return s.ScriptScore()
 }
 func (s ScriptScoreQuery) ScriptScore() (*ScriptScoreClause, error) {
@@ -70,6 +70,7 @@ type ScriptScoreClause struct {
 	boostParam
 	minScoreParam
 	nameParam
+	completeClause
 }
 
 func (ScriptScoreClause) Kind() Kind {
@@ -91,7 +92,9 @@ func (s *ScriptScoreClause) Set(scriptScore *ScriptScoreQuery) error {
 	*s = *scr
 	return nil
 }
-
+func (s *ScriptScoreClause) Clause() (QueryClause, error) {
+	return s, nil
+}
 func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil

@@ -83,7 +83,7 @@ type MatchQuery struct {
 	// hits is not tracked.
 	CutoffFrequency dynamic.Number
 
-	clause
+	completeClause
 }
 
 func (m MatchQuery) name() string {
@@ -143,7 +143,7 @@ func (m MatchQuery) Match() (*MatchClause, error) {
 type MatchClause struct {
 	field string
 	query dynamic.StringNumberBoolOrTime
-	clause
+	completeClause
 	nameParam
 	lenientParam
 	operatorParam
@@ -158,7 +158,14 @@ type MatchClause struct {
 	autoGenerateSynonymsPhraseQueryParam
 }
 
-func (m MatchClause) Field() string {
+func (m *MatchClause) Clause() (QueryClause, error) {
+	return m, nil
+}
+
+func (m *MatchClause) Field() string {
+	if m == nil {
+		return ""
+	}
 	return m.field
 }
 
