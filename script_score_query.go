@@ -103,7 +103,10 @@ func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	script := s.scriptParams.marshalScriptParams()
+	script, err := s.scriptParams.marshalScriptParams()
+	if err != nil {
+		return nil, err
+	}
 	if script != nil {
 		data["script"] = script
 	}

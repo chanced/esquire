@@ -122,17 +122,18 @@ func (fvf FieldValueFactorFunction) Missing() interface{} {
 }
 
 type fieldValueFactorParams struct {
-	Weight   *float64     `json:"weight,omitempty"`
-	Filter   dynamic.JSON `json:"filter,omitempty"`
-	Modifier Modifier     `json:"modifier,omitempty"`
-	Field    string       `json:"field"`
-	Missing  interface{}  `json:"missing,omitempty"`
-	Factor   *float64     `json:"factor,omitempty"`
+	Modifier Modifier    `json:"modifier,omitempty"`
+	Field    string      `json:"field"`
+	Missing  interface{} `json:"missing,omitempty"`
+	Factor   *float64    `json:"factor,omitempty"`
 }
 
 func (fvf FieldValueFactorFunction) MarshalJSON() ([]byte, error) {
+	return marshalFunction(&fvf)
+}
+
+func (fvf *FieldValueFactorFunction) marshalParams(data dynamic.JSONObject) error {
 	params := fieldValueFactorParams{
-		Weight:   fvf.weight,
 		Field:    fvf.field,
 		Missing:  fvf.missing,
 		Modifier: fvf.modifier,
@@ -140,34 +141,24 @@ func (fvf FieldValueFactorFunction) MarshalJSON() ([]byte, error) {
 	if f, ok := fvf.factor.Float(); ok {
 		params.Factor = &f
 	}
-	if fvf.filter != nil {
-		filter, err := fvf.filter.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		params.Filter = filter
+	fd, err := json.Marshal(params)
+	if err != nil {
+		return err
 	}
-	return json.Marshal(params)
+	data["field_value_factor"] = fd
+	return nil
 }
-
-func (fvf *FieldValueFactorFunction) UnmarshalJSON(data []byte) error {
-	*fvf = FieldValueFactorFunction{}
-	var params fieldValueFactorParams
+func (fvf *FieldValueFactorFunction) unmarshalParams(data []byte) error {
+	params := fieldValueFactorParams{}
 	err := json.Unmarshal(data, &params)
 	if err != nil {
 		return err
 	}
-	fvf.field = params.Field
-	if params.Filter != nil && len(params.Filter) > 0 {
-		filter, err := unmarshalQueryClause(params.Filter)
-		if err != nil {
-			return err
-		}
-		fvf.filter = filter
+	err = fvf.factor.Set(params.Factor)
+	if err != nil {
+		return err
 	}
-	fvf.factor.Set(params.Factor)
-	fvf.weight = params.Weight
-	fvf.missing = params.Missing
-	fvf.modifier = params.Modifier
+	fvf.SetModifier(params.Modifier)
+	fvf.SetMissing(params.Missing)
 	return nil
 }

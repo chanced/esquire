@@ -114,43 +114,31 @@ func (rs *RandomScoreFunction) FuncKind() FuncKind {
 }
 
 type randomScoreParams struct {
-	Weight *float64     `json:"weight,omitempty"`
-	Field  string       `json:"field,omitempty"`
-	Seed   *float64     `json:"seed,omitempty"`
-	Filter dynamic.JSON `json:"filter,omitempty"`
+	Field string   `json:"field,omitempty"`
+	Seed  *float64 `json:"seed,omitempty"`
 }
 
 func (rs RandomScoreFunction) MarshalJSON() ([]byte, error) {
-	params := randomScoreParams{Weight: rs.weight, Field: rs.field}
+	return marshalFunction(&rs)
+}
+
+func (rs *RandomScoreFunction) marshalParams(data dynamic.JSONObject) error {
+	params := randomScoreParams{Field: rs.field}
 	if f, ok := rs.seed.Float(); ok {
 		params.Seed = &f
 	}
-	if rs.filter != nil {
-		filter, err := rs.filter.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		params.Filter = filter
+	pd, err := json.Marshal(params)
+	if err != nil {
+		return err
 	}
-	return json.Marshal(params)
+	data["random_score"] = pd
+	return nil
 }
-
-func (rs *RandomScoreFunction) UnmarshalJSON(data []byte) error {
-	*rs = RandomScoreFunction{}
-	var params randomScoreParams
+func (rs *RandomScoreFunction) unmarshalParams(data []byte) error {
+	params := randomScoreParams{}
 	err := json.Unmarshal(data, &params)
 	if err != nil {
 		return err
 	}
-	rs.field = params.Field
-	if params.Filter != nil && len(params.Filter) > 0 {
-		filter, err := unmarshalQueryClause(params.Filter)
-		if err != nil {
-			return err
-		}
-		rs.filter = filter
-	}
-	rs.seed.Set(params.Seed)
-	rs.weight = params.Weight
-	return nil
+	return rs.seed.Set(params.Seed)
 }

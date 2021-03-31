@@ -39,18 +39,32 @@ func (s *scriptParams) DecodeParams(val interface{}) error {
 	return json.Unmarshal(s.params, val)
 }
 
-func (s *scriptParams) marshalScriptParams() dynamic.Map {
+func (s *scriptParams) marshalScriptParams() (dynamic.JSON, error) {
 	if s == nil || s.IsEmpty() {
-		return nil
+		return nil, nil
 	}
-	data := dynamic.Map{
-		"source": s.source,
-		"params": s.params,
+	source, err := json.Marshal(s.source)
+
+	if err != nil {
+		return nil, err
+	}
+	data := dynamic.JSONObject{"source": source}
+	if s.params != nil {
+		params, err := json.Marshal(s.params)
+		if err != nil {
+			return nil, err
+		}
+		data["params"] = params
 	}
 	if len(s.lang) > 0 {
-		data["lang"] = s.lang
+		lang, err := json.Marshal(s.lang)
+		if err != nil {
+			return nil, err
+		}
+		data["lang"] = lang
 	}
-	return data
+
+	return json.Marshal(data)
 }
 
 func (s *scriptParams) unmarshalScriptParams(data []byte) error {

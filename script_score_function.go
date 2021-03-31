@@ -1,8 +1,6 @@
 package picker
 
 import (
-	"encoding/json"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -67,43 +65,18 @@ func (ScriptScoreFunction) FuncKind() FuncKind {
 }
 
 func (ss ScriptScoreFunction) MarshalJSON() ([]byte, error) {
-	data := ss.scriptParams.marshalScriptParams()
-	if ss.weight != nil {
-		data["weight"] = ss.Weight()
-	}
-	if ss.filter != nil {
-		filter, err := ss.filter.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		data["filter"] = dynamic.JSON(filter)
-	}
-	return json.Marshal(data)
+	return marshalFunction(&ss)
+
+}
+func (ss *ScriptScoreFunction) unmarshalParams(data []byte) error {
+	return ss.scriptParams.unmarshalScriptParams(data)
 }
 
-func (ss *ScriptScoreFunction) UnmarshalJSON(data []byte) error {
-	*ss = ScriptScoreFunction{}
-	obj := dynamic.JSONObject{}
-	err := obj.UnmarshalJSON(data)
+func (ss *ScriptScoreFunction) marshalParams(data dynamic.JSONObject) error {
+	script, err := ss.scriptParams.marshalScriptParams()
 	if err != nil {
 		return err
 	}
-	err = ss.scriptParams.unmarshalScriptParams(obj["script"])
-	if err != nil {
-		return err
-	}
-	if wd, ok := obj["weight"]; ok {
-		err = unmarshalWeightParam(wd, ss)
-		if err != nil {
-			return err
-		}
-	}
-	if fd, ok := obj["filter"]; ok {
-		filter, err := unmarshalQueryClause(fd)
-		if err != nil {
-			return err
-		}
-		ss.filter = filter
-	}
+	data["script"] = script
 	return nil
 }

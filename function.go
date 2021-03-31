@@ -64,7 +64,7 @@ var scoreFunctionHandlers = map[FuncKind]func() function{
 //  - picker.GaussFunc,
 //  - picker.RandomScoreFunc,
 //  - picker.ScriptScoreFunc,
-//  -
+//  - picker.FieldValueFactorFunc
 type Funcs []Functioner
 
 func (f Funcs) functions() (Functions, error) {
