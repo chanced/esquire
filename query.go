@@ -244,19 +244,27 @@ func (q *Query) Query() (*QueryValues, error) {
 		return nil, err
 	}
 	fuzzy, err := q.fuzzyClause()
+	if err != nil {
+		return nil, err
+	}
+	funcScore, err := q.functionScoreClause()
+	if err != nil {
+		return nil, err
+	}
 
 	qv := &QueryValues{
-		matchClause:       match,
-		existsClause:      exists,
-		scriptScoreClause: scriptScore,
-		fuzzyClause:       fuzzy,
-		booleanClause:     boolean,
-		termClause:        term,
-		termsClause:       terms,
-		rangeClause:       rng,
-		prefixClause:      prefix,
-		matchAllClause:    matchAll,
-		matchNoneClause:   matchNone,
+		matchClause:         match,
+		existsClause:        exists,
+		scriptScoreClause:   scriptScore,
+		fuzzyClause:         fuzzy,
+		booleanClause:       boolean,
+		termClause:          term,
+		termsClause:         terms,
+		rangeClause:         rng,
+		prefixClause:        prefix,
+		matchAllClause:      matchAll,
+		matchNoneClause:     matchNone,
+		functionScoreClause: funcScore,
 	}
 	return qv, nil
 }
@@ -281,17 +289,18 @@ func (q *Query) Query() (*QueryValues, error) {
 // QueryValues clauses behave differently depending on whether they are used in query
 // context or filter context.
 type QueryValues struct {
-	matchClause       *MatchClause
-	scriptScoreClause *ScriptScoreClause
-	existsClause      *ExistsClause
-	booleanClause     *BooleanClause
-	termClause        *TermClause
-	termsClause       *TermsClause
-	rangeClause       *RangeClause
-	prefixClause      *PrefixClause
-	fuzzyClause       *FuzzyClause
-	matchAllClause    *MatchAllClause
-	matchNoneClause   *MatchNoneClause
+	matchClause         *MatchClause
+	scriptScoreClause   *ScriptScoreClause
+	existsClause        *ExistsClause
+	booleanClause       *BooleanClause
+	termClause          *TermClause
+	termsClause         *TermsClause
+	rangeClause         *RangeClause
+	prefixClause        *PrefixClause
+	fuzzyClause         *FuzzyClause
+	functionScoreClause *FunctionScoreClause
+	matchAllClause      *MatchAllClause
+	matchNoneClause     *MatchNoneClause
 }
 
 func (q QueryValues) Match() *MatchClause {

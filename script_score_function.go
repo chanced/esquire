@@ -33,6 +33,9 @@ func (ss *ScriptScoreFunc) ScriptScore() (*ScriptScoreFunction, error) {
 		return f, err
 	}
 	err = f.SetFilter(ss.Filter)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
 }
 
