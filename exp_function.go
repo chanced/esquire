@@ -1,8 +1,6 @@
 package picker
 
 import (
-	"encoding/json"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -62,6 +60,10 @@ func (e ExpFunc) Function() (Function, error) {
 	if err != nil {
 		return f, err
 	}
+	err = f.SetDecay(e.Decay)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
 }
 
@@ -94,6 +96,9 @@ func (ExpFunction) FuncKind() FuncKind {
 }
 func (e ExpFunction) Filter() QueryClause {
 	return e.filter
+}
+func (e *ExpFunction) Decay() dynamic.Number {
+	return e.decay
 }
 func (e *ExpFunction) SetDecay(value interface{}) error {
 	return e.decay.Set(value)
@@ -153,30 +158,12 @@ func (e *ExpFunction) SetOrigin(origin interface{}) error {
 }
 
 func (e *ExpFunction) unmarshalParams(data []byte) error {
-	return unmarshalDecayFunc(data, e)
-}
-
-func (e *ExpFunction) UnmarshalJSON(data []byte) error {
-	*e = ExpFunction{}
-	unmarshalFunction()
+	return unmarshalDecayFunction(data, e)
 }
 
 func (e ExpFunction) MarshalJSON() ([]byte, error) {
-	if e.field == "" {
-		return dynamic.Null, nil
-	}
-	obj := dynamic.JSONObject{}
-
-	for _, marshaler := range marshalers {
-		param, data, err := marshaler()
-		if err != nil {
-			return nil, err
-		}
-		if data == nil || len(data) == 0 || (data.IsString() && len(data) == 2) {
-			continue
-		}
-		obj[param] = data
-	}
-	mv := map[string]dynamic.JSONObject{e.field: obj}
-	return json.Marshal(mv)
+	return marshalFunction(&e)
+}
+func (e *ExpFunction) marshalParams(data dynamic.JSONObject) error {
+	return marshalDecayFunctionParams(data, e)
 }

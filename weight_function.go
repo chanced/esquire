@@ -33,7 +33,10 @@ type WeightFunction struct {
 	filter QueryClause
 }
 
-func (WeightFunction) unmarshalParams([]byte) error {
+func (WeightFunction) marshalParams(dynamic.JSONObject) error {
+	return nil
+}
+func (WeightFunction) unmarshalParams(data []byte) error {
 	return nil
 }
 

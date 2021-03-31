@@ -42,6 +42,7 @@ func (b *weightParam) SetWeight(v interface{}) error {
 }
 
 func marshalWeightParam(source interface{}) (dynamic.JSON, error) {
+
 	if b, ok := source.(WithWeight); ok {
 		if b.Weight() != DefaultWeight {
 			return json.Marshal(b.Weight())

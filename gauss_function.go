@@ -1,8 +1,6 @@
 package picker
 
 import (
-	"encoding/json"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -38,7 +36,7 @@ func (GaussFunc) FuncKind() FuncKind {
 }
 func (g GaussFunc) Function() (Function, error) {
 	f := &GaussFunction{}
-	err := f.setField(g.Field)
+	err := f.SetField(g.Field)
 	if err != nil {
 		return f, err
 	}
@@ -58,6 +56,14 @@ func (g GaussFunc) Function() (Function, error) {
 	if err != nil {
 		return f, err
 	}
+	err = f.SetOffset(g.Offset)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetDecay(g.Decay)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
 }
 
@@ -71,18 +77,28 @@ type GaussFunction struct {
 	scale  dynamic.StringOrNumber
 }
 
+func (g *GaussFunction) Field() string {
+	if g == nil {
+		return ""
+	}
+	return g.field
+}
+
+func (g *GaussFunction) SetField(field string) error {
+	if len(field) == 0 {
+		return ErrFieldRequired
+	}
+	g.field = field
+	return nil
+}
 func (GaussFunction) FuncKind() FuncKind {
 	return FuncKindGauss
 }
 func (g GaussFunction) Filter() QueryClause {
 	return g.filter
 }
-func (g *GaussFunction) setField(field string) error {
-	if len(field) == 0 {
-		return ErrFieldRequired
-	}
-	g.field = field
-	return nil
+func (g *GaussFunction) Decay() dynamic.Number {
+	return g.decay
 }
 func (g *GaussFunction) SetDecay(value interface{}) error {
 	return g.decay.Set(value)
@@ -114,6 +130,10 @@ func (g *GaussFunction) Offset() dynamic.StringNumberOrTime {
 	return g.offset
 }
 
+func (g *GaussFunction) SetOffset(offset interface{}) error {
+	return g.offset.Set(offset)
+}
+
 func (g *GaussFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		g.filter = nil
@@ -137,178 +157,13 @@ func (g *GaussFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (g *GaussFunction) unmarshalDecay(data dynamic.JSONObject) error {
-	n := dynamic.Number{}
-	err := n.UnmarshalJSON(data["decay"])
-	if err != nil {
-		return err
-	}
-	g.decay = n
-	return nil
-}
-
-func (g *GaussFunction) unmarshalOffset(data dynamic.JSONObject) error {
-	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
-	if err != nil {
-		return err
-	}
-	g.offset = offset
-	return nil
-}
-
-func (g *GaussFunction) unmarshalScale(data dynamic.JSONObject) error {
-	scale := dynamic.StringOrNumber{}
-	err := scale.UnmarshalJSON(data["scale"])
-	if err != nil {
-		return err
-	}
-	g.scale = scale
-	return nil
-}
-
-func (g *GaussFunction) unmarsahlOffset(data dynamic.JSONObject) error {
-	offset := dynamic.StringNumberOrTime{}
-	err := offset.UnmarshalJSON(data["offset"])
-	if err != nil {
-		return err
-	}
-	g.offset = offset
-	return nil
-}
-
-func (g *GaussFunction) unmarshalField(data dynamic.JSONObject) error {
-	var field string
-	err := json.Unmarshal(data["field"], &field)
-	if err != nil {
-		return err
-	}
-	g.field = field
-	return nil
-}
-func (g *GaussFunction) unmarshalWeight(data dynamic.JSONObject) error {
-	var weight *float64
-	err := json.Unmarshal(data["weight"], &weight)
-	if err != nil {
-		return err
-	}
-	g.weight = weight
-	return nil
-}
-
-func (g *GaussFunction) unmarshalFilter(data dynamic.JSONObject) error {
-	filter, err := unmarshalQueryClause(data["filter"])
-	if err != nil {
-		return err
-	}
-	g.filter = filter
-	return nil
-}
-
-func (g *GaussFunction) UnmarshalJSON(data []byte) error {
-	*g = GaussFunction{}
-	var fn dynamic.JSONObject
-	err := json.Unmarshal(data, &fn)
-	if err != nil {
-		return err
-	}
-	unmarshalers := []func(data dynamic.JSONObject) error{
-
-		g.unmarsahlOffset,
-		g.unmarshalDecay,
-		g.unmarshalScale,
-		g.unmarshalWeight,
-		g.unmarshalFilter,
-	}
-	for field, d := range fn {
-		var params dynamic.JSONObject
-		err := json.Unmarshal(d, &params)
-		if err != nil {
-			return err
-		}
-
-		g.field = field
-		for _, unmarshaler := range unmarshalers {
-			err = unmarshaler(params)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-	return nil
+func (g *GaussFunction) unmarshalParams(data []byte) error {
+	return unmarshalDecayFunction(data, g)
 }
 
 func (g GaussFunction) MarshalJSON() ([]byte, error) {
-	if g.field == "" {
-		return dynamic.Null, nil
-	}
-	marshalers := []func() (string, dynamic.JSON, error){
-		g.marshalDecay,
-		g.marshalOffset,
-		g.marshalScale,
-		g.marshalOrigin,
-		g.marshalFilter,
-		g.marshalWeight,
-	}
-	obj := dynamic.JSONObject{}
-
-	for _, marshaler := range marshalers {
-		param, data, err := marshaler()
-		if err != nil {
-			return nil, err
-		}
-		if data == nil || len(data) == 0 || (data.IsString() && len(data) == 2) {
-			continue
-		}
-		obj[param] = data
-	}
-	mv := map[string]dynamic.JSONObject{g.field: obj}
-	return json.Marshal(mv)
-
+	return marshalFunction(&g)
 }
-func (g GaussFunction) marshalOrigin() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(g.origin)
-	return "origin", data, err
-}
-
-func (g GaussFunction) marshalFilter() (string, dynamic.JSON, error) {
-	if g.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := g.filter.MarshalJSON()
-	return "filter", data, err
-}
-
-func (g GaussFunction) marshalWeight() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(g.weight)
-	return "weight", data, err
-}
-
-func (g GaussFunction) marshalDecay() (string, dynamic.JSON, error) {
-	data, err := g.decay.MarshalJSON()
-	return "decay", data, err
-}
-
-func (g GaussFunction) marshalOffset() (string, dynamic.JSON, error) {
-	data, err := g.offset.MarshalJSON()
-	return "offset", data, err
-}
-
-func (g GaussFunction) marshalField() (string, dynamic.JSON, error) {
-	data, err := json.Marshal(g.field)
-	return "field", data, err
-}
-
-func (g *GaussFunction) marshalScale() (string, dynamic.JSON, error) {
-	data, err := g.scale.MarshalJSON()
-	return "scale", data, err
-}
-
-func (g *GaussFunction) marsahlFilter() (string, dynamic.JSON, error) {
-	if g.filter == nil {
-		return "filter", nil, nil
-	}
-	data, err := g.filter.MarshalJSON()
-	return "filter", data, err
+func (g *GaussFunction) marshalParams(data dynamic.JSONObject) error {
+	return marshalDecayFunctionParams(data, g)
 }

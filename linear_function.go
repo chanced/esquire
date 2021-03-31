@@ -1,8 +1,6 @@
 package picker
 
 import (
-	"encoding/json"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -38,7 +36,7 @@ func (LinearFunc) FuncKind() FuncKind {
 }
 func (l LinearFunc) Function() (Function, error) {
 	f := &LinearFunction{}
-	err := f.setField(l.Field)
+	err := f.SetField(l.Field)
 	if err != nil {
 		return f, err
 	}
@@ -58,6 +56,14 @@ func (l LinearFunc) Function() (Function, error) {
 	if err != nil {
 		return f, err
 	}
+	err = f.SetOffset(l.Offset)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetDecay(l.Decay)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
 }
 
@@ -71,16 +77,28 @@ type LinearFunction struct {
 	scale  dynamic.StringOrNumber
 }
 
-func (LinearFunction) FuncKind() FuncKind {
-	return FuncKindLinear
+func (l *LinearFunction) Field() string {
+	if l == nil {
+		return ""
+	}
+	return l.field
 }
 
-func (l *LinearFunction) setField(field string) error {
+func (l *LinearFunction) SetField(field string) error {
 	if len(field) == 0 {
 		return ErrFieldRequired
 	}
 	l.field = field
 	return nil
+}
+func (LinearFunction) FuncKind() FuncKind {
+	return FuncKindLinear
+}
+func (l LinearFunction) Filter() QueryClause {
+	return l.filter
+}
+func (l *LinearFunction) Decay() dynamic.Number {
+	return l.decay
 }
 func (l *LinearFunction) SetDecay(value interface{}) error {
 	return l.decay.Set(value)
@@ -111,9 +129,11 @@ func (l LinearFunction) Origin() interface{} {
 func (l *LinearFunction) Offset() dynamic.StringNumberOrTime {
 	return l.offset
 }
-func (l LinearFunction) Filter() QueryClause {
-	return l.filter
+
+func (l *LinearFunction) SetOffset(offset interface{}) error {
+	return l.offset.Set(offset)
 }
+
 func (l *LinearFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		l.filter = nil
@@ -137,34 +157,13 @@ func (l *LinearFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (l *LinearFunction) UnmarshalJSON(data []byte) error {
-	*l = LinearFunction{}
-	return unmarshalFunction()
+func (l *LinearFunction) unmarshalParams(data []byte) error {
+	return unmarshalDecayFunction(data, l)
 }
 
 func (l LinearFunction) MarshalJSON() ([]byte, error) {
-	if l.field == "" {
-		return dynamic.Null, nil
-	}
-	marshalers := []func() (string, dynamic.JSON, error){
-		l.marshalDecay,
-		l.marshalOffset,
-		l.marshalScale,
-		l.marshalOrigin,
-		l.marshalFilter,
-		l.marshalWeight,
-	}
-	obj := dynamic.JSONObject{}
-
-	for _, marshaler := range marshalers {
-		param, data, err := marshaler()
-		if err != nil {
-			return nil, err
-		}
-		if data == nil || len(data) == 0 || (data.IsString() && len(data) == 2) {
-			continue
-		}
-		obj[param] = data
-	}
-	return json.Marshal(obj)
+	return marshalFunction(&l)
+}
+func (l *LinearFunction) marshalParams(data dynamic.JSONObject) error {
+	return marshalDecayFunctionParams(data, l)
 }

@@ -86,11 +86,11 @@ type Function interface {
 	Filter() QueryClause
 	SetFilter(CompleteClauser) error
 	json.Marshaler
-	json.Unmarshaler
 }
 type function interface {
 	Function
 	unmarshalParams(data []byte) error
+	marshalParams(dynamic.JSONObject) error
 }
 
 type DecayFunction interface {
@@ -103,6 +103,8 @@ type DecayFunction interface {
 	Scale() dynamic.StringOrNumber
 	SetScale(interface{}) error
 	SetField(string) error
+	Decay() dynamic.Number
+	SetDecay(v interface{}) error
 }
 
 type Functions []Function
@@ -168,10 +170,9 @@ func unmarshalFunction(data dynamic.JSON) (function, error) {
 			fn = handler()
 			err := fn.unmarshalParams(fd)
 			if err != nil {
-				return err
+				return nil, err
 			}
 		}
-
 	}
 	if handler == nil {
 		fn = &WeightFunction{}
@@ -190,7 +191,7 @@ func unmarshalFunction(data dynamic.JSON) (function, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	return fn, nil
 }
 
 func unmarshalDecayFuncParams(data dynamic.JSON, fn DecayFunction) error {
@@ -203,10 +204,26 @@ func unmarshalDecayFuncParams(data dynamic.JSON, fn DecayFunction) error {
 	if err != nil {
 		return err
 	}
-	fn.unmarshalDecay()
+
+	unmarshalers := map[string]func(data dynamic.JSON, fn DecayFunction) error{
+		"offset": unmarshalOffsetParam,
+		"decay":  unmarshalDecayParam,
+		"origin": unmarshalOriginParam,
+		"scale":  unmarshalScaleParam,
+	}
+	for key, unmarshal := range unmarshalers {
+		err := unmarshal(obj[key], fn)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-func unmarshalDecayFunc(data dynamic.JSON, fn DecayFunction) error {
+func unmarshalDecayFunction(data dynamic.JSON, fn DecayFunction) error {
+	if data.Len() == 0 {
+		return nil
+	}
 	var obj dynamic.JSONObject
 	err := json.Unmarshal(data, &obj)
 	if err != nil {
@@ -217,5 +234,122 @@ func unmarshalDecayFunc(data dynamic.JSON, fn DecayFunction) error {
 		return unmarshalDecayFuncParams(d, fn)
 	}
 	// empty? error?
+	return nil
+}
+
+func unmarshalOriginParam(data dynamic.JSON, fn DecayFunction) error {
+	if data.Len() == 0 {
+		return nil
+	}
+	var origin interface{}
+	err := json.Unmarshal(data, &origin)
+	if err != nil {
+		return err
+	}
+	fn.SetOrigin(origin)
+	return nil
+}
+
+func unmarshalDecayParam(data dynamic.JSON, fn DecayFunction) error {
+	if data.Len() == 0 {
+		return nil
+	}
+	n := dynamic.Number{}
+	err := n.UnmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	return fn.SetDecay(n)
+}
+
+func unmarshalOffsetParam(data dynamic.JSON, fn DecayFunction) error {
+	if data.Len() == 0 {
+		return nil
+	}
+	offset := dynamic.StringNumberOrTime{}
+	err := offset.UnmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	return fn.SetOffset(offset)
+
+}
+
+func unmarshalScaleParam(data dynamic.JSON, fn DecayFunction) error {
+	if data.Len() == 0 {
+		return nil
+	}
+	scale := dynamic.StringOrNumber{}
+	err := scale.UnmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	return fn.SetScale(scale)
+}
+
+func marshalFunction(fn function) ([]byte, error) {
+	obj := dynamic.JSONObject{}
+	weight, err := marshalWeightParam(fn)
+	if err != nil {
+		return nil, err
+	}
+	if len(weight) > 0 {
+		obj["weight"] = weight
+	}
+	if fn.Filter() != nil {
+		filter, err := fn.Filter().MarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		obj["filter"] = filter
+	}
+	if fn.FuncKind() != FuncKindWeight {
+		err := fn.marshalParams(obj)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return json.Marshal(obj)
+}
+func marshalDecayFunctionParams(obj dynamic.JSONObject, fn DecayFunction) error {
+	if len(fn.Field()) == 0 {
+		return nil
+	}
+	params := dynamic.JSONObject{}
+	if !fn.Decay().IsNil() {
+		decay, err := json.Marshal(fn.Decay())
+		if err != nil {
+			return err
+		}
+		params["decay"] = decay
+	}
+	if !fn.Offset().IsNil() && fn.Offset().String() != "" {
+		offset, err := json.Marshal(fn.Offset())
+		if err != nil {
+			return err
+		}
+		params["offset"] = offset
+	}
+	if fn.Origin() != nil {
+		origin, err := json.Marshal(fn.Origin())
+		if err != nil {
+			return err
+		}
+		params["origin"] = origin
+	}
+	if !fn.Scale().IsNil() {
+		scale, err := fn.Scale().MarshalJSON()
+		if err != nil {
+			return err
+		}
+		params["scale"] = scale
+	}
+	if len(params) > 0 {
+		fnData, err := json.Marshal(params)
+		if err != nil {
+			return err
+		}
+		obj[string(fn.FuncKind())] = fnData
+	}
 	return nil
 }
