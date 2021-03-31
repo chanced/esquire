@@ -63,7 +63,7 @@ func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.JSON, target int
 func marshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithAutoGenerateSynonymsPhraseQuery); ok {
 		if !b.AutoGenerateSynonymsPhraseQuery() {
-			data[paramAutoGenerateSynonymsPhraseQuery] = b.AutoGenerateSynonymsPhraseQuery()
+			data["auto_generate_synonyms_phrase_query"] = b.AutoGenerateSynonymsPhraseQuery()
 		}
 	}
 	return data, nil

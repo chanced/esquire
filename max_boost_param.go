@@ -48,7 +48,7 @@ func unmarshalMaxBoostParam(data dynamic.JSON, target interface{}) error {
 func marshalMaxBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMaxBoost); ok {
 		if b.MaxBoost() != DefaultMaxBoost {
-			data[paramMaxBoost] = b.MaxBoost()
+			data["max_boost"] = b.MaxBoost()
 		}
 	}
 	return data, nil

@@ -10,12 +10,12 @@ type Booler interface {
 	Boolean() (BooleanQuery, error)
 }
 
-// Boolean is a query that matches documents matching boolean combinations
+// BooleanQueryParams is a query that matches documents matching boolean combinations
 // of other queries. The bool query maps to Lucene BooleanQuery. It is built
 // using one or more boolean clauses, each clause with a typed occurrence.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-type Boolean struct {
+type BooleanQueryParams struct {
 	// The clause (query) must appear in matching documents and will contribute
 	// to the score.
 	Must Clauses
@@ -42,12 +42,12 @@ type Boolean struct {
 	clause
 }
 
-func (b Boolean) Clause() (Clause, error) {
+func (b BooleanQueryParams) Clause() (Clause, error) {
 	return b.Boolean()
 }
 
-func (b Boolean) Boolean() (BooleanQuery, error) {
-	q := BooleanQuery{}
+func (b BooleanQueryParams) Boolean() (*BooleanQuery, error) {
+	q := &BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
 		return q, NewQueryError(err, KindBoolean)
@@ -71,7 +71,7 @@ func (b Boolean) Boolean() (BooleanQuery, error) {
 	return q, nil
 }
 
-func (b Boolean) Kind() Kind {
+func (b BooleanQueryParams) Kind() Kind {
 	return KindBoolean
 }
 

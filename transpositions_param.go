@@ -50,7 +50,7 @@ func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error 
 func marshalTranspositionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithTranspositions); ok {
 		if !b.Transpositions() {
-			data[paramTranspositions] = b.Transpositions()
+			data["transpositions"] = b.Transpositions()
 		}
 	}
 	return data, nil

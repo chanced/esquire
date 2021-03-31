@@ -15,7 +15,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters.html#completion-suggester
 type CompletionField struct {
 	BaseField                       `json:",inline" bson:",inline"`
-	AnalyzerParam                   `json:",inline" bson:",inline"`
+	analyzerParam                   `json:",inline" bson:",inline"`
 	PreserveSeperatorsParam         `json:",inline" bson:",inline"`
 	PreservePositionIncrementsParam `json:",inline" bson:",inline"`
 	MaxInputLengthParam             `json:",inline" bson:",inline"`

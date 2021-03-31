@@ -48,7 +48,7 @@ func (a *analyzerParam) SetAnalyzer(v string) {
 func marshalAnalyzerParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithAnalyzer); ok {
 		if a.Analyzer() != DefaultAnalyzer {
-			data[paramAnalyzer] = a.Analyzer()
+			data["analyzer"] = a.Analyzer()
 		}
 	}
 	return data, nil

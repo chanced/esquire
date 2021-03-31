@@ -72,7 +72,7 @@ func unmarshalCaseInsensitiveParam(data dynamic.JSON, target interface{}) error 
 func marshalCaseInsensitiveParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithCaseInsensitive); ok {
 		if b.CaseInsensitive() {
-			data[paramCaseInsensitive] = b.CaseInsensitive()
+			data["case_insensitive"] = b.CaseInsensitive()
 		}
 	}
 	return data, nil

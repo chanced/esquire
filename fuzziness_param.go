@@ -108,7 +108,7 @@ func unmarshalFuzzinessParam(data dynamic.JSON, target interface{}) error {
 func marshalFuzzinessParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.Fuzziness() != DefaultFuzziness {
-			data[paramFuzziness] = a.Fuzziness()
+			data["fuzziness"] = a.Fuzziness()
 		}
 	}
 	return data, nil
@@ -132,7 +132,7 @@ func unmarshalFuzzyRewriteParam(data dynamic.JSON, target interface{}) error {
 func marshalFuzzyRewriteParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if a, ok := source.(WithFuzziness); ok {
 		if a.FuzzyRewrite() != a.DefaultFuzzyRewrite() {
-			data[paramFuzzyRewrite] = a.FuzzyRewrite()
+			data["fuzzy_rewrite"] = a.FuzzyRewrite()
 		}
 	}
 	return data, nil

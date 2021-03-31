@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/chanced/dynamic"
-	"github.com/chanced/picker/search"
+	search "github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 

@@ -27,6 +27,8 @@ var (
 	ErrInvalidParams        = errors.New("picker: params should marshal into a JSON object")
 	ErrOriginRequired       = errors.New("picker: Origin is required")
 	ErrScaleRequired        = errors.New("picker: Scale is required")
+	ErrInvalidScoreMode     = errors.New("picker: invalid ScoreMode")
+	ErrInvalidBoostMode     = errors.New("picker: invalid BoostMode")
 )
 
 type QueryError struct {

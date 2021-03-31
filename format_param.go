@@ -65,7 +65,7 @@ func unmarshalFormatParam(value dynamic.JSON, target interface{}) error {
 func marshalFormatParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithFormat); ok {
 		if b.Format() != DefaultFormat {
-			data[paramBoost] = b.Format()
+			data["boost"] = b.Format()
 		}
 	}
 	return data, nil

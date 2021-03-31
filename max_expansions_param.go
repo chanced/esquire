@@ -81,7 +81,7 @@ func unmarshalMaxExpansionsParam(data dynamic.JSON, target interface{}) error {
 func marshalMaxExpansionsParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMaxExpansions); ok {
 		if b.MaxExpansions() != DefaultMaxExpansions {
-			data[paramMaxExpansions] = b.MaxExpansions()
+			data["max_expansions"] = b.MaxExpansions()
 		}
 	}
 	return data, nil

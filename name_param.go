@@ -40,7 +40,7 @@ func unmarshalNameParam(data dynamic.JSON, target interface{}) error {
 func marshalNameParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithName); ok {
 		if b.Name() != DefaultName {
-			data[paramName] = b.Name()
+			data["_name"] = b.Name()
 		}
 	}
 	return data, nil

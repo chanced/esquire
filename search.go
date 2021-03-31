@@ -122,7 +122,7 @@ func NewSearch(p Params) (*Search, error) {
 		s.SetSize(p.Size)
 	}
 
-	q, err := newQuery(p.Query)
+	q, err := p.Query.Query()
 	if err != nil {
 		return nil, err
 	}

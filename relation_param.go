@@ -90,7 +90,7 @@ func unmarshalRelationParam(data dynamic.JSON, target interface{}) error {
 func marshalRelationParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithRelation); ok {
 		if b.Relation() != DefaultRelation {
-			data[paramRelation] = b.Relation()
+			data["relation"] = b.Relation()
 		}
 	}
 	return data, nil

@@ -54,7 +54,7 @@ func unmarshalCutoffFrequencyParam(data dynamic.JSON, target interface{}) error 
 func marshalCutoffFrequencyParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if p, ok := source.(WithCutoffFrequency); ok {
 		if p.CutoffFrequency().HasValue() {
-			data[paramCutoffFrequency] = p.CutoffFrequency()
+			data["cutoff_frequency"] = p.CutoffFrequency()
 		}
 	}
 	return data, nil

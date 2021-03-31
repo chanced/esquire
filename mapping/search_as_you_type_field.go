@@ -40,7 +40,7 @@ package mapping
 type SearchAsYouTypeField struct {
 	BaseField           `bson:",inline" json:",inline"`
 	MaxShingleSizeParam `bson:",inline" json:",inline"`
-	AnalyzerParam       `bson:",inline" json:",inline"`
+	analyzerParam       `bson:",inline" json:",inline"`
 	IndexParam          `bson:",inline" json:",inline"`
 	IndexOptionsParam   `bson:",inline" json:",inline"`
 	NormsParam          `bson:",inline" json:",inline"`

@@ -1,6 +1,6 @@
 package mapping
 
-// FieldWithAnalyzer is a Field mapping with an analyzer
+// WithAnalyzer is a Field mapping with an analyzer
 //
 // Analyzer
 //
@@ -27,7 +27,7 @@ package mapping
 // stop words
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
-type FieldWithAnalyzer interface {
+type WithAnalyzer interface {
 	// Analyzer parameter specifies the analyzer used for text analysis when
 	// indexing or searching a text field.
 	Analyzer() string
@@ -45,11 +45,11 @@ type FieldWithAnalyzer interface {
 	SetSearchQuoteAnalyzer(v string)
 }
 
-// AnalyzerParam adds Analyzer, SearchAnalyzer, and SearchQuoteAnalyzer
+// analyzerParam adds Analyzer, SearchAnalyzer, and SearchQuoteAnalyzer
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
-type AnalyzerParam struct {
-	AnalyzerValue            string `json:"analyzer,omitempty" bson:"analyzer,omitempty"`
+type analyzerParam struct {
+	analyzer                 string `json:"analyzer,omitempty" bson:"analyzer,omitempty"`
 	SearchAnalyzerValue      string `json:"search_analyzer,omitempty" bson:"search_analyzer,omitempty"`
 	SearchQuoteAnalyzerValue string `json:"search_quote_analyzer,omitempty" bson:"search_quote_analyzer,omitempty"`
 }
@@ -59,25 +59,25 @@ type AnalyzerParam struct {
 //
 // Unless overridden with the search_analyzer mapping parameter, this
 // analyzer is used for both index and search analysis.
-func (ap AnalyzerParam) Analyzer() string {
-	return ap.AnalyzerValue
+func (ap analyzerParam) Analyzer() string {
+	return ap.analyzer
 }
 
 // SetAnalyzer sets Analyzer to v
-func (ap *AnalyzerParam) SetAnalyzer(v string) {
+func (ap *analyzerParam) SetAnalyzer(v string) {
 	if ap.Analyzer() != v {
-		ap.AnalyzerValue = v
+		ap.analyzer = v
 
 	}
 }
 
 // SearchAnalyzer overrides Analyzer for search analysis
-func (ap AnalyzerParam) SearchAnalyzer() string {
+func (ap analyzerParam) SearchAnalyzer() string {
 	return ap.SearchAnalyzerValue
 }
 
 // SetSearchAnalyzer sets SearchAnalyzer to v
-func (ap *AnalyzerParam) SetSearchAnalyzer(v string) {
+func (ap *analyzerParam) SetSearchAnalyzer(v string) {
 	if ap.SearchAnalyzer() != v {
 		ap.SearchAnalyzerValue = v
 	}
@@ -86,12 +86,12 @@ func (ap *AnalyzerParam) SetSearchAnalyzer(v string) {
 // SearchQuoteAnalyzer setting allows you to specify an analyzer for
 // phrases, this is particularly useful when dealing with disabling
 // stop words for phrase queries.
-func (ap AnalyzerParam) SearchQuoteAnalyzer() string {
+func (ap analyzerParam) SearchQuoteAnalyzer() string {
 	return ap.SearchQuoteAnalyzerValue
 }
 
 // SetSearchQuoteAnalyzer sets SearchQuoteAnalyzer to v
-func (ap AnalyzerParam) SetSearchQuoteAnalyzer(v string) {
+func (ap analyzerParam) SetSearchQuoteAnalyzer(v string) {
 	if ap.SearchAnalyzer() != v {
 		ap.SearchQuoteAnalyzerValue = v
 	}

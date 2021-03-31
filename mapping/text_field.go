@@ -36,7 +36,7 @@ type TextField struct {
 	NormsParam                    `json:",inline" bson:",inline"`
 	PositionIncrementGapParam     `json:",inline" bson:",inline"`
 	StoreParam                    `json:",inline" bson:",inline"`
-	AnalyzerParam                 `json:",inline" bson:",inline"`
+	analyzerParam                 `json:",inline" bson:",inline"`
 	SimilarityParam               `json:",inline" bson:",inline"`
 	TermVectorParam               `json:",inline" bson:",inline"`
 	MetaParam                     `json:",inline" bson:",inline"`

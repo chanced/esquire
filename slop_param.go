@@ -41,7 +41,7 @@ func unmarshalSlopParam(data dynamic.JSON, target interface{}) error {
 func marshalSlopParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithSlop); ok {
 		if b.Slop() != DefaultSlop {
-			data[paramSlop] = b.Slop()
+			data["slop"] = b.Slop()
 		}
 	}
 	return data, nil

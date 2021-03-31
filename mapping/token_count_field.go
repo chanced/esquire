@@ -6,7 +6,7 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/token-count.html
 type TokenCountField struct {
 	BaseField                     `json:",inline" bson:",inline"`
-	AnalyzerParam                 `json:",inline" bson:",inline"`
+	analyzerParam                 `json:",inline" bson:",inline"`
 	EnablePositionIncrementsParam `json:",inline" bson:",inline"`
 	DocValuesParam                `json:",inline" bson:",inline"`
 	IndexParam                    `json:",inline" bson:",inline"`

@@ -44,7 +44,7 @@ func unmarshalTimeZoneParam(data dynamic.JSON, target interface{}) error {
 func marshalTimeZoneParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithTimeZone); ok {
 		if b.TimeZone() != "" {
-			data[paramTimeZone] = b.TimeZone()
+			data["time_zone"] = b.TimeZone()
 		}
 	}
 	return data, nil

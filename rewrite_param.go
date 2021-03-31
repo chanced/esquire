@@ -128,7 +128,7 @@ func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {
 func marshalRewriteParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithRewrite); ok {
 		if b.Rewrite() != DefaultRewrite {
-			data[paramRewrite] = b.Rewrite()
+			data["rewrite"] = b.Rewrite()
 		}
 	}
 	return data, nil

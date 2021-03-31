@@ -146,3 +146,7 @@ func (s *ScriptScoreQuery) setQuery(query *Query) error {
 	s.query = qv
 	return nil
 }
+
+func (s *ScriptScoreQuery) Clear() {
+	*s = ScriptScoreQuery{}
+}

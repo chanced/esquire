@@ -83,7 +83,7 @@ func (b *boostParam) SetBoost(v interface{}) error {
 func marshalBoostParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithBoost); ok {
 		if b.Boost() != DefaultBoost {
-			data[paramBoost] = b.Boost()
+			data["boost"] = b.Boost()
 		}
 	}
 	return data, nil

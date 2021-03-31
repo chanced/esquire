@@ -83,7 +83,7 @@ func unmarshalMinimumShouldMatchParam(data dynamic.JSON, target interface{}) err
 func marshalMinimumShouldMatchParam(data dynamic.Map, source interface{}) (dynamic.Map, error) {
 	if b, ok := source.(WithMinimumShouldMatch); ok {
 		if b.MinimumShouldMatch() != "" {
-			data[paramMinimumShouldMatch] = b.MinimumShouldMatch()
+			data["minimum_should_match"] = b.MinimumShouldMatch()
 		}
 	}
 	return data, nil
