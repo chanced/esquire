@@ -7,80 +7,87 @@ Utilities that pair with the official Elasticsearch Go package
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
 - #### Common types
-- [ ] **[Binary]()**\
-       Binary value encoded as a Base64 string.
-- [ ] **[Boolean]()**\
-       true and false values.
-- [ ] **[Keywords]()**\
-       The keyword family, including keyword, constant_keyword, and wildcard.
-- [ ] **[Numbers]()**\
-       Numeric types, such as long and double, used to express amounts.
-- [ ] **[Dates]()**\
-       Date types, including date and date_nanos.
-- [ ] **[Alias]()**\
-       Defines an alias for an existing field.
+
+  - [ ] **[Binary]()**\
+         Binary value encoded as a Base64 string.
+  - [ ] **[Boolean]()**\
+         true and false values.
+  - [ ] **[Keywords]()**\
+         The keyword family, including keyword, constant_keyword, and wildcard.
+  - [ ] **[Numbers]()**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[Dates]()**\
+         Date types, including date and date_nanos.
+  - [ ] **[Alias]()**\
+         Defines an alias for an existing field.
 
 - #### Objects and relational types
-- [ ] **[Object]()**\
-       A JSON object.
-- [ ] **[Flattened]()**\
-       An entire JSON object as a single field value.
-- [ ] **[Nested]()**\
-       A JSON object that preserves the relationship between its subfields.
-- [ ] **[Join]()**\
-       Defines a parent/child relationship for documents in the same index.
+
+  - [ ] **[Object]()**\
+         A JSON object.
+  - [ ] **[Flattened]()**\
+         An entire JSON object as a single field value.
+  - [ ] **[Nested]()**\
+         A JSON object that preserves the relationship between its subfields.
+  - [ ] **[Join]()**\
+         Defines a parent/child relationship for documents in the same index.
 
 - #### Structured data types
-- [ ] **[Range]()**\
-       Range types, such as long_range, double_range, date_range, and ip_range.
-- [ ] **[IP]()**\
-       IPv4 and IPv6 addresses.
-- [ ] **[Version]()**\
-       Software versions. Supports Semantic Versioning precedence rules.
-- [ ] **[Murmur3]()**\
-       Compute and stores hashes of values.
+
+  - [ ] **[Range]()**\
+         Range types, such as long_range, double_range, date_range, and ip_range.
+  - [ ] **[IP]()**\
+         IPv4 and IPv6 addresses.
+  - [ ] **[Version]()**\
+         Software versions. Supports Semantic Versioning precedence rules.
+  - [ ] **[Murmur3]()**\
+         Compute and stores hashes of values.
 
 - #### Aggregate data types
-- [ ] **[Aggregate_metric_double]()**\
-       Pre-aggregated metric values.
-- [ ] **[Histogram]()**\
-       Pre-aggregated numerical values in the form of a histogram.
+
+  - [ ] **[Aggregate_metric_double]()**\
+         Pre-aggregated metric values.
+  - [ ] **[Histogram]()**\
+         Pre-aggregated numerical values in the form of a histogram.
 
 - #### Text search types
-- [ ] **[Text]()**\
-       Analyzed, unstructured text.
-      annotated-text
-      Text containing special markup. Used for identifying named entities.
-- [ ] **[Completion]()**\
-       Used for auto-complete suggestions.
-- [ ] **[Search_as_you_type]()**\
-       text-like type for as-you-type completion.
-- [ ] **[Token_count]()**\
-       A count of tokens in a text.
+
+  - [ ] **[Text]()**\
+         Analyzed, unstructured text.
+        annotated-text
+        Text containing special markup. Used for identifying named entities.
+  - [ ] **[Completion]()**\
+         Used for auto-complete suggestions.
+  - [ ] **[Search_as_you_type]()**\
+         text-like type for as-you-type completion.
+  - [ ] **[Token_count]()**\
+         A count of tokens in a text.
 
 - #### Document ranking types
-- [ ] **[Dense_vector]()**\
-       Records dense vectors of float values.
-- [ ] **[Sparse_vector]()**\
-       Records sparse vectors of float values.
-- [ ] **[Rank_feature]()**\
-       Records a numeric feature to boost hits at query time.
-- [ ] **[Rank_features]()**\
-       Records numeric features to boost hits at query time.
+
+  - [ ] **[Dense_vector]()**\
+         Records dense vectors of float values.
+  - [ ] **[Sparse_vector]()**\
+         Records sparse vectors of float values.
+  - [ ] **[Rank_feature]()**\
+         Records a numeric feature to boost hits at query time.
+  - [ ] **[Rank_features]()**\
+         Records numeric features to boost hits at query time.
 
 - #### Spatial data types
-- [ ] **[Geo_point]()**\
-       Latitude and longitude points.
-- [ ] **[Geo_shape]()**\
-       Complex shapes, such as polygons.
-- [ ] **[Point]()**\
-       Arbitrary cartesian points.
-- [ ] **[Shape]()**\
-       Arbitrary cartesian geometries.
+
+  - [ ] **[Geo_point]()**\
+         Latitude and longitude points.
+  - [ ] **[Geo_shape]()**\
+         Complex shapes, such as polygons.
+  - [ ] **[Point]()**\
+         Arbitrary cartesian points.
+  - [ ] **[Shape]()**\
+         Arbitrary cartesian geometries.
 
 - #### Other types
-- [ ] **[Percolator]()**\
-       Indexes queries written in Query DSL.
+  - [ ] **[Percolator]()**\
+         Indexes queries written in Query DSL.
 
 ### Queries
 
