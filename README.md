@@ -6,6 +6,26 @@ Utilities that pair with the official Elasticsearch Go package
 
 Testing is incredibly light right now.
 
+### [Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html)
+
+- #### Built-in analyzers
+  - [ ] **[Standard](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-analyzer.html)**\
+        The standard analyzer divides text into terms on word boundaries, as defined by the Unicode Text Segmentation algorithm. It removes most punctuation, lowercases terms, and supports removing stop words.
+  - [ ] **[Simple](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-simple-analyzer.html)**\
+        The simple analyzer divides text into terms whenever it encounters a character which is not a letter. It lowercases all terms.
+  - [ ] **[Whitespace](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-whitespace-analyzer.html)**\
+        The whitespace analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
+  - [ ] **[Stop](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stop-analyzer.html)**\
+        The stop analyzer is like the simple analyzer, but also supports removal of stop words.
+  - [ ] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-keyword-analyzer.html)**\
+        The keyword analyzer is a “noop” analyzer that accepts whatever text it is given and outputs the exact same text as a single term.
+  - [ ] **[Pattern](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html)**\
+        The pattern analyzer uses a regular expression to split the text into terms. It supports lower-casing and stop words.
+  - [ ] **[Languages](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html)**\
+        Elasticsearch provides many language-specific analyzers like english or french.
+  - [ ] **[Fingerprint](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-fingerprint-analyzer.html)**\
+        The fingerprint analyzer is a specialist analyzer which creates a fingerprint which can be used for duplicate detection.
+
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
 - #### Common types
