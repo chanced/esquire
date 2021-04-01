@@ -11,7 +11,7 @@ type GeoShapeField struct {
 	OrientationParam     `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
 	IgnoreZValueParam    `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
 }
 
 func (f GeoShapeField) Clone() Field {
@@ -23,5 +23,5 @@ func (f GeoShapeField) Clone() Field {
 	return n
 }
 func NewGeoShapeField() *GeoShapeField {
-	return &GeoShapeField{BaseField: BaseField{MappingType: TypeGeoShape}}
+	return &GeoShapeField{BaseField: BaseField{MappingType: FieldTypeGeoShape}}
 }

@@ -31,7 +31,7 @@ type Prefix struct {
 	completeClause
 }
 
-func (p Prefix) Kind() Kind {
+func (p Prefix) Kind() QueryKind {
 	return KindPrefix
 }
 
@@ -76,7 +76,7 @@ func (p *PrefixClause) setValue(value string) error {
 	return nil
 }
 
-func (p PrefixClause) Kind() Kind {
+func (p PrefixClause) Kind() QueryKind {
 	return KindPrefix
 }
 

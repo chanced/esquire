@@ -41,10 +41,10 @@ type SearchAsYouTypeField struct {
 	BaseField           `bson:",inline" json:",inline"`
 	MaxShingleSizeParam `bson:",inline" json:",inline"`
 	analyzerParam       `bson:",inline" json:",inline"`
-	IndexParam          `bson:",inline" json:",inline"`
+	indexParam          `bson:",inline" json:",inline"`
 	IndexOptionsParam   `bson:",inline" json:",inline"`
 	NormsParam          `bson:",inline" json:",inline"`
-	StoreParam          `bson:",inline" json:",inline"`
+	storeParam          `bson:",inline" json:",inline"`
 	SimilarityParam     `bson:",inline" json:",inline"`
 	TermVectorParam     `bson:",inline" json:",inline"`
 }
@@ -64,5 +64,5 @@ func (f SearchAsYouTypeField) Clone() Field {
 }
 
 func NewSearchAsYouTypeField() *SearchAsYouTypeField {
-	return &SearchAsYouTypeField{BaseField: BaseField{MappingType: TypeSearchAsYouType}}
+	return &SearchAsYouTypeField{BaseField: BaseField{MappingType: FieldTypeSearchAsYouType}}
 }

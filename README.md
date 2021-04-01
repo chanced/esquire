@@ -111,24 +111,24 @@ Utilities that pair with the official Elasticsearch Go package
   You can use term-level queries to find documents based on precise values in structured data. Examples of structured data include date ranges, IP addresses, prices, or product IDs.
   Unlike full-text queries, term-level queries do not analyze search terms. Instead, term-level queries match the exact terms stored in a field.
   - [x] **[Exists]()**\
-        Returns documents that contain any indexed value for a field.
+         Returns documents that contain any indexed value for a field.
   - [x] **[Fuzzy]()**\
-        Returns documents that contain terms similar to the search term. Elasticsearch measures similarity, or fuzziness, using a Levenshtein edit distance.
+         Returns documents that contain terms similar to the search term. Elasticsearch measures similarity, or fuzziness, using a Levenshtein edit distance.
   - [ ] **[Ids]()**\
-        Returns documents based on their document IDs.
+         Returns documents based on their document IDs.
   - [x] **[Prefix]()**\
          Returns documents that contain a specific prefix in a provided field.
-  - [ ] **[Range]()**\
-        Returns documents that contain terms within a provided range.
+  - [x] **[Range]()**\
+         Returns documents that contain terms within a provided range.
   - [ ] **[Regexp]()**\
-        Returns documents that contain terms matching a regular expression.
+         Returns documents that contain terms matching a regular expression.
   - [x] **[Term]()**\
-        Returns documents that contain an exact term in a provided field.
+         Returns documents that contain an exact term in a provided field.
   - [x] **[Terms]()**\
-        Returns documents that contain one or more exact terms in a provided field.
+         Returns documents that contain one or more exact terms in a provided field.
   - [ ] **[Terms set]()**\
-        Returns documents that contain a minimum number of exact terms in a provided field. You can define the minimum number of matching terms using a field or script.
-  - [ ] **[Type]()**\
-        Returns documents of the specified type.
+         Returns documents that contain a minimum number of exact terms in a provided field. You can define the minimum number of matching terms using a field or script.
+  - [ ] **[Type]() [Deprecated]**\
+         Returns documents of the specified type.
   - [ ] **[Wildcard]()**\
-        Returns documents that contain terms matching a wildcard pattern.
+         Returns documents that contain terms matching a wildcard pattern.

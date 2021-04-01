@@ -24,5 +24,5 @@ func (f DenseVectorField) Clone() Field {
 	return n
 }
 func NewDenseVectorField() *DenseVectorField {
-	return &DenseVectorField{BaseField: BaseField{MappingType: TypeDenseVector}}
+	return &DenseVectorField{BaseField: BaseField{MappingType: FieldTypeDenseVector}}
 }

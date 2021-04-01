@@ -1,11 +1,10 @@
 package mapping
 
-func NewBinaryField() *BinaryField {
-	return &BinaryField{
-		BaseField: BaseField{
-			MappingType: TypeBinary,
-		},
-	}
+type BinaryFieldParams struct {
+}
+
+func NewBinaryField(params BinaryFieldParams) *BinaryField {
+
 }
 
 // Whether the field value should be stored and retrievable separately from the _source field. Accepts true or false (default).
@@ -15,9 +14,8 @@ func NewBinaryField() *BinaryField {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/binary.html
 type BinaryField struct {
-	BaseField      `json:",inline" bson:",inline"`
-	DocValuesParam `json:",inline" bson:",inline"`
-	StoreParam     `json:",inline" bson:",inline"`
+	docValuesParam `json:",inline" bson:",inline"`
+	storeParam     `json:",inline" bson:",inline"`
 }
 
 func (b BinaryField) Clone() Field {

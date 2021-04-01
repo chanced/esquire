@@ -17,7 +17,7 @@ func (f RankFeatureField) Clone() Field {
 }
 
 func NewRankFeatureField() *RankFeatureField {
-	return &RankFeatureField{BaseField: BaseField{MappingType: TypeRankFeature}}
+	return &RankFeatureField{BaseField: BaseField{MappingType: FieldTypeRankFeature}}
 }
 
 // A RankFeaturesField can index numeric feature vectors, so that they can later be used to boost documents in queries with a rank_feature query.
@@ -37,5 +37,5 @@ func (f RankFeaturesField) Clone() Field {
 }
 
 func NewRankFeaturesField() *RankFeaturesField {
-	return &RankFeaturesField{BaseField: BaseField{MappingType: TypeRankFeatures}}
+	return &RankFeaturesField{BaseField: BaseField{MappingType: FieldTypeRankFeatures}}
 }

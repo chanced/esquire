@@ -71,7 +71,7 @@ func (b BooleanQuery) Boolean() (*BooleanClause, error) {
 	return q, nil
 }
 
-func (b BooleanQuery) Kind() Kind {
+func (b BooleanQuery) Kind() QueryKind {
 	return KindBoolean
 }
 
@@ -94,7 +94,7 @@ func (b *BooleanClause) Clause() (QueryClause, error) {
 	return b, nil
 }
 
-func (BooleanClause) Kind() Kind {
+func (BooleanClause) Kind() QueryKind {
 	return KindBoolean
 }
 

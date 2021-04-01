@@ -16,7 +16,7 @@ func (mn MatchNoneQuery) Clause() (QueryClause, error) {
 
 }
 
-func (mn MatchNoneQuery) Kind() Kind {
+func (mn MatchNoneQuery) Kind() QueryKind {
 	return KindMatchNone
 }
 func (mn MatchNoneQuery) MatchNone() (*MatchNoneClause, error) {
@@ -35,7 +35,7 @@ type MatchNoneClause struct {
 func (mn *MatchNoneClause) Clause() (QueryClause, error) {
 	return mn, nil
 }
-func (MatchNoneClause) Kind() Kind {
+func (MatchNoneClause) Kind() QueryKind {
 	return KindMatchNone
 }
 

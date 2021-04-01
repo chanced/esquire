@@ -14,7 +14,7 @@ func TestJSON(t *testing.T) {
 	var err error
 	assert := require.New(t)
 
-	handler := mapping.FieldTypeHandlers[mapping.TypeInteger]
+	handler := mapping.FieldTypeHandlers[mapping.FieldTypeInteger]
 	hv := handler()
 	assert.NotNil(handler)
 	assert.NotNil(hv)

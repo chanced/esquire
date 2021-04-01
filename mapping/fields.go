@@ -47,7 +47,7 @@ func (f *Fields) UnmarshalJSON(data []byte) error {
 		if !ok {
 			return errors.New("mapping type is missing for " + fld)
 		}
-		handler, ok := FieldTypeHandlers[Type(typ.UnquotedString())]
+		handler, ok := FieldTypeHandlers[FieldType(typ.UnquotedString())]
 		if !ok {
 			return fmt.Errorf("%w <%s> for field %s", ErrInvalidType, typ, fld)
 		}

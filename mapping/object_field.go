@@ -12,5 +12,5 @@ type ObjectField struct {
 }
 
 func NewObjectField() *ObjectField {
-	return &ObjectField{BaseField: BaseField{MappingType: TypeObject}}
+	return &ObjectField{BaseField: BaseField{MappingType: FieldTypeObject}}
 }

@@ -60,7 +60,7 @@ func (s ScriptScoreQuery) ScriptScore() (*ScriptScoreClause, error) {
 	return q, nil
 }
 
-func (ScriptScoreQuery) Kind() Kind {
+func (ScriptScoreQuery) Kind() QueryKind {
 	return KindScriptScore
 }
 
@@ -73,7 +73,7 @@ type ScriptScoreClause struct {
 	completeClause
 }
 
-func (ScriptScoreClause) Kind() Kind {
+func (ScriptScoreClause) Kind() QueryKind {
 	return KindScriptScore
 }
 

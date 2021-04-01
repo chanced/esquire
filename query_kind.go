@@ -1,37 +1,37 @@
 package picker
 
-type Kind string
+type QueryKind string
 
-func (t Kind) String() string {
+func (t QueryKind) String() string {
 	return string(t)
 }
 
-func (t Kind) IsValid() bool {
+func (t QueryKind) IsValid() bool {
 	_, ok := clauseHandlers[t]
 	return ok
 }
 
 const (
-	KindPrefix         Kind = "prefix"
-	KindMatch          Kind = "match"
-	KindMatchAll       Kind = "match_all"
-	KindMatchNone      Kind = "match_none"
-	KindTerm           Kind = "term"
-	KindExists         Kind = "exists"
-	KindTerms          Kind = "terms"
-	KindRange          Kind = "range"
-	KindBoosting       Kind = "boosting"
-	KindBoolean        Kind = "boolean"
-	KindConstantScore  Kind = "constant_score"
-	KindFunctionScore  Kind = "function_score"
-	KindDisjunctionMax Kind = "dis_max"
-	KindAllOf          Kind = "all_of"
-	KindFuzzy          Kind = "fuzzy"
-	KindScriptScore    Kind = "script_score"
-	KindScript         Kind = "script"
+	KindPrefix         QueryKind = "prefix"
+	KindMatch          QueryKind = "match"
+	KindMatchAll       QueryKind = "match_all"
+	KindMatchNone      QueryKind = "match_none"
+	KindTerm           QueryKind = "term"
+	KindExists         QueryKind = "exists"
+	KindTerms          QueryKind = "terms"
+	KindRange          QueryKind = "range"
+	KindBoosting       QueryKind = "boosting"
+	KindBoolean        QueryKind = "boolean"
+	KindConstantScore  QueryKind = "constant_score"
+	KindFunctionScore  QueryKind = "function_score"
+	KindDisjunctionMax QueryKind = "dis_max"
+	KindAllOf          QueryKind = "all_of"
+	KindFuzzy          QueryKind = "fuzzy"
+	KindScriptScore    QueryKind = "script_score"
+	KindScript         QueryKind = "script"
 )
 
-var clauseHandlers = map[Kind]func() QueryClause{
+var clauseHandlers = map[QueryKind]func() QueryClause{
 	KindPrefix:    func() QueryClause { return &PrefixClause{} },
 	KindMatch:     func() QueryClause { return &MatchClause{} },
 	KindTerm:      func() QueryClause { return &TermClause{} },

@@ -32,12 +32,12 @@ package mapping
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type LongField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -53,7 +53,7 @@ func (f LongField) Clone() Field {
 }
 
 func NewLongField() *LongField {
-	return &LongField{BaseField: BaseField{MappingType: TypeLong}}
+	return &LongField{BaseField: BaseField{MappingType: FieldTypeLong}}
 }
 
 // An IntegerField is a signed 64-bit integer with a minimum value of -263
@@ -62,12 +62,12 @@ func NewLongField() *LongField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type IntegerField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -83,7 +83,7 @@ func (f IntegerField) Clone() Field {
 }
 
 func NewIntegerField() *IntegerField {
-	return &IntegerField{BaseField: BaseField{MappingType: TypeInteger}}
+	return &IntegerField{BaseField: BaseField{MappingType: FieldTypeInteger}}
 }
 
 // A ShortField is signed 16-bit integer with a minimum value of -32,768
@@ -92,12 +92,12 @@ func NewIntegerField() *IntegerField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type ShortField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -113,7 +113,7 @@ func (f ShortField) Clone() Field {
 }
 
 func NewShortField() *ShortField {
-	return &ShortField{BaseField: BaseField{MappingType: TypeShort}}
+	return &ShortField{BaseField: BaseField{MappingType: FieldTypeShort}}
 }
 
 // A ByteField is a signed 8-bit integer with a minimum value of -128 and a maximum value of 127.
@@ -121,12 +121,12 @@ func NewShortField() *ShortField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type ByteField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -142,7 +142,7 @@ func (f ByteField) Clone() Field {
 }
 
 func NewByteField() *ByteField {
-	return &ByteField{BaseField: BaseField{MappingType: TypeByte}}
+	return &ByteField{BaseField: BaseField{MappingType: FieldTypeByte}}
 }
 
 // A DoubleField is a double-precision 64-bit IEEE 754 floating point number, restricted to finite values.
@@ -150,12 +150,12 @@ func NewByteField() *ByteField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type DoubleField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -171,7 +171,7 @@ func (f DoubleField) Clone() Field {
 }
 
 func NewDoubleField() *DoubleField {
-	return &DoubleField{BaseField: BaseField{MappingType: TypeDouble}}
+	return &DoubleField{BaseField: BaseField{MappingType: FieldTypeDouble}}
 }
 
 // A FloatField is a single-precision 32-bit IEEE 754 floating point
@@ -180,12 +180,12 @@ func NewDoubleField() *DoubleField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type FloatField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -203,7 +203,7 @@ func (f FloatField) Clone() Field {
 func NewFloatField() *FloatField {
 	return &FloatField{
 		BaseField: BaseField{
-			MappingType: TypeFloat,
+			MappingType: FieldTypeFloat,
 		},
 	}
 }
@@ -214,12 +214,12 @@ func NewFloatField() *FloatField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type HalfFloatField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -236,7 +236,7 @@ func (f HalfFloatField) Clone() Field {
 
 func NewHalfFloatField() *HalfFloatField {
 	return &HalfFloatField{
-		BaseField: BaseField{MappingType: TypeHalfFloat},
+		BaseField: BaseField{MappingType: FieldTypeHalfFloat},
 	}
 }
 
@@ -246,12 +246,12 @@ func NewHalfFloatField() *HalfFloatField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type ScaledFloatField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 	ScalingFactorParam   `bson:",inline" json:",inline"`
 }
@@ -269,7 +269,7 @@ func (f ScaledFloatField) Clone() Field {
 }
 
 func NewScaledFloatField() *ScaledFloatField {
-	return &ScaledFloatField{BaseField: BaseField{MappingType: TypeScaledFloat}}
+	return &ScaledFloatField{BaseField: BaseField{MappingType: FieldTypeScaledFloat}}
 }
 
 // An UnsignedLongField is an unsigned 64-bit integer with a minimum value
@@ -278,12 +278,12 @@ func NewScaledFloatField() *ScaledFloatField {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 type UnsignedLongField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
 	MetaParam            `bson:",inline" json:",inline"`
 }
 
@@ -298,5 +298,5 @@ func (f UnsignedLongField) Clone() Field {
 	return n
 }
 func NewUnsignedLongField() *UnsignedLongField {
-	return &UnsignedLongField{BaseField: BaseField{MappingType: TypeUnsignedLong}}
+	return &UnsignedLongField{BaseField: BaseField{MappingType: FieldTypeUnsignedLong}}
 }

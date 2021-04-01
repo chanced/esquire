@@ -70,7 +70,7 @@ type QueryParams struct {
 	// distance. The query then returns exact matches for each expansion.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
-	Fuzzy *FuzzyQuery
+	Fuzzy *FuzzyQueryParams
 
 	// Prefix returns documents that contain a specific prefix in a provided field.
 	//
@@ -134,7 +134,7 @@ func (q *QueryParams) boolean() (*BooleanClause, error) {
 	return q.Boolean.Boolean()
 }
 
-func (q *QueryParams) fuzzy() (*FuzzyClause, error) {
+func (q *QueryParams) fuzzy() (*FuzzyQuery, error) {
 	if q.Fuzzy == nil {
 		return nil, nil
 	}
@@ -321,7 +321,7 @@ type Query struct {
 	terms         *TermsClause
 	rng           *RangeClause
 	prefix        *PrefixClause
-	fuzzy         *FuzzyClause
+	fuzzy         *FuzzyQuery
 	functionScore *FunctionScoreClause
 	matchAll      *MatchAllClause
 	matchNone     *MatchNoneClause
@@ -386,9 +386,9 @@ func (q Query) Term() *TermClause {
 	return q.term
 }
 
-func (q *Query) clauses() map[Kind]QueryClause {
+func (q *Query) clauses() map[QueryKind]QueryClause {
 
-	return map[Kind]QueryClause{
+	return map[QueryKind]QueryClause{
 		KindMatch:         q.match,
 		KindTerm:          q.term,
 		KindTerms:         q.terms,
@@ -512,21 +512,21 @@ func (q Query) MarshalJSON() ([]byte, error) {
 	return json.Marshal(obj)
 }
 
-func checkField(field string, typ Kind) error {
+func checkField(field string, typ QueryKind) error {
 	if len(field) == 0 {
 		return NewQueryError(ErrFieldRequired, typ)
 	}
 	return nil
 }
 
-func checkValue(value string, typ Kind, field string) error {
+func checkValue(value string, typ QueryKind, field string) error {
 	if len(value) == 0 {
 		return NewQueryError(ErrValueRequired, typ, field)
 	}
 	return nil
 }
 
-func checkValues(values []string, typ Kind, field string) error {
+func checkValues(values []string, typ QueryKind, field string) error {
 	if len(values) == 0 {
 		return NewQueryError(ErrValueRequired, typ, field)
 	}

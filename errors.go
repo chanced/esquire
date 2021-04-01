@@ -14,8 +14,8 @@ var (
 	ErrFieldExists          = errors.New("picker: field exists")
 	ErrKindRequired         = errors.New("picker: rule type is required")
 	ErrUnsupportedKind      = errors.New("picker: unsupported rule type")
-	ErrPathRequired         = errors.New("picker: Path required in lookup")
-	ErrIDRequired           = errors.New("picker: ID required for lookup")
+	ErrPathRequired         = errors.New("picker: Path required")
+	ErrIDRequired           = errors.New("picker: ID required")
 	ErrIndexRequired        = errors.New("picker: Index is required")
 	ErrInvalidBoost         = errors.New("picker: invalid boost value")
 	ErrInvalidMaxExpansions = errors.New("picker: invalid max expansions")
@@ -35,15 +35,10 @@ var (
 type QueryError struct {
 	Field string
 	Err   error
-	Kind  Kind
+	Kind  QueryKind
 }
 
-type RuleError struct {
-	*QueryError
-	Rule Clause
-}
-
-func NewQueryError(err error, queryKind Kind, field ...string) *QueryError {
+func NewQueryError(err error, queryKind QueryKind, field ...string) *QueryError {
 	var f string
 	if len(field) > 0 {
 		f = field[0]

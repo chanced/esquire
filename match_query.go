@@ -94,7 +94,7 @@ func (m MatchQuery) field() string {
 	return m.Field
 }
 
-func (m MatchQuery) Kind() Kind {
+func (m MatchQuery) Kind() QueryKind {
 	return KindMatch
 }
 func (m MatchQuery) Clause() (QueryClause, error) {
@@ -245,7 +245,7 @@ func (m *MatchClause) unmarshalClauseJSON(data dynamic.JSON) error {
 	return nil
 }
 
-func (m MatchClause) Kind() Kind {
+func (m MatchClause) Kind() QueryKind {
 	return KindMatch
 }
 func (m *MatchClause) Clear() {

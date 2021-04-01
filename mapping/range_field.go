@@ -13,9 +13,9 @@ package mapping
 // of -231 and maximum of 231-1.
 type IntegerRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f IntegerRangeField) Clone() Field {
@@ -27,16 +27,16 @@ func (f IntegerRangeField) Clone() Field {
 }
 
 func NewIntegerRangeField() *IntegerRangeField {
-	return &IntegerRangeField{BaseField: BaseField{MappingType: TypeIntegerRange}}
+	return &IntegerRangeField{BaseField: BaseField{MappingType: FieldTypeIntegerRange}}
 }
 
 // FloatRangeField is a range of single-precision 32-bit IEEE 754 floating point
 // values.
 type FloatRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f FloatRangeField) Clone() Field {
@@ -48,16 +48,16 @@ func (f FloatRangeField) Clone() Field {
 }
 
 func NewFloatRangeField() *FloatRangeField {
-	return &FloatRangeField{BaseField: BaseField{MappingType: TypeFloatRange}}
+	return &FloatRangeField{BaseField: BaseField{MappingType: FieldTypeFloatRange}}
 }
 
 // LongRangeField is a range of signed 64-bit integers with a minimum value of
 // -263 and maximum of 263-1.
 type LongRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f LongRangeField) Clone() Field {
@@ -68,16 +68,16 @@ func (f LongRangeField) Clone() Field {
 	return n
 }
 func NewLongRangeField() *LongRangeField {
-	return &LongRangeField{BaseField: BaseField{MappingType: TypeLongRange}}
+	return &LongRangeField{BaseField: BaseField{MappingType: FieldTypeLongRange}}
 }
 
 // DoubleRangeField is a range of double-precision 64-bit IEEE 754 floating
 // point values.
 type DoubleRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f DoubleRangeField) Clone() Field {
@@ -88,7 +88,7 @@ func (f DoubleRangeField) Clone() Field {
 	return n
 }
 func NewDoubleRangeField() *DoubleRangeField {
-	return &DoubleRangeField{BaseField: BaseField{MappingType: TypeDoubleRange}}
+	return &DoubleRangeField{BaseField: BaseField{MappingType: FieldTypeDoubleRange}}
 }
 
 // DateRangeField is a range of date values. Date ranges support various date
@@ -98,9 +98,9 @@ func NewDoubleRangeField() *DoubleRangeField {
 // expression are not supported.
 type DateRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f DateRangeField) Clone() Field {
@@ -111,16 +111,16 @@ func (f DateRangeField) Clone() Field {
 	return n
 }
 func NewDateRangeField() *DateRangeField {
-	return &DateRangeField{BaseField: BaseField{MappingType: TypeDateRange}}
+	return &DateRangeField{BaseField: BaseField{MappingType: FieldTypeDateRange}}
 }
 
 // IPRangeField is a range of ip values supporting either IPv4 or IPv6 (or
 // mixed) addresses.
 type IPRangeField struct {
 	BaseField   `bson:",inline" json:",inline"`
-	CoerceParam `bson:",inline" json:",inline"`
-	IndexParam  `bson:",inline" json:",inline"`
-	StoreParam  `bson:",inline" json:",inline"`
+	coerceParam `bson:",inline" json:",inline"`
+	indexParam  `bson:",inline" json:",inline"`
+	storeParam  `bson:",inline" json:",inline"`
 }
 
 func (f IPRangeField) Clone() Field {
@@ -131,5 +131,5 @@ func (f IPRangeField) Clone() Field {
 	return n
 }
 func NewIPRangeField() *IPRangeField {
-	return &IPRangeField{BaseField: BaseField{MappingType: TypeIPRange}}
+	return &IPRangeField{BaseField: BaseField{MappingType: FieldTypeIPRange}}
 }

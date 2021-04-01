@@ -90,7 +90,7 @@ func (e *ExistsClause) IsEmpty() bool {
 	return len(e.field) == 0
 }
 
-func (e ExistsClause) Kind() Kind {
+func (e ExistsClause) Kind() QueryKind {
 	return KindExists
 }
 

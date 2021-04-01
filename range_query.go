@@ -64,7 +64,7 @@ func (r Range) Range() (*RangeClause, error) {
 	return q, nil
 }
 
-func (r Range) Kind() Kind {
+func (r Range) Kind() QueryKind {
 	return KindBoolean
 }
 
@@ -85,7 +85,7 @@ type RangeClause struct {
 func (r *RangeClause) Clause() (QueryClause, error) {
 	return r, nil
 }
-func (RangeClause) Kind() Kind {
+func (RangeClause) Kind() QueryKind {
 	return KindRange
 }
 

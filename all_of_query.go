@@ -14,7 +14,7 @@ type AllOf struct {
 	Name string
 }
 
-func (ao AllOf) Kind() Kind {
+func (ao AllOf) Kind() QueryKind {
 	return KindAllOf
 }
 
@@ -38,7 +38,7 @@ func (ao *AllOfClause) Clause() (QueryClause, error) {
 	return ao, nil
 }
 
-func (AllOfClause) Kind() Kind {
+func (AllOfClause) Kind() QueryKind {
 	return KindAllOf
 }
 

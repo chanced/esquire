@@ -13,7 +13,7 @@ type completeClause struct{}
 func (completeClause) _Complete() {}
 
 type Clause interface {
-	Kind() Kind
+	Kind() QueryKind
 }
 
 type CompleteClauser interface {
@@ -184,7 +184,7 @@ func (qc *QueryClauses) RemoveAllForField(field string) []QueryClause {
 	}
 	return rem
 }
-func (qc *QueryClauses) RemoveAllOfKind(kind Kind) []QueryClause {
+func (qc *QueryClauses) RemoveAllOfKind(kind QueryKind) []QueryClause {
 	rem := []QueryClause{}
 	if qc == nil || qc.clauses == nil {
 		*qc = QueryClauses{
@@ -223,17 +223,17 @@ func (qc QueryClauses) MarshalJSON() ([]byte, error) {
 func (qc *QueryClauses) UnmarshalJSON(data []byte) error {
 	*qc = QueryClauses{}
 	d := dynamic.JSON(data)
-	var cm []map[Kind]dynamic.JSON
+	var cm []map[QueryKind]dynamic.JSON
 	if d.IsNull() || len(data) == 0 {
 		qc.clauses = make([]QueryClause, 0)
 		return nil
 	} else if d.IsObject() {
-		var o map[Kind]dynamic.JSON
+		var o map[QueryKind]dynamic.JSON
 		err := json.Unmarshal(d, &o)
 		if err != nil {
 			return err
 		}
-		cm = []map[Kind]dynamic.JSON{o}
+		cm = []map[QueryKind]dynamic.JSON{o}
 	} else {
 		err := json.Unmarshal(d, &cm)
 		if err != nil {
@@ -285,7 +285,7 @@ func marshalSingleQueryClause(clause QueryClause) (dynamic.JSON, error) {
 }
 
 func unmarshalSingleQueryClause(data dynamic.JSON) (QueryClause, error) {
-	var cd map[Kind]dynamic.JSON
+	var cd map[QueryKind]dynamic.JSON
 	err := json.Unmarshal(data, &cd)
 	if err != nil {
 		return nil, err
@@ -309,7 +309,7 @@ func unmarshalQueryClause(data []byte) (QueryClause, error) {
 	if len(data) == 0 {
 		return nil, nil
 	}
-	var v map[Kind]dynamic.JSON
+	var v map[QueryKind]dynamic.JSON
 	err := json.Unmarshal(data, &v)
 	if err != nil {
 		return nil, err

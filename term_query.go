@@ -50,7 +50,7 @@ func (t TermQuery) Term() (*TermClause, error) {
 	return q, nil
 }
 
-func (t TermQuery) Kind() Kind {
+func (t TermQuery) Kind() QueryKind {
 	return KindTerm
 }
 
@@ -114,7 +114,7 @@ func (t *TermClause) IsEmpty() bool {
 func (t TermClause) Field() string {
 	return t.field
 }
-func (t TermClause) Kind() Kind {
+func (t TermClause) Kind() QueryKind {
 	return KindTerm
 }
 func (t TermClause) Value() string {

@@ -121,5 +121,5 @@ func (f JoinField) Clone() Field {
 }
 
 func NewJoinField() *JoinField {
-	return &JoinField{BaseField: BaseField{MappingType: TypeJoin}}
+	return &JoinField{BaseField: BaseField{MappingType: FieldTypeJoin}}
 }

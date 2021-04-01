@@ -13,18 +13,17 @@ var (
 )
 
 func NewDateField() *DateField {
-	return &DateField{BaseField: BaseField{MappingType: TypeDate}}
+	return &DateField{BaseField: BaseField{MappingType: FieldTypeDate}}
 }
 
 type DateField struct {
-	BaseField            `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	FormatParam          `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
-	MetaParam            `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
+	metaParam            `bson:",inline" json:",inline"`
 }
 
 func (f DateField) Clone() Field {
@@ -72,13 +71,13 @@ func (f DateField) Clone() Field {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/date_nanos.html
 type DateNanoSecField struct {
 	BaseField            `bson:",inline" json:",inline"`
-	DocValuesParam       `bson:",inline" json:",inline"`
+	docValuesParam       `bson:",inline" json:",inline"`
 	FormatParam          `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
-	IndexParam           `bson:",inline" json:",inline"`
-	NullValueParam       `bson:",inline" json:",inline"`
-	StoreParam           `bson:",inline" json:",inline"`
-	MetaParam            `bson:",inline" json:",inline"`
+	indexParam           `bson:",inline" json:",inline"`
+	nullValueParam       `bson:",inline" json:",inline"`
+	storeParam           `bson:",inline" json:",inline"`
+	metaParam            `bson:",inline" json:",inline"`
 }
 
 func (f DateNanoSecField) Clone() Field {
@@ -94,5 +93,5 @@ func (f DateNanoSecField) Clone() Field {
 }
 
 func NewDateNanoSecField() *DateNanoSecField {
-	return &DateNanoSecField{BaseField: BaseField{MappingType: TypeDateNanos}}
+	return &DateNanoSecField{BaseField: BaseField{MappingType: FieldTypeDateNanos}}
 }

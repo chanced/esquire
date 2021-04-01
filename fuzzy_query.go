@@ -7,10 +7,10 @@ import (
 )
 
 type Fuzzier interface {
-	Fuzzy() (*FuzzyClause, error)
+	Fuzzy() (*FuzzyQuery, error)
 }
 
-// FuzzyQuery returns documents that contain terms similar to the search term,
+// FuzzyQueryParams returns documents that contain terms similar to the search term,
 // as measured by a Levenshtein edit distance.
 //
 // An edit distance is the number of one-character changes needed to turn one
@@ -29,7 +29,7 @@ type Fuzzier interface {
 // distance. The query then returns exact matches for each expansion.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
-type FuzzyQuery struct {
+type FuzzyQueryParams struct {
 	// Value or term to find in the provided <field>. (Required)
 	Value string
 	// Field which is being queried against.
@@ -64,8 +64,8 @@ type FuzzyQuery struct {
 	Name string
 }
 
-func (f FuzzyQuery) Fuzzy() (*FuzzyClause, error) {
-	q := &FuzzyClause{field: f.Field}
+func (f FuzzyQueryParams) Fuzzy() (*FuzzyQuery, error) {
+	q := &FuzzyQuery{field: f.Field}
 	err := q.setValue(f.Value)
 	if err != nil {
 		return q, NewQueryError(err, KindFuzzy, f.Field)
@@ -85,7 +85,7 @@ func (f FuzzyQuery) Fuzzy() (*FuzzyClause, error) {
 	return q, nil
 }
 
-func (f FuzzyQuery) Clause() (QueryClause, error) {
+func (f FuzzyQueryParams) Clause() (QueryClause, error) {
 	return f.Fuzzy()
 }
 
@@ -101,7 +101,7 @@ func (f FuzzyQuery) Clause() (QueryClause, error) {
 // 	return q, nil
 // }
 
-// FuzzyClause returns documents that contain terms similar to the search term,
+// FuzzyQuery returns documents that contain terms similar to the search term,
 // as measured by a Levenshtein edit distance.
 //
 // An edit distance is the number of one-character changes needed to turn one
@@ -120,7 +120,7 @@ func (f FuzzyQuery) Clause() (QueryClause, error) {
 // distance. The query then returns exact matches for each expansion.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
-type FuzzyClause struct {
+type FuzzyQuery struct {
 	field string
 	value string
 	fuzzinessParam
@@ -132,25 +132,25 @@ type FuzzyClause struct {
 	completeClause
 }
 
-func (f *FuzzyClause) Clause() (QueryClause, error) {
+func (f *FuzzyQuery) Clause() (QueryClause, error) {
 	return f, nil
 }
-func (f *FuzzyClause) Vale() string {
+func (f *FuzzyQuery) Vale() string {
 	return f.value
 }
 
-func (f FuzzyClause) Field() string {
+func (f FuzzyQuery) Field() string {
 	return f.field
 }
-func (f FuzzyClause) Kind() Kind {
+func (f FuzzyQuery) Kind() QueryKind {
 	return KindFuzzy
 }
 
-func (f *FuzzyClause) IsEmpty() bool {
+func (f *FuzzyQuery) IsEmpty() bool {
 	return !(len(f.field) != 0 || len(f.value) != 0)
 }
 
-func (f *FuzzyClause) Set(field string, fuzzier Fuzzier) error {
+func (f *FuzzyQuery) Set(field string, fuzzier Fuzzier) error {
 	q, err := fuzzier.Fuzzy()
 	if err != nil {
 		return NewQueryError(err, KindFuzzy, field)
@@ -163,14 +163,14 @@ func (f *FuzzyClause) Set(field string, fuzzier Fuzzier) error {
 	*f = *q
 	return nil
 }
-func (f *FuzzyClause) setValue(v string) error {
+func (f *FuzzyQuery) setValue(v string) error {
 	if len(v) == 0 {
 		return ErrValueRequired
 	}
 	return nil
 }
 
-func (f FuzzyClause) MarshalJSON() ([]byte, error) {
+func (f FuzzyQuery) MarshalJSON() ([]byte, error) {
 	if f.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -181,7 +181,7 @@ func (f FuzzyClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{f.field: data})
 }
 
-func (f FuzzyClause) marshalClauseJSON() (dynamic.JSON, error) {
+func (f FuzzyQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	params, err := marshalClauseParams(&f)
 	if err != nil {
 		return nil, err
@@ -190,8 +190,8 @@ func (f FuzzyClause) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(params)
 }
 
-func (f *FuzzyClause) UnmarshalJSON(data []byte) error {
-	*f = FuzzyClause{}
+func (f *FuzzyQuery) UnmarshalJSON(data []byte) error {
+	*f = FuzzyQuery{}
 
 	d := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &d)
@@ -205,7 +205,7 @@ func (f *FuzzyClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (f *FuzzyClause) unmarshalClauseJSON(data dynamic.JSON) error {
+func (f *FuzzyQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	fields, err := unmarshalClauseParams(data, f)
 	if err != nil {
 		return err
@@ -221,6 +221,6 @@ func (f *FuzzyClause) unmarshalClauseJSON(data dynamic.JSON) error {
 	return nil
 }
 
-func (f *FuzzyClause) Clear() {
-	*f = FuzzyClause{}
+func (f *FuzzyQuery) Clear() {
+	*f = FuzzyQuery{}
 }

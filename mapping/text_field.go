@@ -29,13 +29,13 @@ type TextField struct {
 	FieldDataParam                `json:",inline" bson:",inline"`
 	FieldDataFrequencyFilterParam `json:",inline" bson:",inline"`
 	FieldsParam                   `json:",inline" bson:",inline"`
-	IndexParam                    `json:",inline" bson:",inline"`
+	indexParam                    `json:",inline" bson:",inline"`
 	IndexOptionsParam             `json:",inline" bson:",inline"`
 	IndexPrefixesParams           `json:",inline" bson:",inline"`
 	IndexPhrasesParam             `json:",inline" bson:",inline"`
 	NormsParam                    `json:",inline" bson:",inline"`
 	PositionIncrementGapParam     `json:",inline" bson:",inline"`
-	StoreParam                    `json:",inline" bson:",inline"`
+	storeParam                    `json:",inline" bson:",inline"`
 	analyzerParam                 `json:",inline" bson:",inline"`
 	SimilarityParam               `json:",inline" bson:",inline"`
 	TermVectorParam               `json:",inline" bson:",inline"`
@@ -43,5 +43,5 @@ type TextField struct {
 }
 
 func NewTextField() *TextField {
-	return &TextField{BaseField: BaseField{MappingType: TypeText}}
+	return &TextField{BaseField: BaseField{MappingType: FieldTypeText}}
 }

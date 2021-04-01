@@ -70,7 +70,7 @@ func (l Lookup) Terms() (*TermsClause, error) {
 	return q, nil
 }
 
-func (l Lookup) Kind() Kind {
+func (l Lookup) Kind() QueryKind {
 	return KindTerms
 }
 

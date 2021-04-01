@@ -9,7 +9,7 @@ import (
 
 // TODO: accept a subset of params so the handler maps aren't needlessly looped through for types that are not applicable
 
-func isKnownParam(v string) bool {
+func isKnownQueryParam(v string) bool {
 	_, ok := queryParamMarshalers[v]
 	return ok
 }

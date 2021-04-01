@@ -25,12 +25,12 @@ package mapping
 type FlattenedField struct {
 	BaseField `json:",inline" bson:",inline"`
 	// DepthLimitParam - i didnt write this out yet
-	DocValuesParam                `json:",inline" bson:",inline"`
+	docValuesParam                `json:",inline" bson:",inline"`
 	EagerGlobalOrdinalsParam      `json:",inline" bson:",inline"`
 	IgnoreAboveParam              `json:",inline" bson:",inline"`
-	IndexParam                    `json:",inline" bson:",inline"`
+	indexParam                    `json:",inline" bson:",inline"`
 	IndexOptionsParam             `json:",inline" bson:",inline"`
-	NullValueParam                `json:",inline" bson:",inline"`
+	nullValueParam                `json:",inline" bson:",inline"`
 	SimilarityParam               `json:",inline" bson:",inline"`
 	SplitQueriesOnWhitespaceParam `json:",inline" bson:",inline"`
 }
@@ -48,5 +48,5 @@ func (f FlattenedField) Clone() Field {
 	return n
 }
 func NewFlattenedField() *FlattenedField {
-	return &FlattenedField{BaseField: BaseField{MappingType: TypeFlattened}}
+	return &FlattenedField{BaseField: BaseField{MappingType: FieldTypeFlattened}}
 }

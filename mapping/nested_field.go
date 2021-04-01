@@ -76,5 +76,5 @@ type NestedField struct {
 }
 
 func NewNestedField() *NestedField {
-	return &NestedField{BaseField: BaseField{MappingType: TypeNested}}
+	return &NestedField{BaseField: BaseField{MappingType: FieldTypeNested}}
 }

@@ -181,6 +181,6 @@ func (fs *FunctionScoreClause) IsEmpty() bool {
 	return fs == nil || len(fs.functions) == 0
 }
 
-func (FunctionScoreClause) Kind() Kind {
+func (FunctionScoreClause) Kind() QueryKind {
 	return KindFunctionScore
 }

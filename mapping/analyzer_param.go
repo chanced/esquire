@@ -1,5 +1,11 @@
 package mapping
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
 // WithAnalyzer is a Field mapping with an analyzer
 //
 // Analyzer
@@ -33,25 +39,13 @@ type WithAnalyzer interface {
 	Analyzer() string
 	// SetAnalyzer sets Analyzer to v
 	SetAnalyzer(v string)
-	// SearchAnalyzer overrides Analyzer for search analysis
-	SearchAnalyzer() string
-	// SetSearchAnalyzer sets SearchAnalyzer to v
-	SetSearchAnalyzer(v string)
-	// SearchQuoteAnalyzer setting allows you to specify an analyzer for
-	// phrases, this is particularly useful when dealing with disabling stop
-	// words for phrase queries.
-	SearchQuoteAnalyzer() string
-	// SetSearchQuoteAnalyzer sets SearchQuoteAnalyzer to v
-	SetSearchQuoteAnalyzer(v string)
 }
 
 // analyzerParam adds Analyzer, SearchAnalyzer, and SearchQuoteAnalyzer
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
 type analyzerParam struct {
-	analyzer                 string `json:"analyzer,omitempty" bson:"analyzer,omitempty"`
-	SearchAnalyzerValue      string `json:"search_analyzer,omitempty" bson:"search_analyzer,omitempty"`
-	SearchQuoteAnalyzerValue string `json:"search_quote_analyzer,omitempty" bson:"search_quote_analyzer,omitempty"`
+	analyzer string
 }
 
 // Analyzer parameter specifies the analyzer used for text analysis when
@@ -71,28 +65,29 @@ func (ap *analyzerParam) SetAnalyzer(v string) {
 	}
 }
 
-// SearchAnalyzer overrides Analyzer for search analysis
-func (ap analyzerParam) SearchAnalyzer() string {
-	return ap.SearchAnalyzerValue
-}
-
-// SetSearchAnalyzer sets SearchAnalyzer to v
-func (ap *analyzerParam) SetSearchAnalyzer(v string) {
-	if ap.SearchAnalyzer() != v {
-		ap.SearchAnalyzerValue = v
+func marshalAnalyzerParam(source interface{}) (dynamic.JSON, error) {
+	if a, ok := source.(WithAnalyzer); ok {
+		if len(a.Analyzer()) > 0 {
+			return json.Marshal(a.Analyzer())
+		}
 	}
+	return nil, nil
 }
-
-// SearchQuoteAnalyzer setting allows you to specify an analyzer for
-// phrases, this is particularly useful when dealing with disabling
-// stop words for phrase queries.
-func (ap analyzerParam) SearchQuoteAnalyzer() string {
-	return ap.SearchQuoteAnalyzerValue
-}
-
-// SetSearchQuoteAnalyzer sets SearchQuoteAnalyzer to v
-func (ap analyzerParam) SetSearchQuoteAnalyzer(v string) {
-	if ap.SearchAnalyzer() != v {
-		ap.SearchQuoteAnalyzerValue = v
+func unmarshalAnalyzerParam(data dynamic.JSON, target interface{}) error {
+	if a, ok := target.(WithAnalyzer); ok {
+		if data.IsNull() {
+			return nil
+		}
+		if data.IsString() {
+			var str string
+			err := json.Unmarshal(data, &str)
+			if err != nil {
+				return err
+			}
+			a.SetAnalyzer(str)
+			return nil
+		}
+		return &json.UnmarshalTypeError{Value: string(data), Type: typeString}
 	}
+	return nil
 }

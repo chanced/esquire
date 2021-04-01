@@ -35,7 +35,7 @@ type GeoPointField struct {
 	BaseField            `bson:",inline" json:",inline"`
 	IgnoreMalformedParam `bson:",inline" json:",inline"`
 	IgnoreZValueParam    `bson:",inline" json:",inline"`
-	CoerceParam          `bson:",inline" json:",inline"`
+	coerceParam          `bson:",inline" json:",inline"`
 }
 
 func (f GeoPointField) Clone() Field {
@@ -46,5 +46,5 @@ func (f GeoPointField) Clone() Field {
 	return n
 }
 func NewGeoPointField() *GeoPointField {
-	return &GeoPointField{BaseField: BaseField{MappingType: TypeGeoPoint}}
+	return &GeoPointField{BaseField: BaseField{MappingType: FieldTypeGeoPoint}}
 }

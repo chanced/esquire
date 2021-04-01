@@ -17,7 +17,7 @@ func (ma MatchAll) Clause() (QueryClause, error) {
 
 }
 
-func (ma MatchAll) Kind() Kind {
+func (ma MatchAll) Kind() QueryKind {
 	return KindMatchAll
 }
 
@@ -41,7 +41,7 @@ type MatchAllClause struct {
 func (ma *MatchAllClause) Clause() (QueryClause, error) {
 	return ma, nil
 }
-func (MatchAllClause) Kind() Kind {
+func (MatchAllClause) Kind() QueryKind {
 	return KindMatchAll
 }
 

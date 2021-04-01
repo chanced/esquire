@@ -70,7 +70,7 @@ func (t TermsQuery) Terms() (*TermsClause, error) {
 	return q, nil
 }
 
-func (t TermsQuery) Kind() Kind {
+func (t TermsQuery) Kind() QueryKind {
 	return KindTerms
 }
 
@@ -96,7 +96,7 @@ func (t *TermsClause) Set(field string, clause Termser) error {
 	return nil
 }
 
-func (t TermsClause) Kind() Kind {
+func (t TermsClause) Kind() QueryKind {
 	return KindTerms
 }
 

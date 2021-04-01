@@ -20,5 +20,5 @@ func (f PercolatorField) Clone() Field {
 }
 
 func NewPercolatorField() *PercolatorField {
-	return &PercolatorField{BaseField: BaseField{MappingType: TypePercolator}}
+	return &PercolatorField{BaseField: BaseField{MappingType: FieldTypePercolator}}
 }

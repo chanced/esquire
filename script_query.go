@@ -40,7 +40,7 @@ func (s ScriptQuery) Script() (*ScriptClause, error) {
 	return q, nil
 }
 
-func (ScriptQuery) Kind() Kind {
+func (ScriptQuery) Kind() QueryKind {
 	return KindScript
 }
 
@@ -50,7 +50,7 @@ type ScriptClause struct {
 	completeClause
 }
 
-func (ScriptClause) Kind() Kind {
+func (ScriptClause) Kind() QueryKind {
 	return KindScript
 }
 
