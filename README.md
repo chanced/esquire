@@ -11,8 +11,80 @@ Testing is incredibly light right now.
 An aggregation summarizes your data as metrics, statistics, or other analytics.
 
 - #### [Bucket aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket.html)
+
+  - [ ] **Adjacency matrix**
+  - [ ] **Auto-interval date histogram**
+  - [ ] **Children**
+  - [ ] **Composite**
+  - [ ] **Date histogram**
+  - [ ] **Date range**
+  - [ ] **Diversified sampler**
+  - [ ] **Filter**
+  - [ ] **Filters**
+  - [ ] **Geo-distance**
+  - [ ] **Geohash grid**
+  - [ ] **Geotile grid**
+  - [ ] **Global**
+  - [ ] **Histogram**
+  - [ ] **IP range**
+  - [ ] **Missing**
+  - [ ] **Multi Terms**
+  - [ ] **Nested**
+  - [ ] **Parent**
+  - [ ] **Range**
+  - [ ] **Rare terms**
+  - [ ] **Reverse nested**
+  - [ ] **Sampler**
+  - [ ] **Significant terms**
+  - [ ] **Significant text**
+  - [ ] **Terms**
+  - [ ] **Variable width histogram**
+  - [ ] **Subtleties of bucketing range fields**
+
 - #### [Metric aggreations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html)
+  - [ ] **Avg**
+  - [ ] **Boxplot**
+  - [ ] **Cardinality**
+  - [ ] **Extended stats**
+  - [ ] **Geo-bounds**
+  - [ ] **Geo-centroid**
+  - [ ] **Geo-Line**
+  - [ ] **Matrix stats**
+  - [ ] **Max**
+  - [ ] **Median absolute deviation**
+  - [ ] **Min**
+  - [ ] **Percentile ranks**
+  - [ ] **Percentiles**
+  - [ ] **Rate**
+  - [ ] **Scripted metric**
+  - [ ] **Stats**
+  - [ ] **String stats**
+  - [ ] **Sum**
+  - [ ] **T-test**
+  - [ ] **Top hits**
+  - [ ] **Top metrics**
+  - [ ] **Value count**
+  - [ ] **Weighted avg**
 - #### [Pipeline aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline.html)
+  - [ ] **Average bucket**
+  - [ ] **Bucket script**
+  - [ ] **Bucket selector**
+  - [ ] **Bucket sort**
+  - [ ] **Cumulative cardinality**
+  - [ ] **Cumulative sum**
+  - [ ] **Derivative**
+  - [ ] **Extended stats bucket**
+  - [ ] **Inference bucket**
+  - [ ] **Max bucket**
+  - [ ] **Min bucket**
+  - [ ] **Moving average**
+  - [ ] **Moving function**
+  - [ ] **Moving percentiles**
+  - [ ] **Normalize**
+  - [ ] **Percentiles bucket**
+  - [ ] **Serial differencing**
+  - [ ] **Stats bucket**
+  - [ ] **Sum bucket**
 
 ### [Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html)
 
