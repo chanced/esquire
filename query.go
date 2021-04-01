@@ -262,6 +262,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	script, err := q.script()
+	if err != nil {
+		return nil, err
+	}
 	fuzzy, err := q.fuzzy()
 	if err != nil {
 		return nil, err
@@ -275,6 +279,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		match:         match,
 		exists:        exists,
 		scriptScore:   scriptScore,
+		script:        script,
 		fuzzy:         fuzzy,
 		boolean:       boolean,
 		term:          term,

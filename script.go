@@ -122,9 +122,16 @@ func (s *scriptParams) SetScript(script *Script) error {
 	*s = *scr
 	return nil
 }
+func (s scriptParams) Lang() string {
+	return s.lang
+}
 
 func (s *scriptParams) setLang(lang string) {
 	s.lang = lang
+}
+
+func (s scriptParams) Params() dynamic.JSON {
+	return s.params
 }
 
 func (s *scriptParams) SetParams(params interface{}) error {
@@ -147,7 +154,9 @@ func (s *scriptParams) SetParams(params interface{}) error {
 	s.params = data
 	return nil
 }
-
+func (s *scriptParams) Source() string {
+	return s.source
+}
 func (s *scriptParams) setSource(script string) error {
 	if len(script) == 0 {
 		return ErrScriptRequired
