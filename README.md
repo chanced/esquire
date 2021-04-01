@@ -92,18 +92,43 @@ Utilities that pair with the official Elasticsearch Go package
          The result from a single span query is returned as long is its span falls within the spans returned by a list of other span queries.
 - #### [Specialized queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/specialized-queries.html)
   - [ ] **[Distance feature](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-distance-feature-query.html)**\
-        A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
+         A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
   - [ ] **[More like this](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)**\
-        This query finds documents which are similar to the specified text, document, or collection of documents.
+         This query finds documents which are similar to the specified text, document, or collection of documents.
   - [ ] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-percolate-query.html)**\
-        This query finds queries that are stored as documents that match with the specified document.
+         This query finds queries that are stored as documents that match with the specified document.
   - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-rank-feature-query.html)**\
-        A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
+         A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
   - [x] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html)**\
-        This query allows a script to act as a filter. Also see the function_score query.
+         This query allows a script to act as a filter. Also see the function_score query.
   - [x] **[Script score](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html)**\
-        A query that allows to modify the score of a sub-query with a script.
+         A query that allows to modify the score of a sub-query with a script.
   - [ ] **[Wrapper](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wrapper-query.html)**\
-        A query that accepts other queries as json or yaml string.
+         A query that accepts other queries as json or yaml string.
   - [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-pinned-query.html)**\
-        A query that promotes selected documents over others matching a given query.
+         A query that promotes selected documents over others matching a given query.
+- #### [Term-level queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/term-level-queries.html)
+  You can use term-level queries to find documents based on precise values in structured data. Examples of structured data include date ranges, IP addresses, prices, or product IDs.
+  Unlike full-text queries, term-level queries do not analyze search terms. Instead, term-level queries match the exact terms stored in a field.
+  - [x] **[Exists]()**\
+        Returns documents that contain any indexed value for a field.
+  - [x] **[Fuzzy]()**\
+        Returns documents that contain terms similar to the search term. Elasticsearch measures similarity, or fuzziness, using a Levenshtein edit distance.
+  - [ ] **[Ids]()**\
+        Returns documents based on their document IDs.
+  - [x] **[Prefix]()**\
+         Returns documents that contain a specific prefix in a provided field.
+  - [ ] **[Range]()**\
+        Returns documents that contain terms within a provided range.
+  - [ ] **[Regexp]()**\
+        Returns documents that contain terms matching a regular expression.
+  - [x] **[Term]()**\
+        Returns documents that contain an exact term in a provided field.
+  - [x] **[Terms]()**\
+        Returns documents that contain one or more exact terms in a provided field.
+  - [ ] **[Terms set]()**\
+        Returns documents that contain a minimum number of exact terms in a provided field. You can define the minimum number of matching terms using a field or script.
+  - [ ] **[Type]()**\
+        Returns documents of the specified type.
+  - [ ] **[Wildcard]()**\
+        Returns documents that contain terms matching a wildcard pattern.
