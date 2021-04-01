@@ -2,7 +2,10 @@
 
 Utilities that pair with the official Elasticsearch Go package
 
-- ### [Compound queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
+## Q
+
+- #### [Compound queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
+  Compound queries wrap other compound or leaf queries, either to combine their results and scores, to change their behaviour, or to switch from query to filter context.
   - [x] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)**\
          The default query for combining multiple leaf or compound query clauses, as must, should, must_not, or filter clauses. The must and should clauses have their scores combined — the more matching clauses, the better — while the must_not and filter clauses are executed in filter context.
   - [ ] **[Boosting](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-boosting-query.html)**\
@@ -13,7 +16,7 @@ Utilities that pair with the official Elasticsearch Go package
          A query which accepts multiple queries, and returns any documents which match any of the query clauses. While the bool query combines the scores from all matching queries, the dis_max query uses the score of the single best- matching query clause.
   - [x] **[Function score](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html)**\
          Modify the scores returned by the main query with functions to take into account factors like popularity, recency, distance, or custom algorithms implemented with scripting.
-- ### [Fulltext queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
+- #### [Fulltext queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
   The full text queries enable you to search analyzed text fields such as the body of an email. The query string is processed using the same analyzer that was applied to the field during indexing.
   - [ ] **[Intervals](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-intervals-query.html)**\
          A full text query that allows fine-grained control of the ordering and proximity of matching terms.
@@ -33,7 +36,7 @@ Utilities that pair with the official Elasticsearch Go package
          Supports the compact Lucene query string syntax, allowing you to specify AND|OR|NOT conditions and multi-field search within a single query string. For expert users only.
   - [ ] **[Simple query string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)**\
          A simpler, more robust version of the query_string syntax suitable for exposing directly to users.
-- ### [Geo queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-queries.html)
+- #### [Geo queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-queries.html)
   Elasticsearch supports two types of geo data: geo_point fields which support lat/lon pairs, and geo_shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
   - [ ] **[Geo bounding box](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-bounding-box-query.html)**\
          Finds documents with geo-points that fall into the specified rectangle.
@@ -44,3 +47,7 @@ Utilities that pair with the official Elasticsearch Go package
   - [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-shape-query.html)**
     - geo-shapes which either intersect, are contained by, or do not intersect with the specified geo-shape
     - geo-points which intersect the specified geo-shape
+- #### [Shape queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/shape-queries.html) [X-Pack]
+  Like geo_shape Elasticsearch supports the ability to index arbitrary two dimension (non Geospatial) geometries making it possible to map out virtual worlds, sporting venues, theme parks, and CAD diagrams.
+
+Elasticsearch supports two types of cartesian data: point fields which support x/y pairs, and shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
