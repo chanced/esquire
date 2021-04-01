@@ -37,10 +37,10 @@ Utilities that pair with the official Elasticsearch Go package
   Elasticsearch supports two types of geo data: geo_point fields which support lat/lon pairs, and geo_shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
   - [ ] **[Geo bounding box](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-bounding-box-query.html)**\
          Finds documents with geo-points that fall into the specified rectangle.
-- [ ] **[Geo distance](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html)**\
-       Finds documents with geo-points within the specified distance of a central point.
-- [ ] **[Geo polygon](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html) [Deprecated]**\
-       Find documents with geo-points within the specified polygon.
-- [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-shape-query.html)**
-  - geo-shapes which either intersect, are contained by, or do not intersect with the specified geo-shape
-  - geo-points which intersect the specified geo-shape
+  - [ ] **[Geo distance](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html)**\
+         Finds documents with geo-points within the specified distance of a central point.
+  - [ ] **[Geo polygon](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html) [Deprecated]**\
+         Find documents with geo-points within the specified polygon.
+  - [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-shape-query.html)**
+    - geo-shapes which either intersect, are contained by, or do not intersect with the specified geo-shape
+    - geo-points which intersect the specified geo-shape
