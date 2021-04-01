@@ -52,7 +52,7 @@ Utilities that pair with the official Elasticsearch Go package
 - #### [Shape queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/shape-queries.html) [X-Pack]
   Like geo_shape Elasticsearch supports the ability to index arbitrary two dimension (non Geospatial) geometries making it possible to map out virtual worlds, sporting venues, theme parks, and CAD diagrams.
   Elasticsearch supports two types of cartesian data: point fields which support x/y pairs, and shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
-  - [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-shape-query.html)**
+  - [ ] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-shape-query.html)**
     - shapes which either intersect, are contained by, are within or do not intersect with the specified shape
     - points which intersect the specified shape
 - #### [Joining queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/joining-queries.html)
@@ -60,7 +60,33 @@ Utilities that pair with the official Elasticsearch Go package
          Documents may contain fields of type nested. These fields are used to index arrays of objects, where each object can be queried (with the nested query) as an independent document.
   - [ ] **[Has child](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html)**\
          A join field relationship can exist between documents within a single index. The has_child query returns parent documents whose child documents match the specified query, while the has_parent query returns child documents whose parent document matches the specified query.
+  - [ ] **[Has parent](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-parent-query.html)**\
+         Returns child documents whose joined parent document matches a provided query. You can create parent-child relationships between documents in the same index using a join field mapping.
+  - [ ] **[Parent ID](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-parent-id-query.html)**\
+         Returns child documents joined to a specific parent document. You can use a join field mapping to create parent-child relationships between documents in the same index.
 - [x] **[Match all](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)**\
        The most simple query, which matches all documents, giving them all a \_score of 1.0.
 - [x] **[Match none](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)**\
        This is the inverse of the match_all query, which matches no documents.
+- #### [Span queries]()
+  Span queries are low-level positional queries which provide expert control over the order and proximity of the specified terms. These are typically used to implement very specific queries on legal documents or patents.
+  It is only allowed to set boost on an outer span query. Compound span queries, like span_near, only use the list of matching spans of inner span queries in order to find their own spans, which they then use to produce a score. Scores are never computed on inner span queries, which is the reason why boosts are not allowed: they only influence the way scores are computed, not spans.
+  Span queries cannot be mixed with non-span queries (with the exception of the span_multi query).
+  - [ ] **[Span containing]()**\
+         Accepts a list of span queries, but only returns those spans which also match a second span query.
+  - [ ] **[Field masking span]()**\
+         Allows queries like span-near or span-or across different fields.
+  - [ ] **[Span first]()**\
+         Accepts another span query whose matches must appear within the first N positions of the field.
+  - [ ] **[Span multi]()**\
+         Wraps a term, range, prefix, wildcard, regexp, or fuzzy query.
+  - [ ] **[Span near]()**\
+         Accepts multiple span queries whose matches must be within the specified distance of each other, and possibly in the same order.
+  - [ ] **[Span not]()**\
+         Wraps another span query, and excludes any documents which match that query.
+  - [ ] **[Span or]()**\
+         Combines multiple span queries — returns documents which match any of the specified queries.
+  - [ ] **[Span term]()**\
+         The equivalent of the term query but for use with other span queries.
+  - [ ] **[Span within]()**\
+         The result from a single span query is returned as long is its span falls within the spans returned by a list of other span queries.
