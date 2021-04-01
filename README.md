@@ -8,7 +8,7 @@ Utilities that pair with the official Elasticsearch Go package
   - [ ] **[Constant score](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-constant-score-query.html)**\
   - [ ] **[Disjunction max](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-dis-max-query.html)**\
   - [x] **[Function score](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html)**\
-- ### [Fulltext queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)\*\*\*\*\
+- ### [Fulltext queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
   The full text queries enable you to search analyzed text fields such as the body of an email. The query string is processed using the same analyzer that was applied to the field during indexing.
   - [ ] **[Intervals](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-intervals-query.html)**\
          A full text query that allows fine-grained control of the ordering and proximity of matching terms.
@@ -19,9 +19,13 @@ Utilities that pair with the official Elasticsearch Go package
   - [ ] **[Match phrase](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase.html)**\
          Like the match query but used for matching exact phrases or word proximity matches.
   - [ ] **[Match phrase prefix](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html)**\
+        Like the match_phrase query, but does a wildcard search on the final word.
   - [ ] **[Multi-match](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html)**\
+        The multi-field version of the match query.
   - [ ] **[Common Terms](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-common-terms-query.html)** _[Deprecated]_\
+        A more specialized query which gives more preference to uncommon words.
   - [ ] **[Query string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html)**\
+        Supports the compact Lucene query string syntax, allowing you to specify AND|OR|NOT conditions and multi-field search within a single query string. For expert users only.
   - [ ] **[Simple query string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)**\
 - ### [Geo queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-queries.html)
   - [Geo bounding box query]
