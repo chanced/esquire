@@ -68,25 +68,42 @@ Utilities that pair with the official Elasticsearch Go package
        The most simple query, which matches all documents, giving them all a \_score of 1.0.
 - [x] **[Match none](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)**\
        This is the inverse of the match_all query, which matches no documents.
-- #### [Span queries]()
+- #### [Span queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/span-queries.html)
   Span queries are low-level positional queries which provide expert control over the order and proximity of the specified terms. These are typically used to implement very specific queries on legal documents or patents.
   It is only allowed to set boost on an outer span query. Compound span queries, like span_near, only use the list of matching spans of inner span queries in order to find their own spans, which they then use to produce a score. Scores are never computed on inner span queries, which is the reason why boosts are not allowed: they only influence the way scores are computed, not spans.
   Span queries cannot be mixed with non-span queries (with the exception of the span_multi query).
-  - [ ] **[Span containing]()**\
+  - [ ] **[Span containing](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-containing-query.html)**\
          Accepts a list of span queries, but only returns those spans which also match a second span query.
-  - [ ] **[Field masking span]()**\
+  - [ ] **[Field masking span](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-field-masking-query.html)**\
          Allows queries like span-near or span-or across different fields.
-  - [ ] **[Span first]()**\
+  - [ ] **[Span first](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-first-query.html)**\
          Accepts another span query whose matches must appear within the first N positions of the field.
-  - [ ] **[Span multi]()**\
+  - [ ] **[Span multi](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-multi-term-query.html)**\
          Wraps a term, range, prefix, wildcard, regexp, or fuzzy query.
-  - [ ] **[Span near]()**\
+  - [ ] **[Span near](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-near-query.html)**\
          Accepts multiple span queries whose matches must be within the specified distance of each other, and possibly in the same order.
-  - [ ] **[Span not]()**\
+  - [ ] **[Span not](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-not-query.html)**\
          Wraps another span query, and excludes any documents which match that query.
-  - [ ] **[Span or]()**\
+  - [ ] **[Span or](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-or-query.html)**\
          Combines multiple span queries — returns documents which match any of the specified queries.
-  - [ ] **[Span term]()**\
+  - [ ] **[Span term](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-term-query.html)**\
          The equivalent of the term query but for use with other span queries.
-  - [ ] **[Span within]()**\
+  - [ ] **[Span within](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-within-query.html)**\
          The result from a single span query is returned as long is its span falls within the spans returned by a list of other span queries.
+- #### [Specialized queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/specialized-queries.html)
+  - [ ] **[Distance feature](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-distance-feature-query.html)**\
+        A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
+  - [ ] **[More like this](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)**\
+        This query finds documents which are similar to the specified text, document, or collection of documents.
+  - [ ] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-percolate-query.html)**\
+        This query finds queries that are stored as documents that match with the specified document.
+  - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-rank-feature-query.html)**\
+        A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
+  - [x] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html)**\
+        This query allows a script to act as a filter. Also see the function_score query.
+  - [x] **[Script score](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html)**\
+        A query that allows to modify the score of a sub-query with a script.
+  - [ ] **[Wrapper](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wrapper-query.html)**\
+        A query that accepts other queries as json or yaml string.
+  - [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-pinned-query.html)**\
+        A query that promotes selected documents over others matching a given query.
