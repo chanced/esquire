@@ -35,7 +35,7 @@ func (p Prefix) Kind() Kind {
 	return KindPrefix
 }
 
-func (p Prefix) Clause() (Clause, error) {
+func (p Prefix) Clause() (QueryClause, error) {
 	return p.Prefix()
 }
 func (p Prefix) Prefix() (*PrefixClause, error) {
@@ -60,8 +60,8 @@ type PrefixClause struct {
 	completeClause
 }
 
-func (r *PrefixClause) Clause() (QueryClause, error) {
-	return r, nil
+func (p *PrefixClause) Clause() (QueryClause, error) {
+	return p, nil
 }
 func (p PrefixClause) Value() string {
 	return p.value

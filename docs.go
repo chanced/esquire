@@ -1,2 +1,2 @@
-// package picker contains types for constructing queries in Elasticsearch
+// Package picker contains types for constructing queries in Elasticsearch
 package picker

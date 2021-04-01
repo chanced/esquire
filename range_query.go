@@ -30,7 +30,7 @@ func (r Range) field() string {
 	return r.Field
 }
 
-func (r Range) Clause() (Clause, error) {
+func (r Range) Clause() (QueryClause, error) {
 	return r.Range()
 }
 func (r Range) Range() (*RangeClause, error) {

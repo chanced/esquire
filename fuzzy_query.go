@@ -85,7 +85,7 @@ func (f FuzzyQuery) Fuzzy() (*FuzzyClause, error) {
 	return q, nil
 }
 
-func (f FuzzyQuery) Clause() (Clause, error) {
+func (f FuzzyQuery) Clause() (QueryClause, error) {
 	return f.Fuzzy()
 }
 

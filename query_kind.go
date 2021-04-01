@@ -28,6 +28,7 @@ const (
 	KindAllOf          Kind = "all_of"
 	KindFuzzy          Kind = "fuzzy"
 	KindScriptScore    Kind = "script_score"
+	KindScript         Kind = "script"
 )
 
 var clauseHandlers = map[Kind]func() QueryClause{
@@ -40,4 +41,5 @@ var clauseHandlers = map[Kind]func() QueryClause{
 	KindRange:     func() QueryClause { return &RangeClause{} },
 	KindMatchAll:  func() QueryClause { return &MatchAllClause{} },
 	KindMatchNone: func() QueryClause { return &MatchNoneClause{} },
+	KindScript:    func() QueryClause { return &ScriptClause{} },
 }

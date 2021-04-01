@@ -42,7 +42,7 @@ type BooleanQuery struct {
 	completeClause
 }
 
-func (b BooleanQuery) Clause() (Clause, error) {
+func (b BooleanQuery) Clause() (QueryClause, error) {
 	return b.Boolean()
 }
 

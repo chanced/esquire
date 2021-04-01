@@ -157,7 +157,7 @@ func (l *LinearFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (l *LinearFunction) unmarshalParams(data []byte) error {
+func (l *LinearFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, l)
 }
 
@@ -165,5 +165,5 @@ func (l LinearFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&l)
 }
 func (l *LinearFunction) marshalParams(data dynamic.JSONObject) error {
-	return marshalDecayFunctionParams(data, l)
+	return marshalDecayFunction(data, l)
 }

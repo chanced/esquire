@@ -19,7 +19,7 @@ type ScriptScorer interface {
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
 type ScriptScoreQuery struct {
 	// Query used to return documents. (Required)
-	Query *Query
+	Query *QueryParams
 	// Documents with a score lower than this floating point number are excluded
 	// from the search results. (Optional)
 	MinScore float64
@@ -65,7 +65,7 @@ func (ScriptScoreQuery) Kind() Kind {
 }
 
 type ScriptScoreClause struct {
-	query *QueryValues
+	query *Query
 	scriptParams
 	boostParam
 	minScoreParam
@@ -142,7 +142,7 @@ func (s *ScriptScoreClause) IsEmpty() bool {
 	return s == nil || s.scriptParams.IsEmpty()
 }
 
-func (s *ScriptScoreClause) setQuery(query *Query) error {
+func (s *ScriptScoreClause) setQuery(query *QueryParams) error {
 	if query == nil {
 		return ErrQueryRequired
 	}

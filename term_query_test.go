@@ -23,7 +23,7 @@ func TestTerm(t *testing.T) {
         }
       }
       `)
-	var q1 picker.QueryValues
+	var q1 picker.Query
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
 
@@ -36,7 +36,7 @@ func TestTerm(t *testing.T) {
 	fmt.Printf("%+v\n", q1.Term())
 	fmt.Println(string(json1Res))
 
-	var rq1 picker.QueryValues
+	var rq1 picker.Query
 	err = json.Unmarshal(json1Res, &rq1)
 	assert.NoError(err)
 	assert.Equal("chanced", rq1.Term().Value(), "value should be chanced")

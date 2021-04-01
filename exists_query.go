@@ -28,7 +28,7 @@ type Exists struct {
 	completeClause
 }
 
-func (e Exists) Clause() (Clause, error) {
+func (e Exists) Clause() (QueryClause, error) {
 	return e.Exists()
 }
 

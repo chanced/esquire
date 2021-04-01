@@ -157,7 +157,7 @@ func (e *ExpFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalParams(data []byte) error {
+func (e *ExpFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, e)
 }
 
@@ -165,5 +165,5 @@ func (e ExpFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&e)
 }
 func (e *ExpFunction) marshalParams(data dynamic.JSONObject) error {
-	return marshalDecayFunctionParams(data, e)
+	return marshalDecayFunction(data, e)
 }

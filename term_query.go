@@ -29,7 +29,7 @@ func (t TermQuery) field() string {
 	return t.Field
 }
 
-func (t TermQuery) Clause() (Clause, error) {
+func (t TermQuery) Clause() (QueryClause, error) {
 	return t.Term()
 }
 
@@ -37,7 +37,7 @@ func (t TermQuery) Term() (*TermClause, error) {
 	q := &TermClause{
 		field: t.Field,
 	}
-	err := q.setValue(t.Value)
+	err := q.SetValue(t.Value)
 	if err != nil {
 		return q, NewQueryError(err, KindTerm, t.Field)
 	}
@@ -104,8 +104,8 @@ type TermClause struct {
 	completeClause
 }
 
-func (f *TermClause) Clause() (QueryClause, error) {
-	return f, nil
+func (t *TermClause) Clause() (QueryClause, error) {
+	return t, nil
 }
 func (t *TermClause) IsEmpty() bool {
 	return t == nil || len(t.value) == 0 || len(t.field) == 0
@@ -121,7 +121,7 @@ func (t TermClause) Value() string {
 	return t.value
 }
 
-func (t *TermClause) setValue(v string) error {
+func (t *TermClause) SetValue(v string) error {
 	if len(v) == 0 {
 		return NewQueryError(ErrValueRequired, KindTerm, t.field)
 	}
@@ -171,6 +171,9 @@ func (t *TermClause) Set(field string, clause Termer) error {
 	return nil
 }
 func (t *TermClause) Clear() {
+	if t == nil {
+		return
+	}
 	*t = TermClause{}
 }
 

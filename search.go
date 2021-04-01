@@ -13,9 +13,9 @@ var (
 	DefaultSize    = int(10)
 )
 
-// Params are the initial params passed to NewSearch
-type Params struct {
-	Query Query
+// SearchParams are the initial params passed to NewSearch
+type SearchParams struct {
+	Query QueryParams
 
 	// Array of wildcard (*) patterns. The request returns doc values for field
 	// names matching these patterns in the hits.fields property of the response
@@ -100,7 +100,7 @@ type Params struct {
 	Version bool
 }
 
-func NewSearch(p Params) (*Search, error) {
+func NewSearch(p SearchParams) (*Search, error) {
 
 	s := &Search{
 		docValueFields:   p.DocValueFields,
@@ -132,7 +132,7 @@ func NewSearch(p Params) (*Search, error) {
 
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
-	query            *QueryValues       // query
+	query            *Query             // query
 	docValueFields   Fields             // docvalue_fields
 	fields           Fields             // fields
 	explain          bool               // explain
@@ -160,7 +160,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		return err
 	}
 	if d, ok := m["query"]; ok {
-		var q QueryValues
+		var q Query
 		err = json.Unmarshal(d, &q)
 		if err != nil {
 			return err
@@ -528,9 +528,9 @@ func (s *Search) SetPIT(v *PointInTime) *Search {
 }
 
 // SetQuery sets QueryValue to v
-func (s *Search) SetQuery(v *QueryValues) *Search {
+func (s *Search) SetQuery(v *Query) *Search {
 	if v == nil {
-		s.query = &QueryValues{}
+		s.query = &Query{}
 	} else {
 		s.query = v
 	}
@@ -540,9 +540,9 @@ func (s *Search) SetQuery(v *QueryValues) *Search {
 // Query defines the search definition using the Query DSL.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-func (s *Search) Query() *QueryValues {
+func (s *Search) Query() *Query {
 	if s.query == nil {
-		s.query = &QueryValues{}
+		s.query = &Query{}
 	}
 	return s.query
 }

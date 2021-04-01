@@ -97,7 +97,7 @@ func (m MatchQuery) field() string {
 func (m MatchQuery) Kind() Kind {
 	return KindMatch
 }
-func (m MatchQuery) Clause() (Clause, error) {
+func (m MatchQuery) Clause() (QueryClause, error) {
 	return m.Match()
 }
 func (m MatchQuery) Match() (*MatchClause, error) {

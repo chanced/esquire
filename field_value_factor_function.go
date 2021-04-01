@@ -148,7 +148,7 @@ func (fvf *FieldValueFactorFunction) marshalParams(data dynamic.JSONObject) erro
 	data["field_value_factor"] = fd
 	return nil
 }
-func (fvf *FieldValueFactorFunction) unmarshalParams(data []byte) error {
+func (fvf *FieldValueFactorFunction) unmarshalParams(data dynamic.JSON) error {
 	params := fieldValueFactorParams{}
 	err := json.Unmarshal(data, &params)
 	if err != nil {

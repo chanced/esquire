@@ -37,7 +37,7 @@ func (l Lookup) Name() string {
 	return l.QueryName
 }
 
-func (l Lookup) Clause() (Clause, error) {
+func (l Lookup) Clause() (QueryClause, error) {
 	return l.Terms()
 }
 func (l Lookup) Terms() (*TermsClause, error) {

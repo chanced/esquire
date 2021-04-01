@@ -157,7 +157,7 @@ func (g *GaussFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (g *GaussFunction) unmarshalParams(data []byte) error {
+func (g *GaussFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, g)
 }
 
@@ -165,5 +165,5 @@ func (g GaussFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&g)
 }
 func (g *GaussFunction) marshalParams(data dynamic.JSONObject) error {
-	return marshalDecayFunctionParams(data, g)
+	return marshalDecayFunction(data, g)
 }

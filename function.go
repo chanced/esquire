@@ -89,7 +89,7 @@ type Function interface {
 }
 type function interface {
 	Function
-	unmarshalParams(data []byte) error
+	unmarshalParams(data dynamic.JSON) error
 	marshalParams(dynamic.JSONObject) error
 }
 
@@ -110,6 +110,7 @@ type DecayFunction interface {
 type Functions []Function
 
 // TODO: This needs refactoring. Funcs are a pain to unmarshal
+
 func (f *Functions) UnmarshalJSON(raw []byte) error {
 	*f = Functions{}
 	var fds []dynamic.JSON
@@ -131,7 +132,7 @@ func (f *Functions) UnmarshalJSON(raw []byte) error {
 		fds = []dynamic.JSON{data}
 	}
 
-	for i, fd := range fds {
+	for _, fd := range fds {
 		fn, err := unmarshalFunction(fd)
 		if err != nil {
 			return err
@@ -139,7 +140,7 @@ func (f *Functions) UnmarshalJSON(raw []byte) error {
 		if fn == nil {
 			continue
 		}
-		(*f)[i] = fn
+		(*f) = append((*f), fn)
 	}
 
 	return nil
@@ -183,7 +184,7 @@ func unmarshalFunction(data dynamic.JSON) (function, error) {
 	if err != nil {
 		return nil, err
 	}
-	filter, err := unmarshalQueryClause(params["filter"])
+	filter, err := unmarshalSingleQueryClause(params["filter"])
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +288,7 @@ func unmarshalScaleParam(data dynamic.JSON, fn DecayFunction) error {
 	return fn.SetScale(scale)
 }
 
-func marshalFunction(fn function) ([]byte, error) {
+func marshalFunction(fn function) (dynamic.JSON, error) {
 	obj := dynamic.JSONObject{}
 	weight, err := marshalWeightParam(fn)
 	if err != nil {
@@ -297,7 +298,7 @@ func marshalFunction(fn function) ([]byte, error) {
 		obj["weight"] = weight
 	}
 	if fn.Filter() != nil {
-		filter, err := fn.Filter().MarshalJSON()
+		filter, err := marshalSingleQueryClause(fn.Filter())
 		if err != nil {
 			return nil, err
 		}
@@ -311,10 +312,12 @@ func marshalFunction(fn function) ([]byte, error) {
 	}
 	return json.Marshal(obj)
 }
-func marshalDecayFunctionParams(obj dynamic.JSONObject, fn DecayFunction) error {
+
+func marshalDecayFunction(data dynamic.JSONObject, fn DecayFunction) error {
 	if len(fn.Field()) == 0 {
 		return nil
 	}
+
 	params := dynamic.JSONObject{}
 	if !fn.Decay().IsNil() {
 		decay, err := json.Marshal(fn.Decay())
@@ -349,7 +352,11 @@ func marshalDecayFunctionParams(obj dynamic.JSONObject, fn DecayFunction) error 
 		if err != nil {
 			return err
 		}
-		obj[string(fn.FuncKind())] = fnData
+		fldData, err := json.Marshal(dynamic.JSONObject{fn.Field(): fnData})
+		if err != nil {
+			return err
+		}
+		data[string(fn.FuncKind())] = fldData
 	}
 	return nil
 }

@@ -28,7 +28,7 @@ func TestBoolean(t *testing.T) {
 		}
 	  }`)
 
-	var q1 picker.QueryValues
+	var q1 picker.Query
 
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)

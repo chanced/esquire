@@ -11,10 +11,7 @@ type ScriptScoreFunc struct {
 	Script *Script
 }
 
-func (ss *ScriptScoreFunc) Function() (Function, error) {
-	if ss == nil {
-		return nil, nil
-	}
+func (ss ScriptScoreFunc) Function() (Function, error) {
 	return ss.ScriptScore()
 }
 func (ss *ScriptScoreFunc) ScriptScore() (*ScriptScoreFunction, error) {
@@ -68,7 +65,7 @@ func (ss ScriptScoreFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&ss)
 
 }
-func (ss *ScriptScoreFunction) unmarshalParams(data []byte) error {
+func (ss *ScriptScoreFunction) unmarshalParams(data dynamic.JSON) error {
 	return ss.scriptParams.unmarshalScriptParams(data)
 }
 

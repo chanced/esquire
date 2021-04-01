@@ -20,7 +20,7 @@ func (s String) Match() (MatchClause, error) {
 
 func (s String) Term() (TermClause, error) {
 	q := TermClause{}
-	err := q.setValue(s.String())
+	err := q.SetValue(s.String())
 	return q, err
 }
 

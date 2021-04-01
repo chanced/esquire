@@ -2,6 +2,8 @@ package picker
 
 import (
 	"encoding/json"
+
+	"github.com/chanced/dynamic"
 )
 
 // FunctionScoreQuery  allows you to modify the score of documents that are retrieved
@@ -12,7 +14,7 @@ import (
 // To use function_score, the user has to define a query and one or more
 // functions, that compute a new score for each document returned by the query.
 type FunctionScoreQuery struct {
-	Query *Query
+	Query *QueryParams
 	Boost interface{}
 	// Documents with a score lower than this floating point number are excluded
 	// from the search results. (Optional)
@@ -70,7 +72,7 @@ func (fs *FunctionScoreQuery) Clause() (QueryClause, error) {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
 type FunctionScoreClause struct {
-	query *QueryValues
+	query *Query
 	boostParam
 	nameParam
 	boostModeParam
@@ -84,7 +86,7 @@ type FunctionScoreClause struct {
 func (fs *FunctionScoreClause) Clause() (QueryClause, error) {
 	return fs, nil
 }
-func (fs *FunctionScoreClause) Query() *QueryValues {
+func (fs *FunctionScoreClause) Query() *Query {
 	return fs.query
 }
 
@@ -105,7 +107,7 @@ func (fs *FunctionScoreClause) Functions() Functions {
 	}
 	return fs.functions
 }
-func (fs *FunctionScoreClause) SetQuery(query *Query) error {
+func (fs *FunctionScoreClause) SetQuery(query *QueryParams) error {
 	if fs == nil {
 		*fs = FunctionScoreClause{}
 	}
@@ -135,7 +137,7 @@ func (fs *FunctionScoreClause) UnmarshalJSON(data []byte) error {
 	}
 	qd := params["query"]
 	if len(qd) > 0 {
-		var q QueryValues
+		var q Query
 		err = json.Unmarshal(qd, &q)
 		if err != nil {
 			return err
@@ -162,14 +164,15 @@ func (fs FunctionScoreClause) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		data["functions"] = fd
+		data["functions"] = dynamic.JSON(fd)
 	}
 	if !fs.query.IsEmpty() {
 		qd, err := fs.query.MarshalJSON()
 		if err != nil {
 			return nil, err
 		}
-		data["query"] = qd
+
+		data["query"] = dynamic.JSON(qd)
 	}
 	return json.Marshal(data)
 }

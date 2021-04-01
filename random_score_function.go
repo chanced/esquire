@@ -134,7 +134,7 @@ func (rs *RandomScoreFunction) marshalParams(data dynamic.JSONObject) error {
 	data["random_score"] = pd
 	return nil
 }
-func (rs *RandomScoreFunction) unmarshalParams(data []byte) error {
+func (rs *RandomScoreFunction) unmarshalParams(data dynamic.JSON) error {
 	params := randomScoreParams{}
 	err := json.Unmarshal(data, &params)
 	if err != nil {

@@ -15,6 +15,11 @@ type Termser interface {
 	Terms() (*TermsClause, error)
 }
 
+type TermserComplete interface {
+	Termser
+	CompleteClauser
+}
+
 // NewTermsQuery returns a new *TermsQuery
 //
 // Valid options are:
@@ -46,7 +51,7 @@ type TermsQuery struct {
 	completeClause
 }
 
-func (t TermsQuery) Clause() (Clause, error) {
+func (t TermsQuery) Clause() (QueryClause, error) {
 	return t.Terms()
 }
 func (t TermsQuery) Terms() (*TermsClause, error) {

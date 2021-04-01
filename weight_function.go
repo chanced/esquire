@@ -36,7 +36,7 @@ type WeightFunction struct {
 func (WeightFunction) marshalParams(dynamic.JSONObject) error {
 	return nil
 }
-func (WeightFunction) unmarshalParams(data []byte) error {
+func (WeightFunction) unmarshalParams(data dynamic.JSON) error {
 	return nil
 }
 

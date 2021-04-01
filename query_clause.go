@@ -273,6 +273,38 @@ func unpackClause(clause CompleteClause) (QueryClause, error) {
 	return nil, errors.New("invalid query")
 }
 
+func marshalSingleQueryClause(clause QueryClause) (dynamic.JSON, error) {
+	if clause == nil {
+		return nil, nil
+	}
+	cd, err := clause.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(dynamic.JSONObject{clause.Kind().String(): cd})
+}
+
+func unmarshalSingleQueryClause(data dynamic.JSON) (QueryClause, error) {
+	var cd map[Kind]dynamic.JSON
+	err := json.Unmarshal(data, &cd)
+	if err != nil {
+		return nil, err
+	}
+	for t, d := range cd {
+		handler, ok := clauseHandlers[t]
+		if !ok {
+			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedKind, t)
+		}
+		ce := handler()
+		err := json.Unmarshal(d, &ce)
+		if err != nil {
+			return nil, err
+		}
+		return ce, nil
+	}
+	return nil, nil
+}
+
 func unmarshalQueryClause(data []byte) (QueryClause, error) {
 	if len(data) == 0 {
 		return nil, nil

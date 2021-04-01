@@ -24,7 +24,7 @@ func TestTerms(t *testing.T) {
         }
       }  
     `)
-	var q1 picker.QueryValues
+	var q1 picker.Query
 
 	err := json.Unmarshal(json1, &q1)
 	assert.NoError(err)
@@ -35,7 +35,7 @@ func TestTerms(t *testing.T) {
 	json1Res, err := json.MarshalIndent(q1, "", "  ")
 	fmt.Println(string(json1Res))
 	assert.NoError(err)
-	var res1 picker.QueryValues
+	var res1 picker.Query
 	err = json.Unmarshal(json1Res, &res1)
 	assert.NoError(err)
 	assert.Equal(float64(1.2), res1.Terms().Boost(), "res1")
@@ -48,7 +48,7 @@ func TestTerms(t *testing.T) {
 	defer j2.Close()
 	json2, err := ioutil.ReadAll(j2)
 	assert.NoError(err)
-	var q2 picker.QueryValues
+	var q2 picker.Query
 
 	fmt.Println("json2:\n", string(json2))
 	err = json.Unmarshal(json2, &q2)

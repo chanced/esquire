@@ -12,6 +12,15 @@ type Script struct {
 	Params interface{}
 }
 
+func (s Script) Script() (*ScriptClause, error) {
+	sq := &ScriptQuery{
+		Lang:   s.Lang,
+		Source: s.Source,
+		Params: s.Params,
+	}
+	return sq.Script()
+}
+
 func (s *Script) script() (*scriptParams, error) {
 	if s == nil {
 		return nil, nil

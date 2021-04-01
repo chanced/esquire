@@ -22,6 +22,10 @@ github.com/chanced/dynamic v0.0.0-20210330210053-c0645b92d107 h1:CscMcCv5BlHdkBp
 github.com/chanced/dynamic v0.0.0-20210330210053-c0645b92d107/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/chanced/dynamic v0.0.0-20210331171527-d8e9f791257d h1:A1HvIY7qlP5XBFMnpVcRmu8Qyn2aeZVCXNPxx3TIWEg=
 github.com/chanced/dynamic v0.0.0-20210331171527-d8e9f791257d/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210331222053-29eb980df4e8 h1:J4wmnmNhlNjfMuxYH3keMvNs7d83qRQ+jai4HmFDJ9g=
+github.com/chanced/dynamic v0.0.0-20210331222053-29eb980df4e8/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
+github.com/chanced/dynamic v0.0.0-20210331223046-01c440e0f85f h1:5ihcbtcjY3IUwD+lNtx6ie0z+yuu8+txox8NBV3TYG4=
+github.com/chanced/dynamic v0.0.0-20210331223046-01c440e0f85f/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/paulmach/go.geojson v1.4.0 h1:5x5moCkCtDo5x8af62P9IOAYGQcYHtxz2QJ3x1DoCgY=
