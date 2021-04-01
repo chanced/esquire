@@ -56,6 +56,11 @@ Utilities that pair with the official Elasticsearch Go package
     - shapes which either intersect, are contained by, are within or do not intersect with the specified shape
     - points which intersect the specified shape
 - #### [Joining queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/joining-queries.html)
-- [ ] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html)**\
-       Documents may contain fields of type nested. These fields are used to index arrays of objects, where each object can be queried (with the nested query) as an independent document.
-- [ ] **[Has child](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html)**\
+  - [ ] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html)**\
+         Documents may contain fields of type nested. These fields are used to index arrays of objects, where each object can be queried (with the nested query) as an independent document.
+  - [ ] **[Has child](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html)**\
+         A join field relationship can exist between documents within a single index. The has_child query returns parent documents whose child documents match the specified query, while the has_parent query returns child documents whose parent document matches the specified query.
+- [x] **[Match all](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)**\
+       The most simple query, which matches all documents, giving them all a \_score of 1.0.
+- [x] **[Match none](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)**\
+       This is the inverse of the match_all query, which matches no documents.
