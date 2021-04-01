@@ -14,9 +14,9 @@ Utilities that pair with the official Elasticsearch Go package
          true and false values.
   - [ ] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#keyword-field-type)**\
          used for structured content such as IDs, email addresses, hostnames, status codes, zip codes, or tags.
-  - [ ] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type)** [X-Pack]\
+  - [ ] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type) [X-Pack]**\
          Constant keyword is a specialization of the keyword field for the case that all documents in the index have the same value.
-  - [ ] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type)** [X-Pack]\
+  - [ ] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
          The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
   - [ ] **[Numbers](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Numeric types, such as long and double, used to express amounts.
@@ -44,16 +44,16 @@ Utilities that pair with the official Elasticsearch Go package
          Range types, such as long_range, double_range, date_range, and ip_range.
   - [ ] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
          IPv4 and IPv6 addresses.
-  - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html)** [X-Pack]\
+  - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
          Software versions. Supports Semantic Versioning precedence rules.
-  - [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html)** [X-Pack]\
+  - [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html) [X-Pack]**\
          Compute and stores hashes of values.
 
 - #### Aggregate data types
 
-  - [ ] **[Aggregate metric double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/aggregate-metric-double.html)** [X-Pack]\
+  - [ ] **[Aggregate metric double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/aggregate-metric-double.html) [X-Pack]**\
          Pre-aggregated metric values.
-  - [ ] **[Histogram](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/histogram.html)** [X-Pack]\
+  - [ ] **[Histogram](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/histogram.html) [X-Pack]**\
          Pre-aggregated numerical values in the form of a histogram.
 
 - #### Text search types
@@ -71,9 +71,9 @@ Utilities that pair with the official Elasticsearch Go package
 
 - #### Document ranking types
 
-  - [ ] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html)** [X-Pack]\
+  - [ ] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html) [X-Pack]**\
          Records dense vectors of float values.
-  - [ ] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html)** [X-Pack] [Deprecated]\
+  - [ ] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html) [X-Pack] [Deprecated]**\
          Records sparse vectors of float values.
   - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-feature.html)**\
          Records a numeric feature to boost hits at query time.
