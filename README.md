@@ -4,6 +4,8 @@ Utilities that pair with the official Elasticsearch Go package
 
 ## Todo
 
+Testing is incredibly light right now.
+
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
 - #### Common types
