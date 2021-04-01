@@ -3,6 +3,9 @@ package mapping
 type BinaryFieldParams struct {
 }
 
+func (BinaryField) Type() FieldType {
+	return FieldTypeBinary
+}
 func NewBinaryField(params BinaryFieldParams) *BinaryField {
 
 }
@@ -18,8 +21,6 @@ type BinaryField struct {
 	storeParam     `json:",inline" bson:",inline"`
 }
 
-func (b BinaryField) Clone() Field {
-	n := NewBinaryField()
-	n.SetDocValues(b.DocValues())
-	return n
+func (BinaryField) Type() FieldType {
+	return FieldTypeBinary
 }
