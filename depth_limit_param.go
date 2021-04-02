@@ -14,7 +14,7 @@ type depthLimitParam struct {
 }
 
 func (dl depthLimitParam) DepthLimit() float64 {
-	if f, ok := dl.depthLimit.Float(); ok {
+	if f, ok := dl.depthLimit.Float64(); ok {
 		return f
 	}
 	return DepthLimitDefault

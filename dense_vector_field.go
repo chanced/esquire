@@ -14,15 +14,9 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html
 type DenseVectorField struct {
-	BaseField       `json:",inline" bson:",inline"`
-	DimensionsParam `json:",inline" bson:",inline"`
+	dimensionsParam
 }
 
-func (f DenseVectorField) Clone() Field {
-	n := NewDenseVectorField()
-	n.SetDims(f.Dims())
-	return n
-}
 func NewDenseVectorField() *DenseVectorField {
 	return &DenseVectorField{BaseField: BaseField{MappingType: FieldTypeDenseVector}}
 }

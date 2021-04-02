@@ -173,7 +173,7 @@ func (l *LongField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (l *LongField) MarshalJSON() ([]byte, error) {
+func (l LongField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(LongFieldParams{
 		Coerce:          l.coerce.Value(),
 		IgnoreMalformed: l.ignoreMalformed.Value(),
@@ -264,7 +264,7 @@ func (i *IntegerField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (i *IntegerField) MarshalJSON() ([]byte, error) {
+func (i IntegerField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(IntegerFieldParams{
 		Coerce:          i.coerce.Value(),
 		IgnoreMalformed: i.ignoreMalformed.Value(),
@@ -355,7 +355,7 @@ func (s *ShortField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *ShortField) MarshalJSON() ([]byte, error) {
+func (s ShortField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ShortFieldParams{
 		Coerce:          s.coerce.Value(),
 		IgnoreMalformed: s.ignoreMalformed.Value(),
@@ -445,7 +445,7 @@ func (d *DoubleField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (d *DoubleField) MarshalJSON() ([]byte, error) {
+func (d DoubleField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(DoubleFieldParams{
 		Coerce:          d.coerce.Value(),
 		IgnoreMalformed: d.ignoreMalformed.Value(),
@@ -535,7 +535,7 @@ func (b *ByteField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (b *ByteField) MarshalJSON() ([]byte, error) {
+func (b ByteField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ByteFieldParams{
 		Coerce:          b.coerce.Value(),
 		IgnoreMalformed: b.ignoreMalformed.Value(),
@@ -554,10 +554,10 @@ func (FloatFieldParams) Type() FieldType {
 }
 
 func (p FloatFieldParams) Field() (Field, error) {
-	return p.Float()
+	return p.Float64()
 }
 
-func (p FloatFieldParams) Float() (*FloatField, error) {
+func (p FloatFieldParams) Float64() (*FloatField, error) {
 	ff := &FloatField{}
 	err := ff.SetCoerce(p.Coerce)
 	if err != nil {
@@ -590,7 +590,7 @@ func (p FloatFieldParams) Float() (*FloatField, error) {
 }
 
 func NewFloatField(params FloatFieldParams) (*FloatField, error) {
-	return params.Float()
+	return params.Float64()
 }
 
 // A FloatField is a single-precision 32-bit IEEE 754 floating point
@@ -618,7 +618,7 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.Float()
+	v, err := params.Float64()
 	if err != nil {
 		return err
 	}
@@ -626,7 +626,7 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (f *FloatField) MarshalJSON() ([]byte, error) {
+func (f FloatField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(FloatFieldParams{
 		Coerce:          f.coerce.Value(),
 		IgnoreMalformed: f.ignoreMalformed.Value(),
@@ -645,10 +645,10 @@ func (HalfFloatFieldParams) Type() FieldType {
 }
 
 func (l HalfFloatFieldParams) Field() (Field, error) {
-	return l.HalfFloat()
+	return l.HalfFloat64()
 }
 
-func (l HalfFloatFieldParams) HalfFloat() (*HalfFloatField, error) {
+func (l HalfFloatFieldParams) HalfFloat64() (*HalfFloatField, error) {
 	f := &HalfFloatField{}
 	err := f.SetCoerce(l.Coerce)
 	if err != nil {
@@ -681,7 +681,7 @@ func (l HalfFloatFieldParams) HalfFloat() (*HalfFloatField, error) {
 }
 
 func NewHalfFloatField(params HalfFloatFieldParams) (*HalfFloatField, error) {
-	return params.HalfFloat()
+	return params.HalfFloat64()
 }
 
 // A HalfFloatField is a half-precision 16-bit IEEE 754 floating point
@@ -709,7 +709,7 @@ func (hf *HalfFloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.HalfFloat()
+	v, err := params.HalfFloat64()
 	if err != nil {
 		return err
 	}
@@ -717,7 +717,7 @@ func (hf *HalfFloatField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (hf *HalfFloatField) MarshalJSON() ([]byte, error) {
+func (hf HalfFloatField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(HalfFloatFieldParams{
 		Coerce:          hf.coerce.Value(),
 		IgnoreMalformed: hf.ignoreMalformed.Value(),
@@ -812,7 +812,7 @@ func (ul *UnsignedLongField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ul *UnsignedLongField) MarshalJSON() ([]byte, error) {
+func (ul UnsignedLongField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(UnsignedLongFieldParams{
 		Coerce:          ul.coerce.Value(),
 		IgnoreMalformed: ul.ignoreMalformed.Value(),
@@ -921,10 +921,10 @@ func (ScaledFloatFieldParams) Type() FieldType {
 }
 
 func (l ScaledFloatFieldParams) Field() (Field, error) {
-	return l.ScaledFloat()
+	return l.ScaledFloat64()
 }
 
-func (l ScaledFloatFieldParams) ScaledFloat() (*ScaledFloatField, error) {
+func (l ScaledFloatFieldParams) ScaledFloat64() (*ScaledFloatField, error) {
 	f := &ScaledFloatField{}
 	err := f.SetCoerce(l.Coerce)
 	if err != nil {
@@ -957,7 +957,7 @@ func (l ScaledFloatFieldParams) ScaledFloat() (*ScaledFloatField, error) {
 }
 
 func NewScaledFloatField(params ScaledFloatFieldParams) (*ScaledFloatField, error) {
-	return params.ScaledFloat()
+	return params.ScaledFloat64()
 }
 
 type ScaledFloatField struct {
@@ -982,7 +982,7 @@ func (sf *ScaledFloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.ScaledFloat()
+	v, err := params.ScaledFloat64()
 	if err != nil {
 		return err
 	}
@@ -990,7 +990,7 @@ func (sf *ScaledFloatField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (sf *ScaledFloatField) MarshalJSON() ([]byte, error) {
+func (sf ScaledFloatField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ScaledFloatFieldParams{
 		ScalingFactor:   sf.scalingFactor,
 		Coerce:          sf.coerce.Value(),

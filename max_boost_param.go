@@ -37,7 +37,7 @@ func unmarshalMaxBoostParam(data dynamic.JSON, target interface{}) error {
 		if err != nil {
 			return err
 		}
-		if v, ok := n.Float(); ok {
+		if v, ok := n.Float64(); ok {
 			a.SetMaxBoost(v)
 			return nil
 		}

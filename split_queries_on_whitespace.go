@@ -1,5 +1,9 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+var DefaultSplitQueriesOnWhitespace = false
+
 // WithSplitQueriesOnWhitespace is mapping with the split_queries_on_whitespace
 // parameter
 //
@@ -7,12 +11,12 @@ package picker
 // the input on whitespace when building a query for this field. Accepts true or
 // false (default).
 type WithSplitQueriesOnWhitespace interface {
-	// SplitQueriesOnWhitespace determines whether full text queries should split
-	// the input on whitespace when building a query for this field. Accepts true or
-	// false (default).
+	// SplitQueriesOnWhitespace determines whether full text queries should
+	// split the input on whitespace when building a query for this field.
+	// Accepts true or false (default).
 	SplitQueriesOnWhitespace() bool
 	// SetSplitQueriesOnWhitespace sets the SplitQueriesOnWhitespace Value to v
-	SetSplitQueriesOnWhitespace(v bool)
+	SetSplitQueriesOnWhitespace(v interface{}) error
 }
 
 // FieldWithSplitQueriesOnWhitespace is a Field with the
@@ -22,25 +26,21 @@ type FieldWithSplitQueriesOnWhitespace interface {
 	WithSplitQueriesOnWhitespace
 }
 
-// SplitQueriesOnWhitespaceParam is a mixin that adds the
-// split_queries_on_whitespace paramete
-type SplitQueriesOnWhitespaceParam struct {
-	SplitQueriesOnWhitespaceValue *bool `bson:"split_queries_on_whitespace,omitempty" json:"split_queries_on_whitespace,omitempty"`
+type splitQueriesOnWhitespaceParam struct {
+	splitQueriesOnWhitespace dynamic.Bool
 }
 
 // SplitQueriesOnWhitespace determines whether full text queries should split
 // the input on whitespace when building a query for this field. Accepts true or
 // false (default).
-func (sq SplitQueriesOnWhitespaceParam) SplitQueriesOnWhitespace() bool {
-	if sq.SplitQueriesOnWhitespaceValue == nil {
-		return false
+func (sq splitQueriesOnWhitespaceParam) SplitQueriesOnWhitespace() bool {
+	if b, ok := sq.splitQueriesOnWhitespace.Bool(); ok {
+		return b
 	}
-	return *sq.SplitQueriesOnWhitespaceValue
+	return DefaultSplitQueriesOnWhitespace
 }
 
 // SetSplitQueriesOnWhitespace sets the SplitQueriesOnWhitespace Value to v
-func (sq *SplitQueriesOnWhitespaceParam) SetSplitQueriesOnWhitespace(v bool) {
-	if sq.SplitQueriesOnWhitespace() != v {
-		sq.SplitQueriesOnWhitespaceValue = &v
-	}
+func (sq *splitQueriesOnWhitespaceParam) SetSplitQueriesOnWhitespace(v interface{}) error {
+	return sq.splitQueriesOnWhitespace.Set(v)
 }

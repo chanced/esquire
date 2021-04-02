@@ -124,7 +124,7 @@ func (rs RandomScoreFunction) MarshalJSON() ([]byte, error) {
 
 func (rs *RandomScoreFunction) marshalParams(data dynamic.JSONObject) error {
 	params := randomScoreParams{Field: rs.field}
-	if f, ok := rs.seed.Float(); ok {
+	if f, ok := rs.seed.Float64(); ok {
 		params.Seed = &f
 	}
 	pd, err := json.Marshal(params)

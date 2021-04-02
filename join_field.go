@@ -194,7 +194,7 @@ func (j *JoinField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (j *JoinField) MarshalJSON() ([]byte, error) {
+func (j JoinField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(JoinFieldParams{
 		Relations:           j.relations,
 		EagerGlobalOrdinals: j.eagerGlobalOrdinals.Value(),

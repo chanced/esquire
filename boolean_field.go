@@ -152,7 +152,7 @@ func (b *BooleanField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (b *BooleanField) MarshalJSON() ([]byte, error) {
+func (b BooleanField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(BooleanFieldParams{
 		DocValues: b.docValues.Value(),
 		Index:     b.index.Value(),

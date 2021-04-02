@@ -33,7 +33,7 @@ func (b *weightParam) SetWeight(v interface{}) error {
 	if err != nil {
 		return err
 	}
-	if f, ok := n.Float(); ok {
+	if f, ok := n.Float64(); ok {
 		b.weight = &f
 	} else if n.IsNil() {
 		b.weight = nil

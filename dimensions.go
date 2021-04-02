@@ -1,5 +1,7 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
 // WithDimensions is a mapping with the dims parameter
 //
 // dims is the number of dimensions in the vector, required parameter for fields
@@ -7,41 +9,30 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html
 type WithDimensions interface {
-	// Dims is the number of dimensions in the vector, required parameter.
-	Dims() int
-	// SetDims sets the dimensions to v
-	SetDims(v int)
+	// Dimensions is the number of dimensions in the vector, required parameter.
+	Dimensions() int
+	// SetDimensions sets the dimensions to v
+	SetDimensions(v interface{}) error
 }
 
-// FieldWithDimensions is a Field mapping with the dims parameter
-type FieldWithDimensions interface {
-	Field
-	WithDimensions
-}
-
-// DimensionsParam is a mapping with the dims parameter
+// dimensionsParam is a mapping with the dims parameter
 //
 // dims is the number of dimensions in the vector, required parameter for fields
 // that have it.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html
-type DimensionsParam struct {
-	DimensionsValue int `bson:"dims,omitempty" json:"dims,omitempty"`
+type dimensionsParam struct {
+	dimensions dynamic.Number
 }
 
-func (d DimensionsParam) Dimensions() int {
-	return d.DimensionsValue
+func (d dimensionsParam) Dimensions() int {
+	if i, ok := d.dimensions.Int(); ok {
+		return i
+	}
+	return -1
 }
 
-// Dims is the number of dimensions in the vector, required parameter.
-func (d DimensionsParam) Dims() int {
-	return d.DimensionsValue
-}
+func (d *dimensionsParam) SetDimensions(v interface{}) error {
+	return d.dimensions.Set(v)
 
-// SetDims sets the dimensions to v
-func (d *DimensionsParam) SetDims(v int) {
-	d.DimensionsValue = v
-}
-func (d *DimensionsParam) SetDimensions(v int) {
-	d.DimensionsValue = v
 }

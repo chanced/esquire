@@ -40,7 +40,7 @@ func (sf *scalingFactorParam) SetScalingFactor(v interface{}) error {
 	if err != nil {
 		return err
 	}
-	if f, ok := n.Float(); ok {
+	if f, ok := n.Float64(); ok {
 		sf.scalingFactor = f
 		return nil
 	}

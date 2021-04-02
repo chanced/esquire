@@ -96,7 +96,7 @@ func (fvf FieldValueFactorFunction) SetFactor(v interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, ok := fvf.factor.Float(); !ok {
+	if _, ok := fvf.factor.Float64(); !ok {
 		return fmt.Errorf("invalid Factor value for %s: <%d>", fvf.field, fvf.factor.Value())
 	}
 	return nil
@@ -106,7 +106,7 @@ func (fvf FieldValueFactorFunction) Factor() float64 {
 	if fvf.factor.IsNil() {
 		return float64(1)
 	}
-	f, _ := fvf.factor.Float()
+	f, _ := fvf.factor.Float64()
 	return f
 }
 
@@ -138,7 +138,7 @@ func (fvf *FieldValueFactorFunction) marshalParams(data dynamic.JSONObject) erro
 		Missing:  fvf.missing,
 		Modifier: fvf.modifier,
 	}
-	if f, ok := fvf.factor.Float(); ok {
+	if f, ok := fvf.factor.Float64(); ok {
 		params.Factor = &f
 	}
 	fd, err := json.Marshal(params)

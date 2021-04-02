@@ -64,7 +64,7 @@ func TestMatch(t *testing.T) {
 	assert.Equal("AUTO", q2.Match().Fuzziness())
 	assert.Equal(picker.ZeroTermsAll, q2.Match().ZeroTermsQuery())
 	assert.Equal(false, q2.Match().AutoGenerateSynonymsPhraseQuery())
-	cutoff, ok := q2.Match().CutoffFrequency().Float()
+	cutoff, ok := q2.Match().CutoffFrequency().Float64()
 	assert.True(ok, "should have a cutoff")
 	assert.Equal(float64(0.001), cutoff)
 	assert.Equal("75%", q2.Match().MinimumShouldMatch(), "minimum_should_match should be set")
@@ -80,7 +80,7 @@ func TestMatch(t *testing.T) {
 	var rq2 picker.Query
 	err = json.Unmarshal(rjson2, &rq2)
 	assert.NoError(err)
-	f, ok := rq2.Match().Query().Float()
+	f, ok := rq2.Match().Query().Float64()
 	assert.True(ok, "q2 Match() query should be a float")
 	assert.Equal(float64(34.78), f, "q2 Match() query should be 34.78")
 	assert.Equal(picker.OperatorAnd, rq2.Match().Operator())
@@ -96,7 +96,7 @@ func TestMatch(t *testing.T) {
 	assert.Equal(true, rq2.Match().Lenient())
 
 	assert.True(ok, "should have a cutoff")
-	cutoff2, ok := q2.Match().CutoffFrequency().Float()
+	cutoff2, ok := q2.Match().CutoffFrequency().Float64()
 	assert.True(ok, "should have a cutoff")
 	// assert.Equal(float64(0.001), cutoff)
 	assert.Equal(float64(0.001), cutoff2)

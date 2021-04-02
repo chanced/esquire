@@ -3,6 +3,8 @@ package picker
 import (
 	"fmt"
 	"strings"
+
+	"github.com/chanced/dynamic"
 )
 
 // IndexOptions is an option to the the index_options parameter controls what
@@ -82,7 +84,7 @@ type FieldWithIndexOptions interface {
 	WithIndexOptions
 }
 
-// IndexOptionsParam is a mixin that adds the index_options param to mappings
+// indexOptionsParam is a mixin that adds the index_options param to mappings
 //
 // The index_options parameter controls what information is added to the
 // inverted index for search and highlighting purposes.
@@ -102,27 +104,32 @@ type FieldWithIndexOptions interface {
 // used by the unified highlighter to speed up highlighting.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/index-options.html
-type IndexOptionsParam struct {
-	IndexOptionsValue *IndexOptions `json:"index_options,omitempty" bson:"index_options,omitempty"`
+type indexOptionsParam struct {
+	indexOptions IndexOptions
 }
 
 //IndexOptions parameter controls what information is added to the inverted
 //index for search and highlighting purposes.
-func (io IndexOptionsParam) IndexOptions() IndexOptions {
-	if io.IndexOptionsValue == nil {
+func (io indexOptionsParam) IndexOptions() IndexOptions {
+	if len(io.indexOptions) == 0 {
 		return IndexOptionsPositions
 	}
-	return *io.IndexOptionsValue
+	return io.indexOptions
 }
 
 // SetIndexOptions sets IndexOptions value to v
-func (io *IndexOptionsParam) SetIndexOptions(v IndexOptions) error {
+func (io *indexOptionsParam) SetIndexOptions(v IndexOptions) error {
 	if io.IndexOptions() == v {
 		return nil
 	}
+	if len(io.IndexOptions()) == 0 {
+		io.indexOptions = ""
+	}
+	str := dynamic.NewString(v)
+	iov := IndexOptions(str.ToLower().String())
 	for _, x := range allIndexOptions {
-		if x == v {
-			io.IndexOptionsValue = &v
+		if x == iov {
+			io.indexOptions = v
 			return nil
 		}
 	}

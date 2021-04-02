@@ -36,7 +36,7 @@ type WithBoost interface {
 }
 
 type boostParam struct {
-	// boostValue is a floating point number used to decrease or increase the relevance
+	// boost is a floating point number used to decrease or increase the relevance
 	// scores of a query. Defaults to 1.0.
 	//
 	// You can use the boost parameter to adjust relevance scores for searches
@@ -45,7 +45,7 @@ type boostParam struct {
 	// Boost values are relative to the default value of 1.0. A boost value between
 	// 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 	// the relevance score.
-	boostValue *float64
+	boost dynamic.Number
 }
 
 // Boost is a floating point number used to decrease or increase the relevance
@@ -58,23 +58,16 @@ type boostParam struct {
 // 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases
 // the relevance score.
 func (b boostParam) Boost() float64 {
-	if b.boostValue == nil {
-		return DefaultBoost
+	if f, ok := b.boost.Float64(); ok {
+		return f
 	}
-	return *b.boostValue
+	return DefaultBoost
 }
 
 // SetBoost sets Boost to v
 func (b *boostParam) SetBoost(v interface{}) error {
-	n, err := dynamic.NewNumber(v)
+	err := b.boost.Set(v)
 	if err != nil {
-		return err
-	}
-	if f, ok := n.Float(); ok {
-		b.boostValue = &f
-	} else if n.IsNil() {
-		b.boostValue = nil
-	} else {
 		return fmt.Errorf("%w <%s>", ErrInvalidBoost, v)
 	}
 	return nil
@@ -95,7 +88,7 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 			if err != nil {
 				return err
 			}
-			f, ok := n.Float()
+			f, ok := n.Float64()
 			if !ok {
 				return &json.UnmarshalTypeError{
 					Value: string(data),
@@ -121,7 +114,7 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 			if err != nil {
 				return err
 			}
-			f, ok := n.Float()
+			f, ok := n.Float64()
 			if ok {
 				r.SetBoost(f)
 			}

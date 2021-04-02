@@ -19,7 +19,7 @@ type WithFormat interface {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html
 	Format() string
-	// SetFormat sets the Format Value to v
+	// SetFormat sets the format to v
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html
 	SetFormat(v string)

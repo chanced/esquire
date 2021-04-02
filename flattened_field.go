@@ -38,12 +38,25 @@ type FlattenedFieldParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/eager-global-ordinals.html
 	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals,omitempty"`
-	ignoreAboveParam
+	// WithSplitQueriesOnWhitespace is mapping with the split_queries_on_whitespace
+	// parameter
+	//
+	// split_queries_on_whitespace determines whether full text queries should split
+	// the input on whitespace when building a query for this field. Accepts true or
+	// false (default)
+	//
+	// (strings get parsed as bool).
+	SplitQueriesOnWhitespace interface{} `json:"split_queries_on_whitespace,omitempty"`
+	// IgnoreAbove signals to not index any string longer than this value.
+	// Defaults to 2147483647 so that all values would be accepted. Please
+	// however note that default dynamic mapping rules create a sub keyword
+	// field that overrides this default by setting ignore_above: 256.
+	IgnoreAbove interface{} `json:"ignore_above,omitempty"`
 	indexParam
 	IndexOptionsParam
 	nullValueParam
 	SimilarityParam
-	SplitQueriesOnWhitespaceParam
+	splitQueriesOnWhitespaceParam
 }
 
 // FlattenedField maps an entire object as a single field.
@@ -77,7 +90,7 @@ type FlattenedField struct {
 	IndexOptionsParam
 	nullValueParam
 	SimilarityParam
-	SplitQueriesOnWhitespaceParam
+	splitQueriesOnWhitespaceParam
 }
 
 func NewFlattenedField() *FlattenedField {

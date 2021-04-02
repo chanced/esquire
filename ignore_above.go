@@ -36,12 +36,12 @@ type ignoreAboveParam struct {
 	ignoreAbove dynamic.Number
 }
 
-// IgnoreAbove signiall to not index any string longer than this value.
+// IgnoreAbove signals to not index any string longer than this value.
 // Defaults to 2147483647 so that all values would be accepted. Please
 // however note that default dynamic mapping rules create a sub keyword
 // field that overrides this default by setting ignore_above: 256.
 func (ia ignoreAboveParam) IgnoreAbove() float64 {
-	if f, ok := ia.ignoreAbove.Float(); ok {
+	if f, ok := ia.ignoreAbove.Float64(); ok {
 		return f
 	}
 	return DefaultIgnoreAbove

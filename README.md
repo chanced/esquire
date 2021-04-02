@@ -20,7 +20,19 @@ Testing is incredibly light right now.
          Constant keyword is a specialization of the keyword field for the case that all documents in the index have the same value.
   - [ ] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
          The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
-  - [ ] **[Numbers](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [ ] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Numeric types, such as long and double, used to express amounts.
+  - [ ] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Numeric types, such as long and double, used to express amounts.
   - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
          Date field type
@@ -42,8 +54,18 @@ Testing is incredibly light right now.
 
 - #### Structured data types
 
-  - [ ] **[Range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [ ] **[Long range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+         LongRangeField is a range of signed 64-bit integers with a minimum value of -263 and maximum of 263-1.
+  - [ ] **[Integer range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          Range types, such as long_range, double_range, date_range, and ip_range.
+  - [ ] **[Float range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+         FloatRangeField is a range of single-precision 32-bit IEEE 754 floating point values.
+  - [ ] **[Double range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+         Range types, such as long_range, double_range, date_range, and ip_range.
+  - [ ] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+         DateRangeField is a range of date values. Date ranges support various date formats through the format mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the now date math expression are not supported
+  - [ ] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+         IPRangeField is a range of ip values supporting either IPv4 or IPv6 (or mixed) addresses.
   - [ ] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
          IPv4 and IPv6 addresses.
   - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
