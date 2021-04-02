@@ -6,48 +6,68 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-const DefaultAnalyzer = ""
-
-// WithAnalyzer is a query with the analyzer param
+// WithAnalyzer is a Field mapping with an analyzer
 //
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
+// Analyzer
+//
+// The analyzer parameter specifies the analyzer used for text analysis when
+// indexing or searching a text field.
+//
+// Only text fields support the analyzer mapping parameter.
+//
+// Search Quote Analyzer
+//
+// The search_quote_analyzer setting allows you to specify an analyzer for
+// phrases, this is particularly useful when dealing with disabling stop words
+// for phrase queries.
+//
+// To disable stop words for phrases a field utilising three analyzer settings
+// will be required:
+//
+// 1. An analyzer setting for indexing all terms including stop words
+//
+// 2. A search_analyzer setting for non-phrase queries that will remove stop
+// words
+//
+// 3. A search_quote_analyzer setting for phrase queries that will not remove
+// stop words
+//
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
 type WithAnalyzer interface {
-	// Analyzer used to convert the text in the query value into tokens.
-	// Defaults to the index-time analyzer mapped for the <field>. If no
-	// analyzer is mapped, the index’s default analyzer is used. (Optional)
+	// Analyzer parameter specifies the analyzer used for text analysis when
+	// indexing or searching a text field.
 	Analyzer() string
-	// SetAnalyzer sets the Analyzer value to v
+	// SetAnalyzer sets Analyzer to v
 	SetAnalyzer(v string)
 }
 
-// analyzerParam is a query mixin that adds the analyzer param
+// analyzerParam adds Analyzer, SearchAnalyzer, and SearchQuoteAnalyzer
 //
-// Analyzer used to convert the text in the query value into tokens.
-// Defaults to the index-time analyzer mapped for the <field>. If no
-// analyzer is mapped, the index’s default analyzer is used. (Optional)
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
 type analyzerParam struct {
 	analyzer string
 }
 
-// Analyzer used to convert the text in the query value into tokens.
-// Defaults to the index-time analyzer mapped for the <field>. If no
-// analyzer is mapped, the index’s default analyzer is used. (Optional)
-func (a analyzerParam) Analyzer() string {
-	return a.analyzer
+// Analyzer parameter specifies the analyzer used for text analysis when
+// indexing or searching a text field.
+//
+// Unless overridden with the search_analyzer mapping parameter, this
+// analyzer is used for both index and search analysis.
+func (ap analyzerParam) Analyzer() string {
+	return ap.analyzer
 }
 
-// SetAnalyzer sets the Analyzer value to v
-func (a *analyzerParam) SetAnalyzer(v string) {
-	if a.Analyzer() != v {
-		a.analyzer = v
+// SetAnalyzer sets Analyzer to v
+func (ap *analyzerParam) SetAnalyzer(v string) {
+	if ap.Analyzer() != v {
+		ap.analyzer = v
+
 	}
 }
 
 func marshalAnalyzerParam(source interface{}) (dynamic.JSON, error) {
 	if a, ok := source.(WithAnalyzer); ok {
-		if a.Analyzer() != DefaultAnalyzer {
+		if len(a.Analyzer()) > 0 {
 			return json.Marshal(a.Analyzer())
 		}
 	}
