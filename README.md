@@ -334,9 +334,13 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
 - [x] **[Match none](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-all-query.html)**\
        This is the inverse of the match_all query, which matches no documents.
 - #### [Span queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/span-queries.html)
+
   Span queries are low-level positional queries which provide expert control over the order and proximity of the specified terms. These are typically used to implement very specific queries on legal documents or patents.
+
   It is only allowed to set boost on an outer span query. Compound span queries, like span_near, only use the list of matching spans of inner span queries in order to find their own spans, which they then use to produce a score. Scores are never computed on inner span queries, which is the reason why boosts are not allowed: they only influence the way scores are computed, not spans.
+
   Span queries cannot be mixed with non-span queries (with the exception of the span_multi query).
+
   - [ ] **[Span containing](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-span-containing-query.html)**\
          Accepts a list of span queries, but only returns those spans which also match a second span query.
   - [ ] **[Field masking span](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-span-field-masking-query.html)**\
@@ -355,6 +359,7 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
          The equivalent of the term query but for use with other span queries.
   - [ ] **[Span within](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-span-within-query.html)**\
          The result from a single span query is returned as long is its span falls within the spans returned by a list of other span queries.
+
 - #### [Specialized queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/specialized-queries.html)
   - [ ] **[Distance feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-distance-feature-query.html)**\
          A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
