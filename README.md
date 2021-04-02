@@ -171,6 +171,7 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
   - [ ] **[Moving percentiles](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-moving-percentiles-aggregation.html) [X-Pack]**\
          Given an ordered series of percentiles, the Moving Percentile aggregation will slide a window across those percentiles and allow the user to compute the cumulative percentile.
   - [ ] **[Normalize](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-normalize-aggregation.html)[X-Pack]**\
+         A parent pipeline aggregation which calculates the specific normalized/rescaled value for a specific bucket value. Values that cannot be normalized, will be skipped using the skip gap policy.
   - [ ] **[Percentiles bucket](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-percentiles-bucket-aggregation.html)**\
          A sibling pipeline aggregation which calculates percentiles across all bucket of a specified metric in a sibling aggregation. The specified metric must be numeric and the sibling aggregation must be a multi-bucket aggregation.
   - [ ] **[Serial differencing](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-serialdiff-aggregation.html)**\
