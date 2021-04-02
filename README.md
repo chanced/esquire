@@ -21,17 +21,21 @@ Testing is incredibly light right now.
   - [ ] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
          The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
   - [ ] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         Long is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
   - [ ] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         Integer is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
   - [ ] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         Byte is a signed 8-bit integer with a minimum value of -128 and a maximum value of 127.
   - [ ] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         Float is a single-precision 32-bit IEEE 754 floating point number, restricted to finite values.
+  - [ ] **[Double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Double is a double-precision 64-bit IEEE 754 floating point number, restricted to finite values.
+  - [ ] **[Short](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+         Short is signed 16-bit integer with a minimum value of -32,768 and a maximum value of 32,767.
   - [ ] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         HalfFloat is a half-precision 16-bit IEEE 754 floating point number, restricted to finite values.
   - [ ] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
+         UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value of 0 and a maximum value of 264-1.
   - [ ] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Numeric types, such as long and double, used to express amounts.
   - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
