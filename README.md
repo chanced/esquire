@@ -12,34 +12,91 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
 
 - #### [Bucket aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket.html)
 
-  - [ ] **Adjacency matrix**
-  - [ ] **Auto-interval date histogram**
-  - [ ] **Children**
-  - [ ] **Composite**
-  - [ ] **Date histogram**
-  - [ ] **Date range**
-  - [ ] **Diversified sampler**
-  - [ ] **Filter**
-  - [ ] **Filters**
-  - [ ] **Geo-distance**
-  - [ ] **Geohash grid**
-  - [ ] **Geotile grid**
-  - [ ] **Global**
-  - [ ] **Histogram**
-  - [ ] **IP range**
-  - [ ] **Missing**
-  - [ ] **Multi Terms**
-  - [ ] **Nested**
-  - [ ] **Parent**
-  - [ ] **Range**
-  - [ ] **Rare terms**
-  - [ ] **Reverse nested**
-  - [ ] **Sampler**
-  - [ ] **Significant terms**
-  - [ ] **Significant text**
-  - [ ] **Terms**
-  - [ ] **Variable width histogram**
-  - [ ] **Subtleties of bucketing range fields**
+  - [ ] **[Adjacency matrix](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-adjacency-matrix-aggregation.html)**\
+         A bucket aggregation returning a form of adjacency matrix. The request provides a collection of named filter expressions, similar to the filters aggregation request. Each bucket in the response represents a non-empty cell in the matrix of intersecting filters.
+  - [ ] **[Auto-interval date histogram](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-autodatehistogram-aggregation.html)**\
+         A multi-bucket aggregation similar to the Date histogram except instead of providing an interval to use as the width of each bucket, a target number of buckets is provided indicating the number of buckets needed and the interval of the buckets is automatically chosen to best achieve that target. The number of buckets returned will always be less than or equal to this target number.
+        The buckets field is optional, and will default to 10 buckets if not specified.
+        Requesting a target of 10 buckets.
+  - [ ] **[Children](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-children-aggregation.html)**\
+         A special single bucket aggregation that selects child documents that have the specified type, as defined in a join field.
+  - [ ] **[Composite](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html)**\
+         A multi-bucket aggregation that creates composite buckets from different sources.
+        Unlike the other multi-bucket aggregations, you can use the composite aggregation to paginate all buckets from a multi-level aggregation efficiently. This aggregation provides a way to stream all buckets of a specific aggregation, similar to what scroll does for documents.
+        The composite buckets are built from the combinations of the values extracted/created for each document and each combination is considered as a composite bucket.
+  - [ ] **[Date histogram](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html)**\
+         This multi-bucket aggregation is similar to the normal histogram, but it can only be used with date or date range values. Because dates are represented internally in Elasticsearch as long values, it is possible, but not as accurate, to use the normal histogram on dates as well. The main difference in the two APIs is that here the interval can be specified using date/time expressions. Time-based data requires special support because time-based intervals are not always a fixed length.
+  - [ ] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-daterange-aggregation.html)**\
+         A range aggregation that is dedicated for date values. The main difference between this aggregation and the normal range aggregation is that the from and to values can be expressed in Date Math expressions, and it is also possible to specify a date format by which the from and to response fields will be returned. Note that this aggregation includes the from value and excludes the to value for each range.
+  - [ ] **[Diversified sampler](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-diversified-sampler-aggregation.html)**\
+         Like the sampler aggregation this is a filtering aggregation used to limit any sub aggregations' processing to a sample of the top-scoring documents. The diversified_sampler aggregation adds the ability to limit the number of matches that share a common value such as an "author".
+  - [ ] **[Filter]()**\
+  - [ ] **[Filters]()**\
+  - [ ] **[Geo-distance]()**\
+  - [ ] **[Geohash grid]()**\
+  - [ ] **[Geotile grid]()**\
+  - [ ] **[Global]()**\
+  - [ ] **[Histogram]()**\
+  - [ ] **[IP range]()**\
+  - [ ] **[Missing]()**\
+  - [ ] **[Multi Terms]()**\
+  - [ ] **[Nested]()**\
+  - [ ] **[Parent]()**\
+  - [ ] **[Range]()**\
+  - [ ] **[Rare terms]()**\
+  - [ ] **[Reverse nested]()**\
+  - [ ] **[Sampler]()**\
+  - [ ] **[Significant terms]()**\
+  - [ ] **[Significant text]()**\
+  - [ ] **[Terms]()**\
+  - [ ] **[Variable width histogram]()**\
+  - [ ] **[Subtleties of bucketing range fields]()**\
+
+- #### [Metric aggreations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html)
+  - [ ] **[Avg]()**\
+  - [ ] **[Boxplot]()**\
+  - [ ] **[Cardinality]()**\
+  - [ ] **[Extended stats]()**\
+  - [ ] **[Geo-bounds]()**\
+  - [ ] **[Geo-centroid]()**\
+  - [ ] **[Geo-Line]()**\
+  - [ ] **[Matrix stats]()**\
+  - [ ] **[Max]()**\
+  - [ ] **[Median absolute deviation]()**\
+  - [ ] **[Min]()**\
+  - [ ] **[Percentile ranks]()**\
+  - [ ] **[Percentiles]()**\
+  - [ ] **[Rate]()**\
+  - [ ] **[Scripted metric]()**\
+  - [ ] **[Stats]()**\
+  - [ ] **[String stats]()**\
+  - [ ] **[Sum]()**\
+  - [ ] **[T-test]()**\
+  - [ ] **[Top hits]()**\
+  - [ ] **[Top metrics]()**\
+  - [ ] **[Value count]()**\
+  - [ ] **[Weighted avg]()**\
+- #### [Pipeline aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline.html)
+
+  - [ ] **[Average bucket]()**\
+  - [ ] **[Bucket script]()**\
+  - [ ] **[Bucket selector]()**\
+  - [ ] **[Bucket sort]()**\
+  - [ ] **[Cumulative cardinality]()**\
+  - [ ] **[Cumulative sum]()**\
+  - [ ] **[Derivative]()**\
+  - [ ] **[Extended stats bucket]()**\
+  - [ ] **[Inference bucket]()**\
+  - [ ] **[Max bucket]()**\
+  - [ ] **[Min bucket]()**\
+  - [ ] **[Moving average]()**\
+  - [ ] **[Moving function]()**\
+  - [ ] **[Moving percentiles]()**\
+  - [ ] **[Normalize]()**\
+  - [ ] **[Percentiles bucket]()**\
+  - [ ] **[Serial differencing]()**\
+  - [ ] **[Stats bucket]()**\
+  - [ ] **[Sum bucket]()**\
 
 - #### [Metric aggreations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html)
   - [ ] **Avg**
