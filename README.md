@@ -30,27 +30,48 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
          A range aggregation that is dedicated for date values. The main difference between this aggregation and the normal range aggregation is that the from and to values can be expressed in Date Math expressions, and it is also possible to specify a date format by which the from and to response fields will be returned. Note that this aggregation includes the from value and excludes the to value for each range.
   - [ ] **[Diversified sampler](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-diversified-sampler-aggregation.html)**\
          Like the sampler aggregation this is a filtering aggregation used to limit any sub aggregations' processing to a sample of the top-scoring documents. The diversified_sampler aggregation adds the ability to limit the number of matches that share a common value such as an "author".
-  - [ ] **[Filter]()**\
-  - [ ] **[Filters]()**\
-  - [ ] **[Geo-distance]()**\
-  - [ ] **[Geohash grid]()**\
-  - [ ] **[Geotile grid]()**\
-  - [ ] **[Global]()**\
-  - [ ] **[Histogram]()**\
-  - [ ] **[IP range]()**\
-  - [ ] **[Missing]()**\
-  - [ ] **[Multi Terms]()**\
-  - [ ] **[Nested]()**\
-  - [ ] **[Parent]()**\
-  - [ ] **[Range]()**\
-  - [ ] **[Rare terms]()**\
-  - [ ] **[Reverse nested]()**\
-  - [ ] **[Sampler]()**\
-  - [ ] **[Significant terms]()**\
-  - [ ] **[Significant text]()**\
-  - [ ] **[Terms]()**\
-  - [ ] **[Variable width histogram]()**\
+  - [ ] **[Filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filter-aggregation.html)**\
+         Defines a single bucket of all the documents in the current document set context that match a specified filter. Often this will be used to narrow down the current aggregation context to a specific set of documents.
+  - [ ] **[Filters](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html)**\
+         Defines a multi bucket aggregation where each bucket is associated with a filter. Each bucket will collect all documents that match its associated filter.
+  - [ ] **[Geo-distance](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geodistance-aggregation.html)**\
+         A multi-bucket aggregation that works on geo_point fields and conceptually works very similar to the range aggregation. The user can define a point of origin and a set of distance range buckets. The aggregation evaluate the distance of each document value from the origin point and determines the buckets it belongs to based on the ranges (a document belongs to a bucket if the distance between the document and the origin falls within the distance range of the bucket).
+  - [ ] **[Geohash grid](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geohashgrid-aggregation.html)**\
+         A multi-bucket aggregation that groups geo_point and geo_shape values into buckets that represent a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell is labeled using a geohash which is of user-definable precision.
+  - [ ] **[Geotile grid](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geotilegrid-aggregation.html)**\
+         A multi-bucket aggregation that groups geo_point and geo_shape values into buckets that represent a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell corresponds to a map tile as used by many online map sites. Each cell is labeled using a "{zoom}/{x}/{y}" format, where zoom is equal to the user-specified precision.
+  - [ ] **[Global](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-global-aggregation.html)**\
+         Defines a single bucket of all the documents within the search execution context. This context is defined by the indices and the document types you’re searching on, but is not influenced by the search query itself.
+  - [ ] **[Histogram](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-histogram-aggregation.html)**\
+         A multi-bucket values source based aggregation that can be applied on numeric values or numeric range values extracted from the documents. It dynamically builds fixed size (a.k.a. interval) buckets over the values.
+  - [ ] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-iprange-aggregation.html)**\
+         Just like the dedicated date range aggregation, there is also a dedicated range aggregation for IP typed fields
+  - [ ] **[Missing](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-missing-aggregation.html)**\
+         A field data based single bucket aggregation, that creates a bucket of all documents in the current document set context that are missing a field value (effectively, missing a field or having the configured NULL value set). This aggregator will often be used in conjunction with other field data bucket aggregators (such as ranges) to return information for all the documents that could not be placed in any of the other buckets due to missing field data values.
+  - [ ] **[Multi Terms](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-multi-terms-aggregation.html) [X-Pack]**\
+         A multi-bucket value source based aggregation where buckets are dynamically built - one per unique set of values. The multi terms aggregation is very similar to the terms aggregation, however in most cases it will be slower than the terms aggregation and will consume more memory. Therefore, if the same set of fields is constantly used, it would be more efficient to index a combined key for this fields as a separate field and use the terms aggregation on this field.
+  - [ ] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-nested-aggregation.html)**\
+         A special single bucket aggregation that enables aggregating nested documents.
+  - [ ] **[Parent](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-parent-aggregation.html)**\
+         A special single bucket aggregation that selects parent documents that have the specified type, as defined in a join field.
+  - [ ] **[Range](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-range-aggregation.html)**\
+         A multi-bucket value source based aggregation that enables the user to define a set of ranges - each representing a bucket. During the aggregation process, the values extracted from each document will be checked against each bucket range and "bucket" the relevant/matching document. Note that this aggregation includes the from value and excludes the to value for each range.
+  - [ ] **[Rare terms](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-rare-terms-aggregation.html)**\
+         A multi-bucket value source based aggregation which finds "rare" terms — terms that are at the long-tail of the distribution and are not frequent. Conceptually, this is like a terms aggregation that is sorted by \_count ascending. As noted in the terms aggregation docs, actually ordering a terms agg by count ascending has unbounded error. Instead, you should use the rare_terms aggregation
+  - [ ] **[Reverse nested](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-reverse-nested-aggregation.html)**\
+         A special single bucket aggregation that enables aggregating on parent docs from nested documents. Effectively this aggregation can break out of the nested block structure and link to other nested structures or the root document, which allows nesting other aggregations that aren’t part of the nested object in a nested aggregation.
+  - [ ] **[Sampler](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-sampler-aggregation.html)**\
+         A filtering aggregation used to limit any sub aggregations' processing to a sample of the top-scoring documents.
+  - [ ] **[Significant terms](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-significantterms-aggregation.html)**\
+         An aggregation that returns interesting or unusual occurrences of terms in a set.
+  - [ ] **[Significant text](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-significanttext-aggregation.html)**\
+         An aggregation that returns interesting or unusual occurrences of free-text terms in a set.
+  - [ ] **[Terms](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html)**\
+         A multi-bucket value source based aggregation where buckets are dynamically built - one per unique value.
+  - [ ] **[Variable width histogram](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-variablewidthhistogram-aggregation.html)**\
+         This is a multi-bucket aggregation similar to Histogram. However, the width of each bucket is not specified. Rather, a target number of buckets is provided and bucket intervals are dynamically determined based on the document distribution. This is done using a simple one-pass document clustering algorithm that aims to obtain low distances between bucket centroids. Unlike other multi-bucket aggregations, the intervals will not necessarily have a uniform width.
   - [ ] **[Subtleties of bucketing range fields]()**\
+         https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-range-field-note.html
 
 - #### [Metric aggreations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html)
   - [ ] **[Avg]()**\
@@ -97,51 +118,6 @@ An aggregation summarizes your data as metrics, statistics, or other analytics.
   - [ ] **[Serial differencing]()**\
   - [ ] **[Stats bucket]()**\
   - [ ] **[Sum bucket]()**\
-
-- #### [Metric aggreations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html)
-  - [ ] **Avg**
-  - [ ] **Boxplot**
-  - [ ] **Cardinality**
-  - [ ] **Extended stats**
-  - [ ] **Geo-bounds**
-  - [ ] **Geo-centroid**
-  - [ ] **Geo-Line**
-  - [ ] **Matrix stats**
-  - [ ] **Max**
-  - [ ] **Median absolute deviation**
-  - [ ] **Min**
-  - [ ] **Percentile ranks**
-  - [ ] **Percentiles**
-  - [ ] **Rate**
-  - [ ] **Scripted metric**
-  - [ ] **Stats**
-  - [ ] **String stats**
-  - [ ] **Sum**
-  - [ ] **T-test**
-  - [ ] **Top hits**
-  - [ ] **Top metrics**
-  - [ ] **Value count**
-  - [ ] **Weighted avg**
-- #### [Pipeline aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline.html)
-  - [ ] **Average bucket**
-  - [ ] **Bucket script**
-  - [ ] **Bucket selector**
-  - [ ] **Bucket sort**
-  - [ ] **Cumulative cardinality**
-  - [ ] **Cumulative sum**
-  - [ ] **Derivative**
-  - [ ] **Extended stats bucket**
-  - [ ] **Inference bucket**
-  - [ ] **Max bucket**
-  - [ ] **Min bucket**
-  - [ ] **Moving average**
-  - [ ] **Moving function**
-  - [ ] **Moving percentiles**
-  - [ ] **Normalize**
-  - [ ] **Percentiles bucket**
-  - [ ] **Serial differencing**
-  - [ ] **Stats bucket**
-  - [ ] **Sum bucket**
 
 ### [Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html)
 
