@@ -6,9 +6,9 @@ package picker
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#keyword-field-type
 type KeywordField struct {
 	docValuesParam                `bson:",inline" json:",inline"`
-	EagerGlobalOrdinalsParam      `bson:",inline" json:",inline"`
+	eagerGlobalOrdinalsParam      `bson:",inline" json:",inline"`
 	FieldsParam                   `bson:",inline" json:",inline"`
-	IgnoreAboveParam              `bson:",inline" json:",inline"`
+	ignoreAboveParam              `bson:",inline" json:",inline"`
 	indexParam                    `bson:",inline" json:",inline"`
 	IndexOptionsParam             `bson:",inline" json:",inline"`
 	NormsParam                    `bson:",inline" json:",inline"`

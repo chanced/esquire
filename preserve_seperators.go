@@ -1,5 +1,9 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+var DefaultPreserveSeperators = true
+
 // WithPreserveSeperators is a mapping with the preserve_seperators parameter
 //
 // Preserves the separators, defaults to true. If disabled, you could find a
@@ -12,38 +16,24 @@ type WithPreserveSeperators interface {
 	// suggest for foof.
 	PreserveSeperators() bool
 	// SetPreserveSeperators sets the PreserveSeperatorParam value to v
-	SetPreserveSeperators(v bool)
+	SetPreserveSeperators(v interface{}) error
 }
 
-// FieldWithPreserveSeperators is a Field mapping with the preserve_seperators
-// parameter
-type FieldWithPreserveSeperators interface {
-	Field
-	WithPreserveSeperators
-}
-
-// PreserveSeperatorsParam is a mixin that adds the preserve_separators param
-//
-// Preserves the separators, defaults to true. If disabled, you could find a
-// field starting with Foo Fighters, if you suggest for foof.
-type PreserveSeperatorsParam struct {
-	PreserveSeperatorsValue *bool `bson:"preserve_separators,omitempty" json:"preserve_separators,omitempty"`
+type preserveSeperatorsParam struct {
+	preserveSeperators dynamic.Bool `json:"preserve_separators,omitempty"`
 }
 
 // PreserveSeperators preserves the separators, defaults to true. If
 // disabled, you could find a field starting with Foo Fighters, if you
 // suggest for foof.
-func (ps PreserveSeperatorsParam) PreserveSeperators() bool {
-	if ps.PreserveSeperatorsValue == nil {
-		return true
+func (ps preserveSeperatorsParam) PreserveSeperators() bool {
+	if b, ok := ps.preserveSeperators.Bool(); ok {
+		return b
 	}
-	return *ps.PreserveSeperatorsValue
+	return DefaultPreserveSeperators
 }
 
-// SetPreserveSeperators sets the PreserveSeperatorParam value to v
-func (ps *PreserveSeperatorsParam) SetPreserveSeperators(v bool) {
-	if ps.PreserveSeperators() != v {
-		ps.PreserveSeperatorsValue = &v
-
-	}
+// SetPreserveSeperators sets the preserve_seperator to v
+func (ps *preserveSeperatorsParam) SetPreserveSeperators(v interface{}) error {
+	return ps.preserveSeperators.Set(v)
 }

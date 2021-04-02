@@ -15,13 +15,13 @@ package picker
 //
 // Nested documents can be:
 //
-//      - queried with the nested query.
+// - queried with the nested query.
 //
-//      - analyzed with the nested and reverse_nested aggregations.
+// - analyzed with the nested and reverse_nested aggregations.
 //
-//      - sorted with nested sorting.
+// - sorted with nested sorting.
 //
-//      - retrieved and highlighted with nested inner hits.
+// - retrieved and highlighted with nested inner hits.
 //
 // IMPORTANT
 //

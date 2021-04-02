@@ -16,13 +16,13 @@ type Fuzzier interface {
 // An edit distance is the number of one-character changes needed to turn one
 // term into another. These changes can include:
 //
-//      - Changing a character (box → fox)
+// - Changing a character (box → fox)
 //
-//      - Removing a character (black → lack)
+// - Removing a character (black → lack)
 //
-//      - Inserting a character (sic → sick)
+// - Inserting a character (sic → sick)
 //
-//      - Transposing two adjacent characters (act → cat)
+// - Transposing two adjacent characters (act → cat)
 //
 // To find similar terms, the fuzzy query creates a set of all possible
 // variations, or expansions, of the search term within a specified edit
@@ -107,13 +107,13 @@ func (f FuzzyQueryParams) Clause() (QueryClause, error) {
 // An edit distance is the number of one-character changes needed to turn one
 // term into another. These changes can include:
 //
-//      - Changing a character (box → fox)
+// - Changing a character (box → fox)
 //
-//      - Removing a character (black → lack)
+// - Removing a character (black → lack)
 //
-//      - Inserting a character (sic → sick)
+// - Inserting a character (sic → sick)
 //
-//      - Transposing two adjacent characters (act → cat)
+// - Transposing two adjacent characters (act → cat)
 //
 // To find similar terms, the fuzzy query creates a set of all possible
 // variations, or expansions, of the search term within a specified edit

@@ -17,13 +17,13 @@ func NewDateField() *DateField {
 }
 
 type DateField struct {
-	docValuesParam       `bson:",inline" json:",inline"`
-	FormatParam          `bson:",inline" json:",inline"`
-	ignoreMalformedParam `bson:",inline" json:",inline"`
-	indexParam           `bson:",inline" json:",inline"`
-	nullValueParam       `bson:",inline" json:",inline"`
-	storeParam           `bson:",inline" json:",inline"`
-	metaParam            `bson:",inline" json:",inline"`
+	docValuesParam
+	formatParam
+	ignoreMalformedParam
+	indexParam
+	nullValueParam
+	storeParam
+	metaParam
 }
 
 // DateNanoSecField is an addition to the DateField data type.
@@ -58,26 +58,13 @@ type DateField struct {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/date_nanos.html
 type DateNanoSecField struct {
-	BaseField            `bson:",inline" json:",inline"`
-	docValuesParam       `bson:",inline" json:",inline"`
-	FormatParam          `bson:",inline" json:",inline"`
-	ignoreMalformedParam `bson:",inline" json:",inline"`
-	indexParam           `bson:",inline" json:",inline"`
-	nullValueParam       `bson:",inline" json:",inline"`
-	storeParam           `bson:",inline" json:",inline"`
-	metaParam            `bson:",inline" json:",inline"`
-}
-
-func (f DateNanoSecField) Clone() Field {
-	n := NewDateNanoSecField()
-	n.SetDocValues(f.DocValues())
-	n.SetFormat(f.Format())
-	n.SetIgnoreMalformed(f.IgnoreMalformed())
-	n.SetIndex(f.Index())
-	n.SetMeta(f.Meta().Clone())
-	n.SetNullValue(f.NullValue())
-	n.SetStore(f.Store())
-	return n
+	docValuesParam
+	formatParam
+	ignoreMalformedParam
+	indexParam
+	nullValueParam
+	storeParam
+	metaParam
 }
 
 func NewDateNanoSecField() *DateNanoSecField {

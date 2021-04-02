@@ -1,5 +1,9 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+var DefaultPositiveScoreImpact = true
+
 // WithPositiveScoreImpact is a mapping with the positive_score_impact parameter
 // Rank features that correlate negatively with the score should set
 // positive_score_impact to false (defaults to true). This will be used by the
@@ -15,35 +19,26 @@ type WithPositiveScoreImpact interface {
 	// the feature
 	PositiveScoreImpact() bool
 	// SetPositiveScoreImpact sets the PositiveScoreImpact Value to v
-	SetPositiveScoreImpact(v bool)
+	SetPositiveScoreImpact(v interface{}) error
 }
 
-// FieldWithPositiveScoreImpact is a Field with the
-// positive_score_impact param
-type FieldWithPositiveScoreImpact interface {
-	Field
-	WithPositiveScoreImpact
-}
-
-// PositiveScoreImpactParam is a mixin that adds the
+// positiveScoreImpactParam is a mixin that adds the
 // positive_score_impact paramete
-type PositiveScoreImpactParam struct {
-	PositiveScoreImpactValue *bool `bson:"positive_score_impact,omitempty" json:"positive_score_impact,omitempty"`
+type positiveScoreImpactParam struct {
+	positiveScoreImpact dynamic.Bool
 }
 
 // PositiveScoreImpact is used by rank_feature queries to modify the scoring
 // formula in such a way that the score increases or decreases the value of
 // the feature
-func (psi PositiveScoreImpactParam) PositiveScoreImpact() bool {
-	if psi.PositiveScoreImpactValue == nil {
-		return true
+func (psi positiveScoreImpactParam) PositiveScoreImpact() bool {
+	if b, ok := psi.positiveScoreImpact.Bool(); ok {
+		return b
 	}
-	return *psi.PositiveScoreImpactValue
+	return DefaultPositiveScoreImpact
 }
 
 // SetPositiveScoreImpact sets the PositiveScoreImpact Value to v
-func (psi *PositiveScoreImpactParam) SetPositiveScoreImpact(v bool) {
-	if psi.PositiveScoreImpact() != v {
-		psi.PositiveScoreImpactValue = &v
-	}
+func (psi *positiveScoreImpactParam) SetPositiveScoreImpact(v interface{}) error {
+	return psi.positiveScoreImpact.Set(v)
 }

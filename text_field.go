@@ -24,7 +24,7 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html
 type TextField struct {
-	EagerGlobalOrdinalsParam      `json:",inline" bson:",inline"`
+	eagerGlobalOrdinalsParam      `json:",inline" bson:",inline"`
 	FieldDataParam                `json:",inline" bson:",inline"`
 	FieldDataFrequencyFilterParam `json:",inline" bson:",inline"`
 	FieldsParam                   `json:",inline" bson:",inline"`

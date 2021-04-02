@@ -8,8 +8,6 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-var ErrFieldExists = errors.New("field already exists")
-
 // Fields are a collection of Field mappings
 type Fields map[string]Field
 

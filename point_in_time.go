@@ -18,10 +18,10 @@ import "time"
 //
 // Prerequisites
 //
-//      - If the Elasticsearch security features are enabled, you must have the read
+// - If the Elasticsearch security features are enabled, you must have the read
 // index privilege for the target data stream, index, or index alias.
 //
-//      - To search a point in time (PIT) for an index alias, you must have the read
+// - To search a point in time (PIT) for an index alias, you must have the read
 // index privilege for the alias’s concrete indices.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/point-in-time-api.html

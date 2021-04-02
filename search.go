@@ -28,14 +28,14 @@ type SearchParams struct {
 	// See also:
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html
-	DocValueFields Fields
+	DocValueFields SearchFields
 
 	// Array of wildcard (*) patterns. The request returns values for field
 	// names matching these patterns in the hits.fields property of the response
 	// (Optional).
 	//
 	// You can specify items in the array as a string or object.
-	Fields Fields
+	Fields SearchFields
 
 	// If true, returns detailed information about score computation as part of
 	// a hit. Defaults to false. (Optional)
@@ -133,8 +133,8 @@ func NewSearch(p SearchParams) (*Search, error) {
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
 	query            *Query             // query
-	docValueFields   Fields             // docvalue_fields
-	fields           Fields             // fields
+	docValueFields   SearchFields       // docvalue_fields
+	fields           SearchFields       // fields
 	explain          bool               // explain
 	from             int                // from
 	indicesBoost     map[string]float64 // indices_boost
@@ -168,7 +168,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.query = &q
 	}
 	if d, ok := m["docvalue_fields"]; ok {
-		var df Fields
+		var df SearchFields
 		err = json.Unmarshal(d, &df)
 		if err != nil {
 			return err
@@ -176,7 +176,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.docValueFields = df
 	}
 	if d, ok := m["fields"]; ok {
-		var f Fields
+		var f SearchFields
 		err = json.Unmarshal(d, &f)
 		if err != nil {
 			return err
@@ -391,15 +391,15 @@ func (s Search) MarshalJSON() ([]byte, error) {
 // You can specify items in the array as a string or object.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#docvalue-fields
-func (s Search) DocValueFields() Fields {
+func (s Search) DocValueFields() SearchFields {
 	if s.docValueFields == nil {
-		s.docValueFields = Fields{}
+		s.docValueFields = SearchFields{}
 	}
 	return s.docValueFields
 }
 
 // SetDocValueFields sets DocValueFieldsValue to v
-func (s *Search) SetDocValueFields(v Fields) *Search {
+func (s *Search) SetDocValueFields(v SearchFields) *Search {
 	s.docValueFields = v
 	return s
 }
@@ -412,16 +412,16 @@ func (s *Search) SetDocValueFields(v Fields) *Search {
 // field values.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#search-fields-param
-func (s *Search) Fields() Fields {
+func (s *Search) Fields() SearchFields {
 	if s.fields == nil {
-		s.fields = Fields{}
+		s.fields = SearchFields{}
 	}
 	return s.fields
 
 }
 
 // SetFields sets the FieldsValue to v
-func (s *Search) SetFields(v Fields) *Search {
+func (s *Search) SetFields(v SearchFields) *Search {
 	s.fields = v
 	return s
 }

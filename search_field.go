@@ -59,10 +59,4 @@ func (f *SearchField) UnmarshalJSON(data []byte) error {
 // You can specify items in the array as a string or object. See Fields for more details.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html#search-fields-param
-type Fields []SearchField
-
-func (f Fields) Clone() Fields {
-	res := make(Fields, len(f))
-	copy(res, f)
-	return res
-}
+type SearchFields []SearchField
