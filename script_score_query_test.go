@@ -1,9 +1,10 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
+
+	"encoding/json"
 
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
@@ -20,7 +21,7 @@ func TestScriptScoreQuery(t *testing.T) {
 		Query: picker.QueryParams{
 			ScriptScore: &picker.ScriptScoreQuery{
 				Query: &picker.QueryParams{
-					Term: &picker.TermQuery{
+					Term: &picker.TermQueryParams{
 						Field:           "ss_term",
 						Value:           "val",
 						Boost:           0.34,

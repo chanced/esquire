@@ -1,5 +1,35 @@
 package picker
 
+import "encoding/json"
+
+type denseVectorField struct {
+	Dimensions interface{} `json:"dims,omitempty"`
+	Type       FieldType   `json:"type"`
+}
+
+type DenseVectorFieldParams struct {
+	// Dimensions is the number of dimensions in the vector, required parameter.
+	Dimensions interface{} `json:"dims,omitempty"`
+}
+
+func (DenseVectorFieldParams) Type() FieldType {
+	return FieldTypeDenseVector
+}
+
+func (p DenseVectorFieldParams) Field() (Field, error) {
+	return p.DenseVector()
+}
+
+func (p DenseVectorFieldParams) DenseVector() (*DenseVectorField, error) {
+	f := &DenseVectorField{}
+	err := f.SetDimensions(p.Dimensions)
+	if err != nil {
+		return f, err
+	}
+
+	return f, nil
+}
+
 // DenseVectorField stores dense vectors of float values. The maximum number of
 // dimensions that can be in a vector should not exceed 2048. A dense_vector
 // field is a single-valued field.
@@ -17,6 +47,31 @@ type DenseVectorField struct {
 	dimensionsParam
 }
 
-func NewDenseVectorField() *DenseVectorField {
-	return &DenseVectorField{BaseField: BaseField{MappingType: FieldTypeDenseVector}}
+func (DenseVectorField) Type() FieldType {
+	return FieldTypeDenseVector
+}
+func (dv *DenseVectorField) UnmarshalJSON(data []byte) error {
+	var p DenseVectorFieldParams
+	err := json.Unmarshal(data, &p)
+	if err != nil {
+		return err
+	}
+	err = dv.SetDimensions(p)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (dv DenseVectorField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(denseVectorField{
+		Dimensions: dv.dimensions.Value(),
+		Type:       dv.Type(),
+	})
+}
+func (dv *DenseVectorField) Field() (Field, error) {
+	return dv, nil
+}
+
+func NewDenseVectorField(params DenseVectorFieldParams) (*DenseVectorField, error) {
+	return params.DenseVector()
 }

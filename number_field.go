@@ -2,6 +2,9 @@ package picker
 
 import "encoding/json"
 
+// TODO: this needs refactoring. I initially had numberFieldParams produce all types but converted it to the more copypasta approach.
+// however, having to have a seperate numberField kiiiiinda sucks
+
 type NumberField interface {
 	Field
 	WithCoerce
@@ -11,6 +14,18 @@ type NumberField interface {
 	WithMeta
 	WithIndex
 	WithStore
+}
+
+type numberField struct {
+	Coerce          interface{} `json:"coerce,omitempty"`
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	DocValues       interface{} `json:"doc_values,omitempty"`
+	Index           interface{} `json:"index,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Store           interface{} `json:"store,omitempty"`
+	Meta            Meta        `json:"meta,omitempty"`
+	Boost           interface{} `json:"boost,omitempty"`
+	Type            FieldType   `json:"type"`
 }
 
 type numberFieldParams struct {
@@ -88,6 +103,39 @@ type numberFieldParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-field-meta.html#mapping-field-meta
 	Meta Meta `json:"meta,omitempty"`
+	// Deprecated
+	Boost interface{} `json:"boost,omitempty"`
+}
+
+func (p numberFieldParams) numberField(f NumberField) error {
+	err := f.SetCoerce(p.Coerce)
+	if err != nil {
+		return err
+	}
+	err = f.SetDocValues(p.DocValues)
+	if err != nil {
+		return err
+	}
+	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	if err != nil {
+		return err
+	}
+
+	err = f.SetIndex(p.Index)
+	if err != nil {
+		return err
+	}
+
+	err = f.SetMeta(p.Meta)
+	if err != nil {
+		return err
+	}
+	f.SetNullValue(p.NullValue)
+	err = f.SetStore(p.Store)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // LongFieldParams - field for a signed 64-bit integer with a minimum value of
@@ -106,34 +154,8 @@ func (l LongFieldParams) Field() (Field, error) {
 
 func (l LongFieldParams) Long() (*LongField, error) {
 	f := &LongField{}
-	err := f.SetCoerce(l.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(l.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(l.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(l.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(l.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(l.NullValue)
-	err = f.SetStore(l.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(l).numberField(f)
+	return f, err
 }
 
 func NewLongField(params LongFieldParams) (*LongField, error) {
@@ -152,12 +174,15 @@ type LongField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
 func (LongField) Type() FieldType {
 	return FieldTypeLong
 }
-
+func (l *LongField) Field() (Field, error) {
+	return l, nil
+}
 func (l *LongField) UnmarshalJSON(data []byte) error {
 
 	var params LongFieldParams
@@ -174,7 +199,7 @@ func (l *LongField) UnmarshalJSON(data []byte) error {
 }
 
 func (l LongField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(LongFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          l.coerce.Value(),
 		IgnoreMalformed: l.ignoreMalformed.Value(),
 		DocValues:       l.docValues.Value(),
@@ -182,6 +207,8 @@ func (l LongField) MarshalJSON() ([]byte, error) {
 		NullValue:       l.nullValue,
 		Store:           l.store.Value(),
 		Meta:            l.meta,
+		Boost:           l.boost.Value(),
+		Type:            l.Type(),
 	})
 }
 
@@ -194,37 +221,10 @@ func (IntegerFieldParams) Type() FieldType {
 func (i IntegerFieldParams) Field() (Field, error) {
 	return i.Integer()
 }
-
-func (i IntegerFieldParams) Integer() (*IntegerField, error) {
+func (p IntegerFieldParams) Integer() (*IntegerField, error) {
 	f := &IntegerField{}
-	err := f.SetCoerce(i.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(i.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(i.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(i.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(i.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(i.NullValue)
-	err = f.SetStore(i.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(p).numberField(f)
+	return f, err
 }
 
 func NewIntegerField(params IntegerFieldParams) (*IntegerField, error) {
@@ -243,8 +243,12 @@ type IntegerField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
+func (l *IntegerField) Field() (Field, error) {
+	return l, nil
+}
 func (IntegerField) Type() FieldType {
 	return FieldTypeInteger
 }
@@ -265,7 +269,7 @@ func (i *IntegerField) UnmarshalJSON(data []byte) error {
 }
 
 func (i IntegerField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(IntegerFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          i.coerce.Value(),
 		IgnoreMalformed: i.ignoreMalformed.Value(),
 		DocValues:       i.docValues.Value(),
@@ -273,6 +277,8 @@ func (i IntegerField) MarshalJSON() ([]byte, error) {
 		NullValue:       i.nullValue,
 		Store:           i.store.Value(),
 		Meta:            i.meta,
+		Boost:           i.boost.Value(),
+		Type:            i.Type(),
 	})
 }
 
@@ -286,38 +292,11 @@ func (s ShortFieldParams) Field() (Field, error) {
 	return s.Short()
 }
 
-func (s ShortFieldParams) Short() (*ShortField, error) {
+func (p ShortFieldParams) Short() (*ShortField, error) {
 	f := &ShortField{}
-	err := f.SetCoerce(s.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(s.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(s.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(s.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(s.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(s.NullValue)
-	err = f.SetStore(s.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(p).numberField(f)
+	return f, err
 }
-
 func NewShortField(params ShortFieldParams) (*ShortField, error) {
 	return params.Short()
 }
@@ -334,12 +313,16 @@ type ShortField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
 func (ShortField) Type() FieldType {
 	return FieldTypeShort
 }
 
+func (s *ShortField) Field() (Field, error) {
+	return s, nil
+}
 func (s *ShortField) UnmarshalJSON(data []byte) error {
 
 	var params ShortFieldParams
@@ -356,7 +339,7 @@ func (s *ShortField) UnmarshalJSON(data []byte) error {
 }
 
 func (s ShortField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ShortFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          s.coerce.Value(),
 		IgnoreMalformed: s.ignoreMalformed.Value(),
 		DocValues:       s.docValues.Value(),
@@ -364,6 +347,8 @@ func (s ShortField) MarshalJSON() ([]byte, error) {
 		NullValue:       s.nullValue,
 		Store:           s.store.Value(),
 		Meta:            s.meta,
+		Boost:           s.boost.Value(),
+		Type:            s.Type(),
 	})
 }
 
@@ -376,37 +361,10 @@ func (DoubleFieldParams) Type() FieldType {
 func (l DoubleFieldParams) Field() (Field, error) {
 	return l.Double()
 }
-
-func (l DoubleFieldParams) Double() (*DoubleField, error) {
+func (p DoubleFieldParams) Double() (*DoubleField, error) {
 	f := &DoubleField{}
-	err := f.SetCoerce(l.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(l.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(l.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(l.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(l.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(l.NullValue)
-	err = f.SetStore(l.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(p).numberField(f)
+	return f, err
 }
 
 func NewDoubleField(params DoubleFieldParams) (*DoubleField, error) {
@@ -424,8 +382,12 @@ type DoubleField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
+func (d *DoubleField) Field() (Field, error) {
+	return d, nil
+}
 func (DoubleField) Type() FieldType {
 	return FieldTypeDouble
 }
@@ -446,7 +408,7 @@ func (d *DoubleField) UnmarshalJSON(data []byte) error {
 }
 
 func (d DoubleField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(DoubleFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          d.coerce.Value(),
 		IgnoreMalformed: d.ignoreMalformed.Value(),
 		DocValues:       d.docValues.Value(),
@@ -454,6 +416,8 @@ func (d DoubleField) MarshalJSON() ([]byte, error) {
 		NullValue:       d.nullValue,
 		Store:           d.store.Value(),
 		Meta:            d.meta,
+		Boost:           d.boost.Value(),
+		Type:            d.Type(),
 	})
 }
 
@@ -466,37 +430,10 @@ func (ByteFieldParams) Type() FieldType {
 func (b ByteFieldParams) Field() (Field, error) {
 	return b.Byte()
 }
-
-func (b ByteFieldParams) Byte() (*ByteField, error) {
+func (p ByteFieldParams) Byte() (*ByteField, error) {
 	f := &ByteField{}
-	err := f.SetCoerce(b.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(b.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(b.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(b.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(b.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(b.NullValue)
-	err = f.SetStore(b.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(p).numberField(f)
+	return f, err
 }
 
 func NewByteField(params ByteFieldParams) (*ByteField, error) {
@@ -514,6 +451,11 @@ type ByteField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
+}
+
+func (b *ByteField) Field() (Field, error) {
+	return b, nil
 }
 
 func (ByteField) Type() FieldType {
@@ -536,7 +478,7 @@ func (b *ByteField) UnmarshalJSON(data []byte) error {
 }
 
 func (b ByteField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ByteFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          b.coerce.Value(),
 		IgnoreMalformed: b.ignoreMalformed.Value(),
 		DocValues:       b.docValues.Value(),
@@ -544,6 +486,8 @@ func (b ByteField) MarshalJSON() ([]byte, error) {
 		NullValue:       b.nullValue,
 		Store:           b.store.Value(),
 		Meta:            b.meta,
+		Boost:           b.boost.Value(),
+		Type:            b.Type(),
 	})
 }
 
@@ -554,43 +498,17 @@ func (FloatFieldParams) Type() FieldType {
 }
 
 func (p FloatFieldParams) Field() (Field, error) {
-	return p.Float64()
+	return p.Float()
 }
 
-func (p FloatFieldParams) Float64() (*FloatField, error) {
-	ff := &FloatField{}
-	err := ff.SetCoerce(p.Coerce)
-	if err != nil {
-		return ff, err
-	}
-	err = ff.SetDocValues(p.DocValues)
-	if err != nil {
-		return ff, err
-	}
-	err = ff.SetIgnoreMalformed(p.IgnoreMalformed)
-	if err != nil {
-		return ff, err
-	}
-
-	err = ff.SetIndex(p.Index)
-	if err != nil {
-		return ff, err
-	}
-
-	err = ff.SetMeta(p.Meta)
-	if err != nil {
-		return ff, err
-	}
-	ff.SetNullValue(p.NullValue)
-	err = ff.SetStore(p.Store)
-	if err != nil {
-		return ff, err
-	}
-	return ff, nil
+func (p FloatFieldParams) Float() (*FloatField, error) {
+	f := &FloatField{}
+	err := numberFieldParams(p).numberField(f)
+	return f, err
 }
 
 func NewFloatField(params FloatFieldParams) (*FloatField, error) {
-	return params.Float64()
+	return params.Float()
 }
 
 // A FloatField is a single-precision 32-bit IEEE 754 floating point
@@ -605,12 +523,15 @@ type FloatField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
 func (FloatField) Type() FieldType {
 	return FieldTypeFloat
 }
-
+func (f *FloatField) Field() (Field, error) {
+	return f, nil
+}
 func (f *FloatField) UnmarshalJSON(data []byte) error {
 
 	var params FloatFieldParams
@@ -618,7 +539,7 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.Float64()
+	v, err := params.Float()
 	if err != nil {
 		return err
 	}
@@ -627,7 +548,7 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 }
 
 func (f FloatField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(FloatFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          f.coerce.Value(),
 		IgnoreMalformed: f.ignoreMalformed.Value(),
 		DocValues:       f.docValues.Value(),
@@ -635,6 +556,8 @@ func (f FloatField) MarshalJSON() ([]byte, error) {
 		NullValue:       f.nullValue,
 		Store:           f.store.Value(),
 		Meta:            f.meta,
+		Boost:           f.boost.Value(),
+		Type:            f.Type(),
 	})
 }
 
@@ -645,43 +568,17 @@ func (HalfFloatFieldParams) Type() FieldType {
 }
 
 func (l HalfFloatFieldParams) Field() (Field, error) {
-	return l.HalfFloat64()
+	return l.HalfFloat()
 }
 
-func (l HalfFloatFieldParams) HalfFloat64() (*HalfFloatField, error) {
+func (l HalfFloatFieldParams) HalfFloat() (*HalfFloatField, error) {
 	f := &HalfFloatField{}
-	err := f.SetCoerce(l.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(l.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(l.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(l.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(l.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(l.NullValue)
-	err = f.SetStore(l.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(l).numberField(f)
+	return f, err
 }
 
 func NewHalfFloatField(params HalfFloatFieldParams) (*HalfFloatField, error) {
-	return params.HalfFloat64()
+	return params.HalfFloat()
 }
 
 // A HalfFloatField is a half-precision 16-bit IEEE 754 floating point
@@ -696,8 +593,12 @@ type HalfFloatField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
+func (f *HalfFloatField) Field() (Field, error) {
+	return f, nil
+}
 func (HalfFloatField) Type() FieldType {
 	return FieldTypeHalfFloat
 }
@@ -709,7 +610,7 @@ func (hf *HalfFloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.HalfFloat64()
+	v, err := params.HalfFloat()
 	if err != nil {
 		return err
 	}
@@ -718,7 +619,7 @@ func (hf *HalfFloatField) UnmarshalJSON(data []byte) error {
 }
 
 func (hf HalfFloatField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(HalfFloatFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          hf.coerce.Value(),
 		IgnoreMalformed: hf.ignoreMalformed.Value(),
 		DocValues:       hf.docValues.Value(),
@@ -726,6 +627,8 @@ func (hf HalfFloatField) MarshalJSON() ([]byte, error) {
 		NullValue:       hf.nullValue,
 		Store:           hf.store.Value(),
 		Meta:            hf.meta,
+		Boost:           hf.boost.Value(),
+		Type:            hf.Type(),
 	})
 }
 
@@ -745,34 +648,9 @@ func (l UnsignedLongFieldParams) Field() (Field, error) {
 
 func (l UnsignedLongFieldParams) UnsignedLong() (*UnsignedLongField, error) {
 	f := &UnsignedLongField{}
-	err := f.SetCoerce(l.Coerce)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetDocValues(l.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(l.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(l.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(l.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(l.NullValue)
-	err = f.SetStore(l.Store)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	err := numberFieldParams(l).numberField(f)
+	// TODO: wrap error in a FieldError
+	return f, err
 }
 
 func NewUnsignedLongField(params UnsignedLongFieldParams) (*UnsignedLongField, error) {
@@ -791,8 +669,12 @@ type UnsignedLongField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
+func (ul *UnsignedLongField) Field() (Field, error) {
+	return ul, nil
+}
 func (UnsignedLongField) Type() FieldType {
 	return FieldTypeUnsignedLong
 }
@@ -813,7 +695,7 @@ func (ul *UnsignedLongField) UnmarshalJSON(data []byte) error {
 }
 
 func (ul UnsignedLongField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(UnsignedLongFieldParams{
+	return json.Marshal(numberField{
 		Coerce:          ul.coerce.Value(),
 		IgnoreMalformed: ul.ignoreMalformed.Value(),
 		DocValues:       ul.docValues.Value(),
@@ -821,7 +703,22 @@ func (ul UnsignedLongField) MarshalJSON() ([]byte, error) {
 		NullValue:       ul.nullValue,
 		Store:           ul.store.Value(),
 		Meta:            ul.meta,
+		Boost:           ul.boost.Value(),
+		Type:            ul.Type(),
 	})
+}
+
+type scaledFloatField struct {
+	Coerce          interface{} `json:"coerce,omitempty"`
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	DocValues       interface{} `json:"doc_values,omitempty"`
+	Index           interface{} `json:"index,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Store           interface{} `json:"store,omitempty"`
+	Meta            Meta        `json:"meta,omitempty"`
+	Boost           interface{} `json:"boost,omitempty"`
+	ScalingFactor   interface{} `scaling_factor`
+	Type            FieldType   `json:"type"`
 }
 
 type ScaledFloatFieldParams struct {
@@ -914,42 +811,37 @@ type ScaledFloatFieldParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-field-meta.html#mapping-field-meta
 	Meta Meta `json:"meta,omitempty"`
+
+	// Deprecated
+	Boost interface{} `json:"boost,omitempty"`
+	// Ignore this field
+	FieldType FieldType `json:"type"`
 }
 
 func (ScaledFloatFieldParams) Type() FieldType {
 	return FieldTypeScaledFloat
 }
 
-func (l ScaledFloatFieldParams) Field() (Field, error) {
-	return l.ScaledFloat64()
+func (p ScaledFloatFieldParams) Field() (Field, error) {
+	return p.ScaledFloat()
 }
 
-func (l ScaledFloatFieldParams) ScaledFloat64() (*ScaledFloatField, error) {
+func (p ScaledFloatFieldParams) ScaledFloat() (*ScaledFloatField, error) {
 	f := &ScaledFloatField{}
-	err := f.SetCoerce(l.Coerce)
+	err := numberFieldParams{
+		Coerce:          p.Coerce,
+		IgnoreMalformed: p.IgnoreMalformed,
+		DocValues:       p.DocValues,
+		Index:           p.Index,
+		NullValue:       p.NullValue,
+		Store:           p.Store,
+		Meta:            p.Meta,
+		Boost:           p.Boost,
+	}.numberField(f)
 	if err != nil {
 		return f, err
 	}
-	err = f.SetDocValues(l.DocValues)
-	if err != nil {
-		return f, err
-	}
-	err = f.SetIgnoreMalformed(l.IgnoreMalformed)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetIndex(l.Index)
-	if err != nil {
-		return f, err
-	}
-
-	err = f.SetMeta(l.Meta)
-	if err != nil {
-		return f, err
-	}
-	f.SetNullValue(l.NullValue)
-	err = f.SetStore(l.Store)
+	err = f.SetScalingFactor(p.ScalingFactor)
 	if err != nil {
 		return f, err
 	}
@@ -957,7 +849,7 @@ func (l ScaledFloatFieldParams) ScaledFloat64() (*ScaledFloatField, error) {
 }
 
 func NewScaledFloatField(params ScaledFloatFieldParams) (*ScaledFloatField, error) {
-	return params.ScaledFloat64()
+	return params.ScaledFloat()
 }
 
 type ScaledFloatField struct {
@@ -969,8 +861,12 @@ type ScaledFloatField struct {
 	storeParam
 	metaParam
 	scalingFactorParam
+	boostParam
 }
 
+func (sf *ScaledFloatField) Field() (Field, error) {
+	return sf, nil
+}
 func (ScaledFloatField) Type() FieldType {
 	return FieldTypeScaledFloat
 }
@@ -982,7 +878,7 @@ func (sf *ScaledFloatField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	v, err := params.ScaledFloat64()
+	v, err := params.ScaledFloat()
 	if err != nil {
 		return err
 	}
@@ -991,7 +887,7 @@ func (sf *ScaledFloatField) UnmarshalJSON(data []byte) error {
 }
 
 func (sf ScaledFloatField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ScaledFloatFieldParams{
+	return json.Marshal(scaledFloatField{
 		ScalingFactor:   sf.scalingFactor,
 		Coerce:          sf.coerce.Value(),
 		IgnoreMalformed: sf.ignoreMalformed.Value(),
@@ -1000,5 +896,7 @@ func (sf ScaledFloatField) MarshalJSON() ([]byte, error) {
 		NullValue:       sf.nullValue,
 		Store:           sf.store.Value(),
 		Meta:            sf.meta,
+		Boost:           sf.boost.Value(),
+		Type:            sf.Type(),
 	})
 }

@@ -32,14 +32,14 @@ const (
 )
 
 var clauseHandlers = map[QueryKind]func() QueryClause{
-	KindPrefix:    func() QueryClause { return &PrefixClause{} },
-	KindMatch:     func() QueryClause { return &MatchClause{} },
-	KindTerm:      func() QueryClause { return &TermClause{} },
-	KindTerms:     func() QueryClause { return &TermsClause{} },
-	KindBoolean:   func() QueryClause { return &BooleanClause{} },
-	KindExists:    func() QueryClause { return &ExistsClause{} },
-	KindRange:     func() QueryClause { return &RangeClause{} },
-	KindMatchAll:  func() QueryClause { return &MatchAllClause{} },
-	KindMatchNone: func() QueryClause { return &MatchNoneClause{} },
-	KindScript:    func() QueryClause { return &ScriptClause{} },
+	KindPrefix:    func() QueryClause { return &PrefixQuery{} },
+	KindMatch:     func() QueryClause { return &MatchQuery{} },
+	KindTerm:      func() QueryClause { return &TermClauseQuery{} },
+	KindTerms:     func() QueryClause { return &TermsQuery{} },
+	KindBoolean:   func() QueryClause { return &BooleanQuery{} },
+	KindExists:    func() QueryClause { return &ExistsQuery{} },
+	KindRange:     func() QueryClause { return &RangeQuery{} },
+	KindMatchAll:  func() QueryClause { return &MatchAllQuery{} },
+	KindMatchNone: func() QueryClause { return &MatchNoneQuery{} },
+	KindScript:    func() QueryClause { return &ScriptQuery{} },
 }

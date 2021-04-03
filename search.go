@@ -1,8 +1,9 @@
 package picker
 
 import (
-	"encoding/json"
 	"time"
+
+	"encoding/json"
 
 	"github.com/chanced/dynamic"
 )

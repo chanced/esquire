@@ -7,14 +7,6 @@ type FieldDataFrequencyFilter struct {
 	MinSegmentSize int     `bson:"min_segment_size" json:"min_segment_size"`
 }
 
-func (fdf *FieldDataFrequencyFilter) Clone() *FieldDataFrequencyFilter {
-	if fdf == nil {
-		return nil
-	}
-	res := *fdf
-	return &res
-}
-
 // WithFieldDataFrequencyFilter is a mapping with the
 // field_data_frequency_filter
 //
@@ -53,7 +45,7 @@ type FieldWithFieldDataFrequencyFilter interface {
 	WithFieldDataFrequencyFilter
 }
 
-// FieldDataFrequencyFilterParam is a mixin that adds the
+// fieldDataFrequencyFilterParam is a mixin that adds the
 // field_data_frequency_filter param
 //
 // FieldDataFrequencyFilter is an expert settings which allow to decide which
@@ -74,17 +66,17 @@ type FieldWithFieldDataFrequencyFilter interface {
 // docs that the segment should contain with min_segment_size
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#field-data-filtering
-type FieldDataFrequencyFilterParam struct {
-	FieldDataFrequencyFilterValue *FieldDataFrequencyFilter `bson:"fielddata_frequency_filter,omitempty" json:"fielddata_frequency_filter,omitempty"`
+type fieldDataFrequencyFilterParam struct {
+	fieldDataFrequencyFilter *FieldDataFrequencyFilter `bson:"fielddata_frequency_filter,omitempty" json:"fielddata_frequency_filter,omitempty"`
 }
 
 // FieldDataFrequencyFilter can be used to reduce the number of terms loaded into memory, and
 // thus reduce memory usage when using FieldData filtering.
-func (fd FieldDataFrequencyFilterParam) FieldDataFrequencyFilter() *FieldDataFrequencyFilter {
-	return fd.FieldDataFrequencyFilterValue
+func (fd fieldDataFrequencyFilterParam) FieldDataFrequencyFilter() *FieldDataFrequencyFilter {
+	return fd.fieldDataFrequencyFilter
 }
 
 // SetFieldDataFrequencyFilter sets the FieldDataFrequencyFilter value to v
-func (fd *FieldDataFrequencyFilterParam) SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) {
-	fd.FieldDataFrequencyFilterValue = v
+func (fd *fieldDataFrequencyFilterParam) SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) {
+	fd.fieldDataFrequencyFilter = v
 }

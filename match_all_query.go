@@ -6,23 +6,23 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// MatchAll matches all documents, giving them all a _score of 1.0.
-type MatchAll struct {
+// MatchAllQueryParams matches all documents, giving them all a _score of 1.0.
+type MatchAllQueryParams struct {
 	Boost interface{}
 	Name  string
 }
 
-func (ma MatchAll) Clause() (QueryClause, error) {
+func (ma MatchAllQueryParams) Clause() (QueryClause, error) {
 	return ma.MatchAll()
 
 }
 
-func (ma MatchAll) Kind() QueryKind {
+func (ma MatchAllQueryParams) Kind() QueryKind {
 	return KindMatchAll
 }
 
-func (ma MatchAll) MatchAll() (*MatchAllClause, error) {
-	c := &MatchAllClause{}
+func (ma MatchAllQueryParams) MatchAll() (*MatchAllQuery, error) {
+	c := &MatchAllQuery{}
 	err := c.SetBoost(ma.Boost)
 	if err != nil {
 		return c, err
@@ -30,50 +30,50 @@ func (ma MatchAll) MatchAll() (*MatchAllClause, error) {
 	return c, nil
 }
 
-// MatchAllClause matches all documents, giving them all a _score of 1.0.
-type MatchAllClause struct {
+// MatchAllQuery matches all documents, giving them all a _score of 1.0.
+type MatchAllQuery struct {
 	boostParam
 	disabled bool
 	nameParam
 	completeClause
 }
 
-func (ma *MatchAllClause) Clause() (QueryClause, error) {
+func (ma *MatchAllQuery) Clause() (QueryClause, error) {
 	return ma, nil
 }
-func (MatchAllClause) Kind() QueryKind {
+func (MatchAllQuery) Kind() QueryKind {
 	return KindMatchAll
 }
 
-func (ma *MatchAllClause) Clear() {
+func (ma *MatchAllQuery) Clear() {
 	ma.disabled = true
 }
 
-func (ma *MatchAllClause) Enable() {
+func (ma *MatchAllQuery) Enable() {
 	if ma == nil {
-		*ma = MatchAllClause{}
+		*ma = MatchAllQuery{}
 	}
 	ma.disabled = false
 }
-func (ma *MatchAllClause) Disable() {
+func (ma *MatchAllQuery) Disable() {
 	if ma == nil {
 		return
 	}
 	ma.disabled = true
 }
-func (ma *MatchAllClause) IsEmpty() bool {
+func (ma *MatchAllQuery) IsEmpty() bool {
 	return ma == nil || ma.disabled
 }
 
-func (ma *MatchAllClause) UnmarshalJSON(data []byte) error {
-	*ma = MatchAllClause{}
+func (ma *MatchAllQuery) UnmarshalJSON(data []byte) error {
+	*ma = MatchAllQuery{}
 	_, err := unmarshalClauseParams(data, ma)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (ma MatchAllClause) MarshalJSON() ([]byte, error) {
+func (ma MatchAllQuery) MarshalJSON() ([]byte, error) {
 	if ma.IsEmpty() {
 		return dynamic.Null, nil
 	}

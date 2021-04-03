@@ -10,13 +10,13 @@ type KeywordField struct {
 	FieldsParam                   `bson:",inline" json:",inline"`
 	ignoreAboveParam              `bson:",inline" json:",inline"`
 	indexParam                    `bson:",inline" json:",inline"`
-	IndexOptionsParam             `bson:",inline" json:",inline"`
+	indexOptionsParam             `bson:",inline" json:",inline"`
 	NormsParam                    `bson:",inline" json:",inline"`
 	nullValueParam                `bson:",inline" json:",inline"`
 	storeParam                    `bson:",inline" json:",inline"`
 	SimilarityParam               `bson:",inline" json:",inline"`
 	NormalizerParam               `bson:",inline" json:",inline"`
-	SplitQueriesOnWhitespaceParam `bson:",inline" json:",inline"`
+	splitQueriesOnWhitespaceParam `bson:",inline" json:",inline"`
 	metaParam                     `bson:",inline" json:",inline"`
 }
 

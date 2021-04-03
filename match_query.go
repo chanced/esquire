@@ -7,17 +7,17 @@ import (
 )
 
 type Matcher interface {
-	Match() (*MatchClause, error)
+	Match() (*MatchQuery, error)
 }
 
-// MatchQuery returns documents that match a provided text, number, date or boolean
+// MatchQueryParams returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
 //
 // The match query is the standard query for performing a full-text search,
 // including options for fuzzy matching.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-type MatchQuery struct {
+type MatchQueryParams struct {
 	// Each query accepts a _name in its top level definition. You can use named
 	// queries to track which queries matched returned documents. If named
 	// queries are used, the response includes a matched_queries property for
@@ -86,22 +86,22 @@ type MatchQuery struct {
 	completeClause
 }
 
-func (m MatchQuery) name() string {
+func (m MatchQueryParams) name() string {
 	return m.Name
 }
 
-func (m MatchQuery) field() string {
+func (m MatchQueryParams) field() string {
 	return m.Field
 }
 
-func (m MatchQuery) Kind() QueryKind {
+func (m MatchQueryParams) Kind() QueryKind {
 	return KindMatch
 }
-func (m MatchQuery) Clause() (QueryClause, error) {
+func (m MatchQueryParams) Clause() (QueryClause, error) {
 	return m.Match()
 }
-func (m MatchQuery) Match() (*MatchClause, error) {
-	q := &MatchClause{
+func (m MatchQueryParams) Match() (*MatchQuery, error) {
+	q := &MatchQuery{
 		field: m.Field,
 	}
 	err := q.setQuery(m.Query)
@@ -133,14 +133,14 @@ func (m MatchQuery) Match() (*MatchClause, error) {
 	return q, nil
 }
 
-// MatchClause returns documents that match a provided text, number, date or
+// MatchQuery returns documents that match a provided text, number, date or
 // boolean value. The provided text is analyzed before matching.
 //
 // The match query is the standard query for performing a full-text search,
 // including options for fuzzy matching.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
-type MatchClause struct {
+type MatchQuery struct {
 	field string
 	query dynamic.StringNumberBoolOrTime
 	completeClause
@@ -158,22 +158,22 @@ type MatchClause struct {
 	autoGenerateSynonymsPhraseQueryParam
 }
 
-func (m *MatchClause) Clause() (QueryClause, error) {
+func (m *MatchQuery) Clause() (QueryClause, error) {
 	return m, nil
 }
 
-func (m *MatchClause) Field() string {
+func (m *MatchQuery) Field() string {
 	if m == nil {
 		return ""
 	}
 	return m.field
 }
 
-func (m *MatchClause) IsEmpty() bool {
+func (m *MatchQuery) IsEmpty() bool {
 	return m == nil || len(m.field) == 0 || m.query.IsEmptyString()
 }
 
-func (m *MatchClause) Set(field string, match Matcher) error {
+func (m *MatchQuery) Set(field string, match Matcher) error {
 	if match == nil {
 		m.Clear()
 		return nil
@@ -190,11 +190,11 @@ func (m *MatchClause) Set(field string, match Matcher) error {
 	return nil
 }
 
-func (m *MatchClause) Query() *dynamic.StringNumberBoolOrTime {
+func (m *MatchQuery) Query() *dynamic.StringNumberBoolOrTime {
 	return &m.query
 }
 
-func (m MatchClause) MarshalJSON() ([]byte, error) {
+func (m MatchQuery) MarshalJSON() ([]byte, error) {
 	if m.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -205,7 +205,7 @@ func (m MatchClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{m.field: data})
 }
 
-func (m MatchClause) marshalClauseJSON() (dynamic.JSON, error) {
+func (m MatchQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	params, err := marshalClauseParams(&m)
 	if err != nil {
 		return nil, err
@@ -214,8 +214,8 @@ func (m MatchClause) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(params)
 }
 
-func (m *MatchClause) UnmarshalJSON(data []byte) error {
-	*m = MatchClause{}
+func (m *MatchQuery) UnmarshalJSON(data []byte) error {
+	*m = MatchQuery{}
 
 	d := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &d)
@@ -229,7 +229,7 @@ func (m *MatchClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m *MatchClause) unmarshalClauseJSON(data dynamic.JSON) error {
+func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	fields, err := unmarshalClauseParams(data, m)
 	if err != nil {
 		return err
@@ -245,21 +245,21 @@ func (m *MatchClause) unmarshalClauseJSON(data dynamic.JSON) error {
 	return nil
 }
 
-func (m MatchClause) Kind() QueryKind {
+func (m MatchQuery) Kind() QueryKind {
 	return KindMatch
 }
-func (m *MatchClause) Clear() {
-	*m = MatchClause{}
+func (m *MatchQuery) Clear() {
+	*m = MatchQuery{}
 }
 
 // setQuery sets the Match's query param. It returns an error if it is nil or
 // empty. If you need to clear match, use Clear()
-func (m *MatchClause) setQuery(query interface{}) error {
+func (m *MatchQuery) setQuery(query interface{}) error {
 	if query == nil {
 		return ErrQueryRequired
 	}
 	return nil
 }
-func (m MatchClause) setField(field string) {
+func (m MatchQuery) setField(field string) {
 	m.field = field
 }

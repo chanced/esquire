@@ -1,9 +1,10 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
+
+	"encoding/json"
 
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
@@ -54,7 +55,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 		Query: picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQuery{
 				Query: &picker.QueryParams{
-					Term: &picker.TermQuery{
+					Term: &picker.TermQueryParams{
 						Field:           "query_term_field",
 						Value:           "query_term_value",
 						Boost:           3,
@@ -70,7 +71,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 						Weight: 21,
 						Offset: 7,
 						Decay:  "34",
-						Filter: picker.TermQuery{
+						Filter: picker.TermQueryParams{
 							Field:           "term_field",
 							Value:           "term_value",
 							Boost:           34,

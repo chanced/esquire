@@ -37,6 +37,7 @@ var (
 	ErrInvalidIndexPrefixMinChars = errors.New("picker: invalid index prefix min chars")
 	ErrScalingFactorRequired      = errors.New("picker: ScalingFactor is required")
 	ErrDimensionsRequired         = errors.New("picker: Dimensions is required")
+	ErrInvalidOrientation         = errors.New("picker: invalid orientation")
 )
 
 type QueryError struct {

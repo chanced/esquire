@@ -2,9 +2,17 @@ package picker
 
 import "encoding/json"
 
-type BinaryFieldParams struct {
+type binaryField struct {
 	DocValues interface{} `json:"doc_values,omitempty"`
 	Store     interface{} `json:"store,omitempty"`
+	Type      FieldType   `json:"type"`
+}
+
+type BinaryFieldParams struct {
+	// Should the field be stored on disk in a column-stride fashion, so that it can later be used for sorting, aggregations, or scripting? Accepts true or false (default).
+	DocValues interface{} `json:"doc_values,omitempty"`
+	// Whether the field value should be stored and retrievable separately from the _source field. Accepts true or false (default).
+	Store interface{} `json:"store,omitempty"`
 }
 
 func (b BinaryFieldParams) Binary() (*BinaryField, error) {
@@ -41,13 +49,17 @@ type BinaryField struct {
 	storeParam
 }
 
+func (b BinaryField) Field() (Field, error) {
+	return &b, nil
+}
 func (BinaryField) Type() FieldType {
 	return FieldTypeBinary
 }
 func (b BinaryField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(BinaryFieldParams{
+	return json.Marshal(binaryField{
 		DocValues: b.docValues.Value(),
 		Store:     b.store.Value(),
+		Type:      b.Type(),
 	})
 }
 func (b *BinaryField) UnmarshalJSON(data []byte) error {

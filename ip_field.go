@@ -1,5 +1,7 @@
 package picker
 
+import "encoding/json"
+
 type IPFieldParams struct {
 	// IgnoreMalformed determines if malformed numbers are ignored. If true,
 	// malformed numbers are ignored. If false (default), malformed numbers
@@ -64,6 +66,44 @@ type IPFieldParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-store.html
 	Store interface{} `json:"store,omitempty"`
+
+	// Deprecated
+	Boost interface{} `json:"boost,omitempty"`
+}
+
+func (IPFieldParams) Type() FieldType {
+	return FieldTypeIP
+}
+
+func (p IPFieldParams) Field() (Field, error) {
+	return p.IP()
+}
+
+func (p IPFieldParams) IP() (*IPField, error) {
+	f := &IPField{}
+	var err error
+	err = f.SetDocValues(p.DocValues)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetIndex(p.Index)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetStore(p.Store)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetBoost(p.Boost)
+	if err != nil {
+		return f, err
+	}
+	f.SetNullValue(p.NullValue)
+	return f, nil
 }
 
 // An IPField can index/store either IPv4 or IPv6 addresses.
@@ -78,15 +118,36 @@ type IPField struct {
 	boostParam
 }
 
-func (f IPField) Clone() Field {
-	n := NewIPField()
-	n.SetDocValues(f.DocValues())
-	n.SetIndex(f.Index())
-	n.SetNullValue(f.NullValue())
-	n.SetStore(f.Store())
-	n.SetIgnoreMalformed(f.IgnoreMalformed())
-	return n
+func (IPField) Type() FieldType {
+	return FieldTypeIP
 }
-func NewIPField() *IPField {
-	return &IPField{BaseField: BaseField{MappingType: FieldTypeIP}}
+
+func (ip *IPField) UnmarshalJSON(data []byte) error {
+
+	var params IPFieldParams
+	err := json.Unmarshal(data, &params)
+	if err != nil {
+		return err
+	}
+	v, err := params.IP()
+	if err != nil {
+		return err
+	}
+	*ip = *v
+	return nil
+}
+
+func (ip IPField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(IPFieldParams{
+		IgnoreMalformed: ip.ignoreMalformed.Value(),
+		DocValues:       ip.docValues.Value(),
+		Index:           ip.index.Value(),
+		NullValue:       ip.nullValue,
+		Store:           ip.store.Value(),
+		Boost:           ip.boost.Value(),
+	})
+}
+
+func NewIPField(params IPFieldParams) (*IPField, error) {
+	return params.IP()
 }

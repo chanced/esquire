@@ -6,6 +6,16 @@ type Completioner interface {
 	Completion() (*CompletionField, error)
 }
 
+type completionField struct {
+	Analyzer                   string      `json:"analyzer,omitempty"`
+	SearchAnalyzer             string      `json:"search_analyzer,omitempty"`
+	SearchQuoteAnalyzer        string      `json:"search_quote_analyzer,omitempty"`
+	PreserveSeperators         interface{} `json:"preserve_separators,omitempty"`
+	PreservePositionIncrements interface{} `json:"preserve_position_increments,omitempty"`
+	MaxInputLength             interface{} `json:"max_input_length,omitempty"`
+	Type                       FieldType   `json:"type"`
+}
+
 // CompletionFieldParams creates a completion_field. A completion_field is a
 // completion suggester which provides provides auto-complete/search-as-you-type
 // functionality. This is a navigational feature to guide users to relevant
@@ -103,6 +113,9 @@ type CompletionField struct {
 	maxInputLengthParam
 }
 
+func (c *CompletionField) Field() (Field, error) {
+	return c, nil
+}
 func (CompletionField) Type() FieldType {
 	return FieldTypeCompletion
 }
@@ -112,13 +125,14 @@ func NewCompletionField(params CompletionFieldParams) (*CompletionField, error) 
 }
 
 func (c CompletionField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(CompletionFieldParams{
+	return json.Marshal(completionField{
 		Analyzer:                   c.analyzer,
 		SearchAnalyzer:             c.searchAnalyzer,
 		SearchQuoteAnalyzer:        c.SearchQuoteAnalyzerValue,
 		PreserveSeperators:         c.preserveSeperators.Value(),
 		PreservePositionIncrements: c.preservePositionIncrements.Value(),
 		MaxInputLength:             c.maxInputLength.Value(),
+		Type:                       c.Type(),
 	})
 }
 

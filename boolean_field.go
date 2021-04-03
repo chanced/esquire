@@ -2,6 +2,15 @@ package picker
 
 import "encoding/json"
 
+type booleanField struct {
+	DocValues interface{}       `json:"doc_values,omitempty"`
+	Index     interface{}       `json:"index,omitempty"`
+	NullValue interface{}       `json:"null_value,omitempty"`
+	Store     interface{}       `json:"store,omitempty"`
+	Meta      map[string]string `json:"meta,omitempty"`
+	Type      FieldType         `json:"type"`
+}
+
 type BooleanFieldParams struct {
 
 	// DocValues sets doc_values (Optional, bool or string that can be parsed as a bool)
@@ -27,12 +36,12 @@ type BooleanFieldParams struct {
 	// value from a script, you can disable doc values in order to save disk space
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html
-	DocValues interface{} `json:"doc_values,omitempty" bson:"doc_values,omitempty"`
+	DocValues interface{} `json:"doc_values,omitempty"`
 
 	// Index controls whether field values are indexed. It accepts true or false
 	// and defaults to true. Fields that are not indexed are not queryable.
 	// (Optional, bool or string that can be parsed as a bool)
-	Index interface{} `bson:"index,omitempty" json:"index,omitempty"`
+	Index interface{} `json:"index,omitempty"`
 	// A null value cannot be indexed or searched. When a field is set to null, (or
 	// an empty array or an array of null values) it is treated as though that field
 	// has no values.
@@ -133,6 +142,10 @@ type BooleanField struct {
 	metaParam      `bson:",inline" json:",inline"`
 }
 
+func (b *BooleanField) Field() (Field, error) {
+	return b, nil
+}
+
 func (BooleanField) Type() FieldType {
 	return FieldTypeBoolean
 }
@@ -153,11 +166,12 @@ func (b *BooleanField) UnmarshalJSON(data []byte) error {
 }
 
 func (b BooleanField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(BooleanFieldParams{
+	return json.Marshal(booleanField{
 		DocValues: b.docValues.Value(),
 		Index:     b.index.Value(),
 		NullValue: b.nullValue,
 		Store:     b.store.Value(),
 		Meta:      b.meta,
+		Type:      b.Type(),
 	})
 }

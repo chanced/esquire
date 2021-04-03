@@ -1,5 +1,56 @@
 package picker
 
+import "encoding/json"
+
+type geoPointField struct {
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Type            FieldType   `json:"type"`
+}
+
+type GeoPointFieldParams struct {
+
+	// If true, malformed geo-points are ignored. If false (default), malformed
+	// geo-points throw an exception and reject the whole document. A geo-point
+	// is considered malformed if its latitude is outside the range -90 ⇐
+	// latitude ⇐ 90, or if its longitude is outside the range -180 ⇐ longitude
+	// ⇐ 180.
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	// If true (default) three dimension points will be accepted (stored in source)
+	// but only latitude and longitude values will be indexed; the third dimension
+	// is ignored. If false, geo-points containing any more than latitude and
+	// longitude (two dimensions) values throw an exception and reject the whole
+	// document.
+	IgnoreZValue interface{} `json:"ignore_z_value,omitempty"`
+	// Accepts an geopoint value which is substituted for any explicit null values.
+	// Defaults to null, which means the field is treated as missing.
+	NullValue interface{} `json:"null_value,omitempty"`
+}
+
+func (GeoPointFieldParams) Type() FieldType {
+	return FieldTypeGeoPoint
+}
+func (p GeoPointFieldParams) Field() (Field, error) {
+	return p.GeoPoint()
+}
+
+func (p GeoPointFieldParams) GeoPoint() (*GeoPointField, error) {
+	f := &GeoPointField{}
+	var err error
+	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	if err != nil {
+		return f, err
+	}
+	err = f.SetIgnoreZValue(p.IgnoreZValue)
+	if err != nil {
+		return f, err
+	}
+	f.SetNullValue(p.NullValue)
+	return f, nil
+
+}
+
 // A GeoPointField accepts latitude-longitude pairs, which can be used:
 //
 // - to find geo-points within a bounding box, within a certain distance of a
@@ -32,19 +83,40 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
 type GeoPointField struct {
-	BaseField            `bson:",inline" json:",inline"`
-	ignoreMalformedParam `bson:",inline" json:",inline"`
-	IgnoreZValueParam    `bson:",inline" json:",inline"`
-	coerceParam          `bson:",inline" json:",inline"`
+	ignoreMalformedParam
+	ignoreZValueParam
+	nullValueParam
 }
 
-func (f GeoPointField) Clone() Field {
-	n := NewGeoPointField()
-	n.SetCoerce(f.Coerce())
-	n.SetIgnoreMalformed(f.IgnoreMalformed())
-	n.SetIgnoreZValue(f.IgnoreZValue())
-	return n
+func (GeoPointField) Type() FieldType {
+	return FieldTypeGeoPoint
 }
-func NewGeoPointField() *GeoPointField {
-	return &GeoPointField{BaseField: BaseField{MappingType: FieldTypeGeoPoint}}
+func (gp *GeoPointField) Field() (Field, error) {
+	return gp, nil
+}
+func (gp *GeoPointField) UnmarshalJSON(data []byte) error {
+	var params GeoPointFieldParams
+	err := json.Unmarshal(data, &params)
+	if err != nil {
+		return err
+	}
+	v, err := params.GeoPoint()
+	if err != nil {
+		return err
+	}
+	*gp = *v
+	return nil
+}
+
+func (gp GeoPointField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(geoPointField{
+		IgnoreMalformed: gp.ignoreMalformed.Value(),
+		NullValue:       gp.nullValue,
+		IgnoreZValue:    gp.ignoreZ,
+		Type:            gp.Type(),
+	})
+}
+
+func NewGeoPointField(params GeoPointFieldParams) (*GeoPointField, error) {
+	return params.GeoPoint()
 }

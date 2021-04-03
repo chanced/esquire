@@ -5,9 +5,14 @@ import "encoding/json"
 type Aliaser interface {
 	Alias() (*AliasField, error)
 }
-
+type aliasField struct {
+	// The path to the target field. Note that this must be the full path, including any parent objects (e.g. object1.object2.field).
+	Path string    `json:"path"`
+	Type FieldType `json:"type"`
+}
 type AliasFieldParams struct {
-	Path string
+	// The path to the target field. Note that this must be the full path, including any parent objects (e.g. object1.object2.field).
+	Path string `json:"path"`
 }
 
 func (a AliasFieldParams) Alias() (*AliasField, error) {
@@ -60,6 +65,10 @@ type AliasField struct {
 	path string
 }
 
+func (a *AliasField) Field() (Field, error) {
+	return a, nil
+}
+
 // Path is the path for an alias
 func (a AliasField) Path() string {
 	return a.path
@@ -78,7 +87,7 @@ func (a *AliasField) SetPath(path string) error {
 	return nil
 }
 func (a AliasField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(AliasFieldParams{Path: a.path})
+	return json.Marshal(aliasField{Path: a.path, Type: a.Type()})
 }
 func (a *AliasField) UnmarshalJSON(data []byte) error {
 	p := AliasFieldParams{}

@@ -1,8 +1,9 @@
 package picker
 
 import (
-	"encoding/json"
 	"math"
+
+	"encoding/json"
 
 	"github.com/chanced/dynamic"
 )

@@ -12,7 +12,7 @@ import (
 //  picker.String
 //  picker.Strings
 type Termser interface {
-	Terms() (*TermsClause, error)
+	Terms() (*TermsQuery, error)
 }
 
 type TermserComplete interface {
@@ -26,7 +26,7 @@ type TermserComplete interface {
 //  - picker.Terms
 //  - picker.Lookup
 //  - any type which satisfies Termser that sets the Field value
-func NewTermsQuery(params Termser) (*TermsClause, error) {
+func NewTermsQuery(params Termser) (*TermsQuery, error) {
 	q, err := params.Terms()
 	if err != nil {
 		return q, NewQueryError(err, KindTerms, q.field)
@@ -38,12 +38,12 @@ func NewTermsQuery(params Termser) (*TermsClause, error) {
 	return q, nil
 }
 
-// TermsQuery returns documents that contain one or more exact terms in a provided
+// TermsQueryParams returns documents that contain one or more exact terms in a provided
 // field.
 //
 // The terms query is the same as the term query, except you can search for
 // multiple values.
-type TermsQuery struct {
+type TermsQueryParams struct {
 	Field           string
 	Value           []string
 	Boost           interface{}
@@ -51,11 +51,11 @@ type TermsQuery struct {
 	completeClause
 }
 
-func (t TermsQuery) Clause() (QueryClause, error) {
+func (t TermsQueryParams) Clause() (QueryClause, error) {
 	return t.Terms()
 }
-func (t TermsQuery) Terms() (*TermsClause, error) {
-	q := &TermsClause{
+func (t TermsQueryParams) Terms() (*TermsQuery, error) {
+	q := &TermsQuery{
 		field: t.Field,
 	}
 	err := q.SetBoost(t.Boost)
@@ -70,15 +70,15 @@ func (t TermsQuery) Terms() (*TermsClause, error) {
 	return q, nil
 }
 
-func (t TermsQuery) Kind() QueryKind {
+func (t TermsQueryParams) Kind() QueryKind {
 	return KindTerms
 }
 
-func (t *TermsClause) SetField(field string) {
+func (t *TermsQuery) SetField(field string) {
 	t.field = field
 }
 
-func (t *TermsClause) setValue(value []string) error {
+func (t *TermsQuery) setValue(value []string) error {
 	err := checkValues(value, KindTerms, t.field)
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (t *TermsClause) setValue(value []string) error {
 	t.value = value
 	return nil
 }
-func (t *TermsClause) Set(field string, clause Termser) error {
+func (t *TermsQuery) Set(field string, clause Termser) error {
 	q, err := clause.Terms()
 	if err != nil {
 		return NewQueryError(err, KindTerms, field)
@@ -96,29 +96,29 @@ func (t *TermsClause) Set(field string, clause Termser) error {
 	return nil
 }
 
-func (t TermsClause) Kind() QueryKind {
+func (t TermsQuery) Kind() QueryKind {
 	return KindTerms
 }
 
-func (t *TermsClause) IsEmpty() bool {
+func (t *TermsQuery) IsEmpty() bool {
 	return t == nil || len(t.field) == 0 || (len(t.value) == 0 && t.lookup.IsEmpty())
 }
 
-func (t TermsClause) Value() []string {
+func (t TermsQuery) Value() []string {
 	return t.value[:]
 }
 
-func (t TermsClause) Lookup() *TermsLookup {
+func (t TermsQuery) Lookup() *TermsLookup {
 	return &t.lookup
 }
 
-func (t TermsClause) setLookup(value LookupValues) error {
+func (t TermsQuery) setLookup(value LookupValues) error {
 	t.value = []string{}
 	t.lookup = value
 	return nil
 }
 
-func (t TermsClause) MarshalJSON() ([]byte, error) {
+func (t TermsQuery) MarshalJSON() ([]byte, error) {
 	if len(t.field) == 0 || t.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -134,7 +134,7 @@ func (t TermsClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v)
 }
 
-func (t *TermsClause) unmarshalValueJSON(data dynamic.JSON) error {
+func (t *TermsQuery) unmarshalValueJSON(data dynamic.JSON) error {
 	var val []string
 	err := json.Unmarshal(data, &val)
 	if err != nil {
@@ -143,7 +143,7 @@ func (t *TermsClause) unmarshalValueJSON(data dynamic.JSON) error {
 	t.value = val
 	return nil
 }
-func (t *TermsClause) unmarshalLookupJSON(data []byte) error {
+func (t *TermsQuery) unmarshalLookupJSON(data []byte) error {
 	var tl TermsLookup
 	err := json.Unmarshal(data, &tl)
 	if err != nil {
@@ -152,8 +152,8 @@ func (t *TermsClause) unmarshalLookupJSON(data []byte) error {
 	t.lookup = tl
 	return nil
 }
-func (t *TermsClause) UnmarshalJSON(data []byte) error {
-	*t = TermsClause{}
+func (t *TermsQuery) UnmarshalJSON(data []byte) error {
+	*t = TermsQuery{}
 
 	d := dynamic.JSON(data)
 	if len(data) == 0 || d.IsEmptyObject() {
@@ -177,11 +177,11 @@ func (t *TermsClause) UnmarshalJSON(data []byte) error {
 	return err
 }
 
-func (t *TermsClause) UnmarshalBSON(data []byte) error {
+func (t *TermsQuery) UnmarshalBSON(data []byte) error {
 	return t.UnmarshalJSON(data)
 }
 
-type TermsClause struct {
+type TermsQuery struct {
 	lookup LookupValues
 	value  []string
 	field  string
@@ -191,16 +191,16 @@ type TermsClause struct {
 	completeClause
 }
 
-func (f *TermsClause) Clause() (QueryClause, error) {
+func (f *TermsQuery) Clause() (QueryClause, error) {
 	return f, nil
 }
-func (t TermsClause) Field() string {
+func (t TermsQuery) Field() string {
 	return t.field
 }
 
-func (t TermsClause) MarshalBSON() ([]byte, error) {
+func (t TermsQuery) MarshalBSON() ([]byte, error) {
 	return t.MarshalJSON()
 }
-func (t *TermsClause) Clear() {
-	*t = TermsClause{}
+func (t *TermsQuery) Clear() {
+	*t = TermsQuery{}
 }

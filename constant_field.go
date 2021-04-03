@@ -6,6 +6,11 @@ type Constanter interface {
 	ConstantField() (*ConstantField, error)
 }
 
+type constantField struct {
+	Value interface{} `json:"value"`
+	Type  FieldType   `json:"type"`
+}
+
 // ConstantField is a specialization of the Keyword field for the case
 // that all documentsin the index have the same value.
 //
@@ -25,6 +30,10 @@ func (c ConstantFieldParams) ConstantField() (*ConstantField, error) {
 	}, nil
 }
 
+func NewConstantField(params ConstantFieldParams) (*ConstantField, error) {
+	return params.ConstantField()
+}
+
 // ConstantField is a specialization of the Keyword field for the case
 // that all documentsin the index have the same value.
 //
@@ -35,9 +44,11 @@ type ConstantField struct {
 	value interface{}
 }
 
+func (c *ConstantField) Field() (Field, error) {
+	return c, nil
+}
 func (c ConstantField) MarshalJSON() ([]byte, error) {
-	params := ConstantFieldParams{Value: c.value}
-	return json.Marshal(params)
+	return json.Marshal(constantField{Value: c.value, Type: c.Type()})
 }
 
 func (c *ConstantField) UnmarshalJSON(data []byte) error {
@@ -63,8 +74,4 @@ func (c *ConstantField) Value() interface{} {
 
 func (c ConstantField) SetValue(v interface{}) {
 	c.value = v
-}
-
-func NewConstantField(params ConstantFieldParams) (*ConstantField, error) {
-	return params.ConstantField()
 }

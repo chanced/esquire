@@ -1,9 +1,10 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
+
+	"encoding/json"
 
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
@@ -23,7 +24,7 @@ func TestClauses(t *testing.T) {
 	assert.False(clauses.IsEmpty())
 	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
 
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClause).Value())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
 	assert.NoError(err)
 	res1, err := json.Marshal(clauses)
 	assert.NoError(err)
@@ -33,7 +34,7 @@ func TestClauses(t *testing.T) {
 	err = json.Unmarshal(res1, &clauses)
 	assert.NotEmpty(clauses.Clauses())
 	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClause).Value())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
 	assert.NoError(err)
 
 	json2 := []byte(`[{
@@ -43,7 +44,7 @@ func TestClauses(t *testing.T) {
 	err = json.Unmarshal(json2, &clauses)
 	assert.Equal(clauses.Len(), 1)
 	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClause).Value())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)
 	assert.NoError(err)

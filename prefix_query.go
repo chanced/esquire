@@ -7,13 +7,13 @@ import (
 )
 
 type Prefixer interface {
-	Prefix() (*PrefixClause, error)
+	Prefix() (*PrefixQuery, error)
 }
 
-// Prefix returns documents that contain a specific prefix in a provided field.
+// PrefixQueryParams returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
-type Prefix struct {
+type PrefixQueryParams struct {
 	// Field which the query is being performed. This is not needed if setting explicitly
 	// but is required if the query is being added to a compound query.
 	Field string
@@ -31,15 +31,15 @@ type Prefix struct {
 	completeClause
 }
 
-func (p Prefix) Kind() QueryKind {
+func (p PrefixQueryParams) Kind() QueryKind {
 	return KindPrefix
 }
 
-func (p Prefix) Clause() (QueryClause, error) {
+func (p PrefixQueryParams) Clause() (QueryClause, error) {
 	return p.Prefix()
 }
-func (p Prefix) Prefix() (*PrefixClause, error) {
-	q := &PrefixClause{field: p.Field}
+func (p PrefixQueryParams) Prefix() (*PrefixQuery, error) {
+	q := &PrefixQuery{field: p.Field}
 	q.SetCaseInsensitive(p.CaseInsensitive)
 	err := q.SetRewrite(p.Rewrite)
 	if err != nil {
@@ -48,10 +48,10 @@ func (p Prefix) Prefix() (*PrefixClause, error) {
 	return q, q.setValue(p.Value)
 }
 
-// PrefixClause returns documents that contain a specific prefix in a provided field.
+// PrefixQuery returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
-type PrefixClause struct {
+type PrefixQuery struct {
 	value string
 	field string
 	rewriteParam
@@ -60,14 +60,14 @@ type PrefixClause struct {
 	completeClause
 }
 
-func (p *PrefixClause) Clause() (QueryClause, error) {
+func (p *PrefixQuery) Clause() (QueryClause, error) {
 	return p, nil
 }
-func (p PrefixClause) Value() string {
+func (p PrefixQuery) Value() string {
 	return p.value
 }
 
-func (p *PrefixClause) setValue(value string) error {
+func (p *PrefixQuery) setValue(value string) error {
 	err := checkValue(value, KindPrefix, p.field)
 	if err != nil {
 		return err
@@ -76,11 +76,11 @@ func (p *PrefixClause) setValue(value string) error {
 	return nil
 }
 
-func (p PrefixClause) Kind() QueryKind {
+func (p PrefixQuery) Kind() QueryKind {
 	return KindPrefix
 }
 
-func (p PrefixClause) MarshalJSON() ([]byte, error) {
+func (p PrefixQuery) MarshalJSON() ([]byte, error) {
 	if p.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -91,7 +91,7 @@ func (p PrefixClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{p.field: data})
 }
 
-func (p PrefixClause) marshalClauseJSON() (dynamic.JSON, error) {
+func (p PrefixQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	params, err := marshalClauseParams(&p)
 	if err != nil {
 		return nil, err
@@ -100,8 +100,8 @@ func (p PrefixClause) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(params)
 }
 
-func (p *PrefixClause) UnmarshalJSON(data []byte) error {
-	*p = PrefixClause{}
+func (p *PrefixQuery) UnmarshalJSON(data []byte) error {
+	*p = PrefixQuery{}
 
 	obj := dynamic.JSONObject{}
 	err := json.Unmarshal(data, &obj)
@@ -115,7 +115,7 @@ func (p *PrefixClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (p *PrefixClause) unmarshalClauseJSON(data dynamic.JSON) error {
+func (p *PrefixQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 	fields, err := unmarshalClauseParams(data, p)
 	if err != nil {
 		return err
@@ -137,7 +137,7 @@ func (p *PrefixClause) unmarshalClauseJSON(data dynamic.JSON) error {
 //  - picker.Prefix
 //  - picker.String
 //  - nil (clears PrefixQuery)
-func (p *PrefixClause) Set(field string, prefixer Prefixer) error {
+func (p *PrefixQuery) Set(field string, prefixer Prefixer) error {
 	if prefixer == nil {
 		p.Clear()
 	}
@@ -153,10 +153,10 @@ func (p *PrefixClause) Set(field string, prefixer Prefixer) error {
 	return nil
 }
 
-func (p *PrefixClause) IsEmpty() bool {
+func (p *PrefixQuery) IsEmpty() bool {
 	return p == nil || len(p.field) == 0 || len(p.value) == 0
 }
 
-func (p *PrefixClause) Clear() {
-	*p = PrefixClause{}
+func (p *PrefixQuery) Clear() {
+	*p = PrefixQuery{}
 }

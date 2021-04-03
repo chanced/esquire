@@ -57,4 +57,9 @@ type Field interface {
 	Type() FieldType
 	json.Marshaler
 	json.Unmarshaler
+	Fielder
+}
+
+type Fielder interface {
+	Field() (Field, error)
 }

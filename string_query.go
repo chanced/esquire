@@ -12,20 +12,20 @@ func (s String) String() string {
 	return string(s)
 }
 
-func (s String) Match() (MatchClause, error) {
-	q := MatchClause{}
+func (s String) Match() (MatchQuery, error) {
+	q := MatchQuery{}
 	err := q.setQuery(s.String())
 	return q, err
 }
 
-func (s String) Term() (TermClause, error) {
-	q := TermClause{}
+func (s String) Term() (TermClauseQuery, error) {
+	q := TermClauseQuery{}
 	err := q.SetValue(s.String())
 	return q, err
 }
 
-func (s String) Terms() (TermsClause, error) {
-	q := TermsClause{}
+func (s String) Terms() (TermsQuery, error) {
+	q := TermsQuery{}
 	strs := strings.Split(s.String(), ",")
 	for i, str := range strs {
 		str = strings.TrimSpace(str)
@@ -39,8 +39,8 @@ func (s String) Terms() (TermsClause, error) {
 
 type Strings []string
 
-func (s Strings) Terms() (TermsClause, error) {
-	q := TermsClause{}
+func (s Strings) Terms() (TermsQuery, error) {
+	q := TermsQuery{}
 	err := q.setValue(s)
 	return q, err
 }

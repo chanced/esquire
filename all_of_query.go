@@ -7,42 +7,42 @@ import (
 )
 
 type AllOfer interface {
-	AllOf() (*AllOfClause, error)
+	AllOf() (*AllOfQuery, error)
 }
 
-type AllOf struct {
+type AllOfQueryParams struct {
 	Name string
 }
 
-func (ao AllOf) Kind() QueryKind {
+func (ao AllOfQueryParams) Kind() QueryKind {
 	return KindAllOf
 }
 
-func (ao AllOf) AllOf() (*AllOfClause, error) {
-	c := &AllOfClause{}
+func (ao AllOfQueryParams) AllOf() (*AllOfQuery, error) {
+	c := &AllOfQuery{}
 	c.SetName(ao.Name)
 	return c, nil
 }
 
-func (ao AllOf) Clause() (CompleteClause, error) {
+func (ao AllOfQueryParams) Clause() (CompleteClause, error) {
 	return ao.AllOf()
 }
 
-type AllOfClause struct {
+type AllOfQuery struct {
 	nameParam
 	completeClause
 	cleared bool // not great
 }
 
-func (ao *AllOfClause) Clause() (QueryClause, error) {
+func (ao *AllOfQuery) Clause() (QueryClause, error) {
 	return ao, nil
 }
 
-func (AllOfClause) Kind() QueryKind {
+func (AllOfQuery) Kind() QueryKind {
 	return KindAllOf
 }
 
-func (ao AllOfClause) MarshalJSON() ([]byte, error) {
+func (ao AllOfQuery) MarshalJSON() ([]byte, error) {
 	if ao.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -52,8 +52,8 @@ func (ao AllOfClause) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(p)
 }
-func (ao *AllOfClause) UnmarshalJSON(data []byte) error {
-	*ao = AllOfClause{}
+func (ao *AllOfQuery) UnmarshalJSON(data []byte) error {
+	*ao = AllOfQuery{}
 	_, err := unmarshalClauseParams(data, ao)
 	if err != nil {
 		return err
@@ -61,16 +61,16 @@ func (ao *AllOfClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (ao *AllOfClause) Clear() {
+func (ao *AllOfQuery) Clear() {
 	ao.cleared = true
 }
 
-func (ao *AllOfClause) Enable() {
+func (ao *AllOfQuery) Enable() {
 	ao.cleared = false
 }
-func (ao *AllOfClause) Disable() {
+func (ao *AllOfQuery) Disable() {
 	ao.cleared = true
 }
-func (ao *AllOfClause) IsEmpty() bool {
+func (ao *AllOfQuery) IsEmpty() bool {
 	return ao == nil || ao.cleared
 }

@@ -38,29 +38,14 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-as-you-type.html
 type SearchAsYouTypeField struct {
-	BaseField           `bson:",inline" json:",inline"`
 	MaxShingleSizeParam `bson:",inline" json:",inline"`
 	analyzerParam       `bson:",inline" json:",inline"`
 	indexParam          `bson:",inline" json:",inline"`
-	IndexOptionsParam   `bson:",inline" json:",inline"`
+	indexOptionsParam   `bson:",inline" json:",inline"`
 	NormsParam          `bson:",inline" json:",inline"`
 	storeParam          `bson:",inline" json:",inline"`
-	SimilarityParam     `bson:",inline" json:",inline"`
+	similarityParam     `bson:",inline" json:",inline"`
 	TermVectorParam     `bson:",inline" json:",inline"`
-}
-
-func (f SearchAsYouTypeField) Clone() Field {
-	n := NewSearchAsYouTypeField()
-	n.SetMaxShingleSize(f.MaxShingleSize())
-	n.SetAnalyzer(f.Analyzer())
-	n.SetSearchQuoteAnalyzer(f.SearchQuoteAnalyzer())
-	n.SetSearchAnalyzer(f.SearchAnalyzer())
-	n.SetIndexOptions(f.IndexOptions())
-	n.SetNorms(f.Norms())
-	n.SetSimilarity(f.Similarity())
-	n.SetStore(f.Store())
-	n.SetTermVector(f.TermVector())
-	return n
 }
 
 func NewSearchAsYouTypeField() *SearchAsYouTypeField {

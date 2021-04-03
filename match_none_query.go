@@ -6,70 +6,70 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// MatchNoneQuery is the inverse of the match_all query, which matches no documents.
-type MatchNoneQuery struct {
+// MatchNoneQueryParams is the inverse of the match_all query, which matches no documents.
+type MatchNoneQueryParams struct {
 	Name string
 }
 
-func (mn MatchNoneQuery) Clause() (QueryClause, error) {
+func (mn MatchNoneQueryParams) Clause() (QueryClause, error) {
 	return mn.MatchNone()
 
 }
 
-func (mn MatchNoneQuery) Kind() QueryKind {
+func (mn MatchNoneQueryParams) Kind() QueryKind {
 	return KindMatchNone
 }
-func (mn MatchNoneQuery) MatchNone() (*MatchNoneClause, error) {
-	c := &MatchNoneClause{}
+func (mn MatchNoneQueryParams) MatchNone() (*MatchNoneQuery, error) {
+	c := &MatchNoneQuery{}
 	return c, nil
 }
 
-// MatchNoneClause is the inverse of the match_all query, which matches no documents.
-type MatchNoneClause struct {
+// MatchNoneQuery is the inverse of the match_all query, which matches no documents.
+type MatchNoneQuery struct {
 	boostParam
 	disabled bool
 	nameParam
 	completeClause
 }
 
-func (mn *MatchNoneClause) Clause() (QueryClause, error) {
+func (mn *MatchNoneQuery) Clause() (QueryClause, error) {
 	return mn, nil
 }
-func (MatchNoneClause) Kind() QueryKind {
+func (MatchNoneQuery) Kind() QueryKind {
 	return KindMatchNone
 }
 
-func (mn *MatchNoneClause) Clear() {
-	*mn = MatchNoneClause{
+func (mn *MatchNoneQuery) Clear() {
+	*mn = MatchNoneQuery{
 		disabled: true,
 	}
 }
 
-func (mn *MatchNoneClause) Enable() {
+func (mn *MatchNoneQuery) Enable() {
 	if mn == nil {
-		*mn = MatchNoneClause{}
+		*mn = MatchNoneQuery{}
 	}
 	mn.disabled = false
 }
-func (mn *MatchNoneClause) Disable() {
+func (mn *MatchNoneQuery) Disable() {
 	if mn == nil {
 		return
 	}
 	mn.disabled = true
 }
-func (mn *MatchNoneClause) IsEmpty() bool {
+func (mn *MatchNoneQuery) IsEmpty() bool {
 	return mn == nil || mn.disabled
 }
 
-func (mn *MatchNoneClause) UnmarshalJSON(data []byte) error {
-	*mn = MatchNoneClause{}
+func (mn *MatchNoneQuery) UnmarshalJSON(data []byte) error {
+	*mn = MatchNoneQuery{}
 	_, err := unmarshalClauseParams(data, mn)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (mn MatchNoneClause) MarshalJSON() ([]byte, error) {
+func (mn MatchNoneQuery) MarshalJSON() ([]byte, error) {
 	if mn.IsEmpty() {
 		return dynamic.Null, nil
 	}

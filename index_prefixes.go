@@ -55,7 +55,7 @@ type FieldWithIndexPrefixes interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/index-prefixes.html
 type IndexPrefixesParams struct {
-	IndexPrefixesValue *IndexPrefixes `bson:"index_prefixes,omitempty" json:"index_prefixes,omitempty"`
+	IndexPrefixesValue *IndexPrefixes `json:"index_prefixes,omitempty"`
 }
 
 // IndexPrefixesMinChars is the minimum prefix length to index. Must be greater

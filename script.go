@@ -12,8 +12,8 @@ type Script struct {
 	Params interface{}
 }
 
-func (s Script) Script() (*ScriptClause, error) {
-	sq := &ScriptQuery{
+func (s Script) Script() (*ScriptQuery, error) {
+	sq := &ScriptQueryParams{
 		Lang:   s.Lang,
 		Source: s.Source,
 		Params: s.Params,

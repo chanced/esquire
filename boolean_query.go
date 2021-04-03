@@ -7,15 +7,15 @@ import (
 )
 
 type Booler interface {
-	Boolean() (BooleanClause, error)
+	Boolean() (BooleanQuery, error)
 }
 
-// BooleanQuery is a query that matches documents matching boolean combinations
-// of other queries. The bool query maps to Lucene BooleanQuery. It is built
+// BooleanQueryParams is a query that matches documents matching boolean combinations
+// of other queries. The bool query maps to Lucene BooleanQueryParams. It is built
 // using one or more boolean clauses, each clause with a typed occurrence.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-type BooleanQuery struct {
+type BooleanQueryParams struct {
 	// The clause (query) must appear in matching documents and will contribute
 	// to the score.
 	Must Clauses
@@ -42,12 +42,12 @@ type BooleanQuery struct {
 	completeClause
 }
 
-func (b BooleanQuery) Clause() (QueryClause, error) {
+func (b BooleanQueryParams) Clause() (QueryClause, error) {
 	return b.Boolean()
 }
 
-func (b BooleanQuery) Boolean() (*BooleanClause, error) {
-	q := &BooleanClause{}
+func (b BooleanQueryParams) Boolean() (*BooleanQuery, error) {
+	q := &BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
 		return q, NewQueryError(err, KindBoolean)
@@ -71,16 +71,16 @@ func (b BooleanQuery) Boolean() (*BooleanClause, error) {
 	return q, nil
 }
 
-func (b BooleanQuery) Kind() QueryKind {
+func (b BooleanQueryParams) Kind() QueryKind {
 	return KindBoolean
 }
 
-// BooleanClause is a query that matches documents matching boolean combinations
-// of other queries. The bool query maps to Lucene BooleanClause. It is built
+// BooleanQuery is a query that matches documents matching boolean combinations
+// of other queries. The bool query maps to Lucene BooleanQuery. It is built
 // using one or more boolean clauses, each clause with a typed occurrence.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-type BooleanClause struct {
+type BooleanQuery struct {
 	must    QueryClauses
 	filter  QueryClauses
 	should  QueryClauses
@@ -90,15 +90,15 @@ type BooleanClause struct {
 	completeClause
 }
 
-func (b *BooleanClause) Clause() (QueryClause, error) {
+func (b *BooleanQuery) Clause() (QueryClause, error) {
 	return b, nil
 }
 
-func (BooleanClause) Kind() QueryKind {
+func (BooleanQuery) Kind() QueryKind {
 	return KindBoolean
 }
 
-func (b *BooleanClause) Set(v Booler) error {
+func (b *BooleanQuery) Set(v Booler) error {
 	q, err := v.Boolean()
 	if err != nil {
 		return NewQueryError(err, KindBoolean)
@@ -109,7 +109,7 @@ func (b *BooleanClause) Set(v Booler) error {
 
 // Must clauses (query) must appear in matching documents and will contribute
 // to the score.
-func (b *BooleanClause) Must() *QueryClauses {
+func (b *BooleanQuery) Must() *QueryClauses {
 	if b == nil {
 		return nil
 	}
@@ -120,7 +120,7 @@ func (b *BooleanClause) Must() *QueryClauses {
 // matching documents. Clauses are executed in filter context meaning that
 // scoring is ignored and clauses are considered for caching. Because scoring is
 // ignored, a score of 0 for all documents is returned.
-func (b *BooleanClause) MustNot() *QueryClauses {
+func (b *BooleanQuery) MustNot() *QueryClauses {
 	if b == nil {
 		return nil
 	}
@@ -131,7 +131,7 @@ func (b *BooleanClause) MustNot() *QueryClauses {
 // must the score of the query will be ignored. Filter clauses are executed in
 // filter context, meaning that scoring is ignored and clauses are considered
 // for caching.
-func (b *BooleanClause) Filter() *QueryClauses {
+func (b *BooleanQuery) Filter() *QueryClauses {
 	if b == nil {
 		return nil
 	}
@@ -139,43 +139,43 @@ func (b *BooleanClause) Filter() *QueryClauses {
 }
 
 // Should clauses (query) that should appear in the matching document.
-func (b *BooleanClause) Should() *QueryClauses {
+func (b *BooleanQuery) Should() *QueryClauses {
 	if b == nil {
 		return nil
 	}
 	return &b.should
 }
 
-func (b *BooleanClause) SetMust(clauses Clauses) error {
+func (b *BooleanQuery) SetMust(clauses Clauses) error {
 	if b == nil {
-		*b = BooleanClause{}
+		*b = BooleanQuery{}
 	}
 	return b.must.Set(clauses)
 }
 
-func (b *BooleanClause) SetMustNot(clauses Clauses) error {
+func (b *BooleanQuery) SetMustNot(clauses Clauses) error {
 	if b == nil {
-		*b = BooleanClause{}
+		*b = BooleanQuery{}
 	}
 	return b.mustNot.Set(clauses)
 }
 
-func (b *BooleanClause) SetShould(clauses Clauses) error {
+func (b *BooleanQuery) SetShould(clauses Clauses) error {
 	if b == nil {
-		*b = BooleanClause{}
+		*b = BooleanQuery{}
 	}
 	return b.should.Set(clauses)
 }
 
-func (b *BooleanClause) SetFilter(clauses Clauses) error {
+func (b *BooleanQuery) SetFilter(clauses Clauses) error {
 	if b == nil {
-		*b = BooleanClause{}
+		*b = BooleanQuery{}
 	}
 	return b.filter.Set(clauses)
 }
 
-func (b *BooleanClause) UnmarshalJSON(data []byte) error {
-	*b = BooleanClause{}
+func (b *BooleanQuery) UnmarshalJSON(data []byte) error {
+	*b = BooleanQuery{}
 	obj, err := unmarshalClauseParams(data, b)
 	if err != nil {
 		return err
@@ -199,7 +199,7 @@ func (b *BooleanClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (b BooleanClause) MarshalJSON() ([]byte, error) {
+func (b BooleanQuery) MarshalJSON() ([]byte, error) {
 	if b.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -222,10 +222,10 @@ func (b BooleanClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func (b *BooleanClause) IsEmpty() bool {
+func (b *BooleanQuery) IsEmpty() bool {
 	return b == nil || !(!b.must.IsEmpty() || !b.mustNot.IsEmpty() || !b.should.IsEmpty() || !b.filter.IsEmpty())
 }
 
-func (b *BooleanClause) Clear() {
-	*b = BooleanClause{}
+func (b *BooleanQuery) Clear() {
+	*b = BooleanQuery{}
 }

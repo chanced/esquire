@@ -57,8 +57,8 @@ type WithSimilarity interface {
 	// Similarity is mostly useful for text fields, but can also apply to other
 	// field types.
 	Similarity() Similarity
-	// SetSimilarity sets the Similarity Value to v
-	SetSimilarity(v Similarity)
+	// SetSimilarity sets the similarity param to v
+	SetSimilarity(v Similarity) error
 }
 
 // FieldWithSimilarity is a Field with the similarity paramater
@@ -67,7 +67,7 @@ type FieldWithSimilarity interface {
 	WithSimilarity
 }
 
-// SimilarityParam is a mixin that adds the similarity parameter
+// similarityParam is a mixin that adds the similarity parameter
 //
 // Elasticsearch allows you to configure a scoring algorithm or similarity per
 // field. The similarity setting provides a simple way of choosing a similarity
@@ -96,22 +96,26 @@ type FieldWithSimilarity interface {
 // not. Boolean similarity gives terms a score equal to their query boost.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/similarity.html
-type SimilarityParam struct {
-	SimilarityValue *Similarity `bson:"similarity,omitempty" json:"similarity,omitempty"`
+type similarityParam struct {
+	similarity Similarity
 }
 
 // Similarity is mostly useful for text fields, but can also apply to other
 // field types.
-func (s SimilarityParam) Similarity() Similarity {
-	if s.SimilarityValue == nil {
+func (s similarityParam) Similarity() Similarity {
+	if len(s.similarity) == 0 {
 		return SimilarityBM25
 	}
-	return *s.SimilarityValue
+	return s.similarity
 }
 
 // SetSimilarity sets the Similarity Value to v
-func (s *SimilarityParam) SetSimilarity(v Similarity) {
-	if s.Similarity() != v {
-		s.SimilarityValue = &v
-	}
+func (s *similarityParam) SetSimilarity(v Similarity) error {
+
+	// TODO: Figure out if similarity is case sensitive.
+	// TODO: validate v
+
+	s.similarity = v
+
+	return nil
 }

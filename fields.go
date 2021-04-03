@@ -1,12 +1,27 @@
 package picker
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
+	"encoding/json"
+
 	"github.com/chanced/dynamic"
 )
+
+type FieldMappings map[string]Fielder
+
+func (fm FieldMappings) Fields() (Fields, error) {
+	res := make(Fields, len(fm))
+	for k, v := range fm {
+		f, err := v.Field()
+		if err != nil {
+			return nil, err
+		}
+		res[k] = f
+	}
+	return res, nil
+}
 
 // Fields are a collection of Field mappings
 type Fields map[string]Field
@@ -15,16 +30,23 @@ func (f Fields) Field(key string) Field {
 	return f[key]
 }
 
-func (f Fields) SetField(key string, field Field) {
-	f[key] = field
+func (f Fields) Get(key string) (Field, bool) {
+	v, exists := f[key]
+	return v, exists
 }
 
-func (f Fields) AddField(key string, field Field) error {
-	if _, exists := f[key]; exists {
-		return fmt.Errorf("%w: %s", ErrFieldExists, key)
+func (f Fields) Has(key string) bool {
+	_, exists := f[key]
+	return exists
+}
+
+func (f Fields) Set(key string, field Fielder) (Field, error) {
+	fld, err := field.Field()
+	if err != nil {
+		return fld, err
 	}
-	f[key] = field
-	return nil
+	f[key] = fld
+	return fld, nil
 }
 
 func (f *Fields) UnmarshalJSON(data []byte) error {
@@ -36,7 +58,7 @@ func (f *Fields) UnmarshalJSON(data []byte) error {
 	*f = make(Fields, len(m))
 
 	for fld, fd := range m {
-		var props map[string]dynamic.JSON
+		var props dynamic.JSONObject
 		err := json.Unmarshal(fd, &props)
 		if err != nil {
 			return err
@@ -72,15 +94,8 @@ type WithFields interface {
 	// search and a multi-field for sorting and aggregations, or the same string
 	// value analyzed by different analyzers.
 	Fields() Fields
-	// Field returns the field with Key if it is exists, otherwise nil
-	Field(key string) Field
 	// SetFields sets the Fields value to v
 	SetFields(v Fields)
-	// SetField sets or adds the given Field v to the Fields param. It
-	// initializes FieldsParam's Value if it is currently nil.
-	SetField(key string, v Field)
-	// DeleteField deletes the Fields entry with the given key
-	DeleteField(key string)
 }
 
 // FieldWithFields is a Field with the fields paramater
@@ -91,7 +106,7 @@ type FieldWithFields interface {
 	WithFields
 }
 
-// FieldsParam is a mixin for mappings that adds the fields param
+// fieldsParam is a mixin for mappings that adds the fields param
 //
 // It is often useful to index the same field in different ways for different
 // purposes. This is the purpose of multi-fields. For instance, a string field
@@ -99,48 +114,22 @@ type FieldWithFields interface {
 // for sorting or aggregations
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
-type FieldsParam struct {
-	FieldsValue Fields `bson:"fields,omitempty" json:"fields,omitempty"`
+type fieldsParam struct {
+	fields Fields
 }
 
 // Fields (Multi-fields) allow the same string value to be indexed in multiple
 // ways for different purposes, such as one field for search and a multi-field
 // for sorting and aggregations, or the same string value analyzed by different
 // analyzers.
-func (f FieldsParam) Fields() Fields {
-	if f.FieldsValue == nil {
-		f.FieldsValue = Fields{}
+func (f fieldsParam) Fields() Fields {
+	if f.fields == nil {
+		f.fields = Fields{}
 	}
-	return f.FieldsValue
+	return f.fields
 }
 
 // SetFields sets the Fields value to v
-func (f *FieldsParam) SetFields(v Fields) {
-	f.FieldsValue = v
-}
-
-// Field returns the field with Key if it is exists, otherwise nil
-func (f FieldsParam) Field(key string) Field {
-	if f.FieldsValue == nil {
-		return nil
-	}
-	return f.FieldsValue[key]
-}
-
-// SetField sets or adds the given Field v to the Fields param. It initializes
-// FieldsParam's Value if it is currently nil.
-func (f *FieldsParam) SetField(key string, v Field) {
-	if f.FieldsValue == nil {
-		f.FieldsValue = Fields{}
-	}
-	f.FieldsValue[key] = v
-
-}
-
-// DeleteField deletes the Fields entry with the given key
-func (f *FieldsParam) DeleteField(key string) {
-	if f.FieldsValue == nil {
-		return
-	}
-	delete(f.FieldsValue, key)
+func (f *fieldsParam) SetFields(v Fields) {
+	f.fields = v
 }

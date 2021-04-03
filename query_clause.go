@@ -1,9 +1,10 @@
 package picker
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+
+	"encoding/json"
 
 	"github.com/chanced/dynamic"
 )

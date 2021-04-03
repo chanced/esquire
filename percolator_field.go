@@ -10,15 +10,14 @@ package picker
 // field as a query.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/percolator.html
-type PercolatorField struct {
-	BaseField `json:",inline" bson:",inline"`
+type PercolatorField struct{}
+
+func (PercolatorField) Type() FieldType {
+	return FieldTypePercolator
 }
 
-func (f PercolatorField) Clone() Field {
-	n := NewPercolatorField()
-	return n
+func NewPercolatorField() (*PercolatorField, error) {
+	return &PercolatorField{}, nil
 }
 
-func NewPercolatorField() *PercolatorField {
-	return &PercolatorField{BaseField: BaseField{MappingType: FieldTypePercolator}}
-}
+func (PercolatorField) MarshalJSON()

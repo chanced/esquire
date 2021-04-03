@@ -2,8 +2,16 @@ package picker
 
 import "encoding/json"
 
-func NewDateField(params DateFieldParams) (*DateField, error) {
-	return params.Date()
+type dateField struct {
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	DocValues       interface{} `json:"doc_values,omitempty"`
+	Index           interface{} `json:"index,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Store           interface{} `json:"store,omitempty"`
+	Meta            Meta        `json:"meta,omitempty"`
+	Format          string      `json:"format,omitempty"`
+	Boost           interface{} `json:"boost,omitempty"`
+	Type            FieldType   `json:"type"`
 }
 
 type DateFieldParams struct {
@@ -76,11 +84,14 @@ type DateFieldParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-field-meta.html#mapping-field-meta
 	Meta Meta `json:"meta,omitempty"`
-	//Format is the format(s) that the that can be parsed. Defaults to
+	//Format is the format(d) that the that can be parsed. Defaults to
 	//strict_date_optional_time||epoch_millis.
 	//
 	// Multiple formats can be seperated by ||
 	Format string `json:"format,omitempty"`
+
+	// Deprecated
+	Boost interface{} `json:"boost,omitempty"`
 }
 
 func (DateFieldParams) Type() FieldType {
@@ -113,8 +124,15 @@ func (p DateFieldParams) Date() (*DateField, error) {
 	if err != nil {
 		return f, err
 	}
-
+	err = f.SetBoost(p.Boost)
+	if err != nil {
+		return f, err
+	}
 	return f, nil
+}
+
+func NewDateField(params DateFieldParams) (*DateField, error) {
+	return params.Date()
 }
 
 type DateField struct {
@@ -125,13 +143,17 @@ type DateField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
+func (d *DateField) Field() (Field, error) {
+	return d, nil
+}
 func (DateField) Type() FieldType {
 	return FieldTypeDate
 }
 
-func (s *DateField) UnmarshalJSON(data []byte) error {
+func (d *DateField) UnmarshalJSON(data []byte) error {
 
 	var params DateFieldParams
 	err := json.Unmarshal(data, &params)
@@ -142,19 +164,21 @@ func (s *DateField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*s = *v
+	*d = *v
 	return nil
 }
 
-func (s DateField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(DateFieldParams{
-		Format:          s.format,
-		IgnoreMalformed: s.ignoreMalformed.Value(),
-		DocValues:       s.docValues.Value(),
-		Index:           s.index.Value(),
-		NullValue:       s.nullValue,
-		Store:           s.store.Value(),
-		Meta:            s.meta,
+func (d DateField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(dateField{
+		Format:          d.format,
+		IgnoreMalformed: d.ignoreMalformed.Value(),
+		DocValues:       d.docValues.Value(),
+		Index:           d.index.Value(),
+		NullValue:       d.nullValue,
+		Store:           d.store.Value(),
+		Meta:            d.meta,
+		Boost:           d.boost.Value(),
+		Type:            d.Type(),
 	})
 }
 
@@ -234,13 +258,16 @@ type DateNanoSecField struct {
 	nullValueParam
 	storeParam
 	metaParam
+	boostParam
 }
 
-func (p DateNanoSecField) Type() FieldType {
+func (d DateNanoSecField) Type() FieldType {
 	return FieldTypeDateNanos
 }
-
-func (s *DateNanoSecField) UnmarshalJSON(data []byte) error {
+func (d *DateNanoSecField) Field() (Field, error) {
+	return d, nil
+}
+func (d *DateNanoSecField) UnmarshalJSON(data []byte) error {
 
 	var params DateNanoSecFieldParams
 	err := json.Unmarshal(data, &params)
@@ -251,19 +278,21 @@ func (s *DateNanoSecField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*s = *v
+	*d = *v
 	return nil
 }
 
-func (s DateNanoSecField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(DateNanoSecFieldParams{
-		Format:          s.format,
-		IgnoreMalformed: s.ignoreMalformed.Value(),
-		DocValues:       s.docValues.Value(),
-		Index:           s.index.Value(),
-		NullValue:       s.nullValue,
-		Store:           s.store.Value(),
-		Meta:            s.meta,
+func (d DateNanoSecField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(dateField{
+		Format:          d.format,
+		IgnoreMalformed: d.ignoreMalformed.Value(),
+		DocValues:       d.docValues.Value(),
+		Index:           d.index.Value(),
+		NullValue:       d.nullValue,
+		Store:           d.store.Value(),
+		Meta:            d.meta,
+		Boost:           d.boost.Value(),
+		Type:            d.Type(),
 	})
 }
 

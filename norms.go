@@ -1,5 +1,7 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
 // WithNorms is a mapping with the Norms parameter
 //
 // Norms store various normalization factors that are later used at query time
@@ -59,7 +61,7 @@ type FieldWithNorms interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/norms.html
 type NormsParam struct {
-	NormsValue *bool `bson:"norms,omitempty" json:"norms,omitempty"`
+	NormsValue dynamic.Bool `json:"norms,omitempty"`
 }
 
 // Norms determines whether field-length should be taken into account when

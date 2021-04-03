@@ -7,13 +7,13 @@ import (
 )
 
 type Scripter interface {
-	Script() (*ScriptClause, error)
+	Script() (*ScriptQuery, error)
 }
 
-// ScriptQuery filters documents based on a provided script. The script query is typically used in a filter context.
+// ScriptQueryParams filters documents based on a provided script. The script query is typically used in a filter context.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html
-type ScriptQuery struct {
+type ScriptQueryParams struct {
 	// Name of the query (Optional)
 	Name string
 	// Script to run as a query. This script must return a boolean value, true or false. (Required)
@@ -22,11 +22,11 @@ type ScriptQuery struct {
 	Params interface{}
 }
 
-func (s ScriptQuery) Clause() (QueryClause, error) {
+func (s ScriptQueryParams) Clause() (QueryClause, error) {
 	return s.Script()
 }
-func (s ScriptQuery) Script() (*ScriptClause, error) {
-	q := &ScriptClause{}
+func (s ScriptQueryParams) Script() (*ScriptQuery, error) {
+	q := &ScriptQuery{}
 	q.SetName(s.Name)
 	err := q.SetScript(&Script{
 		Lang:   s.Lang,
@@ -40,27 +40,27 @@ func (s ScriptQuery) Script() (*ScriptClause, error) {
 	return q, nil
 }
 
-func (ScriptQuery) Kind() QueryKind {
+func (ScriptQueryParams) Kind() QueryKind {
 	return KindScript
 }
 
-type ScriptClause struct {
+type ScriptQuery struct {
 	scriptParams
 	nameParam
 	completeClause
 }
 
-func (ScriptClause) Kind() QueryKind {
+func (ScriptQuery) Kind() QueryKind {
 	return KindScript
 }
 
 // Set sets the ScriptQuery
 // Options include:
 //   - picker.ScriptQuery
-func (s *ScriptClause) Set(script Scripter) error {
+func (s *ScriptQuery) Set(script Scripter) error {
 
 	if script == nil {
-		*s = ScriptClause{}
+		*s = ScriptQuery{}
 		return nil
 	}
 	scr, err := script.Script()
@@ -70,10 +70,10 @@ func (s *ScriptClause) Set(script Scripter) error {
 	*s = *scr
 	return nil
 }
-func (s *ScriptClause) Clause() (QueryClause, error) {
+func (s *ScriptQuery) Clause() (QueryClause, error) {
 	return s, nil
 }
-func (s ScriptClause) MarshalJSON() ([]byte, error) {
+func (s ScriptQuery) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -91,8 +91,8 @@ func (s ScriptClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func (s *ScriptClause) UnmarshalJSON(data []byte) error {
-	s = &ScriptClause{}
+func (s *ScriptQuery) UnmarshalJSON(data []byte) error {
+	s = &ScriptQuery{}
 	params, err := unmarshalClauseParams(data, s)
 	if err != nil {
 		return err
@@ -104,10 +104,10 @@ func (s *ScriptClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *ScriptClause) IsEmpty() bool {
+func (s *ScriptQuery) IsEmpty() bool {
 	return s == nil || s.scriptParams.IsEmpty()
 }
 
-func (s *ScriptClause) Clear() {
-	*s = ScriptClause{}
+func (s *ScriptQuery) Clear() {
+	*s = ScriptQuery{}
 }

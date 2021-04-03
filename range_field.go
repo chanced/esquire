@@ -88,6 +88,9 @@ type IntegerRangeField struct {
 	storeParam
 }
 
+func (r *IntegerRangeField) Field() (Field, error) {
+	return r, nil
+}
 func (IntegerRangeField) Type() FieldType {
 	return FieldTypeIntegerRange
 }
@@ -149,6 +152,9 @@ type FloatRangeField struct {
 	storeParam
 }
 
+func (r *FloatRangeField) Field() (Field, error) {
+	return r, nil
+}
 func (FloatRangeField) Type() FieldType {
 	return FieldTypeFloatRange
 }
@@ -210,6 +216,9 @@ type LongRangeField struct {
 	storeParam
 }
 
+func (r *LongRangeField) Field() (Field, error) {
+	return r, nil
+}
 func (LongRangeField) Type() FieldType {
 	return FieldTypeLongRange
 }
@@ -269,6 +278,10 @@ type DoubleRangeField struct {
 	coerceParam
 	indexParam
 	storeParam
+}
+
+func (r *DoubleRangeField) Field() (Field, error) {
+	return r, nil
 }
 
 func (DoubleRangeField) Type() FieldType {
@@ -335,6 +348,9 @@ type DateRangeField struct {
 	storeParam
 }
 
+func (r *DateRangeField) Field() (Field, error) {
+	return r, nil
+}
 func (DateRangeField) Type() FieldType {
 	return FieldTypeDateRange
 }
@@ -396,6 +412,9 @@ type IPRangeField struct {
 	storeParam
 }
 
+func (r *IPRangeField) Field() (Field, error) {
+	return r, nil
+}
 func (IPRangeField) Type() FieldType {
 	return FieldTypeIPRange
 }

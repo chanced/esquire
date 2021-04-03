@@ -7,10 +7,10 @@ import (
 )
 
 type Termer interface {
-	Term() (*TermClause, error)
+	Term() (*TermClauseQuery, error)
 }
 
-type TermQuery struct {
+type TermQueryParams struct {
 	// The field which is being queried against.
 	//
 	// This will be ignored if set through a mutator
@@ -22,19 +22,19 @@ type TermQuery struct {
 	completeClause
 }
 
-func (t TermQuery) name() string {
+func (t TermQueryParams) name() string {
 	return t.Name
 }
-func (t TermQuery) field() string {
+func (t TermQueryParams) field() string {
 	return t.Field
 }
 
-func (t TermQuery) Clause() (QueryClause, error) {
+func (t TermQueryParams) Clause() (QueryClause, error) {
 	return t.Term()
 }
 
-func (t TermQuery) Term() (*TermClause, error) {
-	q := &TermClause{
+func (t TermQueryParams) Term() (*TermClauseQuery, error) {
+	q := &TermClauseQuery{
 		field: t.Field,
 	}
 	err := q.SetValue(t.Value)
@@ -50,7 +50,7 @@ func (t TermQuery) Term() (*TermClause, error) {
 	return q, nil
 }
 
-func (t TermQuery) Kind() QueryKind {
+func (t TermQueryParams) Kind() QueryKind {
 	return KindTerm
 }
 
@@ -70,7 +70,7 @@ func (t TermQuery) Kind() QueryKind {
 // To search text field values, use the match query instead.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-func NewTermQuery(params TermQuery) (*TermClause, error) {
+func NewTermQuery(params TermQueryParams) (*TermClauseQuery, error) {
 	q, err := params.Term()
 	if err != nil {
 		return nil, NewQueryError(err, KindTerm, params.Field)
@@ -81,7 +81,7 @@ func NewTermQuery(params TermQuery) (*TermClause, error) {
 	return q, nil
 }
 
-// TermClause returns documents that contain an exact term in a provided field.
+// TermClauseQuery returns documents that contain an exact term in a provided field.
 //
 // You can use the term query to find documents based on a precise value such as
 // a price, a product ID, or a username.
@@ -95,7 +95,7 @@ func NewTermQuery(params TermQuery) (*TermClause, error) {
 // To search text field values, use the match query instead.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-type TermClause struct {
+type TermClauseQuery struct {
 	field string
 	value string
 	boostParam
@@ -104,24 +104,24 @@ type TermClause struct {
 	completeClause
 }
 
-func (t *TermClause) Clause() (QueryClause, error) {
+func (t *TermClauseQuery) Clause() (QueryClause, error) {
 	return t, nil
 }
-func (t *TermClause) IsEmpty() bool {
+func (t *TermClauseQuery) IsEmpty() bool {
 	return t == nil || len(t.value) == 0 || len(t.field) == 0
 }
 
-func (t TermClause) Field() string {
+func (t TermClauseQuery) Field() string {
 	return t.field
 }
-func (t TermClause) Kind() QueryKind {
+func (t TermClauseQuery) Kind() QueryKind {
 	return KindTerm
 }
-func (t TermClause) Value() string {
+func (t TermClauseQuery) Value() string {
 	return t.value
 }
 
-func (t *TermClause) SetValue(v string) error {
+func (t *TermClauseQuery) SetValue(v string) error {
 	if len(v) == 0 {
 		return NewQueryError(ErrValueRequired, KindTerm, t.field)
 	}
@@ -129,7 +129,7 @@ func (t *TermClause) SetValue(v string) error {
 	return nil
 }
 
-func (t TermClause) MarshalJSON() ([]byte, error) {
+func (t TermClauseQuery) MarshalJSON() ([]byte, error) {
 	if t.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -141,7 +141,7 @@ func (t TermClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{t.field: data})
 }
 
-func (t *TermClause) UnmarshalJSON(data []byte) error {
+func (t *TermClauseQuery) UnmarshalJSON(data []byte) error {
 	t.Clear()
 	m := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &m)
@@ -154,7 +154,7 @@ func (t *TermClause) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
-func (t *TermClause) Set(field string, clause Termer) error {
+func (t *TermClauseQuery) Set(field string, clause Termer) error {
 	if clause == nil {
 		t.Clear()
 		return nil
@@ -170,14 +170,14 @@ func (t *TermClause) Set(field string, clause Termer) error {
 	t.field = field
 	return nil
 }
-func (t *TermClause) Clear() {
+func (t *TermClauseQuery) Clear() {
 	if t == nil {
 		return
 	}
-	*t = TermClause{}
+	*t = TermClauseQuery{}
 }
 
-func (t TermClause) marshalClauseJSON() (dynamic.JSON, error) {
+func (t TermClauseQuery) marshalClauseJSON() (dynamic.JSON, error) {
 
 	params, err := marshalClauseParams(&t)
 	if err != nil {
@@ -187,7 +187,7 @@ func (t TermClause) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(params)
 }
 
-func (t *TermClause) unmarshalJSONString(data []byte) error {
+func (t *TermClauseQuery) unmarshalJSONString(data []byte) error {
 	var str string
 	err := json.Unmarshal(data, &str)
 	if err != nil {
@@ -197,7 +197,7 @@ func (t *TermClause) unmarshalJSONString(data []byte) error {
 	return nil
 }
 
-func (t *TermClause) unmarshalJSONObject(data []byte) error {
+func (t *TermClauseQuery) unmarshalJSONObject(data []byte) error {
 	fields, err := unmarshalClauseParams(data, t)
 	if err != nil {
 		return err
@@ -213,7 +213,7 @@ func (t *TermClause) unmarshalJSONObject(data []byte) error {
 	return nil
 }
 
-func (t *TermClause) unmarshalClauseJSON(data []byte) error {
+func (t *TermClauseQuery) unmarshalClauseJSON(data []byte) error {
 	d := dynamic.JSON(data)
 	if d.IsString() {
 		return t.unmarshalJSONString(data)

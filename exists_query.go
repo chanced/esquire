@@ -6,7 +6,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// Exists returns documents that contain an indexed value for a field.
+// ExistsQueryParams returns documents that contain an indexed value for a field.
 //
 // An indexed value may not exist for a document’s field due to a variety of
 // reasons:
@@ -22,18 +22,18 @@ import (
 // mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
-type Exists struct {
+type ExistsQueryParams struct {
 	Field string
 	Name  string
 	completeClause
 }
 
-func (e Exists) Clause() (QueryClause, error) {
+func (e ExistsQueryParams) Clause() (QueryClause, error) {
 	return e.Exists()
 }
 
-func (e Exists) Exists() (*ExistsClause, error) {
-	q := &ExistsClause{}
+func (e ExistsQueryParams) Exists() (*ExistsQuery, error) {
+	q := &ExistsQuery{}
 	err := q.SetField(e.Field)
 	if err != nil {
 		return q, NewQueryError(err, KindExists, e.Field)
@@ -42,7 +42,7 @@ func (e Exists) Exists() (*ExistsClause, error) {
 	return q, nil
 }
 
-// ExistsClause returns documents that contain an indexed value for a field.
+// ExistsQuery returns documents that contain an indexed value for a field.
 //
 // An indexed value may not exist for a document’s field due to a variety of
 // reasons:
@@ -58,43 +58,43 @@ func (e Exists) Exists() (*ExistsClause, error) {
 // mapping
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
-type ExistsClause struct {
+type ExistsQuery struct {
 	field string
 	nameParam
 	completeClause
 }
 
-var _ QueryClause = (*ExistsClause)(nil)
+var _ QueryClause = (*ExistsQuery)(nil)
 
-func (e *ExistsClause) Clause() (QueryClause, error) {
+func (e *ExistsQuery) Clause() (QueryClause, error) {
 	return e, nil
 }
 
-func (e *ExistsClause) Field() string {
+func (e *ExistsQuery) Field() string {
 	if e == nil {
 		return ""
 	}
 	return e.field
 }
 
-func (e *ExistsClause) SetField(field string) error {
+func (e *ExistsQuery) SetField(field string) error {
 	e.field = field
 	return nil
 }
 
-func (e *ExistsClause) Set(field string) error {
+func (e *ExistsQuery) Set(field string) error {
 	return e.SetField(field)
 }
 
-func (e *ExistsClause) IsEmpty() bool {
+func (e *ExistsQuery) IsEmpty() bool {
 	return len(e.field) == 0
 }
 
-func (e ExistsClause) Kind() QueryKind {
+func (e ExistsQuery) Kind() QueryKind {
 	return KindExists
 }
 
-func (e ExistsClause) MarshalJSON() ([]byte, error) {
+func (e ExistsQuery) MarshalJSON() ([]byte, error) {
 	if e.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -103,8 +103,8 @@ func (e ExistsClause) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (e *ExistsClause) UnmarshalJSON(data []byte) error {
-	*e = ExistsClause{}
+func (e *ExistsQuery) UnmarshalJSON(data []byte) error {
+	*e = ExistsQuery{}
 	d := dynamic.JSON(data)
 	if d.IsNull() {
 		return nil
@@ -118,6 +118,6 @@ func (e *ExistsClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (e *ExistsClause) Clear() {
-	*e = ExistsClause{}
+func (e *ExistsQuery) Clear() {
+	*e = ExistsQuery{}
 }

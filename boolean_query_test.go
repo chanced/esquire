@@ -1,9 +1,10 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
+
+	"encoding/json"
 
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"

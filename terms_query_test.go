@@ -1,11 +1,12 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"encoding/json"
 
 	"github.com/chanced/dynamic"
 	"github.com/chanced/picker"
@@ -61,7 +62,7 @@ func TestTerms(t *testing.T) {
 
 	json2Res, err := json.MarshalIndent(q2.Terms(), "", "  ")
 	assert.NoError(err)
-	var res2 picker.TermsClause
+	var res2 picker.TermsQuery
 
 	fmt.Println(string(json2Res))
 	err = json.Unmarshal(json2Res, &res2)
