@@ -36,7 +36,7 @@ func (e ExistsQueryParams) Exists() (*ExistsQuery, error) {
 	q := &ExistsQuery{}
 	err := q.SetField(e.Field)
 	if err != nil {
-		return q, NewQueryError(err, KindExists, e.Field)
+		return q, newQueryError(err, KindExists, e.Field)
 	}
 	q.SetName(e.Name)
 	return q, nil

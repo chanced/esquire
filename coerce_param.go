@@ -6,7 +6,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-var DefaultCoerce = false
+const DefaultCoerce = false
 
 // FieldWithCoerce has a Coerce param
 //

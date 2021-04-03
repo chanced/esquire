@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultPositionIncrementGap = float64(100)
+const DefaultPositionIncrementGap = float64(100)
 
 // WithPositionIncrementGap is a mapping with the position_increment_gap
 // parameter

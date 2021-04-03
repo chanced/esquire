@@ -43,7 +43,7 @@ func (p PrefixQueryParams) Prefix() (*PrefixQuery, error) {
 	q.SetCaseInsensitive(p.CaseInsensitive)
 	err := q.SetRewrite(p.Rewrite)
 	if err != nil {
-		return q, NewQueryError(err, KindPrefix, p.Field)
+		return q, newQueryError(err, KindPrefix, p.Field)
 	}
 	return q, q.setValue(p.Value)
 }
@@ -143,11 +143,11 @@ func (p *PrefixQuery) Set(field string, prefixer Prefixer) error {
 	}
 	err := checkField(field, KindPrefix)
 	if err != nil {
-		return NewQueryError(err, KindPrefix, field)
+		return newQueryError(err, KindPrefix, field)
 	}
 	q, err := prefixer.Prefix()
 	if err != nil {
-		return NewQueryError(err, KindPrefix, field)
+		return newQueryError(err, KindPrefix, field)
 	}
 	*p = *q
 	return nil

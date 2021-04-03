@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultFieldData = false
+const DefaultFieldData = false
 
 // WithFieldData is a mapping with the FieldData param
 //

@@ -106,28 +106,28 @@ func (m MatchQueryParams) Match() (*MatchQuery, error) {
 	}
 	err := q.setQuery(m.Query)
 	if err != nil {
-		return q, NewQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, KindMatch, m.Field)
 	}
 	q.SetAnalyzer(m.Analyzer)
 	q.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
 	q.SetFuzziness(m.Fuzziness)
 	err = q.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
-		return q, NewQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, KindMatch, m.Field)
 	}
 	q.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
 	q.SetLenient(m.Lenient)
 	err = q.SetMaxExpansions(m.MaxExpansions)
 	if err != nil {
-		return q, NewQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, KindMatch, m.Field)
 	}
 	err = q.SetPrefixLength(m.PrefixLength)
 	if err != nil {
-		return q, NewQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, KindMatch, m.Field)
 	}
 	err = q.SetZeroTermsQuery(m.ZeroTermsQuery)
 	if err != nil {
-		return q, NewQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, KindMatch, m.Field)
 	}
 	q.cutoffFrequency = m.CutoffFrequency
 	return q, nil
@@ -179,7 +179,7 @@ func (m *MatchQuery) Set(field string, match Matcher) error {
 		return nil
 	}
 	if field == "" {
-		return NewQueryError(ErrFieldRequired, KindTerm)
+		return newQueryError(ErrFieldRequired, KindTerm)
 	}
 	r, err := match.Match()
 	if err != nil {

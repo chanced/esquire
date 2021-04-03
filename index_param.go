@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultIndex = true
+const DefaultIndex = true
 
 // WithIndex is a mapping with index parameter
 //

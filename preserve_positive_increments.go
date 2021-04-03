@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultPreservePositionIncrements = true
+const DefaultPreservePositionIncrements = true
 
 // WithPreservePositionIncrements is a mapping with the
 // preserve_position_increments parameter

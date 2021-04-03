@@ -63,19 +63,20 @@ func (p IntegerRangeFieldParams) Field() (Field, error) {
 }
 func (p IntegerRangeFieldParams) IntegerRange() (*IntegerRangeField, error) {
 	f := &IntegerRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewIntegerRangeField(params IntegerRangeFieldParams) (*IntegerRangeField, error) {
@@ -111,11 +112,8 @@ func (r *IntegerRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.IntegerRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
 }
 
 type FloatRangeFieldParams rangeFieldParams
@@ -125,17 +123,18 @@ func (p FloatRangeFieldParams) Field() (Field, error) {
 }
 func (p FloatRangeFieldParams) FloatRange() (*FloatRangeField, error) {
 	f := &FloatRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	return f, nil
 }
@@ -175,11 +174,8 @@ func (r *FloatRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.FloatRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
 }
 
 type LongRangeFieldParams rangeFieldParams
@@ -189,19 +185,21 @@ func (p LongRangeFieldParams) Field() (Field, error) {
 }
 func (p LongRangeFieldParams) LongRange() (*LongRangeField, error) {
 	f := &LongRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+
+	return f, e.ErrorOrNil()
 }
 
 func NewLongRangeField(params LongRangeFieldParams) (*LongRangeField, error) {
@@ -239,11 +237,8 @@ func (r *LongRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.LongRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
 }
 
 type DoubleRangeFieldParams rangeFieldParams
@@ -253,19 +248,20 @@ func (p DoubleRangeFieldParams) Field() (Field, error) {
 }
 func (p DoubleRangeFieldParams) DoubleRange() (*DoubleRangeField, error) {
 	f := &DoubleRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewDoubleRangeField(params DoubleRangeFieldParams) (*DoubleRangeField, error) {
@@ -304,11 +300,8 @@ func (r *DoubleRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.DoubleRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
 }
 
 type DateRangeFieldParams rangeFieldParams
@@ -318,19 +311,20 @@ func (p DateRangeFieldParams) Field() (Field, error) {
 }
 func (p DateRangeFieldParams) DateRange() (*DateRangeField, error) {
 	f := &DateRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewDateRangeField(params DateRangeFieldParams) (*DateRangeField, error) {
@@ -371,11 +365,9 @@ func (r *DateRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.DateRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
+
 }
 
 type IPRangeFieldParams rangeFieldParams
@@ -385,19 +377,20 @@ func (p IPRangeFieldParams) Field() (Field, error) {
 }
 func (p IPRangeFieldParams) IPRange() (*IPRangeField, error) {
 	f := &IPRangeField{}
+	e := &MappingError{}
 	err := f.SetCoerce(p)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewIPRangeField(params IPRangeFieldParams) (*IPRangeField, error) {
@@ -435,9 +428,7 @@ func (r *IPRangeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := p.IPRange()
-	if err != nil {
-		return err
-	}
 	*r = *v
-	return nil
+	return err
+
 }

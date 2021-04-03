@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultStore = false
+const DefaultStore = false
 
 // WithStore is a mapping with a store paramter.
 //

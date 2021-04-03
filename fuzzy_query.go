@@ -68,15 +68,15 @@ func (f FuzzyQueryParams) Fuzzy() (*FuzzyQuery, error) {
 	q := &FuzzyQuery{field: f.Field}
 	err := q.setValue(f.Value)
 	if err != nil {
-		return q, NewQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, KindFuzzy, f.Field)
 	}
 	err = q.SetMaxExpansions(f.MaxExpansions)
 	if err != nil {
-		return q, NewQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, KindFuzzy, f.Field)
 	}
 	err = q.SetRewrite(f.Rewrite)
 	if err != nil {
-		return q, NewQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, KindFuzzy, f.Field)
 	}
 	q.SetTranspositions(!f.NoTranspositions)
 	q.SetName(f.Name)
@@ -153,7 +153,7 @@ func (f *FuzzyQuery) IsEmpty() bool {
 func (f *FuzzyQuery) Set(field string, fuzzier Fuzzier) error {
 	q, err := fuzzier.Fuzzy()
 	if err != nil {
-		return NewQueryError(err, KindFuzzy, field)
+		return newQueryError(err, KindFuzzy, field)
 	}
 	err = checkField(field, KindFuzzy)
 	if err != nil {

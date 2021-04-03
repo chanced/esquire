@@ -56,12 +56,13 @@ func (p JoinFieldParams) Field() (Field, error) {
 
 func (p JoinFieldParams) Join() (*JoinField, error) {
 	f := &JoinField{}
+	e := &MappingError{}
 	f.SetRelations(p.Relations)
 	err := f.SetEagerGlobalOrdinals(p.EagerGlobalOrdinals)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 // A JoinField is a special field that creates parent/child relation within
@@ -176,6 +177,9 @@ type JoinField struct {
 	relationsParam
 }
 
+func (j *JoinField) Field() (Field, error) {
+	return j, nil
+}
 func (JoinField) Type() FieldType {
 	return FieldTypeJoin
 }

@@ -29,7 +29,7 @@ type TermserComplete interface {
 func NewTermsQuery(params Termser) (*TermsQuery, error) {
 	q, err := params.Terms()
 	if err != nil {
-		return q, NewQueryError(err, KindTerms, q.field)
+		return q, newQueryError(err, KindTerms, q.field)
 	}
 	err = checkField(q.field, KindTerms)
 	if err != nil {
@@ -60,11 +60,11 @@ func (t TermsQueryParams) Terms() (*TermsQuery, error) {
 	}
 	err := q.SetBoost(t.Boost)
 	if err != nil {
-		return q, NewQueryError(err, KindTerms, t.Field)
+		return q, newQueryError(err, KindTerms, t.Field)
 	}
 	err = q.setValue(t.Value)
 	if err != nil {
-		return q, NewQueryError(err, KindTerms, t.Field)
+		return q, newQueryError(err, KindTerms, t.Field)
 	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
@@ -90,7 +90,7 @@ func (t *TermsQuery) setValue(value []string) error {
 func (t *TermsQuery) Set(field string, clause Termser) error {
 	q, err := clause.Terms()
 	if err != nil {
-		return NewQueryError(err, KindTerms, field)
+		return newQueryError(err, KindTerms, field)
 	}
 	*t = *q
 	return nil

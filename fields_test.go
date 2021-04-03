@@ -6,7 +6,7 @@ import (
 
 	"encoding/json"
 
-	"github.com/chanced/picker/mapping"
+	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +15,7 @@ func TestJSON(t *testing.T) {
 	var err error
 	assert := require.New(t)
 
-	handler := mapping.FieldTypeHandlers[mapping.FieldTypeInteger]
+	handler := picker.FieldTypeHandlers[picker.FieldTypeInteger]
 	hv := handler()
 	assert.NotNil(handler)
 	assert.NotNil(hv)
@@ -25,10 +25,10 @@ func TestJSON(t *testing.T) {
         "index" : false
         }`)
 
-	var kwf mapping.Field = &mapping.KeywordField{}
+	var kwf picker.Field = &picker.KeywordField{}
 	err = json.Unmarshal(kwraw, kwf)
 	assert.NoError(err)
-	assert.False(kwf.(*mapping.KeywordField).Index())
+	assert.False(kwf.(*picker.KeywordField).Index())
 	raw1 := []byte(`{
         "properties" : {
             "age" : {
@@ -47,14 +47,14 @@ func TestJSON(t *testing.T) {
         }
     }`)
 	_ = raw1
-	m1 := mapping.Mappings{}
+	m1 := picker.Mappings{}
 	err = json.Unmarshal(raw1, &m1)
 	assert.NoError(err)
 
 	fmt.Printf("%+v", m1.Properties["employee-id"])
 	emplID := m1.Properties.Field("employee-id")
 	assert.NotNil(emplID, "employee-id should have been parsed and aded to the Properties Field map")
-	emplIDAsKeyword, ok := emplID.(*mapping.KeywordField)
+	emplIDAsKeyword, ok := emplID.(*picker.KeywordField)
 	assert.True(ok, "employee-id should be unmarshaled and a KeywordField")
 	assert.False(emplIDAsKeyword.Index(), "index value should be false")
 }

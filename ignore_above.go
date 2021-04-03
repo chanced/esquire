@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultIgnoreAbove = float64(2147483647)
+const DefaultIgnoreAbove = float64(2147483647)
 
 // WithIgnoreAbove is a mapping the ignore_above parameter
 //

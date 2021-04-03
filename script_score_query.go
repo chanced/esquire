@@ -38,22 +38,22 @@ func (s ScriptScoreQuery) ScriptScore() (*ScriptScoreClause, error) {
 
 	err := q.setQuery(s.Query)
 	if err != nil {
-		return q, NewQueryError(err, KindScriptScore)
+		return q, newQueryError(err, KindScriptScore)
 	}
 
 	if err != nil {
-		return q, NewQueryError(err, KindScriptScore)
+		return q, newQueryError(err, KindScriptScore)
 	}
 
 	err = q.SetBoost(s.Boost)
 	if err != nil {
-		return q, NewQueryError(err, KindScriptScore)
+		return q, newQueryError(err, KindScriptScore)
 	}
 	q.SetMinScore(s.MinScore)
 
 	err = q.SetScript(s.Script)
 	if err != nil {
-		return q, NewQueryError(err, KindScriptScore)
+		return q, newQueryError(err, KindScriptScore)
 	}
 	q.SetName(s.Name)
 
@@ -87,7 +87,7 @@ func (s *ScriptScoreClause) Set(scriptScore *ScriptScoreQuery) error {
 	}
 	scr, err := scriptScore.ScriptScore()
 	if err != nil {
-		return NewQueryError(err, KindScriptScore)
+		return newQueryError(err, KindScriptScore)
 	}
 	*s = *scr
 	return nil

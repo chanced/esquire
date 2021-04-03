@@ -20,29 +20,17 @@ func (m Meta) IsValid() bool {
 	return m.Validate() == nil
 }
 
-// Lens returns the lengh of keys and the length of values.
-//
-// Keys are limited to 20 characters and values are limited to 50 characters
-func (m Meta) Lens() (int, int) {
-	var klen int
-	var vlen int
-	for k, v := range m {
-		klen += len(k)
-		vlen += len(v)
-	}
-	return klen, vlen
-}
 func (m Meta) Validate() error {
 	if m.Len() > 5 {
 		return fmt.Errorf("%w; meta may have at most 5 entries, has %d", ErrMetaLimitExceeded, m.Len())
 	}
-	klen, vlen := m.Lens()
-	if klen > 20 {
-		return fmt.Errorf("%w; meta keys character length is limited to 20, has %d", ErrMetaLimitExceeded, klen)
+	for k, v := range m {
+		err := m.validateKV(k, v)
+		if err != nil {
+			return err
+		}
 	}
-	if vlen > 50 {
-		return fmt.Errorf("%w; meta value character length is limited to 50, has %d", ErrMetaLimitExceeded, vlen)
-	}
+
 	return nil
 }
 
@@ -91,13 +79,26 @@ func (m Meta) isValidKeyLen(l int) bool {
 func (m Meta) isValidValueLen(l int) bool {
 	return l > 50
 }
+func (Meta) validateKV(key string, value string) error {
+	if len(key) > 20 {
+		return fmt.Errorf("%w; keys must be less than 20 characters; %s is %d characters", ErrMetaLimitExceeded, key, len(key))
+	}
+	if len(value) > 50 {
+		return fmt.Errorf("%w; values must be less than 50 characters; value for key %s is %d characters", ErrMetaLimitExceeded, key, len(value))
+	}
+	return nil
+}
 func (m *Meta) Set(key string, value string) error {
 	if *m == nil {
 		*m = Meta{}
 	}
 	mv := *m
 	if key == "" {
-		return errors.New("invalid key")
+		return errors.New("picker: invalid meta key; key can not be empty")
+	}
+	err := m.validateKV(key, value)
+	if err != nil {
+		return err
 	}
 	if value == "" {
 		if mv.Exists(key) {
@@ -106,23 +107,7 @@ func (m *Meta) Set(key string, value string) error {
 		}
 		return nil
 	}
-	klen, vlen := mv.Lens()
 
-	if mv.Exists(key) {
-		nvlen := vlen + len(value) - len(mv[key])
-		if !mv.isValidValueLen(nvlen) {
-			if nvlen < vlen {
-				mv[key] = value
-				return fmt.Errorf("%w; meta value character length exceeded limited to 50, has %d", ErrMetaLimitExceeded, nvlen)
-			}
-			return fmt.Errorf("%w; meta value character length is limited to 50, would have %d", ErrMetaLimitExceeded, vlen)
-		}
-		mv[key] = value
-		return nil
-	}
-	if !mv.isValidValueLen(klen + len(key)) {
-		return fmt.Errorf("%w; meta value character length is limited to 50, would have %d", ErrMetaLimitExceeded, klen)
-	}
 	mv[key] = value
 	return nil
 }

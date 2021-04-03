@@ -50,20 +50,20 @@ func (b BooleanQueryParams) Boolean() (*BooleanQuery, error) {
 	q := &BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
-		return q, NewQueryError(err, KindBoolean)
+		return q, newQueryError(err, KindBoolean)
 	}
 	err = q.SetMustNot(b.MustNot)
 	if err != nil {
-		return q, NewQueryError(err, KindBoolean)
+		return q, newQueryError(err, KindBoolean)
 	}
 	err = q.SetShould(b.Should)
 	if err != nil {
-		return q, NewQueryError(err, KindBoolean)
+		return q, newQueryError(err, KindBoolean)
 	}
 
 	err = q.SetFilter(b.Filter)
 	if err != nil {
-		return q, NewQueryError(err, KindBoolean)
+		return q, newQueryError(err, KindBoolean)
 	}
 
 	q.SetName(b.Name)
@@ -101,7 +101,7 @@ func (BooleanQuery) Kind() QueryKind {
 func (b *BooleanQuery) Set(v Booler) error {
 	q, err := v.Boolean()
 	if err != nil {
-		return NewQueryError(err, KindBoolean)
+		return newQueryError(err, KindBoolean)
 	}
 	*b = q
 	return nil

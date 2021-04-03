@@ -1,5 +1,12 @@
 package picker
 
+import (
+	"fmt"
+	"strings"
+)
+
+const DefaultTermVector = TermVectorNo
+
 // TermVector indicates which Term vectors, which contain information about the
 // terms produced by the analysis process, including:
 //
@@ -20,12 +27,50 @@ func (tv TermVector) String() string {
 	return string(tv)
 }
 
+func (tv *TermVector) Validate() error {
+	if tv.IsValid() {
+		return nil
+	}
+	strs := make([]string, len(termVectorValues))
+	for i, k := range termVectorValues {
+		strs[i] = k.String()
+	}
+	return fmt.Errorf("%w; expected one of [%s]", ErrInvalidTermVector, strings.Join(strs, ", "))
+}
+func (tv *TermVector) IsValid() bool {
+	if len(*tv) == 0 {
+		return true
+	}
+
+	tvv := tv.toLower()
+	for _, v := range termVectorValues {
+		if tvv == v {
+			return true
+		}
+	}
+	return false
+}
+func (tv *TermVector) toLower() TermVector {
+	*tv = TermVector(strings.ToLower(string(*tv)))
+	return *tv
+}
+
+var termVectorValues = []TermVector{
+	TermVectorNo,
+	TermVectorYes,
+	TermVectorWithPositions,
+	TermVectorWithOffsets,
+	TermVectorWithPositionsOffsets,
+	TermVectorWithPoisitionsPayloads,
+	TermVectorPositionsOffsetsPayloads,
+}
+
 const (
 	// TermVectorNone - No term vectors are stored. (default)
-	TermVectorNone TermVector = "no"
+	TermVectorNo TermVector = "no"
 
-	// TermVectorTerms - Just the terms in the field are stored.
-	TermVectorTerms TermVector = "yes"
+	// TermVectorYes - Just the terms in the field are stored.
+	TermVectorYes TermVector = "yes"
 
 	// TermVectorWithPositions  - Terms and positions are stored.
 	TermVectorWithPositions TermVector = "with_positions"
@@ -72,32 +117,35 @@ type WithTermVector interface {
 	// Defaults to "no" / TermVectorNone.
 	TermVector() TermVector
 	// SetTermVector sets the TermVector Value to v
-	SetTermVector(v TermVector)
+	SetTermVector(v TermVector) error
 }
 
-// FieldWIthTermVector is a Field with the term_vector paramater
-type FieldWIthTermVector interface {
+// FieldWithTermVector is a Field with the term_vector paramater
+type FieldWithTermVector interface {
 	Field
 	WithTermVector
 }
 
-// TermVectorParam is a mixin that adds the term_vector parameter
-type TermVectorParam struct {
-	TermVectorValue *TermVector `bson:"term_vector,omitempty" json:"term_vector,omitempty"`
+// termVectorParam is a mixin that adds the term_vector parameter
+type termVectorParam struct {
+	termVector TermVector
 }
 
 // TermVector determines whether term vectors should be stored for the field.
 // Defaults to "no" / TermVectorNone.
-func (tv TermVectorParam) TermVector() TermVector {
-	if tv.TermVectorValue == nil {
-		return TermVectorNone
+func (tv termVectorParam) TermVector() TermVector {
+	if len(tv.termVector) > 0 {
+		return tv.termVector
 	}
-	return *tv.TermVectorValue
+	return DefaultTermVector
 }
 
 // SetTermVector sets the TermVector Value to v
-func (tv *TermVectorParam) SetTermVector(v TermVector) {
-	if tv.TermVector() != v {
-		tv.TermVectorValue = &v
+func (tv *termVectorParam) SetTermVector(v TermVector) error {
+	err := v.Validate()
+	if err != nil {
+		return fmt.Errorf("%w; received %s", v)
 	}
+	tv.termVector = v
+	return nil
 }

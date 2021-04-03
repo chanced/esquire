@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultPreserveSeperators = true
+const DefaultPreserveSeperators = true
 
 // WithPreserveSeperators is a mapping with the preserve_seperators parameter
 //

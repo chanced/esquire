@@ -7,10 +7,55 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-var (
-	dynamicOpts    = []string{"true", "false", "runtime", "strict"}
-	dynamicOptsStr = strings.Join(dynamicOpts, ", ")
+const DefaultDynamic = DynamicTrue
+
+const (
+	DynamicUnspecified Dynamic = ""
+	DynamicTrue        Dynamic = "true"
+	DynamicFalse       Dynamic = "false"
+	DynamicRuntime     Dynamic = "runtime"
+	DynamicStrict      Dynamic = "strict"
 )
+
+type Dynamic string
+
+func (d Dynamic) String() string {
+	return string(d)
+}
+
+func (d *Dynamic) Validate() error {
+	if !d.IsValid() {
+		strs := make([]string, len(dynamicOpts)+1)
+		strs[0] = `""`
+		for i, v := range dynamicOpts {
+			strs[i+1] = `"` + v.String() + `"`
+		}
+		return fmt.Errorf("%w <%s> expected one of [%s]", ErrInvalidDynamic, *d, strings.Join(strs, ", "))
+	}
+	return nil
+}
+func (d *Dynamic) IsValid() bool {
+	for _, v := range dynamicOpts {
+		if *d == v {
+			return true
+		}
+	}
+	*d = Dynamic(strings.ToLower(string(*d)))
+	for _, v := range dynamicOpts {
+		if *d == v {
+			return true
+		}
+	}
+	return false
+}
+
+var dynamicOpts = []Dynamic{
+	DynamicUnspecified,
+	DynamicTrue,
+	DynamicFalse,
+	DynamicRuntime,
+	DynamicStrict,
+}
 
 // FieldWithDynamic is a field with a Dynamic param
 //
@@ -37,7 +82,7 @@ type FieldWithDynamic interface {
 	SetDynamic(v interface{}) error
 }
 
-// DynamicParam is a mixin for mappings with the Dynamic param
+// dynamicParam is a mixin for mappings with the Dynamic param
 //
 // Dynamic determines whether or not new properties should be added dynamically to
 // an existing object. Inner objects inherit the dynamic setting from their parent
@@ -56,35 +101,25 @@ type FieldWithDynamic interface {
 // not indexed, and are loaded from _source at query time.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html
-type DynamicParam struct {
-	DynamicParamValue dynamic.BoolOrString `bson:"dynamic,omitempty" json:"dynamic,omitempty"`
+type dynamicParam struct {
+	dynamic Dynamic
 }
 
 // Dynamic determines whether or not new properties should be added dynamically to
 // an existing object. Accepts true (default), false and strict.
-func (dp DynamicParam) Dynamic() dynamic.BoolOrString {
-	if dp.DynamicParamValue.String() == "" {
-		return dynamic.NewBoolOrString(true)
+func (dp dynamicParam) Dynamic() Dynamic {
+	if len(dp.dynamic) == 0 {
+		return DefaultDynamic
 	}
-	return dp.DynamicParamValue
+	return dp.dynamic
 }
 
 // SetDynamic sets the value of Dynamic to v.
-func (dp *DynamicParam) SetDynamic(v interface{}) error {
-	if dyn, ok := v.(*dynamic.BoolOrString); ok {
-		v = dyn.String()
+func (dp *dynamicParam) SetDynamic(dynamic Dynamic) error {
+	err := dynamic.Validate()
+	if err != nil {
+		return err
 	}
-	if dyn, ok := v.(dynamic.BoolOrString); ok {
-		v = dyn.String()
-	}
-	if str, ok := v.(string); ok {
-		str = strings.ToLower(str)
-		for _, o := range dynamicOpts {
-			if str == o {
-				return dp.DynamicParamValue.Set(str)
-			}
-		}
-		return fmt.Errorf("%w: expected one of: %s; received %s", ErrInvalidDynamicParam, dynamicOptsStr, str)
-	}
-	return dp.DynamicParamValue.Set(v)
+	dp.dynamic = dynamic
+	return nil
 }

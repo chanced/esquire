@@ -63,15 +63,16 @@ func (b BinaryField) MarshalJSON() ([]byte, error) {
 	})
 }
 func (b *BinaryField) UnmarshalJSON(data []byte) error {
+	mErr := &MappingError{}
 	p := BinaryFieldParams{}
 	err := json.Unmarshal(data, &p)
 	if err != nil {
-		return err
+		mErr.Append(err)
 	}
 	n, err := p.Binary()
 	if err != nil {
-		return err
+		mErr.Append(err)
 	}
 	*b = *n
-	return nil
+	return mErr.ErrorOrNil()
 }

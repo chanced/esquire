@@ -101,24 +101,25 @@ func (b BooleanFieldParams) Field() (Field, error) {
 
 func (b BooleanFieldParams) Boolean() (*BooleanField, error) {
 	f := &BooleanField{}
+	merr := &MappingError{}
 	err := f.SetDocValues(b.DocValues)
 	if err != nil {
-		return f, err
+		merr.Append(err)
 	}
 	err = f.SetIndex(b.Index)
 	if err != nil {
-		return f, err
+		merr.Append(err)
 	}
 	err = f.SetMeta(b.Meta)
 	if err != nil {
-		return f, err
+		merr.Append(err)
 	}
 	err = f.SetStore(b.Store)
 	if err != nil {
-		return f, err
+		merr.Append(err)
 	}
 	f.SetNullValue(b.NullValue)
-	return f, nil
+	return f, merr.ErrorOrNil()
 }
 
 func NewBooleanField() *BooleanField {
@@ -158,11 +159,8 @@ func (b *BooleanField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Boolean()
-	if err != nil {
-		return err
-	}
 	*b = *v
-	return nil
+	return err
 }
 
 func (b BooleanField) MarshalJSON() ([]byte, error) {

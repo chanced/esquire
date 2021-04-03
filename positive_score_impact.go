@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultPositiveScoreImpact = true
+const DefaultPositiveScoreImpact = true
 
 // WithPositiveScoreImpact is a mapping with the positive_score_impact parameter
 // Rank features that correlate negatively with the score should set

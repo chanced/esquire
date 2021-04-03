@@ -104,31 +104,32 @@ func (p DateFieldParams) Field() (Field, error) {
 
 func (p DateFieldParams) Date() (*DateField, error) {
 	f := &DateField{}
+	e := &MappingError{}
 	err := f.SetDocValues(p.DocValues)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetMeta(p.Meta)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetBoost(p.Boost)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewDateField(params DateFieldParams) (*DateField, error) {
@@ -161,11 +162,8 @@ func (d *DateField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Date()
-	if err != nil {
-		return err
-	}
 	*d = *v
-	return nil
+	return err
 }
 
 func (d DateField) MarshalJSON() ([]byte, error) {
@@ -192,27 +190,28 @@ func (p DateNanoSecFieldParams) Field() (Field, error) {
 }
 func (p DateNanoSecFieldParams) DateNanoSec() (*DateNanoSecField, error) {
 	f := &DateNanoSecField{}
+	e := &MappingError{}
 	err := f.SetDocValues(p.DocValues)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetMeta(p.Meta)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 func NewDateNanoSecField(params DateNanoSecFieldParams) (*DateNanoSecField, error) {
@@ -275,11 +274,8 @@ func (d *DateNanoSecField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.DateNanoSec()
-	if err != nil {
-		return err
-	}
 	*d = *v
-	return nil
+	return err
 }
 
 func (d DateNanoSecField) MarshalJSON() ([]byte, error) {

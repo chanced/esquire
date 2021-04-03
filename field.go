@@ -1,6 +1,13 @@
 package picker
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/tidwall/gjson"
+)
 
 // TODO TypeVersion
 // TODO TypeMurmur3
@@ -52,6 +59,29 @@ var FieldTypeHandlers = map[FieldType]func() Field{
 	FieldTypeWildcardKeyword: func() Field { return &WildcardField{} },
 }
 
+func UnmarshalFieldJSON(data []byte, field *Field) error {
+	if len(data) == 0 {
+		return errors.New("picker: JSON is empty; can not unmarshal Field")
+	}
+	g := gjson.GetBytes(data, "type")
+	if !g.Exists() {
+		return fmt.Errorf("%w; can not unmarshal JSON", ErrMissingType)
+	}
+	str := g.String()
+	if len(str) == 0 {
+		return fmt.Errorf("%w; can not unmarshal JSON", ErrMissingType)
+	}
+	handler := FieldTypeHandlers[FieldType(str)]
+	if handler == nil {
+		handler = FieldTypeHandlers[FieldType(strings.ToLower(str))]
+	}
+	if handler == nil {
+		return fmt.Errorf("%w <%s>", ErrUnsupportedType, str)
+	}
+	*field = handler()
+	return (*field).UnmarshalJSON(data)
+}
+
 // Field is an elasticsearch field mapping
 type Field interface {
 	Type() FieldType
@@ -62,4 +92,5 @@ type Field interface {
 
 type Fielder interface {
 	Field() (Field, error)
+	Type() FieldType
 }

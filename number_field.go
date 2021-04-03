@@ -108,34 +108,35 @@ type numberFieldParams struct {
 }
 
 func (p numberFieldParams) numberField(f NumberField) error {
+	merr := &MappingError{}
 	err := f.SetCoerce(p.Coerce)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
 	err = f.SetDocValues(p.DocValues)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
 	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
 
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
 
 	err = f.SetMeta(p.Meta)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
 	f.SetNullValue(p.NullValue)
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return err
+		merr.Append(err)
 	}
-	return nil
+	return merr.ErrorOrNil()
 }
 
 // LongFieldParams - field for a signed 64-bit integer with a minimum value of
@@ -191,11 +192,8 @@ func (l *LongField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Long()
-	if err != nil {
-		return err
-	}
 	*l = *v
-	return nil
+	return err
 }
 
 func (l LongField) MarshalJSON() ([]byte, error) {
@@ -256,16 +254,14 @@ func (IntegerField) Type() FieldType {
 func (i *IntegerField) UnmarshalJSON(data []byte) error {
 
 	var params IntegerFieldParams
+
 	err := json.Unmarshal(data, &params)
 	if err != nil {
 		return err
 	}
 	v, err := params.Integer()
-	if err != nil {
-		return err
-	}
 	*i = *v
-	return nil
+	return err
 }
 
 func (i IntegerField) MarshalJSON() ([]byte, error) {
@@ -331,11 +327,8 @@ func (s *ShortField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Short()
-	if err != nil {
-		return err
-	}
 	*s = *v
-	return nil
+	return err
 }
 
 func (s ShortField) MarshalJSON() ([]byte, error) {
@@ -400,11 +393,8 @@ func (d *DoubleField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Double()
-	if err != nil {
-		return err
-	}
 	*d = *v
-	return nil
+	return err
 }
 
 func (d DoubleField) MarshalJSON() ([]byte, error) {
@@ -470,11 +460,8 @@ func (b *ByteField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Byte()
-	if err != nil {
-		return err
-	}
 	*b = *v
-	return nil
+	return err
 }
 
 func (b ByteField) MarshalJSON() ([]byte, error) {
@@ -540,11 +527,8 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.Float()
-	if err != nil {
-		return err
-	}
 	*f = *v
-	return nil
+	return err
 }
 
 func (f FloatField) MarshalJSON() ([]byte, error) {
@@ -611,11 +595,8 @@ func (hf *HalfFloatField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.HalfFloat()
-	if err != nil {
-		return err
-	}
 	*hf = *v
-	return nil
+	return err
 }
 
 func (hf HalfFloatField) MarshalJSON() ([]byte, error) {
@@ -687,11 +668,8 @@ func (ul *UnsignedLongField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.UnsignedLong()
-	if err != nil {
-		return err
-	}
 	*ul = *v
-	return nil
+	return err
 }
 
 func (ul UnsignedLongField) MarshalJSON() ([]byte, error) {
@@ -838,14 +816,14 @@ func (p ScaledFloatFieldParams) ScaledFloat() (*ScaledFloatField, error) {
 		Meta:            p.Meta,
 		Boost:           p.Boost,
 	}.numberField(f)
+	var merr *MappingError
 	if err != nil {
-		return f, err
+		merr = (err).(*MappingError)
+	} else {
+		merr = &MappingError{}
 	}
-	err = f.SetScalingFactor(p.ScalingFactor)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
+	merr.Append(f.SetScalingFactor(p.ScalingFactor))
+	return f, merr.ErrorOrNil()
 }
 
 func NewScaledFloatField(params ScaledFloatFieldParams) (*ScaledFloatField, error) {
@@ -879,11 +857,8 @@ func (sf *ScaledFloatField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.ScaledFloat()
-	if err != nil {
-		return err
-	}
 	*sf = *v
-	return nil
+	return err
 }
 
 func (sf ScaledFloatField) MarshalJSON() ([]byte, error) {

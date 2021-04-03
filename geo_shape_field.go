@@ -47,21 +47,21 @@ func (p GeoShapeFieldParams) Field() (Field, error) {
 
 func (p GeoShapeFieldParams) GeoShape() (*GeoShapeField, error) {
 	f := &GeoShapeField{}
-	var err error
-	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	e := &MappingError{}
+	err := f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreZValue(p.IgnoreZValue)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetOrientation(p.Orientation)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	f.SetNullValue(p.NullValue)
-	return f, nil
+	return f, e.ErrorOrNil()
 
 }
 
@@ -91,11 +91,8 @@ func (gs *GeoShapeField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.GeoShape()
-	if err != nil {
-		return err
-	}
 	*gs = *v
-	return nil
+	return err
 }
 
 func (gs GeoShapeField) MarshalJSON() ([]byte, error) {

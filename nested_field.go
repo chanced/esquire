@@ -1,5 +1,8 @@
 package picker
 
+type NestedFieldParams struct {
+}
+
 // NestedField is a specialised version of the object data type that allows
 // arrays of objects to be indexed in a way that they can be queried
 // independently of each other.
@@ -68,13 +71,12 @@ package picker
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
 //
 type NestedField struct {
-	BaseField            `json:",inline" bson:",inline"`
-	DynamicParam         `json:",inline" bson:",inline"`
-	PropertiesParam      `json:",inline" bson:",inline"`
-	IncludeInParentParam `json:",inline" bson:",inline"`
-	IncludeInRootParam   `json:",inline" bson:",inline"`
+	dynamicParam
+	propertiesParam
+	includeInParentParam
+	IncludeInRootParam
 }
 
-func NewNestedField() *NestedField {
-	return &NestedField{BaseField: BaseField{MappingType: FieldTypeNested}}
+func NewNestedField(params NestedFieldParams) (*NestedField, error) {
+	return params.Nested()
 }

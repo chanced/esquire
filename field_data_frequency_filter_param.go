@@ -33,7 +33,7 @@ type WithFieldDataFrequencyFilter interface {
 	// into memory, and thus reduce memory usage when using FieldData filtering.
 	FieldDataFrequencyFilter() *FieldDataFrequencyFilter
 	// SetFieldDataFrequencyFilter sets the FieldDataFrequencyFilter value to v
-	SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter)
+	SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) error
 }
 
 // FieldWithFieldDataFrequencyFilter is a Field with a FieldDataFrequencyFilter
@@ -77,6 +77,8 @@ func (fd fieldDataFrequencyFilterParam) FieldDataFrequencyFilter() *FieldDataFre
 }
 
 // SetFieldDataFrequencyFilter sets the FieldDataFrequencyFilter value to v
-func (fd *fieldDataFrequencyFilterParam) SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) {
+func (fd *fieldDataFrequencyFilterParam) SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) error {
 	fd.fieldDataFrequencyFilter = v
+	// TODO: Validation
+	return nil
 }

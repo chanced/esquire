@@ -24,30 +24,22 @@ type WithNormalizer interface {
 	SetNormalizer(v string)
 }
 
-// FieldWithNormalizer is a Field with the normalizer parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/normalizer.html
-type FieldWithNormalizer interface {
-	Field
-	WithNormalizer
-}
-
-type NormalizerParam struct {
-	NormalizerValue string `bson:"normalizer,omitempty" json:"normalizer,omitempty"`
+type normalizerParam struct {
+	normalizer string
 }
 
 // Normalizer property of keyword fields is similar to analyzer except that it
 // guarantees that the analysis chain produces a single token.
-func (n NormalizerParam) Normalizer() string {
-	return n.NormalizerValue
+func (n normalizerParam) Normalizer() string {
+	return n.normalizer
 }
 
 // SetNormalizer sets the Normalizer value to v
 //
 // The normalizer property of keyword fields is similar to analyzer except that
 // it guarantees that the analysis chain produces a single token.
-func (n *NormalizerParam) SetNormalizer(v string) {
+func (n *normalizerParam) SetNormalizer(v string) {
 	if n.Normalizer() != v {
-		n.NormalizerValue = v
+		n.normalizer = v
 	}
 }

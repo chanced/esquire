@@ -73,22 +73,23 @@ func (p CompletionFieldParams) Field() (Field, error) {
 
 func (p CompletionFieldParams) Completion() (*CompletionField, error) {
 	f := &CompletionField{}
+	e := &MappingError{}
 	err := f.SetMaxInputLength(p.MaxInputLength)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetPreservePositionIncrements(p.PreservePositionIncrements)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetPreserveSeperators(p.PreserveSeperators)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	f.SetAnalyzer(p.Analyzer)
 	f.SetSearchAnalyzer(p.SearchAnalyzer)
 	f.SetSearchQuoteAnalyzer(p.SearchQuoteAnalyzer)
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 // The CompletionField is a completion suggester which provides provides
@@ -143,9 +144,6 @@ func (c *CompletionField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	n, err := p.Completion()
-	if err != nil {
-		return err
-	}
 	*c = *n
-	return nil
+	return err
 }

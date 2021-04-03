@@ -23,8 +23,39 @@ func (fm FieldMappings) Fields() (Fields, error) {
 	return res, nil
 }
 
+type Fieldser interface {
+	Fields() (Fields, error)
+}
+
 // Fields are a collection of Field mappings
 type Fields map[string]Field
+
+func (f Fields) FieldMap() FieldMap {
+	res := make(FieldMap, len(f))
+	for k, v := range f {
+		res[k] = v
+	}
+	return res
+}
+
+func (f Fields) Fields() (Fields, error) {
+	return f, nil
+}
+
+type FieldMap map[string]Fielder
+
+func (f FieldMap) Fields() (Fields, error) {
+	e := &MappingError{}
+	res := make(Fields, len(f))
+	for k, v := range f {
+		fv, err := v.Field()
+		if err != nil {
+			e.Append(&FieldError{Field: k, Err: err})
+		}
+		res[k] = fv
+	}
+	return res, e.ErrorOrNil()
+}
 
 func (f Fields) Field(key string) Field {
 	return f[key]
@@ -95,7 +126,7 @@ type WithFields interface {
 	// value analyzed by different analyzers.
 	Fields() Fields
 	// SetFields sets the Fields value to v
-	SetFields(v Fields)
+	SetFields(v Fields) error
 }
 
 // FieldWithFields is a Field with the fields paramater
@@ -130,6 +161,11 @@ func (f fieldsParam) Fields() Fields {
 }
 
 // SetFields sets the Fields value to v
-func (f *fieldsParam) SetFields(v Fields) {
-	f.fields = v
+func (f *fieldsParam) SetFields(fields Fieldser) error {
+	fv, err := fields.Fields()
+	if err != nil {
+		return err
+	}
+	f.fields = fv
+	return nil
 }

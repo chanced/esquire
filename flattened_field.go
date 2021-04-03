@@ -65,41 +65,42 @@ func (p FlattenedFieldParams) Field() (Field, error) {
 
 func (p FlattenedFieldParams) Flattened() (*FlattenedField, error) {
 	f := &FlattenedField{}
-	var err error
-	err = f.SetDepthLimit(p.DepthLimit)
+	e := &MappingError{}
+
+	err := f.SetDepthLimit(p.DepthLimit)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetDocValues(p.DocValues)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetEagerGlobalOrdinals(p.EagerGlobalOrdinals)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreAbove(p.IgnoreAbove)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndexOptions(p.IndexOptions)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetSimilarity(p.Similarity)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetSplitQueriesOnWhitespace(p.SplitQueriesOnWhitespace)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	f.SetNullValue(p.NullValue)
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 // FlattenedField maps an entire object as a single field.
@@ -165,11 +166,9 @@ func (f *FlattenedField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	n, err := p.Flattened()
-	if err != nil {
-		return err
-	}
 	*f = *n
-	return nil
+	return err
+
 }
 func NewFlattenedField(params FlattenedFieldParams) (*FlattenedField, error) {
 	return params.Flattened()

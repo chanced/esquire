@@ -6,7 +6,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-var DefaultWeight = float64(0)
+const DefaultWeight = float64(0)
 
 type WithWeight interface {
 	Weight() float64

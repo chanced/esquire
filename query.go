@@ -514,21 +514,21 @@ func (q Query) MarshalJSON() ([]byte, error) {
 
 func checkField(field string, typ QueryKind) error {
 	if len(field) == 0 {
-		return NewQueryError(ErrFieldRequired, typ)
+		return newQueryError(ErrFieldRequired, typ)
 	}
 	return nil
 }
 
 func checkValue(value string, typ QueryKind, field string) error {
 	if len(value) == 0 {
-		return NewQueryError(ErrValueRequired, typ, field)
+		return newQueryError(ErrValueRequired, typ, field)
 	}
 	return nil
 }
 
 func checkValues(values []string, typ QueryKind, field string) error {
 	if len(values) == 0 {
-		return NewQueryError(ErrValueRequired, typ, field)
+		return newQueryError(ErrValueRequired, typ, field)
 	}
 	return nil
 }

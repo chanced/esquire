@@ -245,7 +245,7 @@ func (qc *QueryClauses) UnmarshalJSON(data []byte) error {
 		for t, d := range cd {
 			handler, ok := clauseHandlers[t]
 			if !ok {
-				return fmt.Errorf("%w <%s>", ErrUnsupportedKind, t)
+				return fmt.Errorf("%w <%s>", ErrUnsupportedType, t)
 			}
 			ce := handler()
 			err := json.Unmarshal(d, &ce)
@@ -294,7 +294,7 @@ func unmarshalSingleQueryClause(data dynamic.JSON) (QueryClause, error) {
 	for t, d := range cd {
 		handler, ok := clauseHandlers[t]
 		if !ok {
-			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedKind, t)
+			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedType, t)
 		}
 		ce := handler()
 		err := json.Unmarshal(d, &ce)
@@ -319,7 +319,7 @@ func unmarshalQueryClause(data []byte) (QueryClause, error) {
 	for kind, cd := range v {
 		handler := clauseHandlers[kind]
 		if handler == nil {
-			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedKind, kind)
+			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedType, kind)
 		}
 		c := handler()
 		err = c.UnmarshalJSON(cd)

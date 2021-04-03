@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultIgnoreMalformed = false
+const DefaultIgnoreMalformed = false
 
 // WithIgnoreMalformed is a mapping with the ignore_malformed parameter
 //

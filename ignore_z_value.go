@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultIgnoreZ = true
+const DefaultIgnoreZ = true
 
 // WithIgnoreZValue is a mapping with the ignore_z_value parameter
 //

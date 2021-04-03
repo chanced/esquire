@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultDocValues = true
+const DefaultDocValues = true
 
 // WithDocValues is a mapping with a DocValues parameter
 //

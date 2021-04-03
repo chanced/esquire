@@ -48,7 +48,10 @@ func (c *ConstantField) Field() (Field, error) {
 	return c, nil
 }
 func (c ConstantField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(constantField{Value: c.value, Type: c.Type()})
+	return json.Marshal(constantField{
+		Value: c.value,
+		Type:  c.Type(),
+	})
 }
 
 func (c *ConstantField) UnmarshalJSON(data []byte) error {

@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultEagerGlobalOrdinals = false
+const DefaultEagerGlobalOrdinals = false
 
 type WithEagerGlobalOrdinals interface {
 	// To support aggregations and other operations that require looking up field

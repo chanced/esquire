@@ -1,5 +1,22 @@
 package picker
 
+type SearchAsYouTypeFieldParams struct {
+}
+
+func (SearchAsYouTypeFieldParams) Type() FieldType {
+	return FieldTypeSearchAsYouType
+}
+func (p SearchAsYouTypeFieldParams) Field() (Field, error) {
+	return p.SearchAsYouType()
+}
+
+func (p SearchAsYouTypeFieldParams) SearchAsYouType() (*SearchAsYouTypeField, error) {
+	f := &SearchAsYouTypeField{}
+	e := &MappingError{}
+
+	return f, e.ErrorOrNil()
+}
+
 // SearchAsYouTypeField is a text-like field that is optimized to provide
 // out-of-the-box support for queries that serve an as-you-type completion use
 // case. It creates a series of subfields that are analyzed to index terms that
@@ -38,16 +55,21 @@ package picker
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-as-you-type.html
 type SearchAsYouTypeField struct {
-	MaxShingleSizeParam `bson:",inline" json:",inline"`
-	analyzerParam       `bson:",inline" json:",inline"`
-	indexParam          `bson:",inline" json:",inline"`
-	indexOptionsParam   `bson:",inline" json:",inline"`
-	NormsParam          `bson:",inline" json:",inline"`
-	storeParam          `bson:",inline" json:",inline"`
-	similarityParam     `bson:",inline" json:",inline"`
-	TermVectorParam     `bson:",inline" json:",inline"`
+	MaxShingleSizeParam
+	analyzerParam
+	searchAnalyzerParam
+	searchQuoteAnalyzerParam
+	indexParam
+	indexOptionsParam
+	normsParam
+	storeParam
+	similarityParam
+	termVectorParam
 }
 
-func NewSearchAsYouTypeField() *SearchAsYouTypeField {
-	return &SearchAsYouTypeField{BaseField: BaseField{MappingType: FieldTypeSearchAsYouType}}
+func (SearchAsYouTypeField) Type() FieldType {
+	return FieldTypeSearchAsYouType
+}
+func NewSearchAsYouTypeField(params SearchAsYouTypeFieldParams) (*SearchAsYouTypeField, error) {
+	return params.SearchAsYouType()
 }

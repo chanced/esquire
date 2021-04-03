@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultMaxInputLength = 50
+const DefaultMaxInputLength = 50
 
 // WithMaxInputLength is a mapping with the max_input_length parameter
 //

@@ -2,6 +2,8 @@ package picker
 
 import "github.com/chanced/dynamic"
 
+const DefaultNorms = true
+
 // WithNorms is a mapping with the Norms parameter
 //
 // Norms store various normalization factors that are later used at query time
@@ -28,7 +30,7 @@ type WithNorms interface {
 	// Accepts true (default) or false.
 	Norms() bool
 	// SetNorms sets the Norms value to v
-	SetIndexPhrases(v bool)
+	SetIndexPhrases(v interface{}) error
 }
 
 // FieldWithNorms is a Field with the norms parameter
@@ -39,7 +41,7 @@ type FieldWithNorms interface {
 	WithNorms
 }
 
-// NormsParam is a mixin that adds the norms parameter
+// normsParam is a mixin that adds the norms parameter
 //
 // Norms store various normalization factors that are later used at query time
 // in order to compute the score of a document relatively to a query.
@@ -60,22 +62,20 @@ type FieldWithNorms interface {
 // won’t have norms anymore while other documents might still have norms.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/norms.html
-type NormsParam struct {
-	NormsValue dynamic.Bool `json:"norms,omitempty"`
+type normsParam struct {
+	norms dynamic.Bool
 }
 
 // Norms determines whether field-length should be taken into account when
 // scoring queries. Accepts true (default) or false.
-func (n NormsParam) Norms() bool {
-	if n.NormsValue != nil {
-		return *n.NormsValue
+func (n normsParam) Norms() bool {
+	if b, ok := n.norms.Bool(); ok {
+		return b
 	}
-	return true
+	return DefaultNorms
 }
 
 // SetNorms sets the Norms value to v
-func (n *NormsParam) SetNorms(v bool) {
-	if n.Norms() != v {
-		n.NormsValue = &v
-	}
+func (n *normsParam) SetNorms(v interface{}) error {
+	return n.norms.Set(v)
 }

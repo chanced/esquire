@@ -24,7 +24,7 @@ const (
 	ScoreModeMin ScoreMode = "min"
 )
 
-var DefaultScoreMode = ScoreModeMultiply
+const DefaultScoreMode = ScoreModeMultiply
 
 type ScoreMode string
 

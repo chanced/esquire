@@ -22,12 +22,10 @@ func (p DenseVectorFieldParams) Field() (Field, error) {
 
 func (p DenseVectorFieldParams) DenseVector() (*DenseVectorField, error) {
 	f := &DenseVectorField{}
+	e := &MappingError{}
 	err := f.SetDimensions(p.Dimensions)
-	if err != nil {
-		return f, err
-	}
-
-	return f, nil
+	e.Append(err)
+	return f, e.ErrorOrNil()
 }
 
 // DenseVectorField stores dense vectors of float values. The maximum number of
@@ -56,11 +54,9 @@ func (dv *DenseVectorField) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	err = dv.SetDimensions(p)
-	if err != nil {
-		return err
-	}
-	return nil
+	n, err := p.DenseVector()
+	*dv = *n
+	return err
 }
 func (dv DenseVectorField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(denseVectorField{

@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-var DefaultSplitQueriesOnWhitespace = false
+const DefaultSplitQueriesOnWhitespace = false
 
 // WithSplitQueriesOnWhitespace is mapping with the split_queries_on_whitespace
 // parameter

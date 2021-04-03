@@ -81,29 +81,29 @@ func (p IPFieldParams) Field() (Field, error) {
 
 func (p IPFieldParams) IP() (*IPField, error) {
 	f := &IPField{}
-	var err error
-	err = f.SetDocValues(p.DocValues)
+	e := &MappingError{}
+	err := f.SetDocValues(p.DocValues)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIndex(p.Index)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetStore(p.Store)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetBoost(p.Boost)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	f.SetNullValue(p.NullValue)
-	return f, nil
+	return f, e.ErrorOrNil()
 }
 
 // An IPField can index/store either IPv4 or IPv6 addresses.
@@ -121,7 +121,9 @@ type IPField struct {
 func (IPField) Type() FieldType {
 	return FieldTypeIP
 }
-
+func (f *IPField) Field() (Field, error) {
+	return f, nil
+}
 func (ip *IPField) UnmarshalJSON(data []byte) error {
 
 	var params IPFieldParams
@@ -130,11 +132,8 @@ func (ip *IPField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v, err := params.IP()
-	if err != nil {
-		return err
-	}
 	*ip = *v
-	return nil
+	return err
 }
 
 func (ip IPField) MarshalJSON() ([]byte, error) {

@@ -37,18 +37,18 @@ func (p GeoPointFieldParams) Field() (Field, error) {
 
 func (p GeoPointFieldParams) GeoPoint() (*GeoPointField, error) {
 	f := &GeoPointField{}
-	var err error
-	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	e := &MappingError{}
+
+	err := f.SetIgnoreMalformed(p.IgnoreMalformed)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	err = f.SetIgnoreZValue(p.IgnoreZValue)
 	if err != nil {
-		return f, err
+		e.Append(err)
 	}
 	f.SetNullValue(p.NullValue)
-	return f, nil
-
+	return f, e.ErrorOrNil()
 }
 
 // A GeoPointField accepts latitude-longitude pairs, which can be used:

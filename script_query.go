@@ -65,7 +65,7 @@ func (s *ScriptQuery) Set(script Scripter) error {
 	}
 	scr, err := script.Script()
 	if err != nil {
-		return NewQueryError(err, KindScript)
+		return newQueryError(err, KindScript)
 	}
 	*s = *scr
 	return nil

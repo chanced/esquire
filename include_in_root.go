@@ -1,5 +1,9 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+const DefaultIncludeInRoot = false
+
 // WithIncludeInRoot is a mapping with the include_in_root parameter
 //
 // (Optional, Boolean) If true, all fields in the nested object are also added
@@ -11,7 +15,7 @@ type WithIncludeInRoot interface {
 	// added to the root document as standard (flat) fields. Defaults to false
 	IncludeInRoot() bool
 	// SetIncldueInRoot sets the IncludeInRoot Value to v
-	SetIncludeInRoot(v bool)
+	SetIncludeInRoot(v interface{}) error
 }
 
 // FieldWithIncludeInRoot is a Field with the include_in_root parameter
@@ -24,21 +28,19 @@ type FieldWithIncludeInRoot interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#nested-params
 type IncludeInRootParam struct {
-	IncludeInRootValue *bool `bson:"include_in_root,omitempty" json:"include_in_root,omitempty"`
+	includeInRoot dynamic.Bool
 }
 
 // IncludeInRoot deteremines if all fields in the nested object are also
 // added to the root document as standard (flat) fields. Defaults to false
 func (iir IncludeInRootParam) IncludeInRoot() bool {
-	if iir.IncludeInRootValue == nil {
-		return false
+	if b, ok := iir.includeInRoot.Bool(); ok {
+		return b
 	}
-	return *iir.IncludeInRootValue
+	return DefaultIncludeInRoot
 }
 
 // SetIncludeInRoot sets the IncludeInRoot Value to v
-func (iir *IncludeInRootParam) SetIncludeInRoot(v bool) {
-	if iir.IncludeInRoot() != v {
-		iir.IncludeInRootValue = &v
-	}
+func (iir *IncludeInRootParam) SetIncludeInRoot(v interface{}) error {
+	return iir.includeInRoot.Set(v)
 }
