@@ -22,9 +22,9 @@ func TestClauses(t *testing.T) {
 	err := json.Unmarshal(json1, &clauses)
 	assert.NoError(err)
 	assert.False(clauses.IsEmpty())
-	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
+	assert.Equal(picker.QueryKindTerm, clauses.Clauses()[0].Kind())
 
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermQuery).Value())
 	assert.NoError(err)
 	res1, err := json.Marshal(clauses)
 	assert.NoError(err)
@@ -33,8 +33,8 @@ func TestClauses(t *testing.T) {
 	clauses = picker.QueryClauses{}
 	err = json.Unmarshal(res1, &clauses)
 	assert.NotEmpty(clauses.Clauses())
-	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
+	assert.Equal(picker.QueryKindTerm, clauses.Clauses()[0].Kind())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermQuery).Value())
 	assert.NoError(err)
 
 	json2 := []byte(`[{
@@ -43,8 +43,8 @@ func TestClauses(t *testing.T) {
 
 	err = json.Unmarshal(json2, &clauses)
 	assert.Equal(clauses.Len(), 1)
-	assert.Equal(picker.KindTerm, clauses.Clauses()[0].Kind())
-	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermClauseQuery).Value())
+	assert.Equal(picker.QueryKindTerm, clauses.Clauses()[0].Kind())
+	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermQuery).Value())
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)
 	assert.NoError(err)

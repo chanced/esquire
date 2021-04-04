@@ -6,6 +6,10 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type Exister interface {
+	Exists() (*ExistsQuery, error)
+}
+
 // ExistsQueryParams returns documents that contain an indexed value for a field.
 //
 // An indexed value may not exist for a document’s field due to a variety of
@@ -36,7 +40,7 @@ func (e ExistsQueryParams) Exists() (*ExistsQuery, error) {
 	q := &ExistsQuery{}
 	err := q.SetField(e.Field)
 	if err != nil {
-		return q, newQueryError(err, KindExists, e.Field)
+		return q, newQueryError(err, QueryKindExists, e.Field)
 	}
 	q.SetName(e.Name)
 	return q, nil
@@ -82,16 +86,25 @@ func (e *ExistsQuery) SetField(field string) error {
 	return nil
 }
 
-func (e *ExistsQuery) Set(field string) error {
-	return e.SetField(field)
+func (e *ExistsQuery) Set(field string, exists Exister) error {
+	if field == "" {
+		e.Clear()
+		return nil
+	}
+	e.SetField(field)
+	if exists != nil {
+		ex, _ := exists.Exists()
+		e.SetName(ex.Name())
+	}
+	return nil
 }
 
 func (e *ExistsQuery) IsEmpty() bool {
-	return len(e.field) == 0
+	return e == nil || len(e.field) == 0
 }
 
 func (e ExistsQuery) Kind() QueryKind {
-	return KindExists
+	return QueryKindExists
 }
 
 func (e ExistsQuery) MarshalJSON() ([]byte, error) {

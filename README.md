@@ -129,7 +129,7 @@ Testing is incredibly light to non-existent right now. I'm merely using this lis
   Compound queries wrap other compound or leaf queries, either to combine their results and scores, to change their behaviour, or to switch from query to filter context.
   - [x] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-bool-query.html)**\
          The default query for combining multiple leaf or compound query clauses, as must, should, must_not, or filter clauses. The must and should clauses have their scores combined — the more matching clauses, the better — while the must_not and filter clauses are executed in filter context.
-  - [ ] **[Boosting](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-boosting-query.html)**\
+  - [x] **[Boosting](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-boosting-query.html)**\
          Return documents which match a positive query, but reduce the score of documents which also match a negative query.
   - [ ] **[Constant score](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-constant-score-query.html)**\
          A query which wraps another query, but executes it in filter context. All matching documents are given the same “constant” \_score.

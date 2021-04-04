@@ -6,8 +6,13 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type CompleteTermer interface {
+	Termer
+	CompleteClauser
+}
+
 type Termer interface {
-	Term() (*TermClauseQuery, error)
+	Term() (*TermQuery, error)
 }
 
 type TermQueryParams struct {
@@ -22,9 +27,6 @@ type TermQueryParams struct {
 	completeClause
 }
 
-func (t TermQueryParams) name() string {
-	return t.Name
-}
 func (t TermQueryParams) field() string {
 	return t.Field
 }
@@ -33,17 +35,17 @@ func (t TermQueryParams) Clause() (QueryClause, error) {
 	return t.Term()
 }
 
-func (t TermQueryParams) Term() (*TermClauseQuery, error) {
-	q := &TermClauseQuery{
+func (t TermQueryParams) Term() (*TermQuery, error) {
+	q := &TermQuery{
 		field: t.Field,
 	}
 	err := q.SetValue(t.Value)
 	if err != nil {
-		return q, newQueryError(err, KindTerm, t.Field)
+		return q, newQueryError(err, QueryKindTerm, t.Field)
 	}
 	err = q.SetBoost(t.Boost)
 	if err != nil {
-		return q, newQueryError(err, KindTerm, t.Field)
+		return q, newQueryError(err, QueryKindTerm, t.Field)
 	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	q.SetName(t.Name)
@@ -51,7 +53,7 @@ func (t TermQueryParams) Term() (*TermClauseQuery, error) {
 }
 
 func (t TermQueryParams) Kind() QueryKind {
-	return KindTerm
+	return QueryKindTerm
 }
 
 // NewTermQuery creates a new TermQuery
@@ -70,18 +72,18 @@ func (t TermQueryParams) Kind() QueryKind {
 // To search text field values, use the match query instead.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-func NewTermQuery(params TermQueryParams) (*TermClauseQuery, error) {
+func NewTermQuery(params TermQueryParams) (*TermQuery, error) {
 	q, err := params.Term()
 	if err != nil {
-		return nil, newQueryError(err, KindTerm, params.Field)
+		return nil, newQueryError(err, QueryKindTerm, params.Field)
 	}
 	if len(q.field) == 0 {
-		return nil, newQueryError(ErrFieldRequired, KindTerm)
+		return nil, newQueryError(ErrFieldRequired, QueryKindTerm)
 	}
 	return q, nil
 }
 
-// TermClauseQuery returns documents that contain an exact term in a provided field.
+// TermQuery returns documents that contain an exact term in a provided field.
 //
 // You can use the term query to find documents based on a precise value such as
 // a price, a product ID, or a username.
@@ -95,7 +97,7 @@ func NewTermQuery(params TermQueryParams) (*TermClauseQuery, error) {
 // To search text field values, use the match query instead.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-type TermClauseQuery struct {
+type TermQuery struct {
 	field string
 	value string
 	boostParam
@@ -104,32 +106,32 @@ type TermClauseQuery struct {
 	completeClause
 }
 
-func (t *TermClauseQuery) Clause() (QueryClause, error) {
+func (t *TermQuery) Clause() (QueryClause, error) {
 	return t, nil
 }
-func (t *TermClauseQuery) IsEmpty() bool {
+func (t *TermQuery) IsEmpty() bool {
 	return t == nil || len(t.value) == 0 || len(t.field) == 0
 }
 
-func (t TermClauseQuery) Field() string {
+func (t TermQuery) Field() string {
 	return t.field
 }
-func (t TermClauseQuery) Kind() QueryKind {
-	return KindTerm
+func (t TermQuery) Kind() QueryKind {
+	return QueryKindTerm
 }
-func (t TermClauseQuery) Value() string {
+func (t TermQuery) Value() string {
 	return t.value
 }
 
-func (t *TermClauseQuery) SetValue(v string) error {
+func (t *TermQuery) SetValue(v string) error {
 	if len(v) == 0 {
-		return newQueryError(ErrValueRequired, KindTerm, t.field)
+		return newQueryError(ErrValueRequired, QueryKindTerm, t.field)
 	}
 	t.value = v
 	return nil
 }
 
-func (t TermClauseQuery) MarshalJSON() ([]byte, error) {
+func (t TermQuery) MarshalJSON() ([]byte, error) {
 	if t.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -141,7 +143,7 @@ func (t TermClauseQuery) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dynamic.Map{t.field: data})
 }
 
-func (t *TermClauseQuery) UnmarshalJSON(data []byte) error {
+func (t *TermQuery) UnmarshalJSON(data []byte) error {
 	t.Clear()
 	m := map[string]dynamic.JSON{}
 	err := json.Unmarshal(data, &m)
@@ -154,30 +156,30 @@ func (t *TermClauseQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
-func (t *TermClauseQuery) Set(field string, clause Termer) error {
+func (t *TermQuery) Set(field string, clause Termer) error {
 	if clause == nil {
 		t.Clear()
 		return nil
 	}
 	if len(field) == 0 {
-		return newQueryError(ErrFieldRequired, KindTerm)
+		return newQueryError(ErrFieldRequired, QueryKindTerm)
 	}
 	q, err := clause.Term()
 	if err != nil {
-		return newQueryError(err, KindTerm, field)
+		return newQueryError(err, QueryKindTerm, field)
 	}
 	*t = *q
 	t.field = field
 	return nil
 }
-func (t *TermClauseQuery) Clear() {
+func (t *TermQuery) Clear() {
 	if t == nil {
 		return
 	}
-	*t = TermClauseQuery{}
+	*t = TermQuery{}
 }
 
-func (t TermClauseQuery) marshalClauseJSON() (dynamic.JSON, error) {
+func (t TermQuery) marshalClauseJSON() (dynamic.JSON, error) {
 
 	params, err := marshalClauseParams(&t)
 	if err != nil {
@@ -187,7 +189,7 @@ func (t TermClauseQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	return json.Marshal(params)
 }
 
-func (t *TermClauseQuery) unmarshalJSONString(data []byte) error {
+func (t *TermQuery) unmarshalJSONString(data []byte) error {
 	var str string
 	err := json.Unmarshal(data, &str)
 	if err != nil {
@@ -197,7 +199,7 @@ func (t *TermClauseQuery) unmarshalJSONString(data []byte) error {
 	return nil
 }
 
-func (t *TermClauseQuery) unmarshalJSONObject(data []byte) error {
+func (t *TermQuery) unmarshalJSONObject(data []byte) error {
 	fields, err := unmarshalClauseParams(data, t)
 	if err != nil {
 		return err
@@ -213,7 +215,7 @@ func (t *TermClauseQuery) unmarshalJSONObject(data []byte) error {
 	return nil
 }
 
-func (t *TermClauseQuery) unmarshalClauseJSON(data []byte) error {
+func (t *TermQuery) unmarshalClauseJSON(data []byte) error {
 	d := dynamic.JSON(data)
 	if d.IsString() {
 		return t.unmarshalJSONString(data)

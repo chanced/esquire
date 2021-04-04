@@ -18,8 +18,8 @@ func (s String) Match() (MatchQuery, error) {
 	return q, err
 }
 
-func (s String) Term() (TermClauseQuery, error) {
-	q := TermClauseQuery{}
+func (s String) Term() (TermQuery, error) {
+	q := TermQuery{}
 	err := q.SetValue(s.String())
 	return q, err
 }

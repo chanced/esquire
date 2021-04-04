@@ -7,17 +7,17 @@ import (
 )
 
 type ScriptScorer interface {
-	ScriptScore() (*ScriptScoreClause, error)
+	ScriptScore() (*ScriptScoreQuery, error)
 }
 
-// ScriptScoreQuery uses a script to provide a custom score for returned documents.
+// ScriptScoreQueryParams uses a script to provide a custom score for returned documents.
 //
 // The script_score query is useful if, for example, a scoring function is
 // expensive and you only need to calculate the score of a filtered set of
 // documents.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
-type ScriptScoreQuery struct {
+type ScriptScoreQueryParams struct {
 	// Query used to return documents. (Required)
 	Query *QueryParams
 	// Documents with a score lower than this floating point number are excluded
@@ -30,41 +30,41 @@ type ScriptScoreQuery struct {
 	Script *Script
 }
 
-func (s ScriptScoreQuery) Clause() (QueryClause, error) {
+func (s ScriptScoreQueryParams) Clause() (QueryClause, error) {
 	return s.ScriptScore()
 }
-func (s ScriptScoreQuery) ScriptScore() (*ScriptScoreClause, error) {
-	q := &ScriptScoreClause{}
+func (s ScriptScoreQueryParams) ScriptScore() (*ScriptScoreQuery, error) {
+	q := &ScriptScoreQuery{}
 
 	err := q.setQuery(s.Query)
 	if err != nil {
-		return q, newQueryError(err, KindScriptScore)
+		return q, newQueryError(err, QueryKindScriptScore)
 	}
 
 	if err != nil {
-		return q, newQueryError(err, KindScriptScore)
+		return q, newQueryError(err, QueryKindScriptScore)
 	}
 
 	err = q.SetBoost(s.Boost)
 	if err != nil {
-		return q, newQueryError(err, KindScriptScore)
+		return q, newQueryError(err, QueryKindScriptScore)
 	}
 	q.SetMinScore(s.MinScore)
 
 	err = q.SetScript(s.Script)
 	if err != nil {
-		return q, newQueryError(err, KindScriptScore)
+		return q, newQueryError(err, QueryKindScriptScore)
 	}
 	q.SetName(s.Name)
 
 	return q, nil
 }
 
-func (ScriptScoreQuery) Kind() QueryKind {
-	return KindScriptScore
+func (ScriptScoreQueryParams) Kind() QueryKind {
+	return QueryKindScriptScore
 }
 
-type ScriptScoreClause struct {
+type ScriptScoreQuery struct {
 	query *Query
 	scriptParams
 	boostParam
@@ -73,29 +73,29 @@ type ScriptScoreClause struct {
 	completeClause
 }
 
-func (ScriptScoreClause) Kind() QueryKind {
-	return KindScriptScore
+func (ScriptScoreQuery) Kind() QueryKind {
+	return QueryKindScriptScore
 }
 
 // Set sets the ScriptScoreQuery
 // Options include:
 //   - picker.ScriptScoreQuery
-func (s *ScriptScoreClause) Set(scriptScore *ScriptScoreQuery) error {
+func (s *ScriptScoreQuery) Set(scriptScore *ScriptScoreQueryParams) error {
 	if scriptScore == nil {
-		*s = ScriptScoreClause{}
+		*s = ScriptScoreQuery{}
 		return nil
 	}
 	scr, err := scriptScore.ScriptScore()
 	if err != nil {
-		return newQueryError(err, KindScriptScore)
+		return newQueryError(err, QueryKindScriptScore)
 	}
 	*s = *scr
 	return nil
 }
-func (s *ScriptScoreClause) Clause() (QueryClause, error) {
+func (s *ScriptScoreQuery) Clause() (QueryClause, error) {
 	return s, nil
 }
-func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
+func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
 	}
@@ -121,8 +121,8 @@ func (s ScriptScoreClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func (s *ScriptScoreClause) UnmarshalJSON(data []byte) error {
-	s = &ScriptScoreClause{}
+func (s *ScriptScoreQuery) UnmarshalJSON(data []byte) error {
+	s = &ScriptScoreQuery{}
 	params, err := unmarshalClauseParams(data, s)
 	if err != nil {
 		return err
@@ -138,11 +138,11 @@ func (s *ScriptScoreClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s *ScriptScoreClause) IsEmpty() bool {
+func (s *ScriptScoreQuery) IsEmpty() bool {
 	return s == nil || s.scriptParams.IsEmpty()
 }
 
-func (s *ScriptScoreClause) setQuery(query *QueryParams) error {
+func (s *ScriptScoreQuery) setQuery(query *QueryParams) error {
 	if query == nil {
 		return ErrQueryRequired
 	}
@@ -157,6 +157,6 @@ func (s *ScriptScoreClause) setQuery(query *QueryParams) error {
 	return nil
 }
 
-func (s *ScriptScoreClause) Clear() {
-	*s = ScriptScoreClause{}
+func (s *ScriptScoreQuery) Clear() {
+	*s = ScriptScoreQuery{}
 }

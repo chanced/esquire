@@ -18,7 +18,7 @@ func (ma MatchAllQueryParams) Clause() (QueryClause, error) {
 }
 
 func (ma MatchAllQueryParams) Kind() QueryKind {
-	return KindMatchAll
+	return QueryKindMatchAll
 }
 
 func (ma MatchAllQueryParams) MatchAll() (*MatchAllQuery, error) {
@@ -42,7 +42,7 @@ func (ma *MatchAllQuery) Clause() (QueryClause, error) {
 	return ma, nil
 }
 func (MatchAllQuery) Kind() QueryKind {
-	return KindMatchAll
+	return QueryKindMatchAll
 }
 
 func (ma *MatchAllQuery) Clear() {

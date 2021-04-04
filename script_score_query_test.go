@@ -19,7 +19,7 @@ func TestScriptScoreQuery(t *testing.T) {
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			ScriptScore: &picker.ScriptScoreQuery{
+			ScriptScore: &picker.ScriptScoreQueryParams{
 				Query: &picker.QueryParams{
 					Term: &picker.TermQueryParams{
 						Field:           "ss_term",

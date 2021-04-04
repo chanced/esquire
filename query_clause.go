@@ -11,7 +11,7 @@ import (
 
 type completeClause struct{}
 
-func (completeClause) _Complete() {}
+func (completeClause) Complete() {}
 
 type Clause interface {
 	Kind() QueryKind
@@ -24,7 +24,7 @@ type CompleteClauser interface {
 
 type CompleteClause interface {
 	Clause
-	_Complete()
+	Complete()
 }
 
 type WithField interface {
@@ -243,7 +243,7 @@ func (qc *QueryClauses) UnmarshalJSON(data []byte) error {
 	}
 	for _, cd := range cm {
 		for t, d := range cd {
-			handler, ok := clauseHandlers[t]
+			handler, ok := queryKindHandlers[t]
 			if !ok {
 				return fmt.Errorf("%w <%s>", ErrUnsupportedType, t)
 			}
@@ -292,7 +292,7 @@ func unmarshalSingleQueryClause(data dynamic.JSON) (QueryClause, error) {
 		return nil, err
 	}
 	for t, d := range cd {
-		handler, ok := clauseHandlers[t]
+		handler, ok := queryKindHandlers[t]
 		if !ok {
 			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedType, t)
 		}
@@ -317,7 +317,7 @@ func unmarshalQueryClause(data []byte) (QueryClause, error) {
 	}
 
 	for kind, cd := range v {
-		handler := clauseHandlers[kind]
+		handler := queryKindHandlers[kind]
 		if handler == nil {
 			return nil, fmt.Errorf("%w <%s>", ErrUnsupportedType, kind)
 		}

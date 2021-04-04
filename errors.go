@@ -46,6 +46,9 @@ var (
 	ErrInvalidTermVector          = errors.New("picker: invalid TermVector")
 	ErrMissingType                = errors.New("picker: missing type")
 	ErrInvalidMaxShingleSize      = errors.New("picker: invalid max_shingle_size; valid values are [2,3,4]")
+	ErrInvalidNegativeBoost       = errors.New("picker: negative_boost must be between 0 and 1.0")
+	ErrNegativeRequired           = errors.New("picker: negative is required")
+	ErrPositiveRequired           = errors.New("picker: positive is required")
 )
 
 type FieldError struct {

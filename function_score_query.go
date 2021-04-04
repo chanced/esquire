@@ -6,14 +6,18 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// FunctionScoreQuery  allows you to modify the score of documents that are retrieved
+type FunctionScorer interface {
+	FunctionScore() (*FunctionScoreQuery, error)
+}
+
+// FunctionScoreQueryParams  allows you to modify the score of documents that are retrieved
 // by a query. This can be useful if, for example, a score function is
 // computationally expensive and it is sufficient to compute the score on a
 // filtered set of documents.
 //
 // To use function_score, the user has to define a query and one or more
 // functions, that compute a new score for each document returned by the query.
-type FunctionScoreQuery struct {
+type FunctionScoreQueryParams struct {
 	Query *QueryParams
 	Boost interface{}
 	// Documents with a score lower than this floating point number are excluded
@@ -26,12 +30,12 @@ type FunctionScoreQuery struct {
 	Name      string
 }
 
-func (fs *FunctionScoreQuery) FunctionScore() (*FunctionScoreClause, error) {
+func (fs *FunctionScoreQueryParams) FunctionScore() (*FunctionScoreQuery, error) {
 	if fs == nil {
 		return nil, nil
 	}
 
-	c := &FunctionScoreClause{}
+	c := &FunctionScoreQuery{}
 	c.SetName(fs.Name)
 	err := c.SetQuery(fs.Query)
 	if err != nil {
@@ -58,11 +62,11 @@ func (fs *FunctionScoreQuery) FunctionScore() (*FunctionScoreClause, error) {
 
 	return c, nil
 }
-func (fs *FunctionScoreQuery) Clause() (QueryClause, error) {
+func (fs *FunctionScoreQueryParams) Clause() (QueryClause, error) {
 	return fs.FunctionScore()
 }
 
-// FunctionScoreClause allows you to modify the score of documents that are retrieved
+// FunctionScoreQuery allows you to modify the score of documents that are retrieved
 // by a query. This can be useful if, for example, a score function is
 // computationally expensive and it is sufficient to compute the score on a
 // filtered set of documents.
@@ -71,7 +75,7 @@ func (fs *FunctionScoreQuery) Clause() (QueryClause, error) {
 // functions, that compute a new score for each document returned by the query.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
-type FunctionScoreClause struct {
+type FunctionScoreQuery struct {
 	query *Query
 	boostParam
 	nameParam
@@ -83,16 +87,16 @@ type FunctionScoreClause struct {
 	completeClause
 }
 
-func (fs *FunctionScoreClause) Clause() (QueryClause, error) {
+func (fs *FunctionScoreQuery) Clause() (QueryClause, error) {
 	return fs, nil
 }
-func (fs *FunctionScoreClause) Query() *Query {
+func (fs *FunctionScoreQuery) Query() *Query {
 	return fs.query
 }
 
-func (fs *FunctionScoreClause) SetFunctions(funcs Funcs) error {
+func (fs *FunctionScoreQuery) SetFunctions(funcs Funcs) error {
 	if fs == nil {
-		*fs = FunctionScoreClause{}
+		*fs = FunctionScoreQuery{}
 	}
 	f, err := funcs.functions()
 	if err != nil {
@@ -101,15 +105,15 @@ func (fs *FunctionScoreClause) SetFunctions(funcs Funcs) error {
 	fs.functions = f
 	return nil
 }
-func (fs *FunctionScoreClause) Functions() Functions {
+func (fs *FunctionScoreQuery) Functions() Functions {
 	if fs == nil {
 		return nil
 	}
 	return fs.functions
 }
-func (fs *FunctionScoreClause) SetQuery(query *QueryParams) error {
+func (fs *FunctionScoreQuery) SetQuery(query *QueryParams) error {
 	if fs == nil {
-		*fs = FunctionScoreClause{}
+		*fs = FunctionScoreQuery{}
 	}
 	q, err := query.Query()
 	if err != nil {
@@ -118,12 +122,12 @@ func (fs *FunctionScoreClause) SetQuery(query *QueryParams) error {
 	fs.query = q
 	return nil
 }
-func (fs *FunctionScoreClause) Clear() {
-	*fs = FunctionScoreClause{}
+func (fs *FunctionScoreQuery) Clear() {
+	*fs = FunctionScoreQuery{}
 }
 
-func (fs *FunctionScoreClause) UnmarshalJSON(data []byte) error {
-	*fs = FunctionScoreClause{}
+func (fs *FunctionScoreQuery) UnmarshalJSON(data []byte) error {
+	*fs = FunctionScoreQuery{}
 	params, err := unmarshalClauseParams(data, fs)
 	if err != nil {
 		return err
@@ -147,14 +151,14 @@ func (fs *FunctionScoreClause) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (fs *FunctionScoreClause) Name() string {
+func (fs *FunctionScoreQuery) Name() string {
 	if fs == nil {
-		*fs = FunctionScoreClause{}
+		*fs = FunctionScoreQuery{}
 	}
 	return fs.name
 }
 
-func (fs FunctionScoreClause) MarshalJSON() ([]byte, error) {
+func (fs FunctionScoreQuery) MarshalJSON() ([]byte, error) {
 	data, err := marshalClauseParams(fs)
 	if err != nil {
 		return nil, err
@@ -177,10 +181,10 @@ func (fs FunctionScoreClause) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func (fs *FunctionScoreClause) IsEmpty() bool {
+func (fs *FunctionScoreQuery) IsEmpty() bool {
 	return fs == nil || len(fs.functions) == 0
 }
 
-func (FunctionScoreClause) Kind() QueryKind {
-	return KindFunctionScore
+func (FunctionScoreQuery) Kind() QueryKind {
+	return QueryKindFunctionScore
 }

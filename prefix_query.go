@@ -10,6 +10,11 @@ type Prefixer interface {
 	Prefix() (*PrefixQuery, error)
 }
 
+type CompletePrefixer interface {
+	Prefixer
+	CompleteClauser
+}
+
 // PrefixQueryParams returns documents that contain a specific prefix in a provided field.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
@@ -32,7 +37,7 @@ type PrefixQueryParams struct {
 }
 
 func (p PrefixQueryParams) Kind() QueryKind {
-	return KindPrefix
+	return QueryKindPrefix
 }
 
 func (p PrefixQueryParams) Clause() (QueryClause, error) {
@@ -43,7 +48,7 @@ func (p PrefixQueryParams) Prefix() (*PrefixQuery, error) {
 	q.SetCaseInsensitive(p.CaseInsensitive)
 	err := q.SetRewrite(p.Rewrite)
 	if err != nil {
-		return q, newQueryError(err, KindPrefix, p.Field)
+		return q, newQueryError(err, QueryKindPrefix, p.Field)
 	}
 	return q, q.setValue(p.Value)
 }
@@ -68,7 +73,7 @@ func (p PrefixQuery) Value() string {
 }
 
 func (p *PrefixQuery) setValue(value string) error {
-	err := checkValue(value, KindPrefix, p.field)
+	err := checkValue(value, QueryKindPrefix, p.field)
 	if err != nil {
 		return err
 	}
@@ -77,7 +82,7 @@ func (p *PrefixQuery) setValue(value string) error {
 }
 
 func (p PrefixQuery) Kind() QueryKind {
-	return KindPrefix
+	return QueryKindPrefix
 }
 
 func (p PrefixQuery) MarshalJSON() ([]byte, error) {
@@ -141,13 +146,13 @@ func (p *PrefixQuery) Set(field string, prefixer Prefixer) error {
 	if prefixer == nil {
 		p.Clear()
 	}
-	err := checkField(field, KindPrefix)
+	err := checkField(field, QueryKindPrefix)
 	if err != nil {
-		return newQueryError(err, KindPrefix, field)
+		return newQueryError(err, QueryKindPrefix, field)
 	}
 	q, err := prefixer.Prefix()
 	if err != nil {
-		return newQueryError(err, KindPrefix, field)
+		return newQueryError(err, QueryKindPrefix, field)
 	}
 	*p = *q
 	return nil

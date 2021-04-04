@@ -17,7 +17,7 @@ func (mn MatchNoneQueryParams) Clause() (QueryClause, error) {
 }
 
 func (mn MatchNoneQueryParams) Kind() QueryKind {
-	return KindMatchNone
+	return QueryKindMatchNone
 }
 func (mn MatchNoneQueryParams) MatchNone() (*MatchNoneQuery, error) {
 	c := &MatchNoneQuery{}
@@ -36,7 +36,7 @@ func (mn *MatchNoneQuery) Clause() (QueryClause, error) {
 	return mn, nil
 }
 func (MatchNoneQuery) Kind() QueryKind {
-	return KindMatchNone
+	return QueryKindMatchNone
 }
 
 func (mn *MatchNoneQuery) Clear() {

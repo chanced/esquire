@@ -7,7 +7,7 @@ import (
 )
 
 type Booler interface {
-	Boolean() (BooleanQuery, error)
+	Boolean() (*BooleanQuery, error)
 }
 
 // BooleanQueryParams is a query that matches documents matching boolean combinations
@@ -50,20 +50,20 @@ func (b BooleanQueryParams) Boolean() (*BooleanQuery, error) {
 	q := &BooleanQuery{}
 	err := q.SetMust(b.Must)
 	if err != nil {
-		return q, newQueryError(err, KindBoolean)
+		return q, newQueryError(err, QueryKindBoolean)
 	}
 	err = q.SetMustNot(b.MustNot)
 	if err != nil {
-		return q, newQueryError(err, KindBoolean)
+		return q, newQueryError(err, QueryKindBoolean)
 	}
 	err = q.SetShould(b.Should)
 	if err != nil {
-		return q, newQueryError(err, KindBoolean)
+		return q, newQueryError(err, QueryKindBoolean)
 	}
 
 	err = q.SetFilter(b.Filter)
 	if err != nil {
-		return q, newQueryError(err, KindBoolean)
+		return q, newQueryError(err, QueryKindBoolean)
 	}
 
 	q.SetName(b.Name)
@@ -72,7 +72,7 @@ func (b BooleanQueryParams) Boolean() (*BooleanQuery, error) {
 }
 
 func (b BooleanQueryParams) Kind() QueryKind {
-	return KindBoolean
+	return QueryKindBoolean
 }
 
 // BooleanQuery is a query that matches documents matching boolean combinations
@@ -95,15 +95,15 @@ func (b *BooleanQuery) Clause() (QueryClause, error) {
 }
 
 func (BooleanQuery) Kind() QueryKind {
-	return KindBoolean
+	return QueryKindBoolean
 }
 
 func (b *BooleanQuery) Set(v Booler) error {
 	q, err := v.Boolean()
 	if err != nil {
-		return newQueryError(err, KindBoolean)
+		return newQueryError(err, QueryKindBoolean)
 	}
-	*b = q
+	*b = *q
 	return nil
 }
 

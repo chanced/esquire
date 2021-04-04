@@ -41,7 +41,7 @@ func (s ScriptQueryParams) Script() (*ScriptQuery, error) {
 }
 
 func (ScriptQueryParams) Kind() QueryKind {
-	return KindScript
+	return QueryKindScript
 }
 
 type ScriptQuery struct {
@@ -51,7 +51,7 @@ type ScriptQuery struct {
 }
 
 func (ScriptQuery) Kind() QueryKind {
-	return KindScript
+	return QueryKindScript
 }
 
 // Set sets the ScriptQuery
@@ -65,7 +65,7 @@ func (s *ScriptQuery) Set(script Scripter) error {
 	}
 	scr, err := script.Script()
 	if err != nil {
-		return newQueryError(err, KindScript)
+		return newQueryError(err, QueryKindScript)
 	}
 	*s = *scr
 	return nil

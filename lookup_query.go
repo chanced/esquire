@@ -71,7 +71,7 @@ func (l Lookup) Terms() (*TermsQuery, error) {
 }
 
 func (l Lookup) Kind() QueryKind {
-	return KindTerms
+	return QueryKindTerms
 }
 
 type LookupValues struct {

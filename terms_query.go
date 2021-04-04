@@ -15,7 +15,7 @@ type Termser interface {
 	Terms() (*TermsQuery, error)
 }
 
-type TermserComplete interface {
+type CompleteTermser interface {
 	Termser
 	CompleteClauser
 }
@@ -29,9 +29,9 @@ type TermserComplete interface {
 func NewTermsQuery(params Termser) (*TermsQuery, error) {
 	q, err := params.Terms()
 	if err != nil {
-		return q, newQueryError(err, KindTerms, q.field)
+		return q, newQueryError(err, QueryKindTerms, q.field)
 	}
-	err = checkField(q.field, KindTerms)
+	err = checkField(q.field, QueryKindTerms)
 	if err != nil {
 		return q, err
 	}
@@ -60,18 +60,18 @@ func (t TermsQueryParams) Terms() (*TermsQuery, error) {
 	}
 	err := q.SetBoost(t.Boost)
 	if err != nil {
-		return q, newQueryError(err, KindTerms, t.Field)
+		return q, newQueryError(err, QueryKindTerms, t.Field)
 	}
 	err = q.setValue(t.Value)
 	if err != nil {
-		return q, newQueryError(err, KindTerms, t.Field)
+		return q, newQueryError(err, QueryKindTerms, t.Field)
 	}
 	q.SetCaseInsensitive(t.CaseInsensitive)
 	return q, nil
 }
 
 func (t TermsQueryParams) Kind() QueryKind {
-	return KindTerms
+	return QueryKindTerms
 }
 
 func (t *TermsQuery) SetField(field string) {
@@ -79,7 +79,7 @@ func (t *TermsQuery) SetField(field string) {
 }
 
 func (t *TermsQuery) setValue(value []string) error {
-	err := checkValues(value, KindTerms, t.field)
+	err := checkValues(value, QueryKindTerms, t.field)
 	if err != nil {
 		return err
 	}
@@ -90,14 +90,14 @@ func (t *TermsQuery) setValue(value []string) error {
 func (t *TermsQuery) Set(field string, clause Termser) error {
 	q, err := clause.Terms()
 	if err != nil {
-		return newQueryError(err, KindTerms, field)
+		return newQueryError(err, QueryKindTerms, field)
 	}
 	*t = *q
 	return nil
 }
 
 func (t TermsQuery) Kind() QueryKind {
-	return KindTerms
+	return QueryKindTerms
 }
 
 func (t *TermsQuery) IsEmpty() bool {

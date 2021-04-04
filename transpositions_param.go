@@ -17,25 +17,26 @@ type WithTranspositions interface {
 	// adjacent characters (ab → ba). Defaults to true.
 	Transpositions() bool
 	// SetTranspositions sets the value of Transpositions to v
-	SetTranspositions(v bool)
+	SetTranspositions(v interface{}) error
 }
 
 type transpositionsParam struct {
-	transpositions *bool
+	transpositions dynamic.Bool
 }
 
 // Transpositions indicates whether edits include transpositions of two
 // adjacent characters (ab → ba). Defaults to true.
 func (t transpositionsParam) Transpositions() bool {
-	if t.transpositions == nil {
-		return DefaultTranspositions
+	if b, ok := t.transpositions.Bool(); ok {
+		return b
 	}
-	return *t.transpositions
+	return DefaultTranspositions
+
 }
 
 // SetTranspositions sets the value of Transpositions to v
-func (t *transpositionsParam) SetTranspositions(v bool) {
-	t.transpositions = &v
+func (t *transpositionsParam) SetTranspositions(v interface{}) error {
+	return t.transpositions.Set(v)
 }
 func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithTranspositions); ok {
@@ -43,9 +44,7 @@ func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error 
 		if err != nil {
 			return err
 		}
-		if v, ok := b.Bool(); ok {
-			a.SetTranspositions(v)
-		}
+		a.SetTranspositions(b)
 	}
 	return nil
 }

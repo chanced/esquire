@@ -15,7 +15,7 @@ type AllOfQueryParams struct {
 }
 
 func (ao AllOfQueryParams) Kind() QueryKind {
-	return KindAllOf
+	return QueryKindAllOf
 }
 
 func (ao AllOfQueryParams) AllOf() (*AllOfQuery, error) {
@@ -39,7 +39,7 @@ func (ao *AllOfQuery) Clause() (QueryClause, error) {
 }
 
 func (AllOfQuery) Kind() QueryKind {
-	return KindAllOf
+	return QueryKindAllOf
 }
 
 func (ao AllOfQuery) MarshalJSON() ([]byte, error) {

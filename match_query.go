@@ -9,6 +9,10 @@ import (
 type Matcher interface {
 	Match() (*MatchQuery, error)
 }
+type CompleteMatcher interface {
+	Matcher
+	CompleteClauser
+}
 
 // MatchQueryParams returns documents that match a provided text, number, date or boolean
 // value. The provided text is analyzed before matching.
@@ -95,7 +99,7 @@ func (m MatchQueryParams) field() string {
 }
 
 func (m MatchQueryParams) Kind() QueryKind {
-	return KindMatch
+	return QueryKindMatch
 }
 func (m MatchQueryParams) Clause() (QueryClause, error) {
 	return m.Match()
@@ -106,28 +110,28 @@ func (m MatchQueryParams) Match() (*MatchQuery, error) {
 	}
 	err := q.setQuery(m.Query)
 	if err != nil {
-		return q, newQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	q.SetAnalyzer(m.Analyzer)
 	q.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
 	q.SetFuzziness(m.Fuzziness)
 	err = q.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
-		return q, newQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	q.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
 	q.SetLenient(m.Lenient)
 	err = q.SetMaxExpansions(m.MaxExpansions)
 	if err != nil {
-		return q, newQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	err = q.SetPrefixLength(m.PrefixLength)
 	if err != nil {
-		return q, newQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	err = q.SetZeroTermsQuery(m.ZeroTermsQuery)
 	if err != nil {
-		return q, newQueryError(err, KindMatch, m.Field)
+		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	q.cutoffFrequency = m.CutoffFrequency
 	return q, nil
@@ -179,7 +183,7 @@ func (m *MatchQuery) Set(field string, match Matcher) error {
 		return nil
 	}
 	if field == "" {
-		return newQueryError(ErrFieldRequired, KindTerm)
+		return newQueryError(ErrFieldRequired, QueryKindTerm)
 	}
 	r, err := match.Match()
 	if err != nil {
@@ -246,7 +250,7 @@ func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
 }
 
 func (m MatchQuery) Kind() QueryKind {
-	return KindMatch
+	return QueryKindMatch
 }
 func (m *MatchQuery) Clear() {
 	*m = MatchQuery{}

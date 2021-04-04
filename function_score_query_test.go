@@ -14,7 +14,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			FunctionScore: &picker.FunctionScoreQuery{
+			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpFunc{},
 				},
@@ -26,7 +26,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 
 	_, err = picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			FunctionScore: &picker.FunctionScoreQuery{
+			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpFunc{
 						Field: "field",
@@ -39,7 +39,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 
 	_, err = picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			FunctionScore: &picker.FunctionScoreQuery{
+			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpFunc{
 						Field:  "field",
@@ -53,7 +53,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 
 	s, err = picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			FunctionScore: &picker.FunctionScoreQuery{
+			FunctionScore: &picker.FunctionScoreQueryParams{
 				Query: &picker.QueryParams{
 					Term: &picker.TermQueryParams{
 						Field:           "query_term_field",
@@ -87,7 +87,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 	data, err := json.MarshalIndent(s.Query().FunctionScore(), "", "  ")
 	assert.NoError(err)
 	fmt.Println(string(data))
-	var fs picker.FunctionScoreClause
+	var fs picker.FunctionScoreQuery
 	err = json.Unmarshal(data, &fs)
 	assert.NoError(err)
 }

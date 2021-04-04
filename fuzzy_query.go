@@ -10,6 +10,11 @@ type Fuzzier interface {
 	Fuzzy() (*FuzzyQuery, error)
 }
 
+type CompleteFuzzier interface {
+	Fuzzier
+	CompleteClause
+}
+
 // FuzzyQueryParams returns documents that contain terms similar to the search term,
 // as measured by a Levenshtein edit distance.
 //
@@ -44,11 +49,10 @@ type FuzzyQueryParams struct {
 	// PrefixLength is the number of beginning characters left unchanged when
 	// creating expansions. Defaults to 0. (Optional)
 	PrefixLength int
-	// NoTranspositions indicates whether edits include transpositions of two
+	// Transpositions indicates whether edits include transpositions of two
 	// adjacent characters (ab → ba). (Optional)
 	//
-	// Setting NoTranspositions to true sets transpositions to false
-	NoTranspositions bool
+	Transpositions interface{}
 	// Rewrite method used to rewrite the query. (Optional)
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-term-rewrite.html
@@ -68,17 +72,20 @@ func (f FuzzyQueryParams) Fuzzy() (*FuzzyQuery, error) {
 	q := &FuzzyQuery{field: f.Field}
 	err := q.setValue(f.Value)
 	if err != nil {
-		return q, newQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, QueryKindFuzzy, f.Field)
 	}
 	err = q.SetMaxExpansions(f.MaxExpansions)
 	if err != nil {
-		return q, newQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, QueryKindFuzzy, f.Field)
 	}
 	err = q.SetRewrite(f.Rewrite)
 	if err != nil {
-		return q, newQueryError(err, KindFuzzy, f.Field)
+		return q, newQueryError(err, QueryKindFuzzy, f.Field)
 	}
-	q.SetTranspositions(!f.NoTranspositions)
+	err = q.SetTranspositions(f.Transpositions)
+	if err != nil {
+		return q, newQueryError(err, QueryKindFuzzy, f.Field)
+	}
 	q.SetName(f.Name)
 	q.SetFuzziness(f.Fuzziness)
 	q.SetPrefixLength(f.PrefixLength)
@@ -143,19 +150,23 @@ func (f FuzzyQuery) Field() string {
 	return f.field
 }
 func (f FuzzyQuery) Kind() QueryKind {
-	return KindFuzzy
+	return QueryKindFuzzy
 }
 
 func (f *FuzzyQuery) IsEmpty() bool {
+	if f == nil {
+		return true
+	}
+
 	return !(len(f.field) != 0 || len(f.value) != 0)
 }
 
 func (f *FuzzyQuery) Set(field string, fuzzier Fuzzier) error {
 	q, err := fuzzier.Fuzzy()
 	if err != nil {
-		return newQueryError(err, KindFuzzy, field)
+		return newQueryError(err, QueryKindFuzzy, field)
 	}
-	err = checkField(field, KindFuzzy)
+	err = checkField(field, QueryKindFuzzy)
 	if err != nil {
 		return err
 	}
