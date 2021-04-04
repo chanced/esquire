@@ -4,7 +4,7 @@ Utilities that pair with the official Elasticsearch Go package
 
 ## Todo
 
-Testing is incredibly light to non-existent right now. I'm merely checking these off to keep track of which structures are done so even if they are marked as such, they undoubtly lack sufficient testing.
+Testing is incredibly light to non-existent right now. I'm merely using this list to keep track of which structures are theoretically complete.
 
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
