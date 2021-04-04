@@ -1,11 +1,19 @@
 package picker
 
-type Mappings struct {
+import "encoding/json"
+
+type mappings struct {
 	Properties Fields `json:"properties"  bson:"properties"`
 }
 
-func NewMappings() Mappings {
-	return Mappings{
-		Properties: Fields{},
+type Mappings struct {
+	Properties Fieldset `json:"properties"  bson:"properties"`
+}
+
+func (m *Mappings) MarshalJSON() ([]byte, error) {
+	f, err := m.Properties.Fields()
+	if err != nil {
+		return nil, err
 	}
+	return json.Marshal(f)
 }

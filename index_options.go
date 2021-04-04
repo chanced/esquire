@@ -134,6 +134,6 @@ func (io *indexOptionsParam) SetIndexOptions(v IndexOptions) error {
 		}
 	}
 	return fmt.Errorf("%w: expected one of: [%s]; received: %s",
-		ErrInvalidIndexOptionsParam, allIndexOptionsStr, v.String(),
+		ErrInvalidIndexOptions, allIndexOptionsStr, v.String(),
 	)
 }

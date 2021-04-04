@@ -1,6 +1,57 @@
 package picker
 
+import "encoding/json"
+
+type nestedField struct {
+	Dynamic         Dynamic     `json:"dynamic,omitempty"`
+	Properties      Fieldset    `json:"properties,omitempty"`
+	IncludeInParent interface{} `json:"include_in_parent,omitempty"`
+	IncludeInRoot   interface{} `json:"include_in_root,omitempty"`
+	Type            FieldType   `json:"type"`
+}
 type NestedFieldParams struct {
+	// (Optional) Whether or not new properties should be added dynamically to an existing nested object. Accepts true (default), false and strict.
+	Dynamic Dynamic `json:"dynamic,omitempty"`
+	// (Optional) The fields within the nested object, which can be of
+	// any data type, including nested. New properties may be added to an
+	// existing nested object.
+	Properties Fieldset `json:"properties,omitempty"`
+	// (Optional, Boolean) If true, all fields in the nested object are also
+	// added to the parent document as standard (flat) fields. Defaults to
+	// false.
+	IncludeInParent interface{} `json:"include_in_parent,omitempty"`
+	// (Optional, Boolean) If true, all fields in the nested object are also
+	// added to the root document as standard (flat) fields. Defaults to false.
+	IncludeInRoot interface{} `json:"include_in_root,omitempty"`
+}
+
+func (p NestedFieldParams) Nested() (*NestedField, error) {
+	f := &NestedField{}
+	e := &MappingError{}
+	err := f.SetDynamic(p.Dynamic)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetIncludeInParent(p.IncludeInParent)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetIncludeInRoot(p.IncludeInRoot)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetProperties(p.Properties)
+	if err != nil {
+		e.Append(err)
+	}
+	return f, e.ErrorOrNil()
+}
+func (p NestedFieldParams) Field() (Field, error) {
+	return p.Nested()
+}
+
+func (NestedFieldParams) Type() FieldType {
+	return FieldTypeNested
 }
 
 // NestedField is a specialised version of the object data type that allows
@@ -74,7 +125,36 @@ type NestedField struct {
 	dynamicParam
 	propertiesParam
 	includeInParentParam
-	IncludeInRootParam
+	includeInRootParam
+}
+
+func (f *NestedField) Field() (Field, error) {
+	return f, nil
+}
+
+func (NestedField) Type() FieldType {
+	return FieldTypeNested
+}
+
+func (n *NestedField) UnmarshalJSON(data []byte) error {
+	var p NestedFieldParams
+	err := json.Unmarshal(data, &p)
+	if err != nil {
+		return err
+	}
+	f, err := p.Nested()
+	*n = *f
+	return err
+}
+
+func (n NestedField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(nestedField{
+		Dynamic:         n.dynamic,
+		Properties:      n.properties,
+		IncludeInParent: n.includeInParent,
+		IncludeInRoot:   n.includeInRoot,
+		Type:            n.Type(),
+	})
 }
 
 func NewNestedField(params NestedFieldParams) (*NestedField, error) {

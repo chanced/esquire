@@ -17,20 +17,20 @@ type WithSearchQuoteAnalyzer interface {
 }
 
 type searchQuoteAnalyzerParam struct {
-	SearchQuoteAnalyzerValue string
+	searchQuoteAnalyzer string
 }
 
 // SearchQuoteAnalyzer setting allows you to specify an analyzer for
 // phrases, this is particularly useful when dealing with disabling
 // stop words for phrase queries.
 func (sq searchQuoteAnalyzerParam) SearchQuoteAnalyzer() string {
-	return sq.SearchQuoteAnalyzerValue
+	return sq.searchQuoteAnalyzer
 }
 
 // SetSearchQuoteAnalyzer sets search_quote_analyzer to v
 func (sq searchQuoteAnalyzerParam) SetSearchQuoteAnalyzer(v string) {
 	if sq.SearchQuoteAnalyzer() != v {
-		sq.SearchQuoteAnalyzerValue = v
+		sq.searchQuoteAnalyzer = v
 	}
 }
 

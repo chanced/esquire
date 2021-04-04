@@ -31,7 +31,7 @@ type FieldWithMaxShingleSize interface {
 	WithMaxShingleSize
 }
 
-// MaxShingleSizeParam is a mixin that adds the max_shingle_size parameter
+// maxShingleSizeParam is a mixin that adds the max_shingle_size parameter
 //
 // (Optional, integer) Largest shingle size to create. Valid values are 2
 // (inclusive) to 4 (inclusive). Defaults to 3.
@@ -42,13 +42,13 @@ type FieldWithMaxShingleSize interface {
 // More subfields enables more specific queries but increases index size.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-as-you-type.html#specific-params
-type MaxShingleSizeParam struct {
-	maxShingleSize int `bson:"max_shingle_size,omitempty" json:"max_shingle_size,omitempty"`
+type maxShingleSizeParam struct {
+	maxShingleSize int
 }
 
 // MaxShingleSize is the largest shingle size to create. Valid values are 2
 // (inclusive) to 4 (inclusive). Defaults to 3.
-func (mss MaxShingleSizeParam) MaxShingleSize() int {
+func (mss maxShingleSizeParam) MaxShingleSize() int {
 	if mss.maxShingleSize == 0 {
 		return DefaultMaxShingleSize
 	}
@@ -58,7 +58,7 @@ func (mss MaxShingleSizeParam) MaxShingleSize() int {
 // SetMaxShingleSize sets the MaxShingleSize to v
 //
 // Valid values are 2 (inclusive) to 4 (inclusive). Defaults to 3.
-func (mss *MaxShingleSizeParam) SetMaxShingleSize(v int) error {
+func (mss *maxShingleSizeParam) SetMaxShingleSize(v int) error {
 	if v == 0 {
 		mss.maxShingleSize = 0
 		return nil

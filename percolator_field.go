@@ -1,5 +1,23 @@
 package picker
 
+import "encoding/json"
+
+type percolatorField struct {
+	Type FieldType `json:"type"`
+}
+
+type PercolatorFieldParams struct{}
+
+func (PercolatorFieldParams) Type() FieldType {
+	return FieldTypePercolator
+}
+func (p PercolatorFieldParams) Field() (Field, error) {
+	return p.Percolator()
+}
+func (PercolatorFieldParams) Percolator() (*PercolatorField, error) {
+	return &PercolatorField{}, nil
+}
+
 // The PercolatorField type parses a json structure into a native query and
 // stores that query, so that the percolate query can use it to match provided
 // documents.
@@ -15,9 +33,19 @@ type PercolatorField struct{}
 func (PercolatorField) Type() FieldType {
 	return FieldTypePercolator
 }
-
+func (p *PercolatorField) Field() (Field, error) {
+	return p, nil
+}
 func NewPercolatorField() (*PercolatorField, error) {
 	return &PercolatorField{}, nil
 }
 
-func (PercolatorField) MarshalJSON()
+func (PercolatorField) MarshalJSON() ([]byte, error) {
+	return json.Marshal(percolatorField{
+		Type: FieldTypePercolator,
+	})
+}
+
+func (PercolatorField) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &percolatorField{})
+}

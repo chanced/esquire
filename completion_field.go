@@ -129,7 +129,7 @@ func (c CompletionField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(completionField{
 		Analyzer:                   c.analyzer,
 		SearchAnalyzer:             c.searchAnalyzer,
-		SearchQuoteAnalyzer:        c.SearchQuoteAnalyzerValue,
+		SearchQuoteAnalyzer:        c.searchQuoteAnalyzer,
 		PreserveSeperators:         c.preserveSeperators.Value(),
 		PreservePositionIncrements: c.preservePositionIncrements.Value(),
 		MaxInputLength:             c.maxInputLength.Value(),

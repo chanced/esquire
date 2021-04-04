@@ -1,5 +1,9 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+const DefaultEnablePositionIncrements = false
+
 // WithEnablePositionIncrements is a mapping with the enable_position_increments
 // parameter
 //
@@ -14,37 +18,27 @@ type WithEnablePositionIncrements interface {
 	//Defaults to true.
 	EnablePositionIncrements() bool
 	// SetEnablePositionIncrements sets the EnablePositionIncrements Value to v
-	SetEnablePositionIncrements(v bool)
+	SetEnablePositionIncrements(v interface{}) error
 }
 
-// FieldWithEnablePositionIncrements is a Field with the
-// enable_position_increments parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/token-count.html#token-count-params
-type FieldWithEnablePositionIncrements interface {
-	Field
-	WithIncludeInRoot
-}
-
-// EnablePositionIncrementsParam is a mixin that adds the enable_position_increments param
+// enablePositionIncrementsParam is a mixin that adds the enable_position_increments param
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#nested-params
-type EnablePositionIncrementsParam struct {
-	EnablePositionIncrementsValue *bool `bson:"enable_position_increments,omitempty" json:"enable_position_increments,omitempty"`
+type enablePositionIncrementsParam struct {
+	enablePositionIncrements dynamic.Bool
 }
 
 // EnablePositionIncrements deteremines if all fields in the nested object are also
 // added to the root document as standard (flat) fields. Defaults to false
-func (epi EnablePositionIncrementsParam) EnablePositionIncrements() bool {
-	if epi.EnablePositionIncrementsValue == nil {
-		return false
+func (epi enablePositionIncrementsParam) EnablePositionIncrements() bool {
+	if b, ok := epi.enablePositionIncrements.Bool(); ok {
+		return b
 	}
-	return *epi.EnablePositionIncrementsValue
+	return DefaultEnablePositionIncrements
 }
 
 // SetEnablePositionIncrements sets the EnablePositionIncrements Value to v
-func (epi *EnablePositionIncrementsParam) SetEnablePositionIncrements(v bool) {
-	if epi.EnablePositionIncrements() != v {
-		epi.EnablePositionIncrementsValue = &v
-	}
+func (epi *enablePositionIncrementsParam) SetEnablePositionIncrements(v interface{}) error {
+	return epi.enablePositionIncrements.Set(v)
+
 }

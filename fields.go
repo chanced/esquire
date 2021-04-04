@@ -23,7 +23,7 @@ func (fm FieldMappings) Fields() (Fields, error) {
 	return res, nil
 }
 
-type Fieldser interface {
+type Fieldset interface {
 	Fields() (Fields, error)
 }
 
@@ -161,7 +161,7 @@ func (f fieldsParam) Fields() Fields {
 }
 
 // SetFields sets the Fields value to v
-func (f *fieldsParam) SetFields(fields Fieldser) error {
+func (f *fieldsParam) SetFields(fields Fieldset) error {
 	fv, err := fields.Fields()
 	if err != nil {
 		return err

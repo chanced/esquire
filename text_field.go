@@ -159,6 +159,10 @@ func (p TextFieldParams) Text() (*TextField, error) {
 	return f, e.ErrorOrNil()
 }
 
+func NewTextField(params TextFieldParams) (*TextField, error) {
+	return params.Text()
+}
+
 // A TextField is a field to index full-text values, such as the body of an
 // email or the description of a product. These fields are analyzed, that is
 // they are passed through an analyzer to convert the string into a list of
@@ -238,12 +242,9 @@ func (t TextField) MarshalJSON() ([]byte, error) {
 		Norms:                    t.norms.Value(),
 		PositionIncrementGap:     t.positionIncrementGap.Value(),
 		SearchAnalyzer:           t.searchAnalyzer,
-		SearchQuoteAnalyzer:      t.SearchQuoteAnalyzerValue,
+		SearchQuoteAnalyzer:      t.searchQuoteAnalyzer,
 		Similarity:               t.similarity,
 		TermVector:               t.termVector,
 		Type:                     t.Type(),
 	})
-}
-func NewTextField(params TextFieldParams) (*TextField, error) {
-	return params.Text()
 }

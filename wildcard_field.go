@@ -23,10 +23,14 @@ func (p WildcardFieldParams) Field() (Field, error) {
 
 func (p WildcardFieldParams) Wildcard() (*WildcardField, error) {
 	f := &WildcardField{}
+	e := &MappingError{}
+
 	f.SetNullValue(p.NullValue)
 	err := f.SetIgnoreAbove(p.IgnoreAbove)
-	return f, err
-
+	if err != nil {
+		e.Append(err)
+	}
+	return f, e.ErrorOrNil()
 }
 
 func NewWildcardField(params WildcardFieldParams) (*WildcardField, error) {
@@ -51,6 +55,10 @@ type WildcardField struct {
 	ignoreAboveParam `bson:",inline" json:",inline"`
 }
 
+func (w *WildcardField) Field() (Field, error) {
+	return w, nil
+}
+
 func (WildcardField) Type() FieldType {
 	return FieldTypeWildcardKeyword
 }
@@ -69,9 +77,6 @@ func (w *WildcardField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	n, err := p.Wildcard()
-	if err != nil {
-		return err
-	}
 	*w = *n
-	return nil
+	return err
 }

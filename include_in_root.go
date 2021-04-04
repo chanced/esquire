@@ -24,16 +24,16 @@ type FieldWithIncludeInRoot interface {
 	WithIncludeInRoot
 }
 
-// IncludeInRootParam is a mixin that adds the include_in_root param
+// includeInRootParam is a mixin that adds the include_in_root param
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#nested-params
-type IncludeInRootParam struct {
+type includeInRootParam struct {
 	includeInRoot dynamic.Bool
 }
 
 // IncludeInRoot deteremines if all fields in the nested object are also
 // added to the root document as standard (flat) fields. Defaults to false
-func (iir IncludeInRootParam) IncludeInRoot() bool {
+func (iir includeInRootParam) IncludeInRoot() bool {
 	if b, ok := iir.includeInRoot.Bool(); ok {
 		return b
 	}
@@ -41,6 +41,6 @@ func (iir IncludeInRootParam) IncludeInRoot() bool {
 }
 
 // SetIncludeInRoot sets the IncludeInRoot Value to v
-func (iir *IncludeInRootParam) SetIncludeInRoot(v interface{}) error {
+func (iir *includeInRootParam) SetIncludeInRoot(v interface{}) error {
 	return iir.includeInRoot.Set(v)
 }

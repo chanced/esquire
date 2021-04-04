@@ -41,7 +41,7 @@ func (p propertiesParam) Properties() Fields {
 }
 
 // SetProperties sets the Properties value to v
-func (p *propertiesParam) SetProperties(v Fieldser) error {
+func (p *propertiesParam) SetProperties(v Fieldset) error {
 	f, err := v.Fields()
 	if err != nil {
 		return err

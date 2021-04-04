@@ -2,6 +2,11 @@ package picker
 
 import "encoding/json"
 
+type rankFeatureField struct {
+	PositiveScoreImpact interface{} `json:"positive_score_impact,omitempty"`
+	Type                FieldType   `json:"type"`
+}
+
 type RankFeatureFieldParams struct {
 	// PositiveScoreImpact is used by rank_feature queries to modify the scoring
 	// formula in such a way that the score increases or decreases the value of
@@ -19,8 +24,12 @@ func (p RankFeatureFieldParams) Field() (Field, error) {
 }
 func (p RankFeatureFieldParams) RankFeature() (*RankFeatureField, error) {
 	f := &RankFeatureField{}
+	e := &MappingError{}
 	err := f.SetPositiveScoreImpact(p.PositiveScoreImpact)
-	return f, err
+	if err != nil {
+		e.Append(err)
+	}
+	return f, e.ErrorOrNil()
 }
 
 func NewRankFeatureField(params RankFeatureFieldParams) (*RankFeatureField, error) {
@@ -39,9 +48,14 @@ type RankFeatureField struct {
 func (RankFeatureField) Type() FieldType {
 	return FieldTypeRankFeature
 }
+func (f *RankFeatureField) Field() (Field, error) {
+	return f, nil
+}
+
 func (f RankFeatureField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(RankFeatureFieldParams{
+	return json.Marshal(rankFeatureField{
 		PositiveScoreImpact: f.positiveScoreImpact.Value(),
+		Type:                f.Type(),
 	})
 }
 func (f *RankFeatureField) UnmarshalJSON(data []byte) error {
@@ -76,8 +90,12 @@ func (p RankFeaturesFieldParams) Field() (Field, error) {
 }
 func (p RankFeaturesFieldParams) RankFeatures() (*RankFeaturesField, error) {
 	f := &RankFeaturesField{}
+	e := &MappingError{}
 	err := f.SetPositiveScoreImpact(p.PositiveScoreImpact)
-	return f, err
+	if err != nil {
+		e.Append(err)
+	}
+	return f, e.ErrorOrNil()
 }
 
 func NewRankFeaturesField(params RankFeaturesFieldParams) (*RankFeaturesField, error) {
@@ -92,13 +110,22 @@ func NewRankFeaturesField(params RankFeaturesFieldParams) (*RankFeaturesField, e
 type RankFeaturesField struct {
 	positiveScoreImpactParam `json:",inline" bson:",inline"`
 }
+type rankFeaturesField struct {
+	PositiveScoreImpact interface{} `json:"positive_score_impact,omitempty"`
+	Type                FieldType   `json:"type"`
+}
 
 func (RankFeaturesField) Type() FieldType {
 	return FieldTypeRankFeatures
 }
+func (f *RankFeaturesField) Field() (Field, error) {
+	return f, nil
+}
+
 func (f RankFeaturesField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(RankFeaturesFieldParams{
+	return json.Marshal(rankFeaturesField{
 		PositiveScoreImpact: f.positiveScoreImpact.Value(),
+		Type:                f.Type(),
 	})
 }
 func (f *RankFeaturesField) UnmarshalJSON(data []byte) error {
@@ -109,9 +136,6 @@ func (f *RankFeaturesField) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	n, err := p.RankFeatures()
-	if err != nil {
-		return err
-	}
 	*f = *n
-	return nil
+	return err
 }
