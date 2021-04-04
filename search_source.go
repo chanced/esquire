@@ -88,7 +88,7 @@ func (s *SearchSource) SetValue(v interface{}) error {
 		s.WildcardPattern = nil
 		s.Specifications = nil
 	default:
-		return fmt.Errorf("%w: %t", ErrInvalidSourceKind, v)
+		return fmt.Errorf("%w: %t", ErrInvalidSource, v)
 	}
 	return nil
 }

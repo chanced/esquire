@@ -120,12 +120,6 @@ type WithTermVector interface {
 	SetTermVector(v TermVector) error
 }
 
-// FieldWithTermVector is a Field with the term_vector paramater
-type FieldWithTermVector interface {
-	Field
-	WithTermVector
-}
-
 // termVectorParam is a mixin that adds the term_vector parameter
 type termVectorParam struct {
 	termVector TermVector
@@ -144,7 +138,7 @@ func (tv termVectorParam) TermVector() TermVector {
 func (tv *termVectorParam) SetTermVector(v TermVector) error {
 	err := v.Validate()
 	if err != nil {
-		return fmt.Errorf("%w; received %s", v)
+		return fmt.Errorf("%w; received %s", err, v)
 	}
 	tv.termVector = v
 	return nil

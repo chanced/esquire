@@ -21,7 +21,7 @@ type WithScalingFactor interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html#scaled-float-params
 type scalingFactorParam struct {
-	scalingFactor float64 `json:"scaling_factor" bson:"scaling_factor"`
+	scalingFactor float64
 }
 
 // ScalingFactor to use when encoding values. Values will be multiplied by this

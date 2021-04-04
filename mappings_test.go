@@ -9,8 +9,8 @@ import (
 func TestMappings(t *testing.T) {
 	assert := require.New(t)
 	_ = assert
-	m := mapping.NewMappings()
-	a := mapping.NewAliasField()
-	m.Properties.AddField("alias", a)
+	// m := picker.NewMappings()
+	// a := picker.NewAliasField()
+	// m.Properties.AddField("alias", a)
 
 }

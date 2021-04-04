@@ -27,15 +27,6 @@ type WithPositionIncrementGap interface {
 	SetPositionIncrementGap(v interface{}) error
 }
 
-// FieldWithPositionIncrementGap is a Field mapping with the
-// position_increment_gap parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/position-increment-gap.html
-type FieldWithPositionIncrementGap interface {
-	Field
-	WithPositionIncrementGap
-}
-
 // positionIncrementGapParam is a mixin that adds the position_increment_gap
 // parameter
 //
@@ -47,7 +38,7 @@ type FieldWithPositionIncrementGap interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/position-increment-gap.html
 type positionIncrementGapParam struct {
-	positionIncrementGap dynamic.Number `json:"position_increment_gap,omitempty"`
+	positionIncrementGap dynamic.Number
 }
 
 // PositionIncrementGap is the number of fake term position which should be

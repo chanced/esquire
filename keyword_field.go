@@ -2,23 +2,6 @@ package picker
 
 import "encoding/json"
 
-type keywordField struct {
-	EagerGlobalOrdinals      interface{}  `eager_global_ordinals,omitempty`
-	Fields                   Fields       `json:"fields,omitempty"`
-	Index                    interface{}  `json:"index,omitempty"`
-	IndexOptions             IndexOptions `json:"index_options,omitempty"`
-	Norms                    interface{}  `json:"norms,omitempty"`
-	IgnoreAbove              interface{}  `json:"ignore_above,omitempty"`
-	NullValue                interface{}  `json:"null_value,omitempty"`
-	Store                    interface{}  `json:"store,omitempty"`
-	Similarity               Similarity   `json:"similarity,omitempty"`
-	Meta                     Meta         `json:"meta,omitempty"`
-	Normalizer               interface{}  `json:"normalizer,omitempty"`
-	SplitQueriesOnWhitespace interface{}  `json:"split_queries_on_whitespace,omitempty"`
-	Boost                    interface{}  `json:"boost,omitempty"`
-	Type                     FieldType    `json:"type"`
-}
-
 type KeywordFieldParams struct {
 	// Should the field be stored on disk in a column-stride fashion, so that it
 	// can later be used for sorting, aggregations, or scripting? Accepts true
@@ -27,7 +10,7 @@ type KeywordFieldParams struct {
 	// Should global ordinals be loaded eagerly on refresh? Accepts true or false
 	// (default). Enabling this is a good idea on fields that are frequently used
 	// for (significant) terms aggregations.
-	EagerGlobalOrdinals interface{} `eager_global_ordinals,omitempty`
+	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals,omitempty"`
 	// Multi-fields allow the same string value to be indexed in multiple ways
 	// for different purposes, such as one field for search and a multi-field
 	// for sorting and aggregations, or the same string value analyzed by
@@ -131,6 +114,9 @@ func (p KeywordFieldParams) Keyword() (*KeywordField, error) {
 	f.SetNullValue(p.NullValue)
 	return f, e.ErrorOrNil()
 }
+func NewKeywordField(params KeywordFieldParams) (*KeywordField, error) {
+	return params.Keyword()
+}
 
 // KeywordField keyword, which is used for structured content such as IDs, email
 // addresses, hostnames, status codes, zip codes, or tags.
@@ -153,8 +139,8 @@ type KeywordField struct {
 	boostParam
 }
 
-func (f *KeywordField) Field() (Field, error) {
-	return f, nil
+func (t *KeywordField) Field() (Field, error) {
+	return t, nil
 }
 func (KeywordField) Type() FieldType {
 	return FieldTypeKeyword
@@ -190,6 +176,20 @@ func (t KeywordField) MarshalJSON() ([]byte, error) {
 		Type:                     t.Type(),
 	})
 }
-func NewKeywordField(params KeywordFieldParams) (*KeywordField, error) {
-	return params.Keyword()
+
+type keywordField struct {
+	EagerGlobalOrdinals      interface{}  `json:"eager_global_ordinals,omitempty"`
+	Fields                   Fields       `json:"fields,omitempty"`
+	Index                    interface{}  `json:"index,omitempty"`
+	IndexOptions             IndexOptions `json:"index_options,omitempty"`
+	Norms                    interface{}  `json:"norms,omitempty"`
+	IgnoreAbove              interface{}  `json:"ignore_above,omitempty"`
+	NullValue                interface{}  `json:"null_value,omitempty"`
+	Store                    interface{}  `json:"store,omitempty"`
+	Similarity               Similarity   `json:"similarity,omitempty"`
+	Meta                     Meta         `json:"meta,omitempty"`
+	Normalizer               string       `json:"normalizer,omitempty"`
+	SplitQueriesOnWhitespace interface{}  `json:"split_queries_on_whitespace,omitempty"`
+	Boost                    interface{}  `json:"boost,omitempty"`
+	Type                     FieldType    `json:"type"`
 }

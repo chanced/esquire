@@ -7,7 +7,18 @@ type mappings struct {
 }
 
 type Mappings struct {
-	Properties Fieldset `json:"properties"  bson:"properties"`
+	Properties FieldMap `json:"properties"  bson:"properties"`
+}
+
+func (m *Mappings) UnmarshalJSON(data []byte) error {
+	*m = Mappings{}
+	var v mappings
+	err := json.Unmarshal(data, &v)
+	if err != nil {
+		return err
+	}
+	m.Properties = v.Properties.FieldMap()
+	return nil
 }
 
 func (m *Mappings) MarshalJSON() ([]byte, error) {

@@ -18,12 +18,6 @@ type WithIncludeInRoot interface {
 	SetIncludeInRoot(v interface{}) error
 }
 
-// FieldWithIncludeInRoot is a Field with the include_in_root parameter
-type FieldWithIncludeInRoot interface {
-	Field
-	WithIncludeInRoot
-}
-
 // includeInRootParam is a mixin that adds the include_in_root param
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#nested-params

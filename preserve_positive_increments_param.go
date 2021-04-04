@@ -26,11 +26,6 @@ type WithPreservePositionIncrements interface {
 	SetPreservePositionIncrements(v bool)
 }
 
-type FieldWithPreservePositionIncrements interface {
-	Field
-	WithPreservePositionIncrements
-}
-
 type preservePositionIncrementsParam struct {
 	preservePositionIncrements dynamic.Bool
 }

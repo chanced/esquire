@@ -9,26 +9,36 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type FieldMappings map[string]Fielder
-
-func (fm FieldMappings) Fields() (Fields, error) {
-	res := make(Fields, len(fm))
-	for k, v := range fm {
-		f, err := v.Field()
-		if err != nil {
-			return nil, err
-		}
-		res[k] = f
-	}
-	return res, nil
-}
+// TODO: This needs to be cleaned up
 
 type Fieldset interface {
 	Fields() (Fields, error)
+	Field(string) (Field, error)
+	Has(name string) bool
+	Set(name string, params Fielder) (Field, error)
+	Remove(name string) Field
+	Len() int
 }
 
 // Fields are a collection of Field mappings
 type Fields map[string]Field
+
+func (f Fields) Len() int {
+	return len(f)
+}
+func (f Fields) Remove(field string) Field {
+	v := f[field]
+
+	if v == nil {
+		return nil
+	}
+	// it doesn't matter if an error occurs here as all valid data is persisted with Field()
+	// and the field is being deleted anyway. Presumably, this will have already been validated
+	// anyway but if it is later added elsewhere, it'll go through validation again.
+	fv, _ := v.Field()
+	delete(f, field)
+	return fv
+}
 
 func (f Fields) FieldMap() FieldMap {
 	res := make(FieldMap, len(f))
@@ -42,23 +52,11 @@ func (f Fields) Fields() (Fields, error) {
 	return f, nil
 }
 
-type FieldMap map[string]Fielder
-
-func (f FieldMap) Fields() (Fields, error) {
-	e := &MappingError{}
-	res := make(Fields, len(f))
-	for k, v := range f {
-		fv, err := v.Field()
-		if err != nil {
-			e.Append(&FieldError{Field: k, Err: err})
-		}
-		res[k] = fv
+func (f Fields) Field(key string) (Field, error) {
+	if f[key] == nil {
+		return nil, ErrFieldNotFound
 	}
-	return res, e.ErrorOrNil()
-}
-
-func (f Fields) Field(key string) Field {
-	return f[key]
+	return f[key].Field()
 }
 
 func (f Fields) Get(key string) (Field, bool) {
@@ -112,6 +110,57 @@ func (f *Fields) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type FieldMap map[string]Fielder
+
+func (f FieldMap) Has(key string) bool {
+	_, exists := f[key]
+	return exists
+}
+func (f FieldMap) Field(field string) (Field, error) {
+	if f[field] == nil {
+		return nil, ErrFieldNotFound
+	}
+	return f[field].Field()
+}
+
+func (f FieldMap) Fields() (Fields, error) {
+	e := &MappingError{}
+	res := make(Fields, len(f))
+	for k, v := range f {
+		fv, err := v.Field()
+		if err != nil {
+			e.Append(&FieldError{Field: k, Err: err})
+		}
+		res[k] = fv
+	}
+	return res, e.ErrorOrNil()
+}
+func (f FieldMap) Set(name string, params Fielder) (Field, error) {
+	fld, err := params.Field()
+	if err != nil {
+		return fld, err
+	}
+	f[name] = fld
+	return fld, nil
+}
+func (f FieldMap) Remove(field string) Field {
+	v := f[field]
+
+	if v == nil {
+		return nil
+	}
+	// it doesn't matter if an error occurs here as all valid data is persisted with Field()
+	// and the field is being deleted anyway. Presumably, this will have already been validated
+	// anyway but if it is later added elsewhere, it'll go through validation again.
+	fv, _ := v.Field()
+	delete(f, field)
+	return fv
+}
+
+func (f FieldMap) Len() int {
+	return len(f)
+}
+
 // WithFields is a mixin that adds the fields param
 //
 // It is often useful to index the same field in different ways for different purposes.
@@ -127,14 +176,6 @@ type WithFields interface {
 	Fields() Fields
 	// SetFields sets the Fields value to v
 	SetFields(v Fields) error
-}
-
-// FieldWithFields is a Field with the fields paramater
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
-type FieldWithFields interface {
-	Field
-	WithFields
 }
 
 // fieldsParam is a mixin for mappings that adds the fields param

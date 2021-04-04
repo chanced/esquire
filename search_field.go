@@ -52,7 +52,7 @@ func (f *SearchField) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Fields allows for retrieving a list of document fields in the search response. It consults both the document _source and the index mappings to return each value in a standardized way that matches its mapping type. By default, date fields are formatted according to the date format parameter in their mappings. You can also use the fields parameter to retrieve runtime field values.
+// SearchFields allows for retrieving a list of document fields in the search response. It consults both the document _source and the index mappings to return each value in a standardized way that matches its mapping type. By default, date fields are formatted according to the date format parameter in their mappings. You can also use the fields parameter to retrieve runtime field values.
 //
 // (Optional, array of strings and objects) Array of wildcard (*) patterns. The request returns values for field names matching these patterns in the hits.fields property of the response.
 //

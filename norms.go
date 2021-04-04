@@ -33,14 +33,6 @@ type WithNorms interface {
 	SetIndexPhrases(v interface{}) error
 }
 
-// FieldWithNorms is a Field with the norms parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/norms.html
-type FieldWithNorms interface {
-	Field
-	WithNorms
-}
-
 // normsParam is a mixin that adds the norms parameter
 //
 // Norms store various normalization factors that are later used at query time

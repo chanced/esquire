@@ -112,8 +112,6 @@ func (m *Meta) Set(key string, value string) error {
 	return nil
 }
 
-// FieldWithMeta is a Field with a meta parameter.
-
 // WithMeta is a mapping with the meta parameter
 //
 // Meta is metadata attached to the field. This metadata is opaque to

@@ -25,14 +25,6 @@ type WithIgnoreMalformed interface {
 	SetIgnoreMalformed(v interface{}) error
 }
 
-// FieldWithIgnoreMalformed is a Field with the ignore_malformed parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-malformed.html
-type FieldWithIgnoreMalformed interface {
-	Field
-	WithIgnoreMalformed
-}
-
 type ignoreMalformedParam struct {
 	ignoreMalformed dynamic.Bool
 }
@@ -49,5 +41,5 @@ func (im ignoreMalformedParam) IgnoreMalformed() bool {
 
 // SetIgnoreMalformed sets ignore_malformed to v
 func (im *ignoreMalformedParam) SetIgnoreMalformed(v interface{}) error {
-	return im.SetIgnoreMalformed(v)
+	return im.ignoreMalformed.Set(v)
 }

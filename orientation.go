@@ -49,7 +49,7 @@ func (o *Orientation) Validate() error {
 		for i, v := range allOrientations {
 			strs[i] = `"` + v.String() + `"`
 		}
-		return fmt.Errorf("%w; expected any of [%s]", ErrInvalidOrientation)
+		return fmt.Errorf("%w; expected any of [%s]", ErrInvalidOrientation, strs)
 	}
 	return nil
 }
@@ -95,14 +95,8 @@ type WithOrientation interface {
 	SetOrientation(v Orientation) error
 }
 
-// FieldWithOrientation is a Field with the orientation paramater
-type FieldWithOrientation interface {
-	Field
-	WithOrientation
-}
-
 type orientationParam struct {
-	orientation Orientation `json:"orientation,omitempty"`
+	orientation Orientation
 }
 
 // Orientation is the vertex order for the shape’s coordinates list.

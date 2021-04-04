@@ -16,14 +16,6 @@ type WithIndexPrefixes interface {
 	SetIndexPrefixes(v *IndexPrefixes) error
 }
 
-// FieldWithIndexPrefixes is a Field with index_prefix parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/index-prefixes.html
-type FieldWithIndexPrefixes interface {
-	Field
-	WithIndexPrefixes
-}
-
 // indexPrefixesParams is a mixin that adds the index_prefixes param
 //
 // The index_prefixes parameter enables the indexing of term prefixes to speed
@@ -34,7 +26,9 @@ type indexPrefixesParams struct {
 	indexPrefixes *IndexPrefixes
 }
 
-func (ip indexPrefixesParams) IndexPrefixes() *IndexPrefixes
+func (ip indexPrefixesParams) IndexPrefixes() *IndexPrefixes {
+	return ip.indexPrefixes
+}
 func (ip *indexPrefixesParams) SetIndexPrefixes(v *IndexPrefixes) error {
 	// TODO: validate
 	ip.indexPrefixes = v

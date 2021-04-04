@@ -19,13 +19,6 @@ type WithSplitQueriesOnWhitespace interface {
 	SetSplitQueriesOnWhitespace(v interface{}) error
 }
 
-// FieldWithSplitQueriesOnWhitespace is a Field with the
-// split_queries_on_whitespace param
-type FieldWithSplitQueriesOnWhitespace interface {
-	Field
-	WithSplitQueriesOnWhitespace
-}
-
 type splitQueriesOnWhitespaceParam struct {
 	splitQueriesOnWhitespace dynamic.Bool
 }

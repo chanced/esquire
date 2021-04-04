@@ -4,7 +4,7 @@ import "encoding/json"
 
 type textField struct {
 	Analyzer                 string                    `json:"analyzer,omitempty"`
-	EagerGlobalOrdinals      interface{}               `eager_global_ordinals,omitempty`
+	EagerGlobalOrdinals      interface{}               `json:"eager_global_ordinals,omitempty"`
 	FieldData                interface{}               `json:"fielddata,omitempty"`
 	FieldDataFrequencyFilter *FieldDataFrequencyFilter `json:"fielddata_frequency_filter,omitempty"`
 	Fields                   Fields                    `json:"fields,omitempty"`
@@ -32,7 +32,7 @@ type TextFieldParams struct {
 	// Should global ordinals be loaded eagerly on refresh? Accepts true or false
 	// (default). Enabling this is a good idea on fields that are frequently used
 	// for (significant) terms aggregations.
-	EagerGlobalOrdinals interface{} `eager_global_ordinals,omitempty`
+	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals,omitempty"`
 	// Can the field use in-memory fielddata for sorting, aggregations, or
 	// scripting? Accepts true or false (default).
 	FieldData interface{} `json:"fielddata,omitempty"`
@@ -207,8 +207,8 @@ type TextField struct {
 	boostParam
 }
 
-func (f *TextField) Field() (Field, error) {
-	return f, nil
+func (t *TextField) Field() (Field, error) {
+	return t, nil
 }
 func (TextField) Type() FieldType {
 	return FieldTypeText

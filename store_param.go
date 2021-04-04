@@ -34,14 +34,6 @@ type WithStore interface {
 	SetStore(v interface{}) error
 }
 
-// FieldWithStore is a Field with a Store attribute
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-store.html
-type FieldWithStore interface {
-	Field
-	WithStore
-}
-
 type storeParam struct {
 	store dynamic.Bool
 }

@@ -16,14 +16,6 @@ type WithIndex interface {
 	SetIndex(v interface{}) error
 }
 
-// FieldWithIndex is a Field with the index parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-index.html
-type FieldWithIndex interface {
-	Field
-	WithIndex
-}
-
 type indexParam struct {
 	index dynamic.Bool
 }

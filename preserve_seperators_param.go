@@ -20,7 +20,7 @@ type WithPreserveSeperators interface {
 }
 
 type preserveSeperatorsParam struct {
-	preserveSeperators dynamic.Bool `json:"preserve_separators,omitempty"`
+	preserveSeperators dynamic.Bool
 }
 
 // PreserveSeperators preserves the separators, defaults to true. If

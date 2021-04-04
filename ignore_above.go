@@ -22,16 +22,6 @@ type WithIgnoreAbove interface {
 	SetIgnoreAbove(v interface{}) error
 }
 
-// FieldWithIgnoreAbove is a Field with the IgnoreAbove param
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-above.html
-type FieldWithIgnoreAbove interface {
-	Field
-	WithIgnoreAbove
-}
-
-// ignoreAboveParam is a mixin for mappings that adds the IgnoreAbove
-
 type ignoreAboveParam struct {
 	ignoreAbove dynamic.Number
 }

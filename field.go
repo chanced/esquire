@@ -84,10 +84,9 @@ func UnmarshalFieldJSON(data []byte, field *Field) error {
 
 // Field is an elasticsearch field mapping
 type Field interface {
-	Type() FieldType
+	Fielder
 	json.Marshaler
 	json.Unmarshaler
-	Fielder
 }
 
 type Fielder interface {

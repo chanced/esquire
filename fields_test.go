@@ -20,16 +20,17 @@ func TestJSON(t *testing.T) {
 	assert.NotNil(handler)
 	assert.NotNil(hv)
 
-	kwraw := []byte(`{
+	data := []byte(`{
         "type" : "keyword",
         "index" : false
         }`)
 
-	var kwf picker.Field = &picker.KeywordField{}
-	err = json.Unmarshal(kwraw, kwf)
+	var keyword picker.Field = &picker.KeywordField{}
+	err = json.Unmarshal(data, keyword)
 	assert.NoError(err)
-	assert.False(kwf.(*picker.KeywordField).Index())
-	raw1 := []byte(`{
+	assert.False(keyword.(*picker.KeywordField).Index())
+
+	data = []byte(`{
         "properties" : {
             "age" : {
             "type" : "integer"
@@ -46,15 +47,31 @@ func TestJSON(t *testing.T) {
             }
         }
     }`)
-	_ = raw1
-	m1 := picker.Mappings{}
-	err = json.Unmarshal(raw1, &m1)
-	assert.NoError(err)
 
-	fmt.Printf("%+v", m1.Properties["employee-id"])
-	emplID := m1.Properties.Field("employee-id")
+	m1 := picker.Mappings{}
+	err = json.Unmarshal(data, &m1)
+	assert.NoError(err)
+	emplID, err := m1.Properties.Field("employee-id")
+	assert.NoError(err)
+	fmt.Printf("%+v", emplID)
 	assert.NotNil(emplID, "employee-id should have been parsed and aded to the Properties Field map")
 	emplIDAsKeyword, ok := emplID.(*picker.KeywordField)
 	assert.True(ok, "employee-id should be unmarshaled and a KeywordField")
 	assert.False(emplIDAsKeyword.Index(), "index value should be false")
+
+	email, err := m1.Properties.Field("email")
+	assert.NoError(err)
+	assert.NotNil(email)
+	assert.Equal(picker.FieldTypeKeyword, email.Type())
+	name, err := m1.Properties.Field("name")
+	assert.NoError(err)
+	assert.NotNil(name)
+	assert.Equal(picker.FieldTypeText, name.Type())
+
+	_, err = m1.Properties.Field("not_exist")
+	assert.ErrorIs(err, picker.ErrFieldNotFound)
+
+	d, err := json.MarshalIndent(m1, "", "  ")
+	assert.NoError(err)
+	fmt.Println(string(d))
 }

@@ -4,73 +4,73 @@ Utilities that pair with the official Elasticsearch Go package
 
 ## Todo
 
-Testing is incredibly light right now.
+Testing is incredibly light to non-existent right now. Even though some, especially fields, have been marked as "done", they still need tests. I'm merely checking them off because their structure is intact.
 
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
 - #### Common types
 
-  - [ ] **[Binary](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/binary.html)**\
+  - [x] **[Binary](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/binary.html)**\
          Binary value encoded as a Base64 string.
-  - [ ] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/boolean.html)**\
+  - [x] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/boolean.html)**\
          true and false values.
-  - [ ] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#keyword-field-type)**\
+  - [x] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#keyword-field-type)**\
          used for structured content such as IDs, email addresses, hostnames, status codes, zip codes, or tags.
-  - [ ] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type) [X-Pack]**\
+  - [x] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type) [X-Pack]**\
          Constant keyword is a specialization of the keyword field for the case that all documents in the index have the same value.
-  - [ ] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
+  - [x] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
          The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
-  - [ ] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Long is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
-  - [ ] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Integer is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
-  - [ ] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Byte is a signed 8-bit integer with a minimum value of -128 and a maximum value of 127.
-  - [ ] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Float is a single-precision 32-bit IEEE 754 floating point number, restricted to finite values.
-  - [ ] **[Double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Double is a double-precision 64-bit IEEE 754 floating point number, restricted to finite values.
-  - [ ] **[Short](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[Short](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Short is signed 16-bit integer with a minimum value of -32,768 and a maximum value of 32,767.
-  - [ ] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          HalfFloat is a half-precision 16-bit IEEE 754 floating point number, restricted to finite values.
-  - [ ] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value of 0 and a maximum value of 264-1.
-  - [ ] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+  - [x] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
          Numeric types, such as long and double, used to express amounts.
-  - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
+  - [x] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
          Date field type
-  - [ ] **[Date nanoseconds](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date_nanos.html)**\
+  - [x] **[Date nanoseconds](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date_nanos.html)**\
          Date nanoseconds field type
-  - [ ] **[Alias](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/alias.html)**\
+  - [x] **[Alias](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/alias.html)**\
          Defines an alias for an existing field.
 
 - #### Objects and relational types
 
-  - [ ] **[Object](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/object.html)**\
+  - [x] **[Object](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/object.html)**\
          A JSON object.
-  - [ ] **[Flattened](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/flattened.html)**\
+  - [x] **[Flattened](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/flattened.html)**\
          An entire JSON object as a single field value.
-  - [ ] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/nested.html)**\
+  - [x] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/nested.html)**\
          A JSON object that preserves the relationship between its subfields.
-  - [ ] **[Join](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/parent-join.html)**\
+  - [x] **[Join](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/parent-join.html)**\
          Defines a parent/child relationship for documents in the same index.
 
 - #### Structured data types
 
-  - [ ] **[Long range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[Long range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          LongRangeField is a range of signed 64-bit integers with a minimum value of -263 and maximum of 263-1.
-  - [ ] **[Integer range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[Integer range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          Range types, such as long_range, double_range, date_range, and ip_range.
-  - [ ] **[Float range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[Float range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          FloatRangeField is a range of single-precision 32-bit IEEE 754 floating point values.
-  - [ ] **[Double range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[Double range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          Range types, such as long_range, double_range, date_range, and ip_range.
-  - [ ] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          DateRangeField is a range of date values. Date ranges support various date formats through the format mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the now date math expression are not supported
-  - [ ] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+  - [x] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
          IPRangeField is a range of ip values supporting either IPv4 or IPv6 (or mixed) addresses.
-  - [ ] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
+  - [x] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
          IPv4 and IPv6 addresses.
   - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
          Software versions. Supports Semantic Versioning precedence rules.
@@ -86,33 +86,33 @@ Testing is incredibly light right now.
 
 - #### Text search types
 
-  - [ ] **[Text](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/text.html)**\
+  - [x] **[Text](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/text.html)**\
          Analyzed, unstructured text.
   - [ ] **[Annotated-text](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-annotated-text.html)**\
          Text containing special markup. Used for identifying named entities.
-  - [ ] **[Completion](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-suggesters.html#completion-suggester)**\
+  - [x] **[Completion](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-suggesters.html#completion-suggester)**\
          Used for auto-complete suggestions.
-  - [ ] **[Search as you type](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-as-you-type.html)**\
+  - [x] **[Search as you type](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-as-you-type.html)**\
          text-like type for as-you-type completion.
-  - [ ] **[Token count](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/token-count.html)**\
+  - [x] **[Token count](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/token-count.html)**\
          A count of tokens in a text.
 
 - #### Document ranking types
 
-  - [ ] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html) [X-Pack]**\
+  - [x] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html) [X-Pack]**\
          Records dense vectors of float values.
-  - [ ] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html) [X-Pack] [Deprecated]**\
+  - [x] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html) [X-Pack] [Deprecated]**\
          Records sparse vectors of float values.
-  - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-feature.html)**\
+  - [x] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-feature.html)**\
          Records a numeric feature to boost hits at query time.
-  - [ ] **[Rank features](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-features.html)**\
+  - [x] **[Rank features](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-features.html)**\
          Records numeric features to boost hits at query time.
 
 - #### Spatial data types
 
-  - [ ] **[Geo point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-point.html)**\
+  - [x] **[Geo point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-point.html)**\
          Latitude and longitude points.
-  - [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-shape.html)**\
+  - [x] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-shape.html)**\
          Complex shapes, such as polygons.
   - [ ] **[Point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/point.html)**\
          Arbitrary cartesian points.
@@ -120,7 +120,7 @@ Testing is incredibly light right now.
          Arbitrary cartesian geometries.
 
 - #### Other types
-  - [ ] **[Percolator](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/percolator.html)**\
+  - [x] **[Percolator](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/percolator.html)**\
          Indexes queries written in Query DSL.
 
 ### Queries

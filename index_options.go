@@ -7,12 +7,12 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-// IndexOptions is an option to the the index_options parameter controls what
-// information is added to the inverted index for search and highlighting
-// purposes.
+// IndexOptions controls what information is added to the inverted index for
+// search and highlighting purposes.
 type IndexOptions string
 
 const (
+	IndexOptionsUnspecified IndexOptions = ""
 	// IndexOptionsDocs - Only the doc number is indexed. Can answer the
 	// question Does this term exist in this field?
 	IndexOptionsDocs IndexOptions = "docs"
@@ -34,6 +34,7 @@ func (io IndexOptions) String() string {
 }
 
 var allIndexOptions = []IndexOptions{
+	IndexOptionsUnspecified,
 	IndexOptionsDocs,
 	IndexOptionsFreqs,
 	IndexOptionsPositions,
@@ -74,14 +75,6 @@ type WithIndexOptions interface {
 	IndexOptions() IndexOptions
 	// SetIndexOptions sets IndexOptions value to v
 	SetIndexOptions(v IndexOptions) error
-}
-
-// FieldWithIndexOptions is a Field mapping with the index_options parameter
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/index-options.html
-type FieldWithIndexOptions interface {
-	Field
-	WithIndexOptions
 }
 
 // indexOptionsParam is a mixin that adds the index_options param to mappings
@@ -133,7 +126,7 @@ func (io *indexOptionsParam) SetIndexOptions(v IndexOptions) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("%w: expected one of: [%s]; received: %s",
+	return fmt.Errorf("%w: expected one of: [%s]; received: \"%s\"",
 		ErrInvalidIndexOptions, allIndexOptionsStr, v.String(),
 	)
 }

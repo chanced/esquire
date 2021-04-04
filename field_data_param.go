@@ -38,14 +38,6 @@ type WithFieldData interface {
 	SetFieldData(v bool) error
 }
 
-// FieldWithFieldData is a Field with a FieldData param
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#fielddata-mapping-param
-type FieldWithFieldData interface {
-	Field
-	WithFieldData
-}
-
 type fieldDataParam struct {
 	fieldData dynamic.Bool
 }
@@ -61,5 +53,5 @@ func (fd fieldDataParam) FieldData() bool {
 
 // SetFieldData sets FieldData to v
 func (fd *fieldDataParam) SetFieldData(v interface{}) error {
-	return fd.SetFieldData(v)
+	return fd.fieldData.Set(v)
 }

@@ -25,12 +25,6 @@ type WithMaxShingleSize interface {
 	SetMaxShingleSize(v int) error
 }
 
-// FieldWithMaxShingleSize is a Field mapping with the max_shingle_size parameter
-type FieldWithMaxShingleSize interface {
-	Field
-	WithMaxShingleSize
-}
-
 // maxShingleSizeParam is a mixin that adds the max_shingle_size parameter
 //
 // (Optional, integer) Largest shingle size to create. Valid values are 2

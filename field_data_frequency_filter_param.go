@@ -36,15 +36,6 @@ type WithFieldDataFrequencyFilter interface {
 	SetFieldDataFrequencyFilter(v *FieldDataFrequencyFilter) error
 }
 
-// FieldWithFieldDataFrequencyFilter is a Field with a FieldDataFrequencyFilter
-// param
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#field-data-filtering
-type FieldWithFieldDataFrequencyFilter interface {
-	Field
-	WithFieldDataFrequencyFilter
-}
-
 // fieldDataFrequencyFilterParam is a mixin that adds the
 // field_data_frequency_filter param
 //

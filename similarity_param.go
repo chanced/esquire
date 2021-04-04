@@ -61,12 +61,6 @@ type WithSimilarity interface {
 	SetSimilarity(v Similarity) error
 }
 
-// FieldWithSimilarity is a Field with the similarity paramater
-type FieldWithSimilarity interface {
-	Field
-	WithSimilarity
-}
-
 // similarityParam is a mixin that adds the similarity parameter
 //
 // Elasticsearch allows you to configure a scoring algorithm or similarity per
