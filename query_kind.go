@@ -32,15 +32,16 @@ const (
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
-	QueryKindPrefix:    func() QueryClause { return &PrefixQuery{} },
-	QueryKindMatch:     func() QueryClause { return &MatchQuery{} },
-	QueryKindTerm:      func() QueryClause { return &TermQuery{} },
-	QueryKindTerms:     func() QueryClause { return &TermsQuery{} },
-	QueryKindBoolean:   func() QueryClause { return &BooleanQuery{} },
-	QueryKindExists:    func() QueryClause { return &ExistsQuery{} },
-	QueryKindRange:     func() QueryClause { return &RangeQuery{} },
-	QueryKindMatchAll:  func() QueryClause { return &MatchAllQuery{} },
-	QueryKindMatchNone: func() QueryClause { return &MatchNoneQuery{} },
-	QueryKindScript:    func() QueryClause { return &ScriptQuery{} },
-	QueryKindBoosting:  func() QueryClause { return &BoostingQuery{} },
+	QueryKindPrefix:        func() QueryClause { return &PrefixQuery{} },
+	QueryKindMatch:         func() QueryClause { return &MatchQuery{} },
+	QueryKindTerm:          func() QueryClause { return &TermQuery{} },
+	QueryKindTerms:         func() QueryClause { return &TermsQuery{} },
+	QueryKindBoolean:       func() QueryClause { return &BooleanQuery{} },
+	QueryKindExists:        func() QueryClause { return &ExistsQuery{} },
+	QueryKindRange:         func() QueryClause { return &RangeQuery{} },
+	QueryKindMatchAll:      func() QueryClause { return &MatchAllQuery{} },
+	QueryKindMatchNone:     func() QueryClause { return &MatchNoneQuery{} },
+	QueryKindScript:        func() QueryClause { return &ScriptQuery{} },
+	QueryKindBoosting:      func() QueryClause { return &BoostingQuery{} },
+	QueryKindConstantScore: func() QueryClause { return &ConstantScoreQuery{} },
 }

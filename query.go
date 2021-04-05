@@ -138,6 +138,12 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-boosting-query.html
 	Boosting Boostinger
+
+	// A query which wraps another query, but executes it in filter context. All
+	// matching documents are given the same “constant” _score.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-constant-score-query.html
+	ConstantScore ConstantScorer
 }
 
 func (q *QueryParams) boolean() (*BooleanQuery, error) {
@@ -237,6 +243,12 @@ func (q *QueryParams) boosting() (*BoostingQuery, error) {
 	return q.Boosting.Boosting()
 }
 
+func (q *QueryParams) constantScore() (*ConstantScoreQuery, error) {
+	if q.ConstantScore == nil {
+		return nil, nil
+	}
+	return q.ConstantScore.ConstantScore()
+}
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
@@ -298,6 +310,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	constantScore, err := q.constantScore()
+	if err != nil {
+		return nil, err
+	}
 	qv := &Query{
 		match:         match,
 		exists:        exists,
@@ -313,6 +329,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		matchNone:     matchNone,
 		functionScore: funcScore,
 		boosting:      boosting,
+		constantScore: constantScore,
 	}
 	return qv, nil
 }
@@ -351,6 +368,7 @@ type Query struct {
 	matchNone     *MatchNoneQuery
 	script        *ScriptQuery
 	boosting      *BoostingQuery
+	constantScore *ConstantScoreQuery
 }
 
 func (q Query) Match() *MatchQuery {
@@ -428,7 +446,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindScript:        q.script,
 		QueryKindFunctionScore: q.functionScore,
 		QueryKindBoosting:      q.boosting,
-		// QueryKindConstantScore: q.constantScore
+		QueryKindConstantScore: q.constantScore,
 		// QueryKindDisjunctionMax: q.disjunctionMax
 	}
 
@@ -465,10 +483,19 @@ func (q *Query) setClause(qc QueryClause) {
 		q.functionScore = qc.(*FunctionScoreQuery)
 	case QueryKindBoosting:
 		q.boosting = qc.(*BoostingQuery)
+	case QueryKindConstantScore:
+		q.constantScore = qc.(*ConstantScoreQuery)
 	}
 
 }
-
+func (q *Query) Set(params Querier) error {
+	qv, err := params.Query()
+	if err != nil {
+		return err
+	}
+	*q = *qv
+	return nil
+}
 func (q *Query) IsEmpty() bool {
 	if q == nil {
 		return true
