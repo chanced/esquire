@@ -28,6 +28,47 @@ s, err := picker.NewSearch(picker.SearchParams{
     })
 ```
 
+Produces:
+
+```json
+{
+  "query": {
+    "intervals": {
+      "my_text": {
+        "all_of": {
+          "intervals": [
+            {
+              "match": {
+                "query": "my favorite food",
+                "max_gaps": 0,
+                "ordered": true
+              }
+            },
+            {
+              "any_of": {
+                "intervals": [
+                  {
+                    "match": {
+                      "query": "hot water"
+                    }
+                  },
+                  {
+                    "match": {
+                      "query": "cold porridge"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "ordered": true
+        }
+      }
+    }
+  }
+}
+```
+
 ## Todo
 
 Testing is incredibly sparse at the moment. I'm merely using this list to keep track of which structures are theoretically complete. It does not indicate the doneness of the items as testing is undoubtly lacking.

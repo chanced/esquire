@@ -84,7 +84,7 @@ func (m *MatchRule) Query() string {
 	return m.query
 }
 
-func (m MatchRule) SetQuery(query string) error {
+func (m *MatchRule) SetQuery(query string) error {
 	if len(query) == 0 {
 		return ErrQueryRequired
 	}
