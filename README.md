@@ -2,6 +2,32 @@
 
 Utilities that pair with the official Elasticsearch Go package
 
+         ```go
+         	s, err := picker.NewSearch(picker.SearchParams{
+    	Query: picker.QueryParams{
+    		Intervals: picker.IntervalsQueryParams{
+    			Field: "my_text",
+    			Rule: picker.AllOfRuleParams{
+    				Ordered: true,
+    				Intervals: picker.Ruleset{
+    					picker.MatchRuleParams{
+    						Query:   "my favorite food",
+    						MaxGaps: 0,
+    						Ordered: true,
+    					},
+    					picker.AnyOfRuleParams{
+    						Intervals: picker.Ruleset{
+    							picker.MatchRuleParams{Query: "hot water"},
+    							picker.MatchRuleParams{Query: "cold porridge"},
+    						},
+    					},
+    				},
+    			},
+    		},
+    	},
+    })
+       ```
+
 ## Todo
 
 Testing is incredibly sparse at the moment. I'm merely using this list to keep track of which structures are theoretically complete. It does not indicate the doneness of the items as testing is undoubtly lacking.
@@ -141,7 +167,6 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
   The full text queries enable you to search analyzed text fields such as the body of an email. The query string is processed using the same analyzer that was applied to the field during indexing.
   - [x] **[Intervals](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-intervals-query.html)**\
          A full text query that allows fine-grained control of the ordering and proximity of matching terms.
-        `go s, err := picker.NewSearch(picker.SearchParams{ Query: picker.QueryParams{ Intervals: picker.IntervalsQueryParams{ Field: "my_text", Rule: picker.AllOfRuleParams{ Ordered: true, Intervals: picker.Ruleset{ picker.MatchRuleParams{ Query: "my favorite food", MaxGaps: 0, Ordered: true, }, picker.AnyOfRuleParams{ Intervals: picker.Ruleset{ picker.MatchRuleParams{Query: "hot water"}, picker.MatchRuleParams{Query: "cold porridge"}, }, }, }, }, }, }, }) `
   - [x] **[Match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query.html)**\
          The standard query for performing full text queries, including fuzzy matching and phrase or proximity queries.
   - [ ] **[Match bool prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-bool-prefix-query.html)**\
