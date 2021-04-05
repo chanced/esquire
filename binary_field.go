@@ -2,12 +2,6 @@ package picker
 
 import "encoding/json"
 
-type binaryField struct {
-	DocValues interface{} `json:"doc_values,omitempty"`
-	Store     interface{} `json:"store,omitempty"`
-	Type      FieldType   `json:"type"`
-}
-
 type BinaryFieldParams struct {
 	// Should the field be stored on disk in a column-stride fashion, so that it can later be used for sorting, aggregations, or scripting? Accepts true or false (default).
 	DocValues interface{} `json:"doc_values,omitempty"`
@@ -75,4 +69,11 @@ func (b *BinaryField) UnmarshalJSON(data []byte) error {
 	}
 	*b = *n
 	return mErr.ErrorOrNil()
+}
+
+//easyjson:json
+type binaryField struct {
+	DocValues interface{} `json:"doc_values,omitempty"`
+	Store     interface{} `json:"store,omitempty"`
+	Type      FieldType   `json:"type"`
 }

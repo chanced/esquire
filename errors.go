@@ -47,6 +47,12 @@ var (
 	ErrNegativeRequired           = errors.New("picker: negative is required")
 	ErrPositiveRequired           = errors.New("picker: positive is required")
 	ErrQueriesRequired            = errors.New("picker: queries is required")
+	ErrSourceRequired             = errors.New("picker: source is required")
+	ErrPrefixRequired             = errors.New("picker: prefix is required")
+	ErrWildcardRequired           = errors.New("picker: wildcard is required")
+	ErrTermRequired               = errors.New("picker: term is required")
+	ErrValuesRequired             = errors.New("picker: values is required")
+	ErrIntervalsRequired          = errors.New("picker: intervals are required")
 )
 
 type FieldError struct {

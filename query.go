@@ -73,8 +73,8 @@ type QueryParams struct {
 
 	// Term returns documents that contain an exact term in a provided field.
 	//
-	// You can use the term query to find documents based on a precise value such as
-	// a price, a product ID, or a username.
+	// You can use the term query to find documents based on a precise value
+	// such as a price, a product ID, or a username.
 	//
 	// Avoid using the term query for text fields.
 	//
@@ -96,8 +96,8 @@ type QueryParams struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-terms-query.html
 	Terms CompleteTermser
 
-	// Match returns documents that match a provided text, number, date or boolean
-	// value. The provided text is analyzed before matching.
+	// Match returns documents that match a provided text, number, date or
+	// boolean value. The provided text is analyzed before matching.
 	//
 	// The match query is the standard query for performing a full-text search,
 	// including options for fuzzy matching.
@@ -112,11 +112,11 @@ type QueryParams struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 	Boolean Booler
 
-	// Fuzzy returns documents that contain terms similar to the search term,
-	// as measured by a Levenshtein edit distance.
+	// Fuzzy returns documents that contain terms similar to the search term, as
+	// measured by a Levenshtein edit distance.
 	//
-	// An edit distance is the number of one-character changes needed to turn one
-	// term into another. These changes can include:
+	// An edit distance is the number of one-character changes needed to turn
+	// one term into another. These changes can include:
 	//
 	// - Changing a character (box → fox)
 	//
@@ -133,23 +133,26 @@ type QueryParams struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
 	Fuzzy CompleteFuzzier
 
-	// Prefix returns documents that contain a specific prefix in a provided field.
+	// Prefix returns documents that contain a specific prefix in a provided
+	// field.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html
 	Prefix CompletePrefixer
 
-	// FunctionScore  allows you to modify the score of documents that are retrieved
-	// by a query. This can be useful if, for example, a score function is
-	// computationally expensive and it is sufficient to compute the score on a
-	// filtered set of documents.
+	// FunctionScore  allows you to modify the score of documents that are
+	// retrieved by a query. This can be useful if, for example, a score
+	// function is computationally expensive and it is sufficient to compute the
+	// score on a filtered set of documents.
 	//
 	// To use function_score, the user has to define a query and one or more
-	// functions, that compute a new score for each document returned by the query.
+	// functions, that compute a new score for each document returned by the
+	// query.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-function-score-query.html
 	FunctionScore FunctionScorer
 
-	// ScoreScript uses a script to provide a custom score for returned documents.
+	// ScoreScript uses a script to provide a custom score for returned
+	// documents.
 	//
 	// The script_score query is useful if, for example, a scoring function is
 	// expensive and you only need to calculate the score of a filtered set of
@@ -158,7 +161,8 @@ type QueryParams struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
 	ScriptScore ScriptScorer
 
-	// Filters documents based on a provided script. The script query is typically used in a filter context.
+	// Filters documents based on a provided script. The script query is
+	// typically used in a filter context.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-query.html
 	Script Scripter
@@ -205,17 +209,34 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-constant-score-query.html
 	ConstantScore ConstantScorer
-	// Returns documents matching one or more wrapped queries, called query clauses or clauses.
+	// Returns documents matching one or more wrapped queries, called query
+	// clauses or clauses.
 	//
 	// If a returned document matches multiple query clauses, the dis_max query
 	// assigns the document the highest relevance score from any matching
 	// clause, plus a tie breaking increment for any additional matching
 	// subqueries.
 	//
-	// You can use the dis_max to search for a term in fields mapped with different boost factors.
+	// You can use the dis_max to search for a term in fields mapped with
+	// different boost factors.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-dis-max-query.html
 	DisjunctionMax DisjunctionMaxer
+	// Returns documents based on their IDs. This query uses document IDs stored
+	// in the _id field.
+	IDs IDser
+	// Returns documents based on the order and proximity of matching terms.
+	//
+	// The intervals query uses matching rules, constructed from a small set of
+	// definitions. These rules are then applied to terms from a specified
+	// field.
+	//
+	// The definitions produce sequences of minimal intervals that span terms in
+	// a body of text. These intervals can be further combined and filtered by
+	// parent sources.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-intervals-query.html#intervals-all_of
+	Intervals Intervalser
 }
 
 func (q *QueryParams) boolean() (*BooleanQuery, error) {
@@ -231,7 +252,12 @@ func (q *QueryParams) fuzzy() (*FuzzyQuery, error) {
 	}
 	return q.Fuzzy.Fuzzy()
 }
-
+func (q *QueryParams) ids() (*IDsQuery, error) {
+	if q.IDs == nil {
+		return nil, nil
+	}
+	return q.IDs.IDs()
+}
 func (q *QueryParams) term() (*TermQuery, error) {
 	if q.Term == nil {
 		return nil, nil
@@ -327,6 +353,13 @@ func (q *QueryParams) disjunectionMax() (*DisjunctionMaxQuery, error) {
 	}
 	return q.DisjunctionMax.DisjunctionMax()
 }
+func (q *QueryParams) intervals() (*IntervalsQuery, error) {
+	if q.Intervals == nil {
+		return nil, nil
+	}
+	return q.Intervals.Intervals()
+}
+
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
@@ -396,7 +429,14 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	ids, err := q.ids()
+	if err != nil {
+		return nil, err
+	}
+	intervals, err := q.intervals()
+	if err != nil {
+		return nil, err
+	}
 	qv := &Query{
 		match:          match,
 		exists:         exists,
@@ -414,6 +454,8 @@ func (q *QueryParams) Query() (*Query, error) {
 		boosting:       boosting,
 		constantScore:  constantScore,
 		disjunctionMax: disjunctionMax,
+		ids:            ids,
+		intervals:      intervals,
 	}
 	return qv, nil
 }
@@ -454,12 +496,62 @@ type Query struct {
 	boosting       *BoostingQuery
 	constantScore  *ConstantScoreQuery
 	disjunctionMax *DisjunctionMaxQuery
+	ids            *IDsQuery
+	intervals      *IntervalsQuery
 }
 
 func (q *Query) Query() (*Query, error) {
 	return q, nil
 }
-func (q Query) Match() *MatchQuery {
+func (q *Query) Range() *RangeQuery {
+	if q.rng == nil {
+		q.rng = &RangeQuery{}
+	}
+	return q.rng
+}
+func (q *Query) Prefix() *PrefixQuery {
+	if q.prefix == nil {
+		q.prefix = &PrefixQuery{}
+	}
+	return q.prefix
+}
+func (q *Query) Fuzzy() *FuzzyQuery {
+	if q.fuzzy == nil {
+		q.fuzzy = &FuzzyQuery{}
+	}
+	return q.fuzzy
+}
+func (q *Query) Intervals() *IntervalsQuery {
+	if q.intervals == nil {
+		q.intervals = &IntervalsQuery{}
+	}
+	return q.intervals
+}
+func (q *Query) DisjunctionMax() *DisjunctionMaxQuery {
+	if q.boosting == nil {
+		q.disjunctionMax = &DisjunctionMaxQuery{}
+	}
+	return q.disjunctionMax
+}
+func (q *Query) IDs() *IDsQuery {
+	if q.boosting == nil {
+		q.ids = &IDsQuery{}
+	}
+	return q.ids
+}
+func (q *Query) ConstantScore() *ConstantScoreQuery {
+	if q.boosting == nil {
+		q.constantScore = &ConstantScoreQuery{}
+	}
+	return q.constantScore
+}
+func (q *Query) Boosting() *BoostingQuery {
+	if q.boosting == nil {
+		q.boosting = &BoostingQuery{}
+	}
+	return q.boosting
+}
+func (q *Query) Match() *MatchQuery {
 	if q.match == nil {
 		q.match = &MatchQuery{}
 	}
@@ -498,19 +590,21 @@ func (q Query) Boolean() *BooleanQuery {
 	}
 	return q.boolean
 }
-func (q Query) Terms() *TermsQuery {
+func (q *Query) Terms() *TermsQuery {
 	if q.terms == nil {
 		q.terms = &TermsQuery{}
 	}
 	return q.terms
 }
-func (q *Query) SetTerms(field string, t Termser) error {
-	if q.terms == nil {
-		q.terms = &TermsQuery{}
-	}
-	return q.terms.Set(field, t)
-}
-func (q Query) Term() *TermQuery {
+
+// func (q *Query) SetTerms(field string, t Termser) error {
+// 	if q.terms == nil {
+// 		q.terms = &TermsQuery{}
+// 	}
+// 	return q.terms.Set(field, t)
+// }
+
+func (q *Query) Term() *TermQuery {
 	if q.term == nil {
 		q.term = &TermQuery{}
 	}
@@ -536,6 +630,8 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindBoosting:       q.boosting,
 		QueryKindConstantScore:  q.constantScore,
 		QueryKindDisjunctionMax: q.disjunctionMax,
+		QueryKindIDs:            q.ids,
+		QueryKindIntervals:      q.intervals,
 	}
 }
 
@@ -573,6 +669,10 @@ func (q *Query) setClause(qc QueryClause) {
 		q.constantScore = qc.(*ConstantScoreQuery)
 	case QueryKindDisjunctionMax:
 		q.disjunctionMax = qc.(*DisjunctionMaxQuery)
+	case QueryKindIDs:
+		q.ids = qc.(*IDsQuery)
+	case QueryKindIntervals:
+		q.intervals = qc.(*IntervalsQuery)
 	}
 }
 func (q *Query) Set(params Querier) error {

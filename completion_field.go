@@ -6,16 +6,6 @@ type Completioner interface {
 	Completion() (*CompletionField, error)
 }
 
-type completionField struct {
-	Analyzer                   string      `json:"analyzer,omitempty"`
-	SearchAnalyzer             string      `json:"search_analyzer,omitempty"`
-	SearchQuoteAnalyzer        string      `json:"search_quote_analyzer,omitempty"`
-	PreserveSeperators         interface{} `json:"preserve_separators,omitempty"`
-	PreservePositionIncrements interface{} `json:"preserve_position_increments,omitempty"`
-	MaxInputLength             interface{} `json:"max_input_length,omitempty"`
-	Type                       FieldType   `json:"type"`
-}
-
 // CompletionFieldParams creates a completion_field. A completion_field is a
 // completion suggester which provides provides auto-complete/search-as-you-type
 // functionality. This is a navigational feature to guide users to relevant
@@ -146,4 +136,15 @@ func (c *CompletionField) UnmarshalJSON(data []byte) error {
 	n, err := p.Completion()
 	*c = *n
 	return err
+}
+
+//easyjson:json
+type completionField struct {
+	Analyzer                   string      `json:"analyzer,omitempty"`
+	SearchAnalyzer             string      `json:"search_analyzer,omitempty"`
+	SearchQuoteAnalyzer        string      `json:"search_quote_analyzer,omitempty"`
+	PreserveSeperators         interface{} `json:"preserve_separators,omitempty"`
+	PreservePositionIncrements interface{} `json:"preserve_position_increments,omitempty"`
+	MaxInputLength             interface{} `json:"max_input_length,omitempty"`
+	Type                       FieldType   `json:"type"`
 }

@@ -2,15 +2,6 @@ package picker
 
 import "encoding/json"
 
-type booleanField struct {
-	DocValues interface{}       `json:"doc_values,omitempty"`
-	Index     interface{}       `json:"index,omitempty"`
-	NullValue interface{}       `json:"null_value,omitempty"`
-	Store     interface{}       `json:"store,omitempty"`
-	Meta      map[string]string `json:"meta,omitempty"`
-	Type      FieldType         `json:"type"`
-}
-
 type BooleanFieldParams struct {
 
 	// DocValues sets doc_values (Optional, bool or string that can be parsed as a bool)
@@ -136,11 +127,11 @@ func NewBooleanField() *BooleanField {
 // True values
 //  true, "true"
 type BooleanField struct {
-	docValuesParam `bson:",inline" json:",inline"`
-	indexParam     `bson:",inline" json:",inline"`
-	nullValueParam `bson:",inline" json:",inline"`
-	storeParam     `bson:",inline" json:",inline"`
-	metaParam      `bson:",inline" json:",inline"`
+	docValuesParam
+	indexParam
+	nullValueParam
+	storeParam
+	metaParam
 }
 
 func (b *BooleanField) Field() (Field, error) {
@@ -172,4 +163,14 @@ func (b BooleanField) MarshalJSON() ([]byte, error) {
 		Meta:      b.meta,
 		Type:      b.Type(),
 	})
+}
+
+//easyjson:json
+type booleanField struct {
+	DocValues interface{}       `json:"doc_values,omitempty"`
+	Index     interface{}       `json:"index,omitempty"`
+	NullValue interface{}       `json:"null_value,omitempty"`
+	Store     interface{}       `json:"store,omitempty"`
+	Meta      map[string]string `json:"meta,omitempty"`
+	Type      FieldType         `json:"type"`
 }

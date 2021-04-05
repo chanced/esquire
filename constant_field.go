@@ -6,11 +6,6 @@ type ConstantFielder interface {
 	ConstantField() (*ConstantField, error)
 }
 
-type constantField struct {
-	Value interface{} `json:"value"`
-	Type  FieldType   `json:"type"`
-}
-
 type ConstantFieldParams struct {
 	Value interface{} `json:"value"`
 }
@@ -71,4 +66,10 @@ func (c *ConstantField) Value() interface{} {
 
 func (c ConstantField) SetValue(v interface{}) {
 	c.value = v
+}
+
+//easyjson:json
+type constantField struct {
+	Value interface{} `json:"value"`
+	Type  FieldType   `json:"type"`
 }

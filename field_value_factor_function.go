@@ -122,13 +122,6 @@ func (fvf FieldValueFactorFunction) Missing() interface{} {
 	return fvf.missing
 }
 
-type fieldValueFactorParams struct {
-	Modifier Modifier    `json:"modifier,omitempty"`
-	Field    string      `json:"field"`
-	Missing  interface{} `json:"missing,omitempty"`
-	Factor   *float64    `json:"factor,omitempty"`
-}
-
 func (fvf FieldValueFactorFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&fvf)
 }
@@ -159,7 +152,15 @@ func (fvf *FieldValueFactorFunction) unmarshalParams(data dynamic.JSON) error {
 	if err != nil {
 		return err
 	}
-	fvf.SetModifier(params.Modifier)
 	fvf.SetMissing(params.Missing)
-	return nil
+	err = fvf.SetModifier(params.Modifier)
+	return err
+}
+
+//easyjson:json
+type fieldValueFactorParams struct {
+	Modifier Modifier    `json:"modifier,omitempty"`
+	Field    string      `json:"field"`
+	Missing  interface{} `json:"missing,omitempty"`
+	Factor   *float64    `json:"factor,omitempty"`
 }

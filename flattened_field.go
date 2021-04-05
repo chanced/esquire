@@ -2,19 +2,6 @@ package picker
 
 import "encoding/json"
 
-type flattenedField struct {
-	DepthLimit               interface{}  `json:"depth_limit,omitempty"`
-	DocValues                interface{}  `json:"doc_values,omitempty"`
-	EagerGlobalOrdinals      interface{}  `json:"eager_global_ordinals,omitempty"`
-	IgnoreAbove              interface{}  `json:"ignore_above,omitempty"`
-	Index                    interface{}  `bson:"index,omitempty" json:"index,omitempty"`
-	IndexOptions             IndexOptions `json:"index_options,omitempty"`
-	NullValue                interface{}  `json:"null_value,omitempty"`
-	Similarity               Similarity   `json:"similarity,omitempty"`
-	SplitQueriesOnWhitespace interface{}  `json:"split_queries_on_whitespace,omitempty"`
-	Type                     FieldType    `json:"type"`
-}
-
 type FlattenedFieldParams struct {
 	// The maximum allowed depth of the flattened object field, in terms of
 	// nested inner objects. If a flattened object field exceeds this limit,
@@ -172,4 +159,18 @@ func (f *FlattenedField) UnmarshalJSON(data []byte) error {
 }
 func NewFlattenedField(params FlattenedFieldParams) (*FlattenedField, error) {
 	return params.Flattened()
+}
+
+//easyjson:json
+type flattenedField struct {
+	DepthLimit               interface{}  `json:"depth_limit,omitempty"`
+	DocValues                interface{}  `json:"doc_values,omitempty"`
+	EagerGlobalOrdinals      interface{}  `json:"eager_global_ordinals,omitempty"`
+	IgnoreAbove              interface{}  `json:"ignore_above,omitempty"`
+	Index                    interface{}  `bson:"index,omitempty" json:"index,omitempty"`
+	IndexOptions             IndexOptions `json:"index_options,omitempty"`
+	NullValue                interface{}  `json:"null_value,omitempty"`
+	Similarity               Similarity   `json:"similarity,omitempty"`
+	SplitQueriesOnWhitespace interface{}  `json:"split_queries_on_whitespace,omitempty"`
+	Type                     FieldType    `json:"type"`
 }

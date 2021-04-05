@@ -2,13 +2,6 @@ package picker
 
 import "encoding/json"
 
-type geoPointField struct {
-	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
-	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
-	NullValue       interface{} `json:"null_value,omitempty"`
-	Type            FieldType   `json:"type"`
-}
-
 type GeoPointFieldParams struct {
 
 	// If true, malformed geo-points are ignored. If false (default), malformed
@@ -119,4 +112,12 @@ func (gp GeoPointField) MarshalJSON() ([]byte, error) {
 
 func NewGeoPointField(params GeoPointFieldParams) (*GeoPointField, error) {
 	return params.GeoPoint()
+}
+
+//easyjson:json
+type geoPointField struct {
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Type            FieldType   `json:"type"`
 }

@@ -12,6 +12,14 @@ type Script struct {
 	Params interface{}
 }
 
+func (s *Script) Clear() {
+	if s != nil {
+		*s = Script{}
+	}
+}
+func (s Script) IsEmpty() bool {
+	return len(s.Source) == 0
+}
 func (s Script) Script() (*ScriptQuery, error) {
 	sq := &ScriptQueryParams{
 		Lang:   s.Lang,

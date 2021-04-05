@@ -29,6 +29,8 @@ const (
 	QueryKindFuzzy          QueryKind = "fuzzy"
 	QueryKindScriptScore    QueryKind = "script_score"
 	QueryKindScript         QueryKind = "script"
+	QueryKindIDs            QueryKind = "ids"
+	QueryKindIntervals      QueryKind = "intervals"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
@@ -44,4 +46,6 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindScript:        func() QueryClause { return &ScriptQuery{} },
 	QueryKindBoosting:      func() QueryClause { return &BoostingQuery{} },
 	QueryKindConstantScore: func() QueryClause { return &ConstantScoreQuery{} },
+	QueryKindIDs:           func() QueryClause { return &IDsQuery{} },
+	QueryKindIntervals:     func() QueryClause { return &IntervalsQuery{} },
 }

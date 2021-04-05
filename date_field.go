@@ -2,18 +2,6 @@ package picker
 
 import "encoding/json"
 
-type dateField struct {
-	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
-	DocValues       interface{} `json:"doc_values,omitempty"`
-	Index           interface{} `json:"index,omitempty"`
-	NullValue       interface{} `json:"null_value,omitempty"`
-	Store           interface{} `json:"store,omitempty"`
-	Meta            Meta        `json:"meta,omitempty"`
-	Format          string      `json:"format,omitempty"`
-	Boost           interface{} `json:"boost,omitempty"`
-	Type            FieldType   `json:"type"`
-}
-
 type DateFieldParams struct {
 	// IgnoreMalformed determines if malformed numbers are ignored. If true,
 	// malformed numbers are ignored. If false (default), malformed numbers
@@ -301,3 +289,16 @@ var (
 	_ WithStore           = (*DateField)(nil)
 	_ WithMeta            = (*DateField)(nil)
 )
+
+//easyjson:json
+type dateField struct {
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	DocValues       interface{} `json:"doc_values,omitempty"`
+	Index           interface{} `json:"index,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Store           interface{} `json:"store,omitempty"`
+	Meta            Meta        `json:"meta,omitempty"`
+	Format          string      `json:"format,omitempty"`
+	Boost           interface{} `json:"boost,omitempty"`
+	Type            FieldType   `json:"type"`
+}

@@ -2,6 +2,7 @@ package picker
 
 import "encoding/json"
 
+//easyjson:json
 type denseVectorField struct {
 	Dimensions interface{} `json:"dims,omitempty"`
 	Type       FieldType   `json:"type"`

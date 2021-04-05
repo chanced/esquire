@@ -120,7 +120,10 @@ func NewSearch(p SearchParams) (*Search, error) {
 		version:          p.Version,
 	}
 	if p.Size != 0 {
-		s.SetSize(p.Size)
+		err := s.SetSize(p.Size)
+		if err != nil {
+			return s, err
+		}
 	}
 
 	q, err := p.Query.Query()

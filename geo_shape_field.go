@@ -2,13 +2,6 @@ package picker
 
 import "encoding/json"
 
-type geoShapeField struct {
-	Orientation     Orientation `json:"orientation,omitempty"`
-	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
-	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
-	Type            FieldType   `json:"type"`
-}
-
 type GeoShapeFieldParams struct {
 	// Optional. Vertex order for the shape’s coordinates list.
 	//
@@ -101,4 +94,12 @@ func (gs GeoShapeField) MarshalJSON() ([]byte, error) {
 
 func NewGeoShapeField(params GeoShapeFieldParams) (*GeoShapeField, error) {
 	return params.GeoShape()
+}
+
+//easyjson:json
+type geoShapeField struct {
+	Orientation     Orientation `json:"orientation,omitempty"`
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
+	Type            FieldType   `json:"type"`
 }

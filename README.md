@@ -139,7 +139,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Modify the scores returned by the main query with functions to take into account factors like popularity, recency, distance, or custom algorithms implemented with scripting.
 - #### [Fulltext queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/full-text-queries.html)
   The full text queries enable you to search analyzed text fields such as the body of an email. The query string is processed using the same analyzer that was applied to the field during indexing.
-  - [ ] **[Intervals](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-intervals-query.html)**\
+  - [x] **[Intervals](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-intervals-query.html)**\
          A full text query that allows fine-grained control of the ordering and proximity of matching terms.
   - [x] **[Match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query.html)**\
          The standard query for performing full text queries, including fuzzy matching and phrase or proximity queries.
@@ -238,7 +238,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Returns documents that contain any indexed value for a field.
   - [x] **[Fuzzy](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-fuzzy-query.html)**\
          Returns documents that contain terms similar to the search term. Elasticsearch measures similarity, or fuzziness, using a Levenshtein edit distance.
-  - [ ] **[IDs](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-ids-query.html)**\
+  - [x] **[IDs](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-ids-query.html)**\
          Returns documents based on their document IDs.
   - [x] **[Prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-prefix-query.html)**\
          Returns documents that contain a specific prefix in a provided field.
