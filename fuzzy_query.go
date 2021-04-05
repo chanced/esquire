@@ -88,7 +88,10 @@ func (f FuzzyQueryParams) Fuzzy() (*FuzzyQuery, error) {
 	}
 	q.SetName(f.Name)
 	q.SetFuzziness(f.Fuzziness)
-	q.SetPrefixLength(f.PrefixLength)
+	err = q.SetPrefixLength(f.PrefixLength)
+	if err != nil {
+		return q, newQueryError(err, QueryKindFuzzy, f.Field)
+	}
 	return q, nil
 }
 

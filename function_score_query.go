@@ -134,7 +134,7 @@ func (fs *FunctionScoreQuery) UnmarshalJSON(data []byte) error {
 	}
 	fd := params["functions"]
 	if len(fd) > 0 {
-		fs.functions.UnmarshalJSON(fd)
+		err = fs.functions.UnmarshalJSON(fd)
 		if err != nil {
 			return err
 		}

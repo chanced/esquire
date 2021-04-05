@@ -120,7 +120,7 @@ func unmarshalFuzzyRewriteParam(data dynamic.JSON, target interface{}) error {
 			return nil
 		case data.IsString():
 			rw := Rewrite(data.UnquotedString())
-			r.SetFuzzyRewrite(rw)
+			return r.SetFuzzyRewrite(rw)
 		}
 		if data.IsNull() {
 			return nil

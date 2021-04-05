@@ -6,7 +6,6 @@ type geoShapeField struct {
 	Orientation     Orientation `json:"orientation,omitempty"`
 	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
 	IgnoreZValue    interface{} `json:"ignore_z_value,omitempty"`
-	NullValue       interface{} `json:"null_value,omitempty"`
 	Type            FieldType   `json:"type"`
 }
 
@@ -33,9 +32,6 @@ type GeoShapeFieldParams struct {
 	// longitude (two dimensions) values throw an exception and reject the whole
 	// document.
 	IgnoreZValue interface{} `json:"ignore_z_value,omitempty"`
-	// Accepts an geoshape value which is substituted for any explicit null values.
-	// Defaults to null, which means the field is treated as missing.
-	NullValue interface{} `json:"null_value,omitempty"`
 }
 
 func (GeoShapeFieldParams) Type() FieldType {
@@ -60,7 +56,6 @@ func (p GeoShapeFieldParams) GeoShape() (*GeoShapeField, error) {
 	if err != nil {
 		e.Append(err)
 	}
-	f.SetNullValue(p.NullValue)
 	return f, e.ErrorOrNil()
 
 }
@@ -98,7 +93,6 @@ func (gs *GeoShapeField) UnmarshalJSON(data []byte) error {
 func (gs GeoShapeField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(geoShapeField{
 		IgnoreMalformed: gs.ignoreMalformed.Value(),
-		NullValue:       gs.nullValue,
 		IgnoreZValue:    gs.ignoreZ,
 		Orientation:     gs.orientation,
 		Type:            gs.Type(),

@@ -114,9 +114,9 @@ Testing is incredibly light to non-existent right now. I'm merely using this lis
          Latitude and longitude points.
   - [x] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-shape.html)**\
          Complex shapes, such as polygons.
-  - [ ] **[Point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/point.html)**\
+  - [x] **[Point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/point.html)**\
          Arbitrary cartesian points.
-  - [ ] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape.html)**\
+  - [x] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape.html)**\
          Arbitrary cartesian geometries.
 
 - #### Other types

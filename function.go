@@ -231,7 +231,10 @@ func unmarshalDecayFunction(data dynamic.JSON, fn DecayFunction) error {
 		return err
 	}
 	for field, d := range obj {
-		fn.SetField(field)
+		err = fn.SetField(field)
+		if err != nil {
+			return err
+		}
 		return unmarshalDecayFuncParams(d, fn)
 	}
 	// empty? error?
@@ -247,8 +250,7 @@ func unmarshalOriginParam(data dynamic.JSON, fn DecayFunction) error {
 	if err != nil {
 		return err
 	}
-	fn.SetOrigin(origin)
-	return nil
+	return fn.SetOrigin(origin)
 }
 
 func unmarshalDecayParam(data dynamic.JSON, fn DecayFunction) error {

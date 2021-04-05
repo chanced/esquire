@@ -90,17 +90,10 @@ type MatchQueryParams struct {
 	completeClause
 }
 
-func (m MatchQueryParams) name() string {
-	return m.Name
-}
-
-func (m MatchQueryParams) field() string {
-	return m.Field
-}
-
 func (m MatchQueryParams) Kind() QueryKind {
 	return QueryKindMatch
 }
+
 func (m MatchQueryParams) Clause() (QueryClause, error) {
 	return m.Match()
 }
@@ -165,7 +158,9 @@ type MatchQuery struct {
 func (m *MatchQuery) Clause() (QueryClause, error) {
 	return m, nil
 }
-
+func (m *MatchQuery) Match() (*MatchQuery, error) {
+	return m, nil
+}
 func (m *MatchQuery) Field() string {
 	if m == nil {
 		return ""
