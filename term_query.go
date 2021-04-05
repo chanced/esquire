@@ -27,10 +27,6 @@ type TermQueryParams struct {
 	completeClause
 }
 
-func (t TermQueryParams) field() string {
-	return t.Field
-}
-
 func (t TermQueryParams) Clause() (QueryClause, error) {
 	return t.Term()
 }

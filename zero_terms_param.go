@@ -43,9 +43,6 @@ func (ztq ZeroTerms) String() string {
 func (ztq ZeroTerms) toLower() ZeroTerms {
 	return ZeroTerms(strings.ToLower(string(ztq)))
 }
-func (ztq ZeroTerms) ref() *ZeroTerms {
-	return &ztq
-}
 
 const (
 	ZeroTermsUnspecified ZeroTerms = ""

@@ -58,7 +58,7 @@ type WithFieldDataFrequencyFilter interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/text.html#field-data-filtering
 type fieldDataFrequencyFilterParam struct {
-	fieldDataFrequencyFilter *FieldDataFrequencyFilter `bson:"fielddata_frequency_filter,omitempty" json:"fielddata_frequency_filter,omitempty"`
+	fieldDataFrequencyFilter *FieldDataFrequencyFilter
 }
 
 // FieldDataFrequencyFilter can be used to reduce the number of terms loaded into memory, and

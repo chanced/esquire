@@ -127,7 +127,7 @@ func (r *rewriteParam) SetRewrite(v Rewrite) error {
 }
 func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithRewrite); ok {
-		a.SetRewrite(Rewrite(data.UnquotedString()))
+		return a.SetRewrite(Rewrite(data.UnquotedString()))
 	}
 	return nil
 }

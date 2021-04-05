@@ -11,10 +11,12 @@ type SourceSpecifications struct {
 	Excludes dynamic.StringOrArrayOfStrings
 }
 
+type SearchSourceParams struct{}
+
 type SearchSource struct {
-	BoolValue       *bool
-	WildcardPattern dynamic.StringOrArrayOfStrings
-	Specifications  *SourceSpecifications
+	boolean         *bool
+	wildcardPattern dynamic.StringOrArrayOfStrings
+	specifications  *SourceSpecifications
 }
 
 // SetValue sets the value of Source
@@ -41,9 +43,9 @@ func (s *SearchSource) SetValue(v interface{}) error {
 		if *t == "false" {
 			return s.SetValue(false)
 		}
-		s.WildcardPattern = dynamic.StringOrArrayOfStrings{*t}
-		s.BoolValue = nil
-		s.Specifications = nil
+		s.wildcardPattern = dynamic.StringOrArrayOfStrings{*t}
+		s.boolean = nil
+		s.specifications = nil
 	case string:
 		if t == "true" {
 			return s.SetValue(true)
@@ -51,42 +53,42 @@ func (s *SearchSource) SetValue(v interface{}) error {
 		if t == "false" {
 			return s.SetValue(false)
 		}
-		s.WildcardPattern = dynamic.StringOrArrayOfStrings{t}
-		s.BoolValue = nil
-		s.Specifications = nil
+		s.wildcardPattern = dynamic.StringOrArrayOfStrings{t}
+		s.boolean = nil
+		s.specifications = nil
 	case []string:
-		s.WildcardPattern = dynamic.StringOrArrayOfStrings{}
-		s.WildcardPattern.Set(t)
-		s.BoolValue = nil
-		s.Specifications = nil
+		s.wildcardPattern = dynamic.StringOrArrayOfStrings{}
+		s.boolean = nil
+		s.specifications = nil
+		return s.wildcardPattern.Set(t)
 	case dynamic.StringOrArrayOfStrings:
-		s.BoolValue = nil
-		s.Specifications = nil
-		s.WildcardPattern = t
+		s.boolean = nil
+		s.specifications = nil
+		s.wildcardPattern = t
 	case *dynamic.StringOrArrayOfStrings:
-		s.BoolValue = nil
-		s.Specifications = nil
-		s.WildcardPattern = *t
+		s.boolean = nil
+		s.specifications = nil
+		s.wildcardPattern = *t
 	case SourceSpecifications:
-		s.BoolValue = nil
-		s.WildcardPattern = nil
-		s.Specifications = &t
+		s.boolean = nil
+		s.wildcardPattern = nil
+		s.specifications = &t
 	case *SourceSpecifications:
-		s.BoolValue = nil
-		s.WildcardPattern = nil
-		s.Specifications = t
+		s.boolean = nil
+		s.wildcardPattern = nil
+		s.specifications = t
 	case bool:
-		s.BoolValue = &t
-		s.WildcardPattern = nil
-		s.Specifications = nil
+		s.boolean = &t
+		s.wildcardPattern = nil
+		s.specifications = nil
 	case *bool:
-		s.BoolValue = t
-		s.WildcardPattern = nil
-		s.Specifications = nil
+		s.boolean = t
+		s.wildcardPattern = nil
+		s.specifications = nil
 	case nil:
-		s.BoolValue = nil
-		s.WildcardPattern = nil
-		s.Specifications = nil
+		s.boolean = nil
+		s.wildcardPattern = nil
+		s.specifications = nil
 	default:
 		return fmt.Errorf("%w: %t", ErrInvalidSource, v)
 	}
@@ -97,14 +99,14 @@ func (s *SearchSource) SetValue(v interface{}) error {
 // These fields are returned in the hits._source property of the search
 // response. Defaults to true.
 func (s SearchSource) Value() interface{} {
-	if s.BoolValue != nil {
-		return s.BoolValue
+	if s.boolean != nil {
+		return s.boolean
 	}
-	if s.Specifications != nil {
-		return s.Specifications
+	if s.specifications != nil {
+		return s.specifications
 	}
-	if s.WildcardPattern != nil {
-		return s.WildcardPattern
+	if s.wildcardPattern != nil {
+		return s.wildcardPattern
 	}
 	return true
 }

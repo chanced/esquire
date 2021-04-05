@@ -506,21 +506,6 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (q Query) marshalTerms() (dynamic.JSON, error) {
-	if q.terms == nil {
-		return nil, nil
-	}
-	terms, err := q.terms.MarshalJSON()
-	return terms, err
-}
-func (q Query) marshalTerm() (dynamic.JSON, error) {
-	if q.term == nil {
-		return nil, nil
-	}
-	term, err := q.term.MarshalJSON()
-	return term, err
-}
-
 func (q Query) MarshalJSON() ([]byte, error) {
 
 	obj := dynamic.JSONObject{}

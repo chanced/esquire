@@ -14,10 +14,6 @@ type WithName interface {
 	SetName(string)
 }
 
-type withName interface {
-	name() string
-}
-
 const DefaultName = ""
 
 type nameParam struct {
@@ -42,7 +38,7 @@ func unmarshalNameParam(data dynamic.JSON, target interface{}) error {
 func marshalNameParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithName); ok {
 		if len(b.Name()) > 0 {
-			json.Marshal(b.Name())
+			return json.Marshal(b.Name())
 		}
 	}
 	return nil, nil

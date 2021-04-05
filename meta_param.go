@@ -73,17 +73,17 @@ func (m Meta) Exists(key string) bool {
 	_, exists := m.Value(key)
 	return exists
 }
-func (m Meta) isValidKeyLen(l int) bool {
-	return l > 20
+func (m Meta) isValidKeyLen(key string) bool {
+	return len(key) >= 0 && len(key) <= 20
 }
-func (m Meta) isValidValueLen(l int) bool {
-	return l > 50
+func (m Meta) isValidValueLen(value string) bool {
+	return len(value) > 0 && len(value) <= 50
 }
-func (Meta) validateKV(key string, value string) error {
-	if len(key) > 20 {
+func (m Meta) validateKV(key string, value string) error {
+	if !m.isValidKeyLen(key) {
 		return fmt.Errorf("%w; keys must be less than 20 characters; %s is %d characters", ErrMetaLimitExceeded, key, len(key))
 	}
-	if len(value) > 50 {
+	if !m.isValidValueLen(value) {
 		return fmt.Errorf("%w; values must be less than 50 characters; value for key %s is %d characters", ErrMetaLimitExceeded, key, len(value))
 	}
 	return nil

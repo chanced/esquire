@@ -44,7 +44,7 @@ func unmarshalTranspositionsParam(value dynamic.JSON, target interface{}) error 
 		if err != nil {
 			return err
 		}
-		a.SetTranspositions(b)
+		return a.SetTranspositions(b)
 	}
 	return nil
 }

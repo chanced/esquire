@@ -110,6 +110,7 @@ func (s QueryError) Unwrap() error {
 }
 
 // Implementation of hashicorp's multierror.
+
 type MappingError struct {
 	Errors []error
 }

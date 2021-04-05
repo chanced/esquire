@@ -27,10 +27,6 @@ type RangeQueryParams struct {
 	completeClause
 }
 
-func (r RangeQueryParams) field() string {
-	return r.Field
-}
-
 func (r RangeQueryParams) Clause() (QueryClause, error) {
 	return r.Range()
 }

@@ -324,8 +324,8 @@ func (s Search) MarshalJSON() ([]byte, error) {
 		b, err := json.Marshal(s.indicesBoost)
 		if err != nil {
 			return nil, err
+			data["indices_boost"] = b
 		}
-		data["indices_boost"] = b
 	}
 	if s.pointInTime != nil && len(s.pointInTime.ID) > 0 {
 		b, err := json.Marshal(s.pointInTime)
@@ -422,9 +422,8 @@ func (s *Search) Fields() SearchFields {
 }
 
 // SetFields sets the FieldsValue to v
-func (s *Search) SetFields(v SearchFields) *Search {
+func (s *Search) SetFields(v SearchFields) {
 	s.fields = v
-	return s
 }
 
 // Explain indicates whether the search returns detailed information about score
@@ -434,9 +433,8 @@ func (s Search) Explain() bool {
 }
 
 // SetExplain sets the ExplainValue to v
-func (s *Search) SetExplain(v bool) *Search {
+func (s *Search) SetExplain(v bool) {
 	s.explain = v
-	return s
 }
 
 // From sets the starting document offset. Defaults to 0.
@@ -448,9 +446,8 @@ func (s Search) From() int {
 }
 
 // SetFrom sets the FromValue to v
-func (s *Search) SetFrom(v int) *Search {
+func (s *Search) SetFrom(v int) {
 	s.from = v
-	return s
 }
 
 // IndicesBoost buusts the _score of documents from specified indices
@@ -462,9 +459,8 @@ func (s *Search) IndicesBoost() map[string]float64 {
 }
 
 // SetIndicesBoost sets IndicesBoostValue to v
-func (s *Search) SetIndicesBoost(v map[string]float64) *Search {
+func (s *Search) SetIndicesBoost(v map[string]float64) {
 	s.indicesBoost = v
-	return s
 }
 
 // MinScore is the minimum _score for matching documents. Documents with a lower
@@ -474,15 +470,14 @@ func (s *Search) MinScore() float64 {
 }
 
 // SetMinScore sets the MinScoreValue to v
-func (s *Search) SetMinScore(v float64) *Search {
+func (s *Search) SetMinScore(v float64) {
 	s.minScore = v
-	return s
 }
 
 // SetPointInTime sets the PointInTimeValue to v
-func (s *Search) SetPointInTime(v *PointInTime) *Search {
+func (s *Search) SetPointInTime(v *PointInTime) {
 	s.pointInTime = v
-	return s
+
 }
 
 // PointInTime is a lightweight view into the state of the data as it existed
@@ -518,24 +513,17 @@ func (s Search) PITKeepAlive() *time.Time {
 	return s.PointInTimeKeepAlive()
 }
 
-// PIT is an alias for PointInTime
-func (s Search) PIT() *PointInTime {
-	return s.PointInTime()
-}
-
-// SetPIT is an alias for SetPointInTime
-func (s *Search) SetPIT(v *PointInTime) *Search {
-	return s.SetPointInTime(v)
-}
-
 // SetQuery sets QueryValue to v
-func (s *Search) SetQuery(v *Query) *Search {
+func (s *Search) SetQuery(v Querier) error {
 	if v == nil {
 		s.query = &Query{}
-	} else {
-		s.query = v
 	}
-	return s
+	q, err := v.Query()
+	if err != nil {
+		return err
+	}
+	s.query = q
+	return nil
 }
 
 // Query defines the search definition using the Query DSL.
@@ -555,9 +543,8 @@ func (s Search) RuntimeMappings() RuntimeMappings {
 	return s.runtimeMappings
 }
 
-func (s *Search) SetRuntimeMappings(v RuntimeMappings) *Search {
+func (s *Search) SetRuntimeMappings(v RuntimeMappings) {
 	s.runtimeMappings = v
-	return s
 }
 
 // SeqNoPrimaryTerm https://www.elastic.co/guide/en/elasticsearch/reference/current/optimistic-concurrency-control.html
@@ -565,9 +552,8 @@ func (s Search) SeqNoPrimaryTerm() bool {
 	return s.seqNoPrimaryTerm
 }
 
-func (s *Search) SetSeqNoPrimaryTerm(v bool) *Search {
+func (s *Search) SetSeqNoPrimaryTerm(v bool) {
 	s.seqNoPrimaryTerm = v
-	return s
 }
 
 // Size is number of hits to return. Defaults to 10.
@@ -581,9 +567,8 @@ func (s Search) Size() int {
 	return DefaultSize
 }
 
-func (s *Search) SetSize(v int) *Search {
-	s.size.Set(v)
-	return s
+func (s *Search) SetSize(v int) error {
+	return s.size.Set(v)
 }
 
 // Source indicates which source fields are returned for matching documents.
@@ -604,30 +589,19 @@ func (s Search) Source() *SearchSource {
 //  bool, *bool
 //  nil
 // Note, "true" || "false" get parsed as boolean
-//
-// SetSource panics if v is not one of the types listed above.
-//
-// You can explicitly set the source, such as:
-//  s := NewSearch()
-//  src := &Source{}
-//  err := src.SetValue(v)
-//  _ = err // handle err
-//  s.SourceValue = src
-func (s *Search) SetSource(v interface{}) *Search {
+func (s *Search) SetSource(v interface{}) error {
 	switch t := v.(type) {
 	case *SearchSource:
 		ts := *t
 		s.source = &ts
+		return nil
 	case SearchSource:
 		s.source = &t
+		return nil
 	default:
 		s.source = &SearchSource{}
-		err := s.source.SetValue(v)
-		if err != nil {
-			panic(err)
-		}
+		return s.source.SetValue(v)
 	}
-	return s
 }
 
 // Stats groups to associate with the picker. Each group maintains a statistics
@@ -637,9 +611,9 @@ func (s Search) Stats() []string {
 	return s.stats
 }
 
-func (s *Search) SetStats(v []string) *Search {
+func (s *Search) SetStats(v []string) {
 	s.stats = v
-	return s
+
 }
 
 // TerminateAfter is maximum number of documents to collect for each shard, upon
@@ -650,9 +624,9 @@ func (s Search) TerminateAfter() int {
 	return s.terminateAfter
 }
 
-func (s *Search) SetTerminateAfter(v int) *Search {
+func (s *Search) SetTerminateAfter(v int) {
 	s.terminateAfter = v
-	return s
+
 }
 
 // Timeout specifies the period of time to wait for a  response. If no response

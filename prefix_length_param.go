@@ -57,7 +57,7 @@ func unmarshalPrefixLengthParam(data dynamic.JSON, target interface{}) error {
 			return &json.UnmarshalTypeError{Value: string(data), Type: typeFloat64}
 		}
 		if v, ok := n.Int(); ok {
-			a.SetPrefixLength(v)
+			return a.SetPrefixLength(v)
 		}
 	}
 	return nil

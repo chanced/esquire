@@ -44,5 +44,5 @@ func (mil maxInputLengthParam) MaxInputLength() int {
 
 // SetMaxInputLength sets the MaxInputLength value to v
 func (mil *maxInputLengthParam) SetMaxInputLength(v interface{}) error {
-	return mil.SetMaxInputLength(v)
+	return mil.maxInputLength.Set(v)
 }

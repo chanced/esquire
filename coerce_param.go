@@ -54,7 +54,7 @@ func unmarshalCoerceParam(value dynamic.JSON, target interface{}) error {
 			return err
 		}
 		if v, ok := b.Bool(); ok {
-			a.SetCoerce(v)
+			return a.SetCoerce(v)
 		}
 	}
 	return nil

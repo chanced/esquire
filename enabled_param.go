@@ -44,5 +44,5 @@ func (ep enabledParam) Enabled() bool {
 
 // SetEnabled sets Enabled to v
 func (ep *enabledParam) SetEnabled(v interface{}) error {
-	return ep.SetEnabled(v)
+	return ep.enabled.Set(v)
 }

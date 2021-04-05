@@ -60,7 +60,7 @@ func unmarshalWeightParam(data dynamic.JSON, target interface{}) error {
 		if err != nil {
 			return err
 		}
-		r.SetWeight(n.Value())
+		return r.SetWeight(n.Value())
 	}
 	return nil
 }

@@ -91,7 +91,8 @@ func (e *ExistsQuery) Set(field string, exists Exister) error {
 		e.Clear()
 		return nil
 	}
-	e.SetField(field)
+	_ = e.SetField(field)
+
 	if exists != nil {
 		ex, _ := exists.Exists()
 		e.SetName(ex.Name())

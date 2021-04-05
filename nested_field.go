@@ -128,8 +128,8 @@ type NestedField struct {
 	includeInRootParam
 }
 
-func (f *NestedField) Field() (Field, error) {
-	return f, nil
+func (n *NestedField) Field() (Field, error) {
+	return n, nil
 }
 
 func (NestedField) Type() FieldType {

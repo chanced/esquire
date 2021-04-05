@@ -10,11 +10,6 @@ import (
 
 // TODO: accept a subset of params so the handler maps aren't needlessly looped through for types that are not applicable
 
-func isKnownQueryParam(v string) bool {
-	_, ok := queryParamMarshalers[v]
-	return ok
-}
-
 type paramMarshaler func(source interface{}) (dynamic.JSON, error)
 type paramMarshalers map[string]paramMarshaler
 

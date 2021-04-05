@@ -2,7 +2,7 @@ package picker
 
 import "encoding/json"
 
-type Constanter interface {
+type ConstantFielder interface {
 	ConstantField() (*ConstantField, error)
 }
 
@@ -11,12 +11,6 @@ type constantField struct {
 	Type  FieldType   `json:"type"`
 }
 
-// ConstantField is a specialization of the Keyword field for the case
-// that all documentsin the index have the same value.
-//
-// ! X-Pack
-//
-// https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#constant-keyword-field-type
 type ConstantFieldParams struct {
 	Value interface{} `json:"value"`
 }

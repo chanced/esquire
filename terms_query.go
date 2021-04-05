@@ -191,8 +191,11 @@ type TermsQuery struct {
 	completeClause
 }
 
-func (f *TermsQuery) Clause() (QueryClause, error) {
-	return f, nil
+func (t *TermsQuery) Terms() (*TermsQuery, error) {
+	return t, nil
+}
+func (t *TermsQuery) Clause() (QueryClause, error) {
+	return t, nil
 }
 func (t TermsQuery) Field() string {
 	return t.field

@@ -121,8 +121,8 @@ type IPField struct {
 func (IPField) Type() FieldType {
 	return FieldTypeIP
 }
-func (f *IPField) Field() (Field, error) {
-	return f, nil
+func (ip *IPField) Field() (Field, error) {
+	return ip, nil
 }
 func (ip *IPField) UnmarshalJSON(data []byte) error {
 

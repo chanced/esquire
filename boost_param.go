@@ -96,8 +96,7 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 					Type:  reflect.TypeOf(float64(0)),
 				}
 			}
-			r.SetBoost(f)
-			return nil
+			return r.SetBoost(f)
 		}
 		if data.IsNull() {
 			return nil
@@ -117,7 +116,7 @@ func unmarshalBoostParam(data dynamic.JSON, target interface{}) error {
 			}
 			f, ok := n.Float64()
 			if ok {
-				r.SetBoost(f)
+				return r.SetBoost(f)
 			}
 			return nil
 		}

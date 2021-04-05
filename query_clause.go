@@ -31,10 +31,6 @@ type WithField interface {
 	Field() string
 }
 
-type withfield interface {
-	field() string
-}
-
 type Clauser interface {
 	Clause
 	Clause() (QueryClause, error)

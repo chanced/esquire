@@ -216,8 +216,8 @@ func (IntegerFieldParams) Type() FieldType {
 	return FieldTypeInteger
 }
 
-func (i IntegerFieldParams) Field() (Field, error) {
-	return i.Integer()
+func (p IntegerFieldParams) Field() (Field, error) {
+	return p.Integer()
 }
 func (p IntegerFieldParams) Integer() (*IntegerField, error) {
 	f := &IntegerField{}
@@ -244,8 +244,8 @@ type IntegerField struct {
 	boostParam
 }
 
-func (l *IntegerField) Field() (Field, error) {
-	return l, nil
+func (i *IntegerField) Field() (Field, error) {
+	return i, nil
 }
 func (IntegerField) Type() FieldType {
 	return FieldTypeInteger
@@ -284,8 +284,8 @@ func (ShortFieldParams) Type() FieldType {
 	return FieldTypeShort
 }
 
-func (s ShortFieldParams) Field() (Field, error) {
-	return s.Short()
+func (p ShortFieldParams) Field() (Field, error) {
+	return p.Short()
 }
 
 func (p ShortFieldParams) Short() (*ShortField, error) {
@@ -351,12 +351,12 @@ func (DoubleFieldParams) Type() FieldType {
 	return FieldTypeDouble
 }
 
-func (l DoubleFieldParams) Field() (Field, error) {
-	return l.Double()
+func (d DoubleFieldParams) Field() (Field, error) {
+	return d.Double()
 }
-func (p DoubleFieldParams) Double() (*DoubleField, error) {
+func (d DoubleFieldParams) Double() (*DoubleField, error) {
 	f := &DoubleField{}
-	err := numberFieldParams(p).numberField(f)
+	err := numberFieldParams(d).numberField(f)
 	return f, err
 }
 
@@ -417,8 +417,8 @@ func (ByteFieldParams) Type() FieldType {
 	return FieldTypeByte
 }
 
-func (b ByteFieldParams) Field() (Field, error) {
-	return b.Byte()
+func (p ByteFieldParams) Field() (Field, error) {
+	return p.Byte()
 }
 func (p ByteFieldParams) Byte() (*ByteField, error) {
 	f := &ByteField{}
@@ -580,8 +580,8 @@ type HalfFloatField struct {
 	boostParam
 }
 
-func (f *HalfFloatField) Field() (Field, error) {
-	return f, nil
+func (hf *HalfFloatField) Field() (Field, error) {
+	return hf, nil
 }
 func (HalfFloatField) Type() FieldType {
 	return FieldTypeHalfFloat
@@ -613,7 +613,7 @@ func (hf HalfFloatField) MarshalJSON() ([]byte, error) {
 	})
 }
 
-/// UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value
+// UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value
 // of 0 and a maximum value of 264-1.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
@@ -695,7 +695,7 @@ type scaledFloatField struct {
 	Store           interface{} `json:"store,omitempty"`
 	Meta            Meta        `json:"meta,omitempty"`
 	Boost           interface{} `json:"boost,omitempty"`
-	ScalingFactor   interface{} `scaling_factor`
+	ScalingFactor   interface{} `json:"scaling_factor"`
 	Type            FieldType   `json:"type"`
 }
 
@@ -714,7 +714,7 @@ type ScaledFloatFieldParams struct {
 	// scaled by a fixed double scaling factor.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
-	ScalingFactor interface{} `scaling_factor`
+	ScalingFactor interface{} `json:"scaling_factor"`
 	// Coercion attempts to clean up dirty values to fit the data type of a
 	// field. (Optional, bool) Defaults to false.
 	//

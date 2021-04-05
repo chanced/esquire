@@ -264,6 +264,3 @@ func (m *MatchQuery) setQuery(query interface{}) error {
 	}
 	return nil
 }
-func (m MatchQuery) setField(field string) {
-	m.field = field
-}

@@ -73,8 +73,7 @@ func unmarshalMaxExpansionsParam(data dynamic.JSON, target interface{}) error {
 			return err
 		}
 		if v, ok := n.Int(); ok {
-			a.SetMaxExpansions(v)
-			return nil
+			return a.SetMaxExpansions(v)
 		}
 		return nil
 	}
