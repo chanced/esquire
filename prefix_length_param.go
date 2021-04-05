@@ -24,14 +24,17 @@ type WithPrefixLength interface {
 //
 // PrefixLength is the number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
 type prefixLengthParam struct {
-	prefixLength *int
+	prefixLength dynamic.Number
 }
 
 func (pl prefixLengthParam) PrefixLength() int {
-	if pl.prefixLength == nil {
-		return DefaultPrefixLength
+	if i, ok := pl.prefixLength.Int(); ok {
+		return i
 	}
-	return *pl.prefixLength
+	if f, ok := pl.prefixLength.Float64(); ok {
+		return int(f)
+	}
+	return DefaultPrefixLength
 }
 
 func (pl *prefixLengthParam) SetPrefixLength(v interface{}) error {
@@ -40,12 +43,11 @@ func (pl *prefixLengthParam) SetPrefixLength(v interface{}) error {
 		return err
 	}
 	if n.IsNil() {
-		pl.prefixLength = nil
+		pl.prefixLength.Set(nil)
 		return nil
 	}
 	if i, ok := n.Int(); ok {
-		iv := int(i)
-		pl.prefixLength = &iv
+		pl.prefixLength.Set(i)
 		return nil
 	}
 	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)

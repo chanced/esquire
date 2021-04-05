@@ -40,15 +40,20 @@ type WithMaxExpansions interface {
 //
 // Maximum number of variations created. Defaults to 50.
 type maxExpansionsParam struct {
-	maxExpansions *int
+	maxExpansions dynamic.Number
 }
 
 // MaxExpansions is the maximum number of variations created. Defaults to 50.
 func (me maxExpansionsParam) MaxExpansions() int {
-	if me.maxExpansions == nil {
-		return DefaultMaxExpansions
+	if me.maxExpansions.HasValue() {
+		if i, ok := me.maxExpansions.Int(); ok {
+			return i
+		}
+		if f, ok := me.maxExpansions.Float64(); ok {
+			return int(f)
+		}
 	}
-	return *me.maxExpansions
+	return DefaultMaxExpansions
 }
 func (me *maxExpansionsParam) SetMaxExpansions(v interface{}) error {
 	n, err := dynamic.NewNumber(v)
@@ -56,12 +61,11 @@ func (me *maxExpansionsParam) SetMaxExpansions(v interface{}) error {
 		return err
 	}
 	if n.IsNil() {
-		me.maxExpansions = nil
+		_ = me.maxExpansions.Set(nil)
 		return nil
 	}
 	if i, ok := n.Int(); ok {
-		iv := int(i)
-		me.maxExpansions = &iv
+		_ = me.maxExpansions.Set(i)
 		return nil
 	}
 	return fmt.Errorf("%w <%s>", ErrInvalidMaxExpansions, v)

@@ -17,15 +17,18 @@ s, err := picker.NewSearch(picker.SearchParams{
     					},
     					picker.AnyOfRuleParams{
     						Intervals: picker.Ruleset{
-    							picker.MatchRuleParams{Query: "hot water"},
-    							picker.MatchRuleParams{Query: "cold porridge"},
+    							picker.MatchRuleParams{Query: "brisket"},
+    							picker.MatchRuleParams{Query: "kimchy fries"},
     						},
     					},
     				},
     			},
     		},
     	},
-    })
+})
+_ = err
+data, _ := json.MarshalIndent(s, "", "  ")
+fmt.Println(string(data))
 ```
 
 Produces:
@@ -49,12 +52,12 @@ Produces:
                 "intervals": [
                   {
                     "match": {
-                      "query": "hot water"
+                      "query": "brisket"
                     }
                   },
                   {
                     "match": {
-                      "query": "cold porridge"
+                      "query": "kimchy fries"
                     }
                   }
                 ]
@@ -210,7 +213,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          A full text query that allows fine-grained control of the ordering and proximity of matching terms.
   - [x] **[Match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query.html)**\
          The standard query for performing full text queries, including fuzzy matching and phrase or proximity queries.
-  - [ ] **[Match bool prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-bool-prefix-query.html)**\
+  - [x] **[Match bool prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-bool-prefix-query.html)**\
          Creates a bool query that matches each term as a term query, except for the last term, which is matched as a prefix query
   - [ ] **[Match phrase](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase.html)**\
          Like the match query but used for matching exact phrases or word proximity matches.

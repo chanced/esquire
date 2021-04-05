@@ -17,27 +17,25 @@ type WithFuzzyTranspositions interface {
 	// two adjacent characters (ab → ba). Defaults to true
 	FuzzyTranspositions() bool
 	// SetFuzzyTranspositions sets FuzzyTranspositions to v
-	SetFuzzyTranspositions(v bool)
+	SetFuzzyTranspositions(v interface{}) error
 }
 
 type fuzzyTranspositionsParam struct {
-	fuzzyTranspositionsValue *bool
+	fuzzyTranspositions dynamic.Bool
 }
 
 // FuzzyTranspositions edits for fuzzy matching include transpositions of
 // two adjacent characters (ab → ba). Defaults to true
 func (ft fuzzyTranspositionsParam) FuzzyTranspositions() bool {
-	if ft.fuzzyTranspositionsValue == nil {
-		return DefaultFuzzyTranspositions
+	if b, ok := ft.fuzzyTranspositions.Bool(); ok {
+		return b
 	}
-	return *ft.fuzzyTranspositionsValue
+	return DefaultFuzzyTranspositions
 }
 
 // SetFuzzyTranspositions sets FuzzyTranspositions to v
-func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(v bool) {
-	if ft.FuzzyTranspositions() != v {
-		ft.fuzzyTranspositionsValue = &v
-	}
+func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(fuzzyTranspositions interface{}) error{
+	return ft.fuzzyTranspositions.Set(fuzzyTranspositions)
 }
 
 func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) error {

@@ -53,6 +53,7 @@ var (
 	ErrTermRequired               = errors.New("picker: term is required")
 	ErrValuesRequired             = errors.New("picker: values is required")
 	ErrIntervalsRequired          = errors.New("picker: intervals are required")
+	ErrInvalidOperator            = errors.New("picker: invalid operator")
 )
 
 type FieldError struct {

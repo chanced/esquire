@@ -237,6 +237,10 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-intervals-query.html#intervals-all_of
 	Intervals Intervalser
+	// A match_bool_prefix query analyzes its input and constructs a bool query
+	// from the terms. Each term except the last is used in a term query. The
+	// last term is used in a prefix.
+	MatchBoolPrefix MatchBoolPrefixer
 }
 
 func (q *QueryParams) boolean() (*BooleanQuery, error) {
@@ -245,7 +249,12 @@ func (q *QueryParams) boolean() (*BooleanQuery, error) {
 	}
 	return q.Boolean.Boolean()
 }
-
+func (q *QueryParams) matchBoolPrefix() (*MatchBoolPrefixQuery, error) {
+	if q.MatchBoolPrefix == nil {
+		return nil, nil
+	}
+	return q.MatchBoolPrefix.MatchBoolPrefix()
+}
 func (q *QueryParams) fuzzy() (*FuzzyQuery, error) {
 	if q.Fuzzy == nil {
 		return nil, nil
@@ -368,7 +377,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	matchBoolPrefix, err := q.matchBoolPrefix()
+	if err != nil {
+		return nil, err
+	}
 	exists, err := q.exists()
 	if err != nil {
 		return nil, err
@@ -438,24 +450,25 @@ func (q *QueryParams) Query() (*Query, error) {
 		return nil, err
 	}
 	qv := &Query{
-		match:          match,
-		exists:         exists,
-		scriptScore:    scriptScore,
-		script:         script,
-		fuzzy:          fuzzy,
-		boolean:        boolean,
-		term:           term,
-		terms:          terms,
-		rng:            rng,
-		prefix:         prefix,
-		matchAll:       matchAll,
-		matchNone:      matchNone,
-		functionScore:  funcScore,
-		boosting:       boosting,
-		constantScore:  constantScore,
-		disjunctionMax: disjunctionMax,
-		ids:            ids,
-		intervals:      intervals,
+		match:           match,
+		exists:          exists,
+		scriptScore:     scriptScore,
+		script:          script,
+		fuzzy:           fuzzy,
+		boolean:         boolean,
+		term:            term,
+		terms:           terms,
+		rng:             rng,
+		prefix:          prefix,
+		matchAll:        matchAll,
+		matchNone:       matchNone,
+		functionScore:   funcScore,
+		boosting:        boosting,
+		constantScore:   constantScore,
+		disjunctionMax:  disjunctionMax,
+		ids:             ids,
+		intervals:       intervals,
+		matchBoolPrefix: matchBoolPrefix,
 	}
 	return qv, nil
 }
@@ -480,29 +493,37 @@ func (q *QueryParams) Query() (*Query, error) {
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	match          *MatchQuery
-	scriptScore    *ScriptScoreQuery
-	exists         *ExistsQuery
-	boolean        *BooleanQuery
-	term           *TermQuery
-	terms          *TermsQuery
-	rng            *RangeQuery
-	prefix         *PrefixQuery
-	fuzzy          *FuzzyQuery
-	functionScore  *FunctionScoreQuery
-	matchAll       *MatchAllQuery
-	matchNone      *MatchNoneQuery
-	script         *ScriptQuery
-	boosting       *BoostingQuery
-	constantScore  *ConstantScoreQuery
-	disjunctionMax *DisjunctionMaxQuery
-	ids            *IDsQuery
-	intervals      *IntervalsQuery
+	match           *MatchQuery
+	scriptScore     *ScriptScoreQuery
+	exists          *ExistsQuery
+	boolean         *BooleanQuery
+	term            *TermQuery
+	terms           *TermsQuery
+	rng             *RangeQuery
+	prefix          *PrefixQuery
+	fuzzy           *FuzzyQuery
+	functionScore   *FunctionScoreQuery
+	matchAll        *MatchAllQuery
+	matchNone       *MatchNoneQuery
+	script          *ScriptQuery
+	boosting        *BoostingQuery
+	constantScore   *ConstantScoreQuery
+	disjunctionMax  *DisjunctionMaxQuery
+	ids             *IDsQuery
+	intervals       *IntervalsQuery
+	matchBoolPrefix *MatchBoolPrefixQuery
 }
 
 func (q *Query) Query() (*Query, error) {
 	return q, nil
 }
+func (q *Query) MatchBoolPrefix() *MatchBoolPrefixQuery {
+	if q.matchBoolPrefix == nil {
+		q.matchBoolPrefix = &MatchBoolPrefixQuery{}
+	}
+	return q.matchBoolPrefix
+}
+
 func (q *Query) Range() *RangeQuery {
 	if q.rng == nil {
 		q.rng = &RangeQuery{}
@@ -614,24 +635,25 @@ func (q *Query) Term() *TermQuery {
 func (q *Query) clauses() map[QueryKind]QueryClause {
 
 	return map[QueryKind]QueryClause{
-		QueryKindMatch:          q.match,
-		QueryKindTerm:           q.term,
-		QueryKindTerms:          q.terms,
-		QueryKindBoolean:        q.boolean,
-		QueryKindExists:         q.exists,
-		QueryKindFuzzy:          q.fuzzy,
-		QueryKindMatchAll:       q.matchAll,
-		QueryKindMatchNone:      q.matchNone,
-		QueryKindPrefix:         q.prefix,
-		QueryKindRange:          q.rng,
-		QueryKindScriptScore:    q.scriptScore,
-		QueryKindScript:         q.script,
-		QueryKindFunctionScore:  q.functionScore,
-		QueryKindBoosting:       q.boosting,
-		QueryKindConstantScore:  q.constantScore,
-		QueryKindDisjunctionMax: q.disjunctionMax,
-		QueryKindIDs:            q.ids,
-		QueryKindIntervals:      q.intervals,
+		QueryKindMatch:           q.match,
+		QueryKindTerm:            q.term,
+		QueryKindTerms:           q.terms,
+		QueryKindBoolean:         q.boolean,
+		QueryKindExists:          q.exists,
+		QueryKindFuzzy:           q.fuzzy,
+		QueryKindMatchAll:        q.matchAll,
+		QueryKindMatchNone:       q.matchNone,
+		QueryKindPrefix:          q.prefix,
+		QueryKindRange:           q.rng,
+		QueryKindScriptScore:     q.scriptScore,
+		QueryKindScript:          q.script,
+		QueryKindFunctionScore:   q.functionScore,
+		QueryKindBoosting:        q.boosting,
+		QueryKindConstantScore:   q.constantScore,
+		QueryKindDisjunctionMax:  q.disjunctionMax,
+		QueryKindIDs:             q.ids,
+		QueryKindIntervals:       q.intervals,
+		QueryKindMatchBoolPrefix: q.matchBoolPrefix,
 	}
 }
 

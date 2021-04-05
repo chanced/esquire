@@ -63,18 +63,18 @@ type WithMinimumShouldMatch interface {
 }
 
 type minimumShouldMatchParam struct {
-	mimimumShouldMatch string
+	minimumShouldMatch string
 }
 
 func (msm minimumShouldMatchParam) MinimumShouldMatch() string {
-	if msm.mimimumShouldMatch != "" {
-		return msm.mimimumShouldMatch
+	if msm.minimumShouldMatch != "" {
+		return msm.minimumShouldMatch
 	}
 	return ""
 }
 
 func (msm *minimumShouldMatchParam) SetMinimumShouldMatch(v string) {
-	msm.mimimumShouldMatch = v
+	msm.minimumShouldMatch = v
 }
 func unmarshalMinimumShouldMatchParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithMinimumShouldMatch); ok {

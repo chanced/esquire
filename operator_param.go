@@ -15,9 +15,6 @@ func (o Operator) String() string { return string(o) }
 func (o Operator) toUpper() Operator {
 	return Operator(strings.ToUpper(string(o)))
 }
-func (o Operator) ref() *Operator {
-	return &o
-}
 
 const DefaultOperator = OperatorOr
 
@@ -44,26 +41,31 @@ type WithOperator interface {
 	// Defaults to Or
 	Operator() Operator
 	// SetOperator sets the Operator to v
-	SetOperator(v Operator)
+	SetOperator(v Operator) error
 }
 
 // operatorParam is a query mixin that adds the operator param
 type operatorParam struct {
-	operator *Operator
+	operator Operator
 }
 
 // Operator is the boolean logic used to interpret text in the query value.
 // Defaults to Or
 func (o operatorParam) Operator() Operator {
-	if o.operator != nil {
-		return *o.operator
+	if len(o.operator) == 0 {
+		return DefaultOperator
 	}
-	return DefaultOperator
+	return o.operator
 }
 
 // SetOperator sets the Operator to v
-func (o *operatorParam) SetOperator(v Operator) {
-	o.operator = v.toUpper().ref()
+func (o *operatorParam) SetOperator(v Operator) error {
+	v = Operator(strings.TrimSpace(v.toUpper().String()))
+	if v != "" && v != "AND" && v != "OR" {
+		return ErrInvalidOperator
+	}
+	o.operator = v
+	return nil
 }
 func unmarshalOperatorParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithOperator); ok {
