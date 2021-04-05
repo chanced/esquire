@@ -6,6 +6,63 @@ import (
 	"github.com/chanced/dynamic"
 )
 
+type Queryset interface {
+	Queries() (Queries, error)
+}
+
+type Queriers []Querier
+
+func (r Queriers) Queries() (Queries, error) {
+	res := make(Queries, len(r))
+	for k, v := range r {
+		qv, err := v.Query()
+		if err != nil {
+			return res, err
+		}
+		if qv.IsEmpty() {
+			continue
+		}
+		res[k] = qv
+	}
+	return res, nil
+}
+
+type Queries []*Query
+
+func (q Queries) IsEmpty() bool {
+	if len(q) == 0 {
+		return true
+	}
+	for _, v := range q {
+		if !v.IsEmpty() {
+			return false
+		}
+	}
+	return true
+}
+func (q Queries) Queries() (Queries, error) {
+	res := make(Queries, 0, len(q))
+	for i, v := range q {
+		if !v.IsEmpty() {
+			res[i] = v
+		}
+	}
+	return res, nil
+}
+
+func (q *Queries) Add(params Querier) (*Query, error) {
+	qv, err := params.Query()
+	if err != nil {
+		return qv, err
+	}
+	if q == nil {
+		*q = Queries{qv}
+		return qv, nil
+	}
+	*q = append(*q, qv)
+	return qv, nil
+}
+
 type Querier interface {
 	Query() (*Query, error)
 }
@@ -35,6 +92,8 @@ type QueryParams struct {
 	//
 	// The terms query is the same as the term query, except you can search for
 	// multiple values.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-terms-query.html
 	Terms CompleteTermser
 
 	// Match returns documents that match a provided text, number, date or boolean
@@ -86,6 +145,8 @@ type QueryParams struct {
 	//
 	// To use function_score, the user has to define a query and one or more
 	// functions, that compute a new score for each document returned by the query.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-function-score-query.html
 	FunctionScore FunctionScorer
 
 	// ScoreScript uses a script to provide a custom score for returned documents.
@@ -144,6 +205,17 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-constant-score-query.html
 	ConstantScore ConstantScorer
+	// Returns documents matching one or more wrapped queries, called query clauses or clauses.
+	//
+	// If a returned document matches multiple query clauses, the dis_max query
+	// assigns the document the highest relevance score from any matching
+	// clause, plus a tie breaking increment for any additional matching
+	// subqueries.
+	//
+	// You can use the dis_max to search for a term in fields mapped with different boost factors.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-dis-max-query.html
+	DisjunctionMax DisjunctionMaxer
 }
 
 func (q *QueryParams) boolean() (*BooleanQuery, error) {
@@ -249,6 +321,12 @@ func (q *QueryParams) constantScore() (*ConstantScoreQuery, error) {
 	}
 	return q.ConstantScore.ConstantScore()
 }
+func (q *QueryParams) disjunectionMax() (*DisjunctionMaxQuery, error) {
+	if q.DisjunctionMax == nil {
+		return nil, nil
+	}
+	return q.DisjunctionMax.DisjunctionMax()
+}
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
@@ -314,22 +392,28 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	disjunctionMax, err := q.disjunectionMax()
+	if err != nil {
+		return nil, err
+	}
+
 	qv := &Query{
-		match:         match,
-		exists:        exists,
-		scriptScore:   scriptScore,
-		script:        script,
-		fuzzy:         fuzzy,
-		boolean:       boolean,
-		term:          term,
-		terms:         terms,
-		rng:           rng,
-		prefix:        prefix,
-		matchAll:      matchAll,
-		matchNone:     matchNone,
-		functionScore: funcScore,
-		boosting:      boosting,
-		constantScore: constantScore,
+		match:          match,
+		exists:         exists,
+		scriptScore:    scriptScore,
+		script:         script,
+		fuzzy:          fuzzy,
+		boolean:        boolean,
+		term:           term,
+		terms:          terms,
+		rng:            rng,
+		prefix:         prefix,
+		matchAll:       matchAll,
+		matchNone:      matchNone,
+		functionScore:  funcScore,
+		boosting:       boosting,
+		constantScore:  constantScore,
+		disjunctionMax: disjunctionMax,
 	}
 	return qv, nil
 }
@@ -354,23 +438,27 @@ func (q *QueryParams) Query() (*Query, error) {
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	match         *MatchQuery
-	scriptScore   *ScriptScoreQuery
-	exists        *ExistsQuery
-	boolean       *BooleanQuery
-	term          *TermQuery
-	terms         *TermsQuery
-	rng           *RangeQuery
-	prefix        *PrefixQuery
-	fuzzy         *FuzzyQuery
-	functionScore *FunctionScoreQuery
-	matchAll      *MatchAllQuery
-	matchNone     *MatchNoneQuery
-	script        *ScriptQuery
-	boosting      *BoostingQuery
-	constantScore *ConstantScoreQuery
+	match          *MatchQuery
+	scriptScore    *ScriptScoreQuery
+	exists         *ExistsQuery
+	boolean        *BooleanQuery
+	term           *TermQuery
+	terms          *TermsQuery
+	rng            *RangeQuery
+	prefix         *PrefixQuery
+	fuzzy          *FuzzyQuery
+	functionScore  *FunctionScoreQuery
+	matchAll       *MatchAllQuery
+	matchNone      *MatchNoneQuery
+	script         *ScriptQuery
+	boosting       *BoostingQuery
+	constantScore  *ConstantScoreQuery
+	disjunctionMax *DisjunctionMaxQuery
 }
 
+func (q *Query) Query() (*Query, error) {
+	return q, nil
+}
 func (q Query) Match() *MatchQuery {
 	if q.match == nil {
 		q.match = &MatchQuery{}
@@ -432,28 +520,26 @@ func (q Query) Term() *TermQuery {
 func (q *Query) clauses() map[QueryKind]QueryClause {
 
 	return map[QueryKind]QueryClause{
-		QueryKindMatch:         q.match,
-		QueryKindTerm:          q.term,
-		QueryKindTerms:         q.terms,
-		QueryKindBoolean:       q.boolean,
-		QueryKindExists:        q.exists,
-		QueryKindFuzzy:         q.fuzzy,
-		QueryKindMatchAll:      q.matchAll,
-		QueryKindMatchNone:     q.matchNone,
-		QueryKindPrefix:        q.prefix,
-		QueryKindRange:         q.rng,
-		QueryKindScriptScore:   q.scriptScore,
-		QueryKindScript:        q.script,
-		QueryKindFunctionScore: q.functionScore,
-		QueryKindBoosting:      q.boosting,
-		QueryKindConstantScore: q.constantScore,
-		// QueryKindDisjunctionMax: q.disjunctionMax
+		QueryKindMatch:          q.match,
+		QueryKindTerm:           q.term,
+		QueryKindTerms:          q.terms,
+		QueryKindBoolean:        q.boolean,
+		QueryKindExists:         q.exists,
+		QueryKindFuzzy:          q.fuzzy,
+		QueryKindMatchAll:       q.matchAll,
+		QueryKindMatchNone:      q.matchNone,
+		QueryKindPrefix:         q.prefix,
+		QueryKindRange:          q.rng,
+		QueryKindScriptScore:    q.scriptScore,
+		QueryKindScript:         q.script,
+		QueryKindFunctionScore:  q.functionScore,
+		QueryKindBoosting:       q.boosting,
+		QueryKindConstantScore:  q.constantScore,
+		QueryKindDisjunctionMax: q.disjunctionMax,
 	}
-
 }
 
 func (q *Query) setClause(qc QueryClause) {
-
 	switch qc.Kind() {
 	case QueryKindMatch:
 		q.match = qc.(*MatchQuery)
@@ -485,8 +571,9 @@ func (q *Query) setClause(qc QueryClause) {
 		q.boosting = qc.(*BoostingQuery)
 	case QueryKindConstantScore:
 		q.constantScore = qc.(*ConstantScoreQuery)
+	case QueryKindDisjunctionMax:
+		q.disjunctionMax = qc.(*DisjunctionMaxQuery)
 	}
-
 }
 func (q *Query) Set(params Querier) error {
 	qv, err := params.Query()

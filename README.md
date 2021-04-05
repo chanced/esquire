@@ -4,7 +4,7 @@ Utilities that pair with the official Elasticsearch Go package
 
 ## Todo
 
-Testing is incredibly light to non-existent right now. I'm merely using this list to keep track of which structures are theoretically complete. It does not indicate the doneness of the items as testing is undoubtly insufficient.
+Testing is incredibly sparse at the moment. I'm merely using this list to keep track of which structures are theoretically complete. It does not indicate the doneness of the items as testing is undoubtly lacking.
 
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
@@ -88,7 +88,7 @@ Testing is incredibly light to non-existent right now. I'm merely using this lis
 
   - [x] **[Text](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/text.html)**\
          Analyzed, unstructured text.
-  - [ ] **[Annotated-text](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-annotated-text.html)**\
+  - [ ] **[Annotated-text](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-annotated-text.html) [Plugin]**\
          Text containing special markup. Used for identifying named entities.
   - [x] **[Completion](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-suggesters.html#completion-suggester)**\
          Used for auto-complete suggestions.
@@ -133,7 +133,7 @@ Testing is incredibly light to non-existent right now. I'm merely using this lis
          Return documents which match a positive query, but reduce the score of documents which also match a negative query.
   - [x] **[Constant score](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-constant-score-query.html)**\
          A query which wraps another query, but executes it in filter context. All matching documents are given the same “constant” \_score.
-  - [ ] **[Disjunction max](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-dis-max-query.html)**\
+  - [x] **[Disjunction max](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-dis-max-query.html)**\
          A query which accepts multiple queries, and returns any documents which match any of the query clauses. While the bool query combines the scores from all matching queries, the dis_max query uses the score of the single best- matching query clause.
   - [x] **[Function score](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-function-score-query.html)**\
          Modify the scores returned by the main query with functions to take into account factors like popularity, recency, distance, or custom algorithms implemented with scripting.

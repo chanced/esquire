@@ -7,11 +7,8 @@ import (
 )
 
 var (
-
-	// TODO: need to be either more or less specific with these errors
-	ErrKindRequired    = errors.New("picker: rule type is required")
-	ErrUnsupportedType = errors.New("picker: unsupported rule type")
-
+	ErrKindRequired               = errors.New("picker: type is required")
+	ErrUnsupportedType            = errors.New("picker: unsupported type")
 	ErrFieldNotFound              = errors.New("picker: field not found")
 	ErrFieldRequired              = errors.New("picker: field is required")
 	ErrValueRequired              = errors.New("picker: value is required")
@@ -49,6 +46,7 @@ var (
 	ErrInvalidNegativeBoost       = errors.New("picker: negative_boost must be between 0 and 1.0")
 	ErrNegativeRequired           = errors.New("picker: negative is required")
 	ErrPositiveRequired           = errors.New("picker: positive is required")
+	ErrQueriesRequired            = errors.New("picker: queries is required")
 )
 
 type FieldError struct {
