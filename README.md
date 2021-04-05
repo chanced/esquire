@@ -2,8 +2,8 @@
 
 Utilities that pair with the official Elasticsearch Go package
 
-         ```go
-         	s, err := picker.NewSearch(picker.SearchParams{
+```go
+s, err := picker.NewSearch(picker.SearchParams{
     	Query: picker.QueryParams{
     		Intervals: picker.IntervalsQueryParams{
     			Field: "my_text",
@@ -26,7 +26,7 @@ Utilities that pair with the official Elasticsearch Go package
     		},
     	},
     })
-       ```
+```
 
 ## Todo
 
