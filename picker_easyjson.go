@@ -338,7 +338,141 @@ func (v *matchPhraseQuery) UnmarshalJSON(data []byte) error {
 func (v *matchPhraseQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson390b7126DecodeGithubComChancedPicker2(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker3(in *jlexer.Lexer, out *matchBoolPrefixQuery) {
+func easyjson390b7126DecodeGithubComChancedPicker3(in *jlexer.Lexer, out *matchPhrasePrefixQuery) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "query":
+			out.Query = string(in.String())
+		case "minimum_should_match":
+			out.MinimumShouldMatch = string(in.String())
+		case "analyzer":
+			out.Analyzer = string(in.String())
+		case "_name":
+			out.Name = string(in.String())
+		case "max_expansions":
+			if m, ok := out.MaxExpansions.(easyjson.Unmarshaler); ok {
+				m.UnmarshalEasyJSON(in)
+			} else if m, ok := out.MaxExpansions.(json.Unmarshaler); ok {
+				_ = m.UnmarshalJSON(in.Raw())
+			} else {
+				out.MaxExpansions = in.Interface()
+			}
+		case "zero_terms_query":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.ZeroTermsQuery).UnmarshalJSON(data))
+			}
+		case "slop":
+			if m, ok := out.Slop.(easyjson.Unmarshaler); ok {
+				m.UnmarshalEasyJSON(in)
+			} else if m, ok := out.Slop.(json.Unmarshaler); ok {
+				_ = m.UnmarshalJSON(in.Raw())
+			} else {
+				out.Slop = in.Interface()
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson390b7126EncodeGithubComChancedPicker3(out *jwriter.Writer, in matchPhrasePrefixQuery) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"query\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Query))
+	}
+	if in.MinimumShouldMatch != "" {
+		const prefix string = ",\"minimum_should_match\":"
+		out.RawString(prefix)
+		out.String(string(in.MinimumShouldMatch))
+	}
+	if in.Analyzer != "" {
+		const prefix string = ",\"analyzer\":"
+		out.RawString(prefix)
+		out.String(string(in.Analyzer))
+	}
+	if in.Name != "" {
+		const prefix string = ",\"_name\":"
+		out.RawString(prefix)
+		out.String(string(in.Name))
+	}
+	if in.MaxExpansions != nil {
+		const prefix string = ",\"max_expansions\":"
+		out.RawString(prefix)
+		if m, ok := in.MaxExpansions.(easyjson.Marshaler); ok {
+			m.MarshalEasyJSON(out)
+		} else if m, ok := in.MaxExpansions.(json.Marshaler); ok {
+			out.Raw(m.MarshalJSON())
+		} else {
+			out.Raw(json.Marshal(in.MaxExpansions))
+		}
+	}
+	if in.ZeroTermsQuery != "" {
+		const prefix string = ",\"zero_terms_query\":"
+		out.RawString(prefix)
+		out.Raw((in.ZeroTermsQuery).MarshalJSON())
+	}
+	if in.Slop != nil {
+		const prefix string = ",\"slop\":"
+		out.RawString(prefix)
+		if m, ok := in.Slop.(easyjson.Marshaler); ok {
+			m.MarshalEasyJSON(out)
+		} else if m, ok := in.Slop.(json.Marshaler); ok {
+			out.Raw(m.MarshalJSON())
+		} else {
+			out.Raw(json.Marshal(in.Slop))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v matchPhrasePrefixQuery) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson390b7126EncodeGithubComChancedPicker3(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v matchPhrasePrefixQuery) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson390b7126EncodeGithubComChancedPicker3(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *matchPhrasePrefixQuery) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson390b7126DecodeGithubComChancedPicker3(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *matchPhrasePrefixQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson390b7126DecodeGithubComChancedPicker3(l, v)
+}
+func easyjson390b7126DecodeGithubComChancedPicker4(in *jlexer.Lexer, out *matchBoolPrefixQuery) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -405,7 +539,7 @@ func easyjson390b7126DecodeGithubComChancedPicker3(in *jlexer.Lexer, out *matchB
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker3(out *jwriter.Writer, in matchBoolPrefixQuery) {
+func easyjson390b7126EncodeGithubComChancedPicker4(out *jwriter.Writer, in matchBoolPrefixQuery) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -483,27 +617,27 @@ func easyjson390b7126EncodeGithubComChancedPicker3(out *jwriter.Writer, in match
 // MarshalJSON supports json.Marshaler interface
 func (v matchBoolPrefixQuery) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker3(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v matchBoolPrefixQuery) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker3(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *matchBoolPrefixQuery) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker3(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *matchBoolPrefixQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker3(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker4(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker4(in *jlexer.Lexer, out *idsQuery) {
+func easyjson390b7126DecodeGithubComChancedPicker5(in *jlexer.Lexer, out *idsQuery) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -557,7 +691,7 @@ func easyjson390b7126DecodeGithubComChancedPicker4(in *jlexer.Lexer, out *idsQue
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker4(out *jwriter.Writer, in idsQuery) {
+func easyjson390b7126EncodeGithubComChancedPicker5(out *jwriter.Writer, in idsQuery) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -588,27 +722,27 @@ func easyjson390b7126EncodeGithubComChancedPicker4(out *jwriter.Writer, in idsQu
 // MarshalJSON supports json.Marshaler interface
 func (v idsQuery) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker4(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v idsQuery) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker4(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *idsQuery) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker4(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *idsQuery) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker4(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker5(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker5(in *jlexer.Lexer, out *geoShapeField) {
+func easyjson390b7126DecodeGithubComChancedPicker6(in *jlexer.Lexer, out *geoShapeField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -657,7 +791,7 @@ func easyjson390b7126DecodeGithubComChancedPicker5(in *jlexer.Lexer, out *geoSha
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker5(out *jwriter.Writer, in geoShapeField) {
+func easyjson390b7126EncodeGithubComChancedPicker6(out *jwriter.Writer, in geoShapeField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -715,27 +849,27 @@ func easyjson390b7126EncodeGithubComChancedPicker5(out *jwriter.Writer, in geoSh
 // MarshalJSON supports json.Marshaler interface
 func (v geoShapeField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker5(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker6(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v geoShapeField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker5(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker6(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *geoShapeField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker5(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker6(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *geoShapeField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker5(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker6(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker6(in *jlexer.Lexer, out *geoPointField) {
+func easyjson390b7126DecodeGithubComChancedPicker7(in *jlexer.Lexer, out *geoPointField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -790,7 +924,7 @@ func easyjson390b7126DecodeGithubComChancedPicker6(in *jlexer.Lexer, out *geoPoi
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker6(out *jwriter.Writer, in geoPointField) {
+func easyjson390b7126EncodeGithubComChancedPicker7(out *jwriter.Writer, in geoPointField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -854,27 +988,27 @@ func easyjson390b7126EncodeGithubComChancedPicker6(out *jwriter.Writer, in geoPo
 // MarshalJSON supports json.Marshaler interface
 func (v geoPointField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker6(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker7(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v geoPointField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker6(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker7(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *geoPointField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker6(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker7(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *geoPointField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker6(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker7(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker7(in *jlexer.Lexer, out *fuzzyRule) {
+func easyjson390b7126DecodeGithubComChancedPicker8(in *jlexer.Lexer, out *fuzzyRule) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -933,7 +1067,7 @@ func easyjson390b7126DecodeGithubComChancedPicker7(in *jlexer.Lexer, out *fuzzyR
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker7(out *jwriter.Writer, in fuzzyRule) {
+func easyjson390b7126EncodeGithubComChancedPicker8(out *jwriter.Writer, in fuzzyRule) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -984,27 +1118,27 @@ func easyjson390b7126EncodeGithubComChancedPicker7(out *jwriter.Writer, in fuzzy
 // MarshalJSON supports json.Marshaler interface
 func (v fuzzyRule) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker7(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker8(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v fuzzyRule) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker7(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker8(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *fuzzyRule) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker7(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker8(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *fuzzyRule) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker7(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker8(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker8(in *jlexer.Lexer, out *flattenedField) {
+func easyjson390b7126DecodeGithubComChancedPicker9(in *jlexer.Lexer, out *flattenedField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1095,7 +1229,7 @@ func easyjson390b7126DecodeGithubComChancedPicker8(in *jlexer.Lexer, out *flatte
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker8(out *jwriter.Writer, in flattenedField) {
+func easyjson390b7126EncodeGithubComChancedPicker9(out *jwriter.Writer, in flattenedField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1243,27 +1377,27 @@ func easyjson390b7126EncodeGithubComChancedPicker8(out *jwriter.Writer, in flatt
 // MarshalJSON supports json.Marshaler interface
 func (v flattenedField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker8(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker9(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v flattenedField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker8(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker9(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *flattenedField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker8(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker9(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *flattenedField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker8(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker9(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker9(in *jlexer.Lexer, out *fieldValueFactorParams) {
+func easyjson390b7126DecodeGithubComChancedPicker10(in *jlexer.Lexer, out *fieldValueFactorParams) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1314,7 +1448,7 @@ func easyjson390b7126DecodeGithubComChancedPicker9(in *jlexer.Lexer, out *fieldV
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker9(out *jwriter.Writer, in fieldValueFactorParams) {
+func easyjson390b7126EncodeGithubComChancedPicker10(out *jwriter.Writer, in fieldValueFactorParams) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1356,27 +1490,27 @@ func easyjson390b7126EncodeGithubComChancedPicker9(out *jwriter.Writer, in field
 // MarshalJSON supports json.Marshaler interface
 func (v fieldValueFactorParams) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker9(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker10(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v fieldValueFactorParams) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker9(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker10(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *fieldValueFactorParams) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker9(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker10(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *fieldValueFactorParams) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker9(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker10(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker10(in *jlexer.Lexer, out *denseVectorField) {
+func easyjson390b7126DecodeGithubComChancedPicker11(in *jlexer.Lexer, out *denseVectorField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1415,7 +1549,7 @@ func easyjson390b7126DecodeGithubComChancedPicker10(in *jlexer.Lexer, out *dense
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker10(out *jwriter.Writer, in denseVectorField) {
+func easyjson390b7126EncodeGithubComChancedPicker11(out *jwriter.Writer, in denseVectorField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1447,27 +1581,27 @@ func easyjson390b7126EncodeGithubComChancedPicker10(out *jwriter.Writer, in dens
 // MarshalJSON supports json.Marshaler interface
 func (v denseVectorField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker10(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker11(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v denseVectorField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker10(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker11(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *denseVectorField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker10(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker11(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *denseVectorField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker10(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker11(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker11(in *jlexer.Lexer, out *dateField) {
+func easyjson390b7126DecodeGithubComChancedPicker12(in *jlexer.Lexer, out *dateField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1568,7 +1702,7 @@ func easyjson390b7126DecodeGithubComChancedPicker11(in *jlexer.Lexer, out *dateF
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker11(out *jwriter.Writer, in dateField) {
+func easyjson390b7126EncodeGithubComChancedPicker12(out *jwriter.Writer, in dateField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1714,27 +1848,27 @@ func easyjson390b7126EncodeGithubComChancedPicker11(out *jwriter.Writer, in date
 // MarshalJSON supports json.Marshaler interface
 func (v dateField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker11(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker12(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v dateField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker11(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker12(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *dateField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker11(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker12(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *dateField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker11(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker12(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker12(in *jlexer.Lexer, out *constantField) {
+func easyjson390b7126DecodeGithubComChancedPicker13(in *jlexer.Lexer, out *constantField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1773,7 +1907,7 @@ func easyjson390b7126DecodeGithubComChancedPicker12(in *jlexer.Lexer, out *const
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker12(out *jwriter.Writer, in constantField) {
+func easyjson390b7126EncodeGithubComChancedPicker13(out *jwriter.Writer, in constantField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1799,27 +1933,27 @@ func easyjson390b7126EncodeGithubComChancedPicker12(out *jwriter.Writer, in cons
 // MarshalJSON supports json.Marshaler interface
 func (v constantField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker12(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker13(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v constantField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker12(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker13(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *constantField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker12(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker13(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *constantField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker12(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker13(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker13(in *jlexer.Lexer, out *completionField) {
+func easyjson390b7126DecodeGithubComChancedPicker14(in *jlexer.Lexer, out *completionField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1880,7 +2014,7 @@ func easyjson390b7126DecodeGithubComChancedPicker13(in *jlexer.Lexer, out *compl
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker13(out *jwriter.Writer, in completionField) {
+func easyjson390b7126EncodeGithubComChancedPicker14(out *jwriter.Writer, in completionField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1974,27 +2108,27 @@ func easyjson390b7126EncodeGithubComChancedPicker13(out *jwriter.Writer, in comp
 // MarshalJSON supports json.Marshaler interface
 func (v completionField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker13(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker14(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v completionField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker13(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker14(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *completionField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker13(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker14(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *completionField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker13(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker14(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker14(in *jlexer.Lexer, out *booleanField) {
+func easyjson390b7126DecodeGithubComChancedPicker15(in *jlexer.Lexer, out *booleanField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -2077,7 +2211,7 @@ func easyjson390b7126DecodeGithubComChancedPicker14(in *jlexer.Lexer, out *boole
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker14(out *jwriter.Writer, in booleanField) {
+func easyjson390b7126EncodeGithubComChancedPicker15(out *jwriter.Writer, in booleanField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -2181,27 +2315,27 @@ func easyjson390b7126EncodeGithubComChancedPicker14(out *jwriter.Writer, in bool
 // MarshalJSON supports json.Marshaler interface
 func (v booleanField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker14(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker15(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v booleanField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker14(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker15(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *booleanField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker14(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker15(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *booleanField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker14(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker15(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker15(in *jlexer.Lexer, out *binaryField) {
+func easyjson390b7126DecodeGithubComChancedPicker16(in *jlexer.Lexer, out *binaryField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -2248,7 +2382,7 @@ func easyjson390b7126DecodeGithubComChancedPicker15(in *jlexer.Lexer, out *binar
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker15(out *jwriter.Writer, in binaryField) {
+func easyjson390b7126EncodeGithubComChancedPicker16(out *jwriter.Writer, in binaryField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -2296,27 +2430,27 @@ func easyjson390b7126EncodeGithubComChancedPicker15(out *jwriter.Writer, in bina
 // MarshalJSON supports json.Marshaler interface
 func (v binaryField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker15(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker16(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v binaryField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker15(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker16(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *binaryField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker15(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker16(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *binaryField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker15(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker16(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker16(in *jlexer.Lexer, out *anyOfRule) {
+func easyjson390b7126DecodeGithubComChancedPicker17(in *jlexer.Lexer, out *anyOfRule) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -2361,7 +2495,7 @@ func easyjson390b7126DecodeGithubComChancedPicker16(in *jlexer.Lexer, out *anyOf
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker16(out *jwriter.Writer, in anyOfRule) {
+func easyjson390b7126EncodeGithubComChancedPicker17(out *jwriter.Writer, in anyOfRule) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -2381,27 +2515,27 @@ func easyjson390b7126EncodeGithubComChancedPicker16(out *jwriter.Writer, in anyO
 // MarshalJSON supports json.Marshaler interface
 func (v anyOfRule) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker16(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker17(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v anyOfRule) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker16(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker17(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *anyOfRule) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker16(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker17(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *anyOfRule) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker16(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker17(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker17(in *jlexer.Lexer, out *allOfRule) {
+func easyjson390b7126DecodeGithubComChancedPicker18(in *jlexer.Lexer, out *allOfRule) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -2462,7 +2596,7 @@ func easyjson390b7126DecodeGithubComChancedPicker17(in *jlexer.Lexer, out *allOf
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker17(out *jwriter.Writer, in allOfRule) {
+func easyjson390b7126EncodeGithubComChancedPicker18(out *jwriter.Writer, in allOfRule) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -2504,27 +2638,27 @@ func easyjson390b7126EncodeGithubComChancedPicker17(out *jwriter.Writer, in allO
 // MarshalJSON supports json.Marshaler interface
 func (v allOfRule) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker17(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker18(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v allOfRule) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker17(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker18(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *allOfRule) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker17(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker18(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *allOfRule) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker17(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker18(l, v)
 }
-func easyjson390b7126DecodeGithubComChancedPicker18(in *jlexer.Lexer, out *aliasField) {
+func easyjson390b7126DecodeGithubComChancedPicker19(in *jlexer.Lexer, out *aliasField) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -2557,7 +2691,7 @@ func easyjson390b7126DecodeGithubComChancedPicker18(in *jlexer.Lexer, out *alias
 		in.Consumed()
 	}
 }
-func easyjson390b7126EncodeGithubComChancedPicker18(out *jwriter.Writer, in aliasField) {
+func easyjson390b7126EncodeGithubComChancedPicker19(out *jwriter.Writer, in aliasField) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -2577,23 +2711,23 @@ func easyjson390b7126EncodeGithubComChancedPicker18(out *jwriter.Writer, in alia
 // MarshalJSON supports json.Marshaler interface
 func (v aliasField) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson390b7126EncodeGithubComChancedPicker18(&w, v)
+	easyjson390b7126EncodeGithubComChancedPicker19(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v aliasField) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson390b7126EncodeGithubComChancedPicker18(w, v)
+	easyjson390b7126EncodeGithubComChancedPicker19(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *aliasField) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson390b7126DecodeGithubComChancedPicker18(&r, v)
+	easyjson390b7126DecodeGithubComChancedPicker19(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *aliasField) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson390b7126DecodeGithubComChancedPicker18(l, v)
+	easyjson390b7126DecodeGithubComChancedPicker19(l, v)
 }

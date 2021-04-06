@@ -10,22 +10,26 @@ const DefaultSlop = 0
 
 type WithSlop interface {
 	Slop() int
-	SetSlop(v int)
+	SetSlop(v interface{}) error
 }
 
 type slopParam struct {
-	slop *int
+	slop dynamic.Number
 }
 
 func (s slopParam) Slop() int {
-	if s.slop == nil {
-		return DefaultSlop
+	if i, ok := s.slop.Int(); ok {
+		return i
 	}
-	return *s.slop
+	if f, ok := s.slop.Float64(); ok {
+		return int(f)
+	}
+
+	return DefaultSlop
 }
 
-func (s *slopParam) SetSlop(v int) {
-	s.slop = &v
+func (s *slopParam) SetSlop(v interface{}) error {
+	return s.slop.Set(v)
 }
 
 func unmarshalSlopParam(data dynamic.JSON, target interface{}) error {

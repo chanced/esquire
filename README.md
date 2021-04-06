@@ -217,7 +217,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Creates a bool query that matches each term as a term query, except for the last term, which is matched as a prefix query
   - [x] **[Match phrase](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase.html)**\
          Like the match query but used for matching exact phrases or word proximity matches.
-  - [ ] **[Match phrase prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase-prefix.html)**\
+  - [x] **[Match phrase prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase-prefix.html)**\
          Like the match_phrase query, but does a wildcard search on the final word.
   - [ ] **[Multi-match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html)**\
          The multi-field version of the match query.

@@ -105,12 +105,12 @@ type QueryParams struct {
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 	Match CompleteMatcher
 
-	// Boolean is a query that matches documents matching boolean combinations
+	// Bool is a query that matches documents matching boolean combinations
 	// of other queries. The bool query maps to Lucene BooleanQuery. It is built
 	// using one or more boolean clauses, each clause with a typed occurrence.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-	Boolean Booler
+	Bool Booler
 
 	// Fuzzy returns documents that contain terms similar to the search term, as
 	// measured by a Levenshtein edit distance.
@@ -254,11 +254,11 @@ func (q *QueryParams) matchPhrase() (*MatchPhraseQuery, error) {
 	}
 	return q.MatchPhrase.MatchPhrase()
 }
-func (q *QueryParams) boolean() (*BooleanQuery, error) {
-	if q.Boolean == nil {
+func (q *QueryParams) boolean() (*BoolQuery, error) {
+	if q.Bool == nil {
 		return nil, nil
 	}
-	return q.Boolean.Boolean()
+	return q.Bool.Bool()
 }
 func (q *QueryParams) matchBoolPrefix() (*MatchBoolPrefixQuery, error) {
 	if q.MatchBoolPrefix == nil {
@@ -512,7 +512,7 @@ type Query struct {
 	match           *MatchQuery
 	scriptScore     *ScriptScoreQuery
 	exists          *ExistsQuery
-	boolean         *BooleanQuery
+	boolean         *BoolQuery
 	term            *TermQuery
 	terms           *TermsQuery
 	rng             *RangeQuery
@@ -627,9 +627,9 @@ func (q *Query) Exists() *ExistsQuery {
 	}
 	return q.exists
 }
-func (q Query) Boolean() *BooleanQuery {
+func (q *Query) Bool() *BoolQuery {
 	if q.boolean == nil {
-		q.boolean = &BooleanQuery{}
+		q.boolean = &BoolQuery{}
 	}
 	return q.boolean
 }
@@ -689,7 +689,7 @@ func (q *Query) setClause(qc QueryClause) {
 	case QueryKindTerms:
 		q.terms = qc.(*TermsQuery)
 	case QueryKindBoolean:
-		q.boolean = qc.(*BooleanQuery)
+		q.boolean = qc.(*BoolQuery)
 	case QueryKindExists:
 		q.exists = qc.(*ExistsQuery)
 	case QueryKindFuzzy:
