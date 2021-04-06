@@ -246,6 +246,10 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase.html
 	MatchPhrase MatchPhraser
+	// The multi-field version of the match query.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#multi-match-types
+	MultiMatch MultiMatcher
 }
 
 func (q *QueryParams) matchPhrase() (*MatchPhraseQuery, error) {
@@ -379,7 +383,12 @@ func (q *QueryParams) intervals() (*IntervalsQuery, error) {
 	}
 	return q.Intervals.Intervals()
 }
-
+func (q *QueryParams) multiMatch() (*MultiMatchQuery, error) {
+	if q.MultiMatch == nil {
+		return nil, nil
+	}
+	return q.MultiMatch.MultiMatch()
+}
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
@@ -464,6 +473,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	multiMatch, err := q.multiMatch()
+	if err != nil {
+		return nil, err
+	}
 	qv := &Query{
 		match:           match,
 		exists:          exists,
@@ -485,6 +498,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		intervals:       intervals,
 		matchBoolPrefix: matchBoolPrefix,
 		matchPhrase:     matchPhrase,
+		multiMatch:      multiMatch,
 	}
 	return qv, nil
 }
@@ -529,10 +543,18 @@ type Query struct {
 	intervals       *IntervalsQuery
 	matchBoolPrefix *MatchBoolPrefixQuery
 	matchPhrase     *MatchPhraseQuery
+	multiMatch      *MultiMatchQuery
 }
 
 func (q *Query) Query() (*Query, error) {
 	return q, nil
+}
+
+func (q *Query) MultiMatch() *MultiMatchQuery {
+	if q.multiMatch == nil {
+		q.multiMatch = &MultiMatchQuery{}
+	}
+	return q.multiMatch
 }
 func (q *Query) MatchBoolPrefix() *MatchBoolPrefixQuery {
 	if q.matchBoolPrefix == nil {
@@ -677,6 +699,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindIntervals:       q.intervals,
 		QueryKindMatchBoolPrefix: q.matchBoolPrefix,
 		QueryKindMatchPhrase:     q.matchPhrase,
+		QueryKindMultiMatch:      q.multiMatch,
 	}
 }
 
@@ -720,7 +743,8 @@ func (q *Query) setClause(qc QueryClause) {
 		q.intervals = qc.(*IntervalsQuery)
 	case QueryKindMatchPhrase:
 		q.matchPhrase = qc.(*MatchPhraseQuery)
-
+	case QueryKindMultiMatch:
+		q.multiMatch = qc.(*MultiMatchQuery)
 	}
 }
 func (q *Query) Set(params Querier) error {

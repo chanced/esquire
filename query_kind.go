@@ -34,6 +34,7 @@ const (
 	QueryKindMatchBoolPrefix   QueryKind = "match_bool_prefix"
 	QueryKindMatchPhrase       QueryKind = "match_phrase"
 	QueryKindMatchPhrasePrefix QueryKind = "match_phrase_prefix"
+	QueryKindMultiMatch        QueryKind = "multi_match"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
@@ -53,4 +54,5 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindIntervals:         func() QueryClause { return &IntervalsQuery{} },
 	QueryKindMatchPhrase:       func() QueryClause { return &MatchPhraseQuery{} },
 	QueryKindMatchPhrasePrefix: func() QueryClause { return &MatchPhrasePrefixQuery{} },
+	QueryKindMultiMatch:        func() QueryClause { return &MultiMatchQuery{} },
 }

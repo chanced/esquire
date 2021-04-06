@@ -61,9 +61,9 @@ func (o operatorParam) Operator() Operator {
 // SetOperator sets the Operator to v
 func (o *operatorParam) SetOperator(v Operator) error {
 	v = Operator(strings.TrimSpace(v.toUpper().String()))
-	if v != "" && v != "AND" && v != "OR" {
-		return ErrInvalidOperator
-	}
+	// if v != "" && v != "AND" && v != "OR" {
+	// 	return ErrInvalidOperator
+	// }
 	o.operator = v
 	return nil
 }

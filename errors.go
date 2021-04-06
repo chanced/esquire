@@ -11,6 +11,7 @@ var (
 	ErrUnsupportedType            = errors.New("picker: unsupported type")
 	ErrFieldNotFound              = errors.New("picker: field not found")
 	ErrFieldRequired              = errors.New("picker: field is required")
+	ErrFieldsRequired             = errors.New("picker: fields is required")
 	ErrValueRequired              = errors.New("picker: value is required")
 	ErrQueryRequired              = errors.New("picker: query is required")
 	ErrInvalidSource              = errors.New("picker: invalid value for source")
@@ -54,6 +55,7 @@ var (
 	ErrValuesRequired             = errors.New("picker: values is required")
 	ErrIntervalsRequired          = errors.New("picker: intervals are required")
 	ErrInvalidOperator            = errors.New("picker: invalid operator")
+	ErrInvalidMultiMatchType      = errors.New("picker: invalid multimatch type")
 )
 
 type FieldError struct {

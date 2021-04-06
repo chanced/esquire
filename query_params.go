@@ -84,12 +84,10 @@ func marshalParams(source interface{}, marshalers paramMarshalers) (dynamic.Map,
 		if err != nil {
 			return nil, fmt.Errorf("%w for parameter %s", err, key)
 		}
-		if d == nil || len(d) == 0 || d.IsNull() {
+		if d == nil || len(d) == 0 || d.IsNull() || (d.IsString() && d.Len() < 3) {
 			continue
 		}
-		if (d.IsString() || d.IsArray() || d.IsObject()) && d.Len() < 3 {
-			continue
-		}
+
 		data[key] = d
 	}
 	return data, nil

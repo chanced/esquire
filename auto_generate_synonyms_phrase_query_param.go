@@ -15,7 +15,7 @@ type WithAutoGenerateSynonymsPhraseQuery interface {
 	// automatically created for multi-term synonyms. Defaults to true.
 	AutoGenerateSynonymsPhraseQuery() bool
 	// SetAutoGenerateSynonymsPhraseQuery sets AutoGenerateSynonymsPhraseQueryValue to v
-	SetAutoGenerateSynonymsPhraseQuery(v bool)
+	SetAutoGenerateSynonymsPhraseQuery(v interface{}) error
 }
 
 type autoGenerateSynonymsPhraseQueryParam struct {
@@ -24,16 +24,16 @@ type autoGenerateSynonymsPhraseQueryParam struct {
 
 // AutoGenerateSynonymsPhraseQuery determines if match phrase queries are
 // automatically created for multi-term synonyms. Defaults to true.
-func (agspq autoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
-	if v, ok := agspq.autoGenerateSynonymsPhraseQuery.Bool(); ok {
+func (a autoGenerateSynonymsPhraseQueryParam) AutoGenerateSynonymsPhraseQuery() bool {
+	if v, ok := a.autoGenerateSynonymsPhraseQuery.Bool(); ok {
 		return v
 	}
 	return DefaultAutoGenerateSynonymsPhraseQuery
 }
 
 // SetAutoGenerateSynonymsPhraseQuery sets AutoGenerateSynonymsPhraseQueryValue to v
-func (agspq *autoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v bool) {
-	agspq.autoGenerateSynonymsPhraseQuery.Set(v)
+func (a *autoGenerateSynonymsPhraseQueryParam) SetAutoGenerateSynonymsPhraseQuery(v interface{}) error {
+	return a.autoGenerateSynonymsPhraseQuery.Set(v)
 }
 func unmarshalAutoGenerateSynonymsPhraseQueryParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithAutoGenerateSynonymsPhraseQuery); ok {

@@ -144,7 +144,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          IPv4 and IPv6 addresses.
   - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
          Software versions. Supports Semantic Versioning precedence rules.
-  - [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html) [X-Pack]**\
+  - [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html) [Plugin]**\
          Compute and stores hashes of values.
 
 - #### Aggregate data types
@@ -219,7 +219,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Like the match query but used for matching exact phrases or word proximity matches.
   - [x] **[Match phrase prefix](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase-prefix.html)**\
          Like the match_phrase query, but does a wildcard search on the final word.
-  - [ ] **[Multi-match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html)**\
+  - [x] **[Multi-match](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html)**\
          The multi-field version of the match query.
   - [ ] **[Common Terms](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-common-terms-query.html) [Deprecated]**\
          A more specialized query which gives more preference to uncommon words.

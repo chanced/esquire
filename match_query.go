@@ -45,14 +45,10 @@ type MatchQueryParams struct {
 	Analyzer string
 	// If true, match phrase queries are NOT automatically created for
 	// multi-term synonyms.
-	//
-	// If true, auto_generate_synonyms_phrase_query is set to false
-	NoAutoGenerateSynonymsPhraseQuery bool
+	AutoGenerateSynonymsPhraseQuery interface{}
 	// If true, edits for fuzzy matching DO NOT include transpositions of two
 	// adjacent characters (ab → ba).
-	//
-	// if true, fuzzy_transpositions is set to false
-	NoFuzzyTranspositions bool
+	FuzzyTranspositions interface{}
 	// Maximum edit distance allowed for matching.
 	Fuzziness    string
 	FuzzyRewrite Rewrite
@@ -85,7 +81,7 @@ type MatchQueryParams struct {
 	// This option can be omitted as the Match can skip blocks of documents
 	// efficiently, without any configuration, provided that the total number of
 	// hits is not tracked.
-	CutoffFrequency dynamic.Number
+	CutoffFrequency interface{}
 
 	completeClause
 }
@@ -101,18 +97,25 @@ func (m MatchQueryParams) Match() (*MatchQuery, error) {
 	q := &MatchQuery{
 		field: m.Field,
 	}
-	err := q.setQuery(m.Query)
+	err := q.SetQuery(m.Query)
 	if err != nil {
 		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
 	q.SetAnalyzer(m.Analyzer)
-	q.SetAutoGenerateSynonymsPhraseQuery(!m.NoAutoGenerateSynonymsPhraseQuery)
+	err = q.SetAutoGenerateSynonymsPhraseQuery(m.AutoGenerateSynonymsPhraseQuery)
+	if err != nil {
+		return q, err
+	}
 	q.SetFuzziness(m.Fuzziness)
+
 	err = q.SetFuzzyRewrite(m.FuzzyRewrite)
 	if err != nil {
 		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
-	q.SetFuzzyTranspositions(!m.NoFuzzyTranspositions)
+	err = q.SetFuzzyTranspositions(m.FuzzyTranspositions)
+	if err != nil {
+		return q, newQueryError(err, QueryKindMatch, m.Field)
+	}
 	q.SetLenient(m.Lenient)
 	err = q.SetMaxExpansions(m.MaxExpansions)
 	if err != nil {
@@ -126,7 +129,10 @@ func (m MatchQueryParams) Match() (*MatchQuery, error) {
 	if err != nil {
 		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
-	q.cutoffFrequency = m.CutoffFrequency
+	err = q.cutoffFrequency.Set(m.CutoffFrequency)
+	if err != nil {
+		return q, newQueryError(err, QueryKindMatch, m.Field)
+	}
 	return q, nil
 }
 
@@ -216,19 +222,19 @@ func (m MatchQuery) marshalClauseJSON() (dynamic.JSON, error) {
 func (m *MatchQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchQuery{}
 
-	d := map[string]dynamic.JSON{}
+	d := dynamic.JSONObject{}
 	err := json.Unmarshal(data, &d)
 	if err != nil {
 		return err
 	}
 	for k, v := range d {
 		m.field = k
-		return m.unmarshalClauseJSON(v)
+		return m.unmarshalClause(v)
 	}
 	return nil
 }
 
-func (m *MatchQuery) unmarshalClauseJSON(data dynamic.JSON) error {
+func (m *MatchQuery) unmarshalClause(data dynamic.JSON) error {
 	fields, err := unmarshalClauseParams(data, m)
 	if err != nil {
 		return err
@@ -251,9 +257,9 @@ func (m *MatchQuery) Clear() {
 	*m = MatchQuery{}
 }
 
-// setQuery sets the Match's query param. It returns an error if it is nil or
+// SetQuery sets the Match's query param. It returns an error if it is nil or
 // empty. If you need to clear match, use Clear()
-func (m *MatchQuery) setQuery(query interface{}) error {
+func (m *MatchQuery) SetQuery(query interface{}) error {
 	if query == nil {
 		return ErrQueryRequired
 	}
