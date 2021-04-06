@@ -241,8 +241,19 @@ type QueryParams struct {
 	// from the terms. Each term except the last is used in a term query. The
 	// last term is used in a prefix.
 	MatchBoolPrefix MatchBoolPrefixer
+	// The match_phrase query analyzes the text and creates a phrase query out
+	// of the analyzed text.
+	//
+	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-query-phrase.html
+	MatchPhrase MatchPhraser
 }
 
+func (q *QueryParams) matchPhrase() (*MatchPhraseQuery, error) {
+	if q.MatchPhrase == nil {
+		return nil, nil
+	}
+	return q.MatchPhrase.MatchPhrase()
+}
 func (q *QueryParams) boolean() (*BooleanQuery, error) {
 	if q.Boolean == nil {
 		return nil, nil
@@ -449,6 +460,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	matchPhrase, err := q.matchPhrase()
+	if err != nil {
+		return nil, err
+	}
 	qv := &Query{
 		match:           match,
 		exists:          exists,
@@ -469,6 +484,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		ids:             ids,
 		intervals:       intervals,
 		matchBoolPrefix: matchBoolPrefix,
+		matchPhrase:     matchPhrase,
 	}
 	return qv, nil
 }
@@ -512,6 +528,7 @@ type Query struct {
 	ids             *IDsQuery
 	intervals       *IntervalsQuery
 	matchBoolPrefix *MatchBoolPrefixQuery
+	matchPhrase     *MatchPhraseQuery
 }
 
 func (q *Query) Query() (*Query, error) {
@@ -523,7 +540,12 @@ func (q *Query) MatchBoolPrefix() *MatchBoolPrefixQuery {
 	}
 	return q.matchBoolPrefix
 }
-
+func (q *Query) MatchPhrase() *MatchPhraseQuery {
+	if q.matchPhrase == nil {
+		q.matchPhrase = &MatchPhraseQuery{}
+	}
+	return q.matchPhrase
+}
 func (q *Query) Range() *RangeQuery {
 	if q.rng == nil {
 		q.rng = &RangeQuery{}
@@ -654,6 +676,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindIDs:             q.ids,
 		QueryKindIntervals:       q.intervals,
 		QueryKindMatchBoolPrefix: q.matchBoolPrefix,
+		QueryKindMatchPhrase:     q.matchPhrase,
 	}
 }
 
@@ -695,6 +718,9 @@ func (q *Query) setClause(qc QueryClause) {
 		q.ids = qc.(*IDsQuery)
 	case QueryKindIntervals:
 		q.intervals = qc.(*IntervalsQuery)
+	case QueryKindMatchPhrase:
+		q.matchPhrase = qc.(*MatchPhraseQuery)
+
 	}
 }
 func (q *Query) Set(params Querier) error {

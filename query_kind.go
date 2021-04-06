@@ -32,6 +32,7 @@ const (
 	QueryKindIDs             QueryKind = "ids"
 	QueryKindIntervals       QueryKind = "intervals"
 	QueryKindMatchBoolPrefix QueryKind = "match_bool_prefix"
+	QueryKindMatchPhrase     QueryKind = "match_phrase"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
@@ -49,4 +50,5 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindConstantScore: func() QueryClause { return &ConstantScoreQuery{} },
 	QueryKindIDs:           func() QueryClause { return &IDsQuery{} },
 	QueryKindIntervals:     func() QueryClause { return &IntervalsQuery{} },
+	QueryKindMatchPhrase:   func() QueryClause { return &MatchPhraseQuery{} },
 }
