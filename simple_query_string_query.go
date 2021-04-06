@@ -108,6 +108,10 @@ func (p SimpleQueryStringQueryParams) SimpleQueryString() (*SimpleQueryStringQue
 	q.SetMinimumShouldMatch(p.MinimumShouldMatch)
 	q.SetQuoteAnalyzer(p.QuoteAnalyzer)
 	q.SetQuoteFieldSuffix(p.QuoteFieldSuffix)
+	err = q.SetFuzzyPrefixLength(p.FuzzyPrefixLength)
+	if err != nil {
+		return q, err
+	}
 	err = q.SetAnalyzeWildcard(p.AnalyzeWildcard)
 	if err != nil {
 		return q, err
@@ -157,6 +161,7 @@ type SimpleQueryStringQuery struct {
 	maxDeterminizedStatesParam
 	fuzzyMaxExpansionsParam
 	analyzeWildcardParam
+	fuzzyPrefixLengthParam
 	defaultOperatorParam
 	fuzzyTranspositionsParam
 	lenientParam

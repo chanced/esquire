@@ -118,8 +118,7 @@ func NewSearch(p SearchParams) (*Search, error) {
 		terminateAfter:   p.TerminateAfter,
 		timeout:          p.Timeout,
 		version:          p.Version,
-		// source:           p.Source,
-
+		source:           p.Source,
 	}
 	if p.Size != 0 {
 		err := s.SetSize(p.Size)
@@ -150,7 +149,7 @@ type Search struct {
 	runtimeMappings  RuntimeMappings    // runtime_mappings
 	seqNoPrimaryTerm bool               // seq_no_primary_term
 	size             dynamic.Number     // size
-	source           *SearchSource      // _source
+	source           interface{}        // _source
 	stats            []string           // stats
 	terminateAfter   int                // terminate_after
 	timeout          time.Duration      // timeout
@@ -309,7 +308,7 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	if d, ok := m["_source"]; ok {
-		var v SearchSource
+		var v interface{}
 		err = json.Unmarshal(d, &v)
 		if err != nil {
 			return err
@@ -640,34 +639,36 @@ func (s *Search) SetSize(v int) error {
 // Source indicates which source fields are returned for matching documents.
 // These fields are returned in the hits._source property of the search
 // response. Defaults to true.
-func (s Search) Source() *SearchSource {
+func (s Search) Source() interface{} {
 	return s.source
 }
 
 // SetSource sets the value of Source
-//
-// The options are:
-//  picker.Source, *picker.Source,
-//  string, []string,
-//  dynamic.StringOrArrayOfStrings, *dynamic.StringOrArrayOfStrings,
-//  picker.SourceSpecifications
-//  *picker.SourceSpecifications
-//  bool, *bool
-//  nil
-// Note, "true" || "false" get parsed as boolean
 func (s *Search) SetSource(v interface{}) error {
-	switch t := v.(type) {
-	case *SearchSource:
-		ts := *t
-		s.source = &ts
-		return nil
-	case SearchSource:
-		s.source = &t
-		return nil
-	default:
-		s.source = &SearchSource{}
-		return s.source.SetValue(v)
-	}
+	//
+	// The options are:
+	//  picker.Source, *picker.Source,
+	//  string, []string,
+	//  dynamic.StringOrArrayOfStrings, *dynamic.StringOrArrayOfStrings,
+	//  picker.SourceSpecifications
+	//  *picker.SourceSpecifications
+	//  bool, *bool
+	//  nil
+	// Note, "true" || "false" get parsed as boolean
+	s.source = v
+	return nil
+	// switch t := v.(type) {
+	// case *SearchSource:
+	// 	ts := *t
+	// 	s.source = &ts
+	// 	return nil
+	// case SearchSource:
+	// 	s.source = &t
+	// 	return nil
+	// default:
+	// 	s.source = &SearchSource{}
+	// 	return s.source.SetValue(v)
+	// }
 }
 
 // Stats groups to associate with the picker. Each group maintains a statistics

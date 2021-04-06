@@ -37,6 +37,7 @@ const (
 	QueryKindMultiMatch        QueryKind = "multi_match"
 	QueryKindQueryString       QueryKind = "query_string"
 	QueryKindSimpleQueryString QueryKind = "simple_query_string"
+	QueryKindGeoBoundingBox    QueryKind = "geo_bounding_box"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
@@ -58,5 +59,6 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindMatchPhrasePrefix: func() QueryClause { return &MatchPhrasePrefixQuery{} },
 	QueryKindMultiMatch:        func() QueryClause { return &MultiMatchQuery{} },
 	QueryKindQueryString:       func() QueryClause { return &QueryStringQuery{} },
-	// QueryKindSimpleQueryString: func() QueryClause { return &SimpleQueryStringQuery{} },
+	QueryKindSimpleQueryString: func() QueryClause { return &SimpleQueryStringQuery{} },
+	QueryKindGeoBoundingBox:    func() QueryClause { return &GeoBoundingBoxQuery{} },
 }

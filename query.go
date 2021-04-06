@@ -272,8 +272,16 @@ type QueryParams struct {
 	// simple_query_string query does not return errors for invalid syntax.
 	// Instead, it ignores any invalid parts of the query string.
 	SimpleQueryString SimpleQueryStringer
+
+	GeoBoundingBox GeoBoundingBoxer
 }
 
+func (q QueryParams) geoBoundingBox() (*GeoBoundingBoxQuery, error) {
+	if q.GeoBoundingBox == nil {
+		return nil, nil
+	}
+	return q.GeoBoundingBox.GeoBoundingBox()
+}
 func (q QueryParams) simpleQueryString() (*SimpleQueryStringQuery, error) {
 	if q.SimpleQueryString == nil {
 		return nil, nil
@@ -428,6 +436,9 @@ func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
 	}
+
+	geoBoundingBox, err := q.geoBoundingBox()
+
 	simpleQueryString, err := q.simpleQueryString()
 	if err != nil {
 		return nil, err
@@ -544,6 +555,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		multiMatch:        multiMatch,
 		queryString:       queryString,
 		simpleQueryString: simpleQueryString,
+		geoBoundingBox:    geoBoundingBox,
 	}
 	return qv, nil
 }
@@ -591,10 +603,18 @@ type Query struct {
 	multiMatch        *MultiMatchQuery
 	queryString       *QueryStringQuery
 	simpleQueryString *SimpleQueryStringQuery
+	geoBoundingBox    *GeoBoundingBoxQuery
 }
 
 func (q *Query) Query() (*Query, error) {
 	return q, nil
+}
+
+func (q *Query) GeoBoundingBox() *GeoBoundingBoxQuery {
+	if q.geoBoundingBox == nil {
+		q.geoBoundingBox = &GeoBoundingBoxQuery{}
+	}
+	return q.geoBoundingBox
 }
 
 func (q *Query) QueryString() *QueryStringQuery {
@@ -762,6 +782,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindMultiMatch:        q.multiMatch,
 		QueryKindQueryString:       q.queryString,
 		QueryKindSimpleQueryString: q.simpleQueryString,
+		QueryKindGeoBoundingBox:    q.geoBoundingBox,
 	}
 }
 
@@ -811,6 +832,8 @@ func (q *Query) setClause(qc QueryClause) {
 		q.matchPhrase = qc.(*MatchPhraseQuery)
 	case QueryKindMultiMatch:
 		q.multiMatch = qc.(*MultiMatchQuery)
+	case QueryKindGeoBoundingBox:
+		q.geoBoundingBox = qc.(*GeoBoundingBoxQuery)
 	}
 }
 func (q *Query) Set(params Querier) error {
