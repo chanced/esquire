@@ -1,6 +1,8 @@
 # picker
 
-Utilities that pair with the official Elasticsearch Go package
+picker is composed of types for Elasticsearch 7. For now, the purpose is to have strongly typed mappings, fields, and analyzers that can be marshaled and unmarshaled, to be used with the official Elasticsearch go client.
+
+Aggregations are currently a `map[string]interface{}`. There are ~70 aggregations and its sort of an all-or-nothing. I plan to get to them all but this is incredibly tedious and time consuming.
 
 ```go
 s, err := picker.NewSearch(picker.SearchParams{

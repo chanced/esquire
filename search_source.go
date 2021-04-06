@@ -34,18 +34,11 @@ type SearchSource struct {
 //
 // SetValue returns an error if v is not one of the types listed above.
 func (s *SearchSource) SetValue(v interface{}) error {
-
+	if v == nil {
+		*s = SearchSource{}
+		return nil
+	}
 	switch t := v.(type) {
-	case *string:
-		if *t == "true" {
-			return s.SetValue(true)
-		}
-		if *t == "false" {
-			return s.SetValue(false)
-		}
-		s.wildcardPattern = dynamic.StringOrArrayOfStrings{*t}
-		s.boolean = nil
-		s.specifications = nil
 	case string:
 		if t == "true" {
 			return s.SetValue(true)
@@ -66,9 +59,7 @@ func (s *SearchSource) SetValue(v interface{}) error {
 		s.specifications = nil
 		s.wildcardPattern = t
 	case *dynamic.StringOrArrayOfStrings:
-		s.boolean = nil
-		s.specifications = nil
-		s.wildcardPattern = *t
+		return s.SetValue(*t)
 	case SourceSpecifications:
 		s.boolean = nil
 		s.wildcardPattern = nil
@@ -79,10 +70,6 @@ func (s *SearchSource) SetValue(v interface{}) error {
 		s.specifications = t
 	case bool:
 		s.boolean = &t
-		s.wildcardPattern = nil
-		s.specifications = nil
-	case *bool:
-		s.boolean = t
 		s.wildcardPattern = nil
 		s.specifications = nil
 	case nil:

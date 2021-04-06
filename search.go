@@ -18,6 +18,7 @@ var (
 type SearchParams struct {
 	Query QueryParams
 
+	Aggregations map[string]interface{}
 	// Array of wildcard (*) patterns. The request returns doc values for field
 	// names matching these patterns in the hits.fields property of the response
 	// (Optional) .
@@ -79,7 +80,7 @@ type SearchParams struct {
 	// Indicates which source fields are returned for matching documents. These
 	// fields are returned in the hits._source property of the search response.
 	// Defaults to true. (Optional)
-	Source *SearchSource
+	Source interface{}
 
 	// Stats groups to associate with the picker. Each group maintains a
 	// statistics aggregation for its associated searches. You can retrieve
@@ -113,11 +114,12 @@ func NewSearch(p SearchParams) (*Search, error) {
 		pointInTime:      p.PointInTime,
 		runtimeMappings:  p.RuntimeMappings,
 		seqNoPrimaryTerm: p.SeqNoPrimaryTerm,
-		source:           p.Source,
 		stats:            p.Stats,
 		terminateAfter:   p.TerminateAfter,
 		timeout:          p.Timeout,
 		version:          p.Version,
+		// source:           p.Source,
+
 	}
 	if p.Size != 0 {
 		err := s.SetSize(p.Size)
@@ -136,7 +138,8 @@ func NewSearch(p SearchParams) (*Search, error) {
 
 type Search struct {
 	// Defines the search definition using the Query DSL. (Optional)
-	query            *Query             // query
+	query            *Query // query
+	aggregations     map[string]interface{}
 	docValueFields   SearchFields       // docvalue_fields
 	fields           SearchFields       // fields
 	explain          bool               // explain
@@ -171,6 +174,16 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		}
 		s.query = &q
 	}
+
+	if d, ok := m["aggs"]; ok {
+		var a map[string]interface{}
+		err := json.Unmarshal(d, &a)
+		if err != nil {
+			return err
+		}
+		s.aggregations = a
+	}
+
 	if d, ok := m["docvalue_fields"]; ok {
 		var df SearchFields
 		err = json.Unmarshal(d, &df)
@@ -304,7 +317,13 @@ func (s Search) MarshalJSON() ([]byte, error) {
 		}
 		data["docvalue_fields"] = b
 	}
-
+	if len(s.aggregations) > 0 {
+		aggs, err := json.Marshal(s.aggregations)
+		if err != nil {
+			return nil, err
+		}
+		data["aggs"] = aggs
+	}
 	if len(s.fields) > 0 {
 		b, err := json.Marshal(s.fields)
 		if err != nil {
@@ -327,8 +346,8 @@ func (s Search) MarshalJSON() ([]byte, error) {
 		b, err := json.Marshal(s.indicesBoost)
 		if err != nil {
 			return nil, err
-			data["indices_boost"] = b
 		}
+		data["indices_boost"] = b
 	}
 	if s.pointInTime != nil && len(s.pointInTime.ID) > 0 {
 		b, err := json.Marshal(s.pointInTime)
