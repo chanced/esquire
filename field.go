@@ -57,6 +57,7 @@ var FieldTypeHandlers = map[FieldType]func() Field{
 	FieldTypeTokenCount:      func() Field { return &TokenCountField{} },
 	FieldTypeUnsignedLong:    func() Field { return &UnsignedLongField{} },
 	FieldTypeWildcardKeyword: func() Field { return &WildcardField{} },
+	FieldTypeHistogram:       func() Field { return &HistogramField{} },
 }
 
 func UnmarshalFieldJSON(data []byte, field *Field) error {
