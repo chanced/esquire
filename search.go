@@ -166,6 +166,50 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	if err != nil {
 		return err
 	}
+
+	// for k, d := range m {
+	// 	switch k {
+	// 	case "query":
+	// 		var q Query
+	// 		err = json.Unmarshal(d, &q)
+	// 		s.query = &q
+	// 	case "aggs":
+	// 		var a map[string]interface{}
+	// 		err = json.Unmarshal(d, &a)
+	// 		s.aggregations = a
+	// 	case "docvalue_fields":
+	// 		var df SearchFields
+	// 		err = json.Unmarshal(d, &df)
+	// 		s.docValueFields = df
+	// 	case "fields":
+	// 		var f SearchFields
+	// 		err = json.Unmarshal(d, &f)
+	// 		s.fields = f
+	// 	case "explain":
+	// 		var b dynamic.Bool
+	// 		b, err = dynamic.NewBool(d.UnquotedString())
+	// 		if v, ok := b.Bool(); ok {
+	// 			s.explain = v
+	// 		}
+	// 	case "from":
+	// 		var i int
+	// 		err = json.Unmarshal(d, &i)
+	// 		s.from = i
+	// 	case "indices_boost":
+	// 		var ib map[string]float64
+	// 		err = json.Unmarshal(d, &ib)
+	// 		s.indicesBoost = ib
+	// 	case "min_score":
+	// 		var i float64
+	// 		err = json.Unmarshal(d, &i)
+	// 		s.minScore = i
+	// 	case "pit":
+
+	// 	}
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 	if d, ok := m["query"]; ok {
 		var q Query
 		err = json.Unmarshal(d, &q)

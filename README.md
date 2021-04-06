@@ -74,6 +74,8 @@ Produces:
 }
 ```
 
+picker will unmarshal shorthand queries (like `{ "term": {"my_field": "my_string" } }`) but always marshals into long-form (`{"term":{"my_field": {"value": "my_string" } } }`)
+
 ## Todo
 
 Testing is incredibly sparse at the moment. I'm merely using this list to keep track of which structures are theoretically complete. It does not indicate the doneness of the items as testing is undoubtly lacking.
