@@ -27,21 +27,18 @@ type WithLenient interface {
 type lenientParam struct {
 	// Lenient determines whether format-based errors, such as providing a text
 	// query value for a numeric field, are ignored. Defaults to false.
-	lenient *bool
+	lenient bool
 }
 
 // Lenient determines whether format-based errors, such as providing a text
 // query value for a numeric field, are ignored. Defaults to false.
 func (l lenientParam) Lenient() bool {
-	if l.lenient != nil {
-		return *l.lenient
-	}
-	return DefaultLenient
+	return l.lenient
 }
 
 // SetLenient sets Lenient to v
 func (l *lenientParam) SetLenient(v bool) {
-	l.lenient = &v
+	l.lenient = v
 }
 func unmarshalLenientParam(data dynamic.JSON, target interface{}) error {
 	if a, ok := target.(WithLenient); ok {

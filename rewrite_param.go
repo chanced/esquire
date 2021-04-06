@@ -112,17 +112,17 @@ type WithRewrite interface {
 // Method used to rewrite the query. For valid values and more information, see
 // the rewrite parameter. (Optional)
 type rewriteParam struct {
-	rewrite *Rewrite
+	rewrite Rewrite
 }
 
 func (r rewriteParam) Rewrite() Rewrite {
-	if r.rewrite == nil {
+	if len(r.rewrite) == 0 {
 		return DefaultRewrite
 	}
-	return *r.rewrite
+	return r.rewrite
 }
 func (r *rewriteParam) SetRewrite(v Rewrite) error {
-	r.rewrite = &v
+	r.rewrite = v
 	return nil
 }
 func unmarshalRewriteParam(data dynamic.JSON, target interface{}) error {

@@ -227,9 +227,9 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          The multi-field version of the match query.
   - [ ] **[Common Terms](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-common-terms-query.html) [Deprecated]**\
          A more specialized query which gives more preference to uncommon words.
-  - [ ] **[Query string](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-query-string-query.html)**\
+  - [x] **[Query string](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-query-string-query.html)**\
          Supports the compact Lucene query string syntax, allowing you to specify AND|OR|NOT conditions and multi-field search within a single query string. For expert users only.
-  - [ ] **[Simple query string](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-simple-query-string-query.html)**\
+  - [x] **[Simple query string](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-simple-query-string-query.html)**\
          A simpler, more robust version of the query_string syntax suitable for exposing directly to users.
 - #### [Geo queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-queries.html)
   Elasticsearch supports two types of geo data: geo_point fields which support lat/lon pairs, and geo_shape fields, which support points, lines, circles, polygons, multi-polygons, etc.

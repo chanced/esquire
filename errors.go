@@ -21,6 +21,7 @@ var (
 	ErrIDRequired                 = errors.New("picker: id is required")
 	ErrIndexRequired              = errors.New("picker: index is required")
 	ErrInvalidBoost               = errors.New("picker: invalid value for boost")
+	ErrInvalidFuzzyMaxExpansions  = errors.New("picker: invalid value for fuzzy_max_expansions")
 	ErrInvalidMaxExpansions       = errors.New("picker: invalid value for max_expansions")
 	ErrInvalidPrefixLength        = errors.New("picker: invalidvalue for prefix_length")
 	ErrInvalidZeroTermQuery       = errors.New("picker: invalid value for zero_terms_query")
@@ -56,6 +57,7 @@ var (
 	ErrIntervalsRequired          = errors.New("picker: intervals are required")
 	ErrInvalidOperator            = errors.New("picker: invalid operator")
 	ErrInvalidMultiMatchType      = errors.New("picker: invalid multimatch type")
+	ErrInvalidTieBreaker          = errors.New("picker: invalid tie breaker value ")
 )
 
 type FieldError struct {

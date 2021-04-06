@@ -35,6 +35,8 @@ const (
 	QueryKindMatchPhrase       QueryKind = "match_phrase"
 	QueryKindMatchPhrasePrefix QueryKind = "match_phrase_prefix"
 	QueryKindMultiMatch        QueryKind = "multi_match"
+	QueryKindQueryString       QueryKind = "query_string"
+	QueryKindSimpleQueryString QueryKind = "simple_query_string"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
@@ -55,4 +57,6 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindMatchPhrase:       func() QueryClause { return &MatchPhraseQuery{} },
 	QueryKindMatchPhrasePrefix: func() QueryClause { return &MatchPhrasePrefixQuery{} },
 	QueryKindMultiMatch:        func() QueryClause { return &MultiMatchQuery{} },
+	QueryKindQueryString:       func() QueryClause { return &QueryStringQuery{} },
+	// QueryKindSimpleQueryString: func() QueryClause { return &SimpleQueryStringQuery{} },
 }

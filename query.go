@@ -250,73 +250,108 @@ type QueryParams struct {
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#multi-match-types
 	MultiMatch MultiMatcher
+	// Returns documents based on a provided query string, using a parser with a strict syntax.
+	//
+	// This query uses a syntax to parse and split the provided query string based
+	// on operators, such as AND or NOT. The query then analyzes each split text
+	// independently before returning matching documents.
+	//
+	// You can use the query_string query to create a complex search that includes
+	// wildcard characters, searches across multiple fields, and more. While
+	// versatile, the query is strict and returns an error if the query string
+	// includes any invalid syntax.
+	QueryString QueryStringer
+	// Returns documents based on a provided query string, using a parser with a
+	// limited but fault-tolerant syntax.
+	//
+	// This query uses a simple syntax to parse and split the provided query
+	// string into terms based on special operators. The query then analyzes
+	// each term independently before returning matching documents.
+	//
+	// While its syntax is more limited than the query_string query, the
+	// simple_query_string query does not return errors for invalid syntax.
+	// Instead, it ignores any invalid parts of the query string.
+	SimpleQueryString SimpleQueryStringer
 }
 
-func (q *QueryParams) matchPhrase() (*MatchPhraseQuery, error) {
+func (q QueryParams) simpleQueryString() (*SimpleQueryStringQuery, error) {
+	if q.SimpleQueryString == nil {
+		return nil, nil
+	}
+	return q.SimpleQueryString.SimpleQueryString()
+}
+func (q QueryParams) queryString() (*QueryStringQuery, error) {
+	if q.QueryString == nil {
+		return nil, nil
+	}
+	return q.QueryString.QueryString()
+}
+
+func (q QueryParams) matchPhrase() (*MatchPhraseQuery, error) {
 	if q.MatchPhrase == nil {
 		return nil, nil
 	}
 	return q.MatchPhrase.MatchPhrase()
 }
-func (q *QueryParams) boolean() (*BoolQuery, error) {
+func (q QueryParams) boolean() (*BoolQuery, error) {
 	if q.Bool == nil {
 		return nil, nil
 	}
 	return q.Bool.Bool()
 }
-func (q *QueryParams) matchBoolPrefix() (*MatchBoolPrefixQuery, error) {
+func (q QueryParams) matchBoolPrefix() (*MatchBoolPrefixQuery, error) {
 	if q.MatchBoolPrefix == nil {
 		return nil, nil
 	}
 	return q.MatchBoolPrefix.MatchBoolPrefix()
 }
-func (q *QueryParams) fuzzy() (*FuzzyQuery, error) {
+func (q QueryParams) fuzzy() (*FuzzyQuery, error) {
 	if q.Fuzzy == nil {
 		return nil, nil
 	}
 	return q.Fuzzy.Fuzzy()
 }
-func (q *QueryParams) ids() (*IDsQuery, error) {
+func (q QueryParams) ids() (*IDsQuery, error) {
 	if q.IDs == nil {
 		return nil, nil
 	}
 	return q.IDs.IDs()
 }
-func (q *QueryParams) term() (*TermQuery, error) {
+func (q QueryParams) term() (*TermQuery, error) {
 	if q.Term == nil {
 		return nil, nil
 	}
 	return q.Term.Term()
 }
-func (q *QueryParams) script() (*ScriptQuery, error) {
+func (q QueryParams) script() (*ScriptQuery, error) {
 	if q.Script == nil {
 		return nil, nil
 	}
 	return q.Script.Script()
 }
 
-func (q *QueryParams) terms() (*TermsQuery, error) {
+func (q QueryParams) terms() (*TermsQuery, error) {
 	if q.Terms == nil {
 		return nil, nil
 	}
 	return q.Terms.Terms()
 }
 
-func (q *QueryParams) rng() (*RangeQuery, error) {
+func (q QueryParams) rng() (*RangeQuery, error) {
 	if q.Range == nil {
 		return nil, nil
 	}
 	return q.Range.Range()
 }
 
-func (q *QueryParams) prefix() (*PrefixQuery, error) {
+func (q QueryParams) prefix() (*PrefixQuery, error) {
 	if q.Prefix == nil {
 		return nil, nil
 	}
 	return q.Prefix.Prefix()
 }
 
-func (q *QueryParams) match() (*MatchQuery, error) {
+func (q QueryParams) match() (*MatchQuery, error) {
 	if q.Match == nil {
 		return nil, nil
 	}
@@ -324,66 +359,66 @@ func (q *QueryParams) match() (*MatchQuery, error) {
 
 }
 
-func (q *QueryParams) scriptScore() (*ScriptScoreQuery, error) {
+func (q QueryParams) scriptScore() (*ScriptScoreQuery, error) {
 	if q.ScriptScore == nil {
 		return nil, nil
 	}
 	return q.ScriptScore.ScriptScore()
 }
 
-func (q *QueryParams) functionScoreClause() (*FunctionScoreQuery, error) {
+func (q QueryParams) functionScoreClause() (*FunctionScoreQuery, error) {
 	if q.FunctionScore == nil {
 		return nil, nil
 	}
 	return q.FunctionScore.FunctionScore()
 }
 
-func (q *QueryParams) matchAll() (*MatchAllQuery, error) {
+func (q QueryParams) matchAll() (*MatchAllQuery, error) {
 	if q.MatchAll == nil {
 		return nil, nil
 	}
 	return q.MatchAll.MatchAll()
 }
-func (q *QueryParams) matchNone() (*MatchNoneQuery, error) {
+func (q QueryParams) matchNone() (*MatchNoneQuery, error) {
 	if q.MatchNone == nil {
 		return nil, nil
 	}
 	return q.MatchNone.MatchNone()
 }
 
-func (q *QueryParams) exists() (*ExistsQuery, error) {
+func (q QueryParams) exists() (*ExistsQuery, error) {
 	if q.Exists == nil {
 		return nil, nil
 	}
 	return q.Exists.Exists()
 }
 
-func (q *QueryParams) boosting() (*BoostingQuery, error) {
+func (q QueryParams) boosting() (*BoostingQuery, error) {
 	if q.Boosting == nil {
 		return nil, nil
 	}
 	return q.Boosting.Boosting()
 }
 
-func (q *QueryParams) constantScore() (*ConstantScoreQuery, error) {
+func (q QueryParams) constantScore() (*ConstantScoreQuery, error) {
 	if q.ConstantScore == nil {
 		return nil, nil
 	}
 	return q.ConstantScore.ConstantScore()
 }
-func (q *QueryParams) disjunectionMax() (*DisjunctionMaxQuery, error) {
+func (q QueryParams) disjunectionMax() (*DisjunctionMaxQuery, error) {
 	if q.DisjunctionMax == nil {
 		return nil, nil
 	}
 	return q.DisjunctionMax.DisjunctionMax()
 }
-func (q *QueryParams) intervals() (*IntervalsQuery, error) {
+func (q QueryParams) intervals() (*IntervalsQuery, error) {
 	if q.Intervals == nil {
 		return nil, nil
 	}
 	return q.Intervals.Intervals()
 }
-func (q *QueryParams) multiMatch() (*MultiMatchQuery, error) {
+func (q QueryParams) multiMatch() (*MultiMatchQuery, error) {
 	if q.MultiMatch == nil {
 		return nil, nil
 	}
@@ -392,6 +427,14 @@ func (q *QueryParams) multiMatch() (*MultiMatchQuery, error) {
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
+	}
+	simpleQueryString, err := q.simpleQueryString()
+	if err != nil {
+		return nil, err
+	}
+	queryString, err := q.queryString()
+	if err != nil {
+		return nil, err
 	}
 	boolean, err := q.boolean()
 	if err != nil {
@@ -478,27 +521,29 @@ func (q *QueryParams) Query() (*Query, error) {
 		return nil, err
 	}
 	qv := &Query{
-		match:           match,
-		exists:          exists,
-		scriptScore:     scriptScore,
-		script:          script,
-		fuzzy:           fuzzy,
-		boolean:         boolean,
-		term:            term,
-		terms:           terms,
-		rng:             rng,
-		prefix:          prefix,
-		matchAll:        matchAll,
-		matchNone:       matchNone,
-		functionScore:   funcScore,
-		boosting:        boosting,
-		constantScore:   constantScore,
-		disjunctionMax:  disjunctionMax,
-		ids:             ids,
-		intervals:       intervals,
-		matchBoolPrefix: matchBoolPrefix,
-		matchPhrase:     matchPhrase,
-		multiMatch:      multiMatch,
+		match:             match,
+		exists:            exists,
+		scriptScore:       scriptScore,
+		script:            script,
+		fuzzy:             fuzzy,
+		boolean:           boolean,
+		term:              term,
+		terms:             terms,
+		rng:               rng,
+		prefix:            prefix,
+		matchAll:          matchAll,
+		matchNone:         matchNone,
+		functionScore:     funcScore,
+		boosting:          boosting,
+		constantScore:     constantScore,
+		disjunctionMax:    disjunctionMax,
+		ids:               ids,
+		intervals:         intervals,
+		matchBoolPrefix:   matchBoolPrefix,
+		matchPhrase:       matchPhrase,
+		multiMatch:        multiMatch,
+		queryString:       queryString,
+		simpleQueryString: simpleQueryString,
 	}
 	return qv, nil
 }
@@ -523,31 +568,46 @@ func (q *QueryParams) Query() (*Query, error) {
 // Query clauses behave differently depending on whether they are used in query
 // context or filter context.
 type Query struct {
-	match           *MatchQuery
-	scriptScore     *ScriptScoreQuery
-	exists          *ExistsQuery
-	boolean         *BoolQuery
-	term            *TermQuery
-	terms           *TermsQuery
-	rng             *RangeQuery
-	prefix          *PrefixQuery
-	fuzzy           *FuzzyQuery
-	functionScore   *FunctionScoreQuery
-	matchAll        *MatchAllQuery
-	matchNone       *MatchNoneQuery
-	script          *ScriptQuery
-	boosting        *BoostingQuery
-	constantScore   *ConstantScoreQuery
-	disjunctionMax  *DisjunctionMaxQuery
-	ids             *IDsQuery
-	intervals       *IntervalsQuery
-	matchBoolPrefix *MatchBoolPrefixQuery
-	matchPhrase     *MatchPhraseQuery
-	multiMatch      *MultiMatchQuery
+	match             *MatchQuery
+	scriptScore       *ScriptScoreQuery
+	exists            *ExistsQuery
+	boolean           *BoolQuery
+	term              *TermQuery
+	terms             *TermsQuery
+	rng               *RangeQuery
+	prefix            *PrefixQuery
+	fuzzy             *FuzzyQuery
+	functionScore     *FunctionScoreQuery
+	matchAll          *MatchAllQuery
+	matchNone         *MatchNoneQuery
+	script            *ScriptQuery
+	boosting          *BoostingQuery
+	constantScore     *ConstantScoreQuery
+	disjunctionMax    *DisjunctionMaxQuery
+	ids               *IDsQuery
+	intervals         *IntervalsQuery
+	matchBoolPrefix   *MatchBoolPrefixQuery
+	matchPhrase       *MatchPhraseQuery
+	multiMatch        *MultiMatchQuery
+	queryString       *QueryStringQuery
+	simpleQueryString *SimpleQueryStringQuery
 }
 
 func (q *Query) Query() (*Query, error) {
 	return q, nil
+}
+
+func (q *Query) QueryString() *QueryStringQuery {
+	if q.queryString == nil {
+		q.queryString = &QueryStringQuery{}
+	}
+	return q.queryString
+}
+func (q *Query) SimpleQueryString() *SimpleQueryStringQuery {
+	if q.simpleQueryString == nil {
+		q.simpleQueryString = &SimpleQueryStringQuery{}
+	}
+	return q.simpleQueryString
 }
 
 func (q *Query) MultiMatch() *MultiMatchQuery {
@@ -679,32 +739,38 @@ func (q *Query) Term() *TermQuery {
 func (q *Query) clauses() map[QueryKind]QueryClause {
 
 	return map[QueryKind]QueryClause{
-		QueryKindMatch:           q.match,
-		QueryKindTerm:            q.term,
-		QueryKindTerms:           q.terms,
-		QueryKindBoolean:         q.boolean,
-		QueryKindExists:          q.exists,
-		QueryKindFuzzy:           q.fuzzy,
-		QueryKindMatchAll:        q.matchAll,
-		QueryKindMatchNone:       q.matchNone,
-		QueryKindPrefix:          q.prefix,
-		QueryKindRange:           q.rng,
-		QueryKindScriptScore:     q.scriptScore,
-		QueryKindScript:          q.script,
-		QueryKindFunctionScore:   q.functionScore,
-		QueryKindBoosting:        q.boosting,
-		QueryKindConstantScore:   q.constantScore,
-		QueryKindDisjunctionMax:  q.disjunctionMax,
-		QueryKindIDs:             q.ids,
-		QueryKindIntervals:       q.intervals,
-		QueryKindMatchBoolPrefix: q.matchBoolPrefix,
-		QueryKindMatchPhrase:     q.matchPhrase,
-		QueryKindMultiMatch:      q.multiMatch,
+		QueryKindMatch:             q.match,
+		QueryKindTerm:              q.term,
+		QueryKindTerms:             q.terms,
+		QueryKindBoolean:           q.boolean,
+		QueryKindExists:            q.exists,
+		QueryKindFuzzy:             q.fuzzy,
+		QueryKindMatchAll:          q.matchAll,
+		QueryKindMatchNone:         q.matchNone,
+		QueryKindPrefix:            q.prefix,
+		QueryKindRange:             q.rng,
+		QueryKindScriptScore:       q.scriptScore,
+		QueryKindScript:            q.script,
+		QueryKindFunctionScore:     q.functionScore,
+		QueryKindBoosting:          q.boosting,
+		QueryKindConstantScore:     q.constantScore,
+		QueryKindDisjunctionMax:    q.disjunctionMax,
+		QueryKindIDs:               q.ids,
+		QueryKindIntervals:         q.intervals,
+		QueryKindMatchBoolPrefix:   q.matchBoolPrefix,
+		QueryKindMatchPhrase:       q.matchPhrase,
+		QueryKindMultiMatch:        q.multiMatch,
+		QueryKindQueryString:       q.queryString,
+		QueryKindSimpleQueryString: q.simpleQueryString,
 	}
 }
 
 func (q *Query) setClause(qc QueryClause) {
 	switch qc.Kind() {
+	case QueryKindSimpleQueryString:
+		q.simpleQueryString = qc.(*SimpleQueryStringQuery)
+	case QueryKindQueryString:
+		q.queryString = qc.(*QueryStringQuery)
 	case QueryKindMatch:
 		q.match = qc.(*MatchQuery)
 	case QueryKindTerm:
