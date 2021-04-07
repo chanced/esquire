@@ -34,7 +34,7 @@ func (ft fuzzyTranspositionsParam) FuzzyTranspositions() bool {
 }
 
 // SetFuzzyTranspositions sets FuzzyTranspositions to v
-func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(fuzzyTranspositions interface{}) error{
+func (ft *fuzzyTranspositionsParam) SetFuzzyTranspositions(fuzzyTranspositions interface{}) error {
 	return ft.fuzzyTranspositions.Set(fuzzyTranspositions)
 }
 
