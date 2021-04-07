@@ -35,8 +35,9 @@ func (p GeoBoundingBoxQueryParams) GeoBoundingBox() (*GeoBoundingBoxQuery, error
 }
 
 type GeoBoundingBoxQuery struct {
-	typ         string
-	boundingBox interface{}
+	typ            string
+	boundingBox    interface{}
+	boundingBoxRaw dynamic.JSON
 	fieldParam
 	nameParam
 	completeClause
@@ -53,6 +54,17 @@ func (g *GeoBoundingBoxQuery) SetBoundingBox(bb BoundingBoxer) {
 }
 func (g GeoBoundingBoxQuery) BoundingBox() interface{} {
 	return g.boundingBox
+}
+
+func (g GeoBoundingBoxQuery) DecodeBoundingBox(v interface{}) error {
+	if len(g.boundingBoxRaw) == 0 {
+		d, err := json.Marshal(g.boundingBox)
+		if err != nil {
+			return err
+		}
+		g.boundingBoxRaw = d
+	}
+	return json.Unmarshal(g.boundingBoxRaw, &v)
 }
 func (GeoBoundingBoxQuery) Kind() QueryKind {
 	return QueryKindGeoBoundingBox
