@@ -43,11 +43,11 @@ func (bb BoundingBox) BoundingBox() interface{} {
 
 type WKT string
 
-func (w WKT) BoundingBox() interface{} {
-	return w
+func (wkt WKT) BoundingBox() interface{} {
+	return wkt
 }
-func (w WKT) String() string {
-	return string(w)
+func (wkt WKT) String() string {
+	return string(wkt)
 }
 func (wkt WKT) MarshalJSON() ([]byte, error) {
 	return wktVal{WKT: wkt.String()}.MarshalJSON()

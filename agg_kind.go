@@ -73,5 +73,3 @@ const (
 	AggKindStatsBucket               AggKind = "stats_bucket"
 	AggKindSumBucket                 AggKind = "sum_bucket"
 )
-
-// Subtleties of bucketing range fields

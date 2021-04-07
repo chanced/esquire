@@ -1,6 +1,8 @@
 package picker
 
 import (
+	"bytes"
+	"io"
 	"time"
 
 	"encoding/json"
@@ -508,6 +510,16 @@ func (s *Search) SetExplain(v bool) {
 // size parameters. To page through more hits, use the search_after parameter.
 func (s Search) From() int {
 	return s.from
+}
+func (s Search) NewReader() (io.Reader, error) {
+	buf := &bytes.Buffer{}
+
+	enc := json.NewEncoder(buf)
+	err := enc.Encode(s)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
 }
 
 // SetFrom sets the FromValue to v
