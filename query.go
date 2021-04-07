@@ -272,10 +272,16 @@ type QueryParams struct {
 	// simple_query_string query does not return errors for invalid syntax.
 	// Instead, it ignores any invalid parts of the query string.
 	SimpleQueryString SimpleQueryStringer
-
-	GeoBoundingBox GeoBoundingBoxer
+	MatchPhrasePrefix MatchPhrasePrefixer
+	GeoBoundingBox    GeoBoundingBoxer
 }
 
+func (q QueryParams) matchPhrasePrefix() (*MatchPhrasePrefixQuery, error) {
+	if q.MatchPhrasePrefix == nil {
+		return nil, nil
+	}
+	return q.MatchPhrasePrefix.MatchPhrasePrefix()
+}
 func (q QueryParams) geoBoundingBox() (*GeoBoundingBoxQuery, error) {
 	if q.GeoBoundingBox == nil {
 		return nil, nil
@@ -432,13 +438,158 @@ func (q QueryParams) multiMatch() (*MultiMatchQuery, error) {
 	}
 	return q.MultiMatch.MultiMatch()
 }
+
+// func (q QueryParams) geoDistance() (*GeoDistanceQuery, error) {
+//     if q.GeoDistance == nil {
+//         return nil, nil
+//     }
+//     return q.GeoDistance.GeoDistance()
+// }
+// func (q QueryParams) geoPolygon() (*GeoPolygonQuery, error) {
+//     if q.GeoPolygon == nil {
+//         return nil, nil
+//     }
+//     return q.GeoPolygon.GeoPolygon()
+// }
+// func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
+//     if q.GeoShape == nil {
+//         return nil, nil
+//     }
+//     return q.GeoShape.GeoShape()
+// }
+// func (q QueryParams) shape() (*ShapeQuery, error) {
+//     if q.Shape == nil {
+//         return nil, nil
+//     }
+//     return q.Shape.Shape()
+// }
+// func (q QueryParams) nested() (*NestedQuery, error) {
+//     if q.Nested == nil {
+//         return nil, nil
+//     }
+//     return q.Nested.Nested()
+// }
+// func (q QueryParams) hasChild() (*HasChildQuery, error) {
+//     if q.HasChild == nil {
+//         return nil, nil
+//     }
+//     return q.HasChild.HasChild()
+// }
+// func (q QueryParams) hasParent() (*HasParentQuery, error) {
+//     if q.HasParent == nil {
+//         return nil, nil
+//     }
+//     return q.HasParent.HasParent()
+// }
+// func (q QueryParams) parentID() (*ParentIDQuery, error) {
+//     if q.ParentID == nil {
+//         return nil, nil
+//     }
+//     return q.ParentID.ParentID()
+// }
+// func (q QueryParams) distantFeature() (*DistantFeatureQuery, error) {
+//     if q.DistantFeature == nil {
+//         return nil, nil
+//     }
+//     return q.DistantFeature.DistantFeature()
+// }
+// func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
+//     if q.MoreLikeThis == nil {
+//         return nil, nil
+//     }
+//     return q.MoreLikeThis.MoreLikeThis()
+// }
+// func (q QueryParams) percolate() (*PercolateQuery, error) {
+//     if q.Percolate == nil {
+//         return nil, nil
+//     }
+//     return q.Percolate.Percolate()
+// }
+// func (q QueryParams) rankFeature() (*RankFeatureQuery, error) {
+//     if q.RankFeature == nil {
+//         return nil, nil
+//     }
+//     return q.RankFeature.RankFeature()
+// }
+// func (q QueryParams) wrapper() (*WrapperQuery, error) {
+//     if q.Wrapper == nil {
+//         return nil, nil
+//     }
+//     return q.Wrapper.Wrapper()
+// }
+// func (q QueryParams) pinned() (*PinnedQuery, error) {
+//     if q.Pinned == nil {
+//         return nil, nil
+//     }
+//     return q.Pinned.Pinned()
+// }
+// func (q QueryParams) spanContaining() (*SpanContainingQuery, error) {
+//     if q.SpanContaining == nil {
+//         return nil, nil
+//     }
+//     return q.SpanContaining.SpanContaining()
+// }
+// func (q QueryParams) fieldMaskingSpan() (*FieldMaskingSpanQuery, error) {
+//     if q.FieldMaskingSpan == nil {
+//         return nil, nil
+//     }
+//     return q.FieldMaskingSpan.FieldMaskingSpan()
+// }
+// func (q QueryParams) spanFirst() (*SpanFirstQuery, error) {
+//     if q.SpanFirst == nil {
+//         return nil, nil
+//     }
+//     return q.SpanFirst.SpanFirst()
+// }
+// func (q QueryParams) spanMulti() (*SpanMultiQuery, error) {
+//     if q.SpanMulti == nil {
+//         return nil, nil
+//     }
+//     return q.SpanMulti.SpanMulti()
+// }
+// func (q QueryParams) spanNear() (*SpanNearQuery, error) {
+//     if q.SpanNear == nil {
+//         return nil, nil
+//     }
+//     return q.SpanNear.SpanNear()
+// }
+// func (q QueryParams) spanNot() (*SpanNotQuery, error) {
+//     if q.SpanNot == nil {
+//         return nil, nil
+//     }
+//     return q.SpanNot.SpanNot()
+// }
+// func (q QueryParams) spanOr() (*SpanOrQuery, error) {
+//     if q.SpanOr == nil {
+//         return nil, nil
+//     }
+//     return q.SpanOr.SpanOr()
+// }
+// func (q QueryParams) spanTerm() (*SpanTermQuery, error) {
+//     if q.SpanTerm == nil {
+//         return nil, nil
+//     }
+//     return q.SpanTerm.SpanTerm()
+// }
+// func (q QueryParams) spanWithin() (*SpanWithinQuery, error) {
+//     if q.SpanWithin == nil {
+//         return nil, nil
+//     }
+//     return q.SpanWithin.SpanWithin()
+// }
+
 func (q *QueryParams) Query() (*Query, error) {
 	if q == nil {
 		return &Query{}, nil
 	}
-
+	matchPhrasePrefix, err := q.matchPhrasePrefix()
+	if err != nil {
+		return nil, err
+	}
 	geoBoundingBox, err := q.geoBoundingBox()
-
+	if err != nil {
+		return nil, err
+	}
 	simpleQueryString, err := q.simpleQueryString()
 	if err != nil {
 		return nil, err
@@ -531,6 +682,98 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
+	// geoDistance, err := q.GeoDistance()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// geoPolygon, err := q.GeoPolygon()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// geoShape, err := q.GeoShape()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// shape, err := q.Shape()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// nested, err := q.Nested()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// hasChild, err := q.HasChild()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// hasParent, err := q.HasParent()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// parentID, err := q.ParentID()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// distantFeature, err := q.DistantFeature()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// moreLikeThis, err := q.MoreLikeThis()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// percolate, err := q.Percolate()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// rankFeature, err := q.RankFeature()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// wrapper, err := q.Wrapper()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// pinned, err := q.Pinned()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanContaining, err := q.SpanContaining()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// fieldMaskingSpan, err := q.FieldMaskingSpan()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanFirst, err := q.SpanFirst()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanMulti, err := q.SpanMulti()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanNear, err := q.SpanNear()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanNot, err := q.SpanNot()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanOr, err := q.SpanOr()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanTerm, err := q.SpanTerm()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// spanWithin, err := q.SpanWithin()
+	// if err != nil {
+	// 	return nil, err
+	// }
 	qv := &Query{
 		match:             match,
 		exists:            exists,
@@ -556,6 +799,30 @@ func (q *QueryParams) Query() (*Query, error) {
 		queryString:       queryString,
 		simpleQueryString: simpleQueryString,
 		geoBoundingBox:    geoBoundingBox,
+		matchPhrasePrefix: matchPhrasePrefix,
+		// geoDistance:       geoDistance,
+		// geoPolygon:        geoPolygon,
+		// geoShape:          geoShape,
+		// shape:             shape,
+		// nested:            nested,
+		// hasChild:          hasChild,
+		// hasParent:         hasParent,
+		// parentID:          parentID,
+		// distantFeature:    distantFeature,
+		// moreLikeThis:      moreLikeThis,
+		// percolate:         percolate,
+		// rankFeature:       rankFeature,
+		// wrapper:           wrapper,
+		// pinned:            pinned,
+		// spanContaining:    spanContaining,
+		// fieldMaskingSpan:  fieldMaskingSpan,
+		// spanFirst:         spanFirst,
+		// spanMulti:         spanMulti,
+		// spanNear:          spanNear,
+		// spanNot:           spanNot,
+		// spanOr:            spanOr,
+		// spanTerm:          spanTerm,
+		// spanWithin:        spanWithin,
 	}
 	return qv, nil
 }
@@ -600,10 +867,34 @@ type Query struct {
 	intervals         *IntervalsQuery
 	matchBoolPrefix   *MatchBoolPrefixQuery
 	matchPhrase       *MatchPhraseQuery
+	matchPhrasePrefix *MatchPhrasePrefixQuery
 	multiMatch        *MultiMatchQuery
 	queryString       *QueryStringQuery
 	simpleQueryString *SimpleQueryStringQuery
 	geoBoundingBox    *GeoBoundingBoxQuery
+	// geoDistance       *GeoDistanceQuery
+	// geoPolygon        *GeoPolygonQuery
+	// geoShape          *GeoShapeQuery
+	// shape             *ShapeQuery
+	// nested            *NestedQuery
+	// hasChild          *HasChildQuery
+	// hasParent         *HasParentQuery
+	// parentID          *ParentIDQuery
+	// distantFeature    *DistantFeatureQuery
+	// moreLikeThis      *MoreLikeThisQuery
+	// percolate         *PercolateQuery
+	// rankFeature       *RankFeatureQuery
+	// wrapper           *WrapperQuery
+	// pinned            *PinnedQuery
+	// spanContaining    *SpanContainingQuery
+	// fieldMaskingSpan  *FieldMaskingSpanQuery
+	// spanFirst         *SpanFirstQuery
+	// spanMulti         *SpanMultiQuery
+	// spanNear          *SpanNearQuery
+	// spanNot           *SpanNotQuery
+	// spanOr            *SpanOrQuery
+	// spanTerm          *SpanTermQuery
+	// spanWithin        *SpanWithinQuery
 }
 
 func (q *Query) Query() (*Query, error) {
@@ -630,12 +921,6 @@ func (q *Query) SimpleQueryString() *SimpleQueryStringQuery {
 	return q.simpleQueryString
 }
 
-func (q *Query) MultiMatch() *MultiMatchQuery {
-	if q.multiMatch == nil {
-		q.multiMatch = &MultiMatchQuery{}
-	}
-	return q.multiMatch
-}
 func (q *Query) MatchBoolPrefix() *MatchBoolPrefixQuery {
 	if q.matchBoolPrefix == nil {
 		q.matchBoolPrefix = &MatchBoolPrefixQuery{}
@@ -653,12 +938,6 @@ func (q *Query) Range() *RangeQuery {
 		q.rng = &RangeQuery{}
 	}
 	return q.rng
-}
-func (q *Query) Prefix() *PrefixQuery {
-	if q.prefix == nil {
-		q.prefix = &PrefixQuery{}
-	}
-	return q.prefix
 }
 func (q *Query) Fuzzy() *FuzzyQuery {
 	if q.fuzzy == nil {
@@ -695,12 +974,6 @@ func (q *Query) Boosting() *BoostingQuery {
 		q.boosting = &BoostingQuery{}
 	}
 	return q.boosting
-}
-func (q *Query) Match() *MatchQuery {
-	if q.match == nil {
-		q.match = &MatchQuery{}
-	}
-	return q.match
 }
 
 func (q *Query) ScriptScore() *ScriptScoreQuery {
@@ -742,6 +1015,190 @@ func (q *Query) Terms() *TermsQuery {
 	return q.terms
 }
 
+func (q *Query) MultiMatch() *MultiMatchQuery {
+	if q.multiMatch == nil {
+		q.multiMatch = &MultiMatchQuery{}
+	}
+	return q.multiMatch
+}
+func (q *Query) Prefix() *PrefixQuery {
+	if q.prefix == nil {
+		q.prefix = &PrefixQuery{}
+	}
+	return q.prefix
+}
+func (q *Query) Match() *MatchQuery {
+	if q.match == nil {
+		q.match = &MatchQuery{}
+	}
+	return q.match
+}
+func (q *Query) MatchAll() *MatchAllQuery {
+	if q.matchAll == nil {
+		q.matchAll = &MatchAllQuery{}
+	}
+	return q.matchAll
+}
+func (q *Query) MatchNone() *MatchNoneQuery {
+	if q.matchNone == nil {
+		q.matchNone = &MatchNoneQuery{}
+	}
+	return q.matchNone
+}
+
+// func (q *Query) AllOf() *AllOfQuery {
+//     if q.allOf == nil {
+//         q.allOf = &AllOfQuery{}
+//     }
+//     return q.allOf
+// }
+
+func (q *Query) MatchPhrasePrefix() *MatchPhrasePrefixQuery {
+	if q.matchPhrasePrefix == nil {
+		q.matchPhrasePrefix = &MatchPhrasePrefixQuery{}
+	}
+	return q.matchPhrasePrefix
+}
+
+// func (q *Query) GeoDistance() *GeoDistanceQuery {
+//     if q.geoDistance == nil {
+//         q.geoDistance = &GeoDistanceQuery{}
+//     }
+//     return q.geoDistance
+// }
+// func (q *Query) GeoPolygon() *GeoPolygonQuery {
+//     if q.geoPolygon == nil {
+//         q.geoPolygon = &GeoPolygonQuery{}
+//     }
+//     return q.geoPolygon
+// }
+// func (q *Query) GeoShape() *GeoShapeQuery {
+//     if q.geoShape == nil {
+//         q.geoShape = &GeoShapeQuery{}
+//     }
+//     return q.geoShape
+// }
+// func (q *Query) Shape() *ShapeQuery {
+//     if q.shape == nil {
+//         q.shape = &ShapeQuery{}
+//     }
+//     return q.shape
+// }
+// func (q *Query) Nested() *NestedQuery {
+//     if q.nested == nil {
+//         q.nested = &NestedQuery{}
+//     }
+//     return q.nested
+// }
+// func (q *Query) HasChild() *HasChildQuery {
+//     if q.hasChild == nil {
+//         q.hasChild = &HasChildQuery{}
+//     }
+//     return q.hasChild
+// }
+// func (q *Query) HasParent() *HasParentQuery {
+//     if q.hasParent == nil {
+//         q.hasParent = &HasParentQuery{}
+//     }
+//     return q.hasParent
+// }
+// func (q *Query) ParentID() *ParentIDQuery {
+//     if q.parentID == nil {
+//         q.parentID = &ParentIDQuery{}
+//     }
+//     return q.parentID
+// }
+// func (q *Query) DistantFeature() *DistantFeatureQuery {
+//     if q.distantFeature == nil {
+//         q.distantFeature = &DistantFeatureQuery{}
+//     }
+//     return q.distantFeature
+// }
+// func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
+//     if q.moreLikeThis == nil {
+//         q.moreLikeThis = &MoreLikeThisQuery{}
+//     }
+//     return q.moreLikeThis
+// }
+// func (q *Query) Percolate() *PercolateQuery {
+//     if q.percolate == nil {
+//         q.percolate = &PercolateQuery{}
+//     }
+//     return q.percolate
+// }
+// func (q *Query) RankFeature() *RankFeatureQuery {
+//     if q.rankFeature == nil {
+//         q.rankFeature = &RankFeatureQuery{}
+//     }
+//     return q.rankFeature
+// }
+// func (q *Query) Wrapper() *WrapperQuery {
+//     if q.wrapper == nil {
+//         q.wrapper = &WrapperQuery{}
+//     }
+//     return q.wrapper
+// }
+// func (q *Query) Pinned() *PinnedQuery {
+//     if q.pinned == nil {
+//         q.pinned = &PinnedQuery{}
+//     }
+//     return q.pinned
+// }
+// func (q *Query) SpanContaining() *SpanContainingQuery {
+//     if q.spanContaining == nil {
+//         q.spanContaining = &SpanContainingQuery{}
+//     }
+//     return q.spanContaining
+// }
+// func (q *Query) FieldMaskingSpan() *FieldMaskingSpanQuery {
+//     if q.fieldMaskingSpan == nil {
+//         q.fieldMaskingSpan = &FieldMaskingSpanQuery{}
+//     }
+//     return q.fieldMaskingSpan
+// }
+// func (q *Query) SpanFirst() *SpanFirstQuery {
+//     if q.spanFirst == nil {
+//         q.spanFirst = &SpanFirstQuery{}
+//     }
+//     return q.spanFirst
+// }
+// func (q *Query) SpanMulti() *SpanMultiQuery {
+//     if q.spanMulti == nil {
+//         q.spanMulti = &SpanMultiQuery{}
+//     }
+//     return q.spanMulti
+// }
+// func (q *Query) SpanNear() *SpanNearQuery {
+//     if q.spanNear == nil {
+//         q.spanNear = &SpanNearQuery{}
+//     }
+//     return q.spanNear
+// }
+// func (q *Query) SpanNot() *SpanNotQuery {
+//     if q.spanNot == nil {
+//         q.spanNot = &SpanNotQuery{}
+//     }
+//     return q.spanNot
+// }
+// func (q *Query) SpanOr() *SpanOrQuery {
+//     if q.spanOr == nil {
+//         q.spanOr = &SpanOrQuery{}
+//     }
+//     return q.spanOr
+// }
+// func (q *Query) SpanTerm() *SpanTermQuery {
+//     if q.spanTerm == nil {
+//         q.spanTerm = &SpanTermQuery{}
+//     }
+//     return q.spanTerm
+// }
+// func (q *Query) SpanWithin() *SpanWithinQuery {
+//     if q.spanWithin == nil {
+//         q.spanWithin = &SpanWithinQuery{}
+//     }
+//     return q.spanWithin
+// }
+
 // func (q *Query) SetTerms(field string, t Termser) error {
 // 	if q.terms == nil {
 // 		q.terms = &TermsQuery{}
@@ -759,81 +1216,163 @@ func (q *Query) Term() *TermQuery {
 func (q *Query) clauses() map[QueryKind]QueryClause {
 
 	return map[QueryKind]QueryClause{
+
+		QueryKindPrefix:            q.prefix,
 		QueryKindMatch:             q.match,
-		QueryKindTerm:              q.term,
-		QueryKindTerms:             q.terms,
-		QueryKindBoolean:           q.boolean,
-		QueryKindExists:            q.exists,
-		QueryKindFuzzy:             q.fuzzy,
 		QueryKindMatchAll:          q.matchAll,
 		QueryKindMatchNone:         q.matchNone,
-		QueryKindPrefix:            q.prefix,
+		QueryKindTerm:              q.term,
+		QueryKindExists:            q.exists,
+		QueryKindTerms:             q.terms,
 		QueryKindRange:             q.rng,
+		QueryKindBoosting:          q.boosting,
+		QueryKindBoolean:           q.boolean,
+		QueryKindConstantScore:     q.constantScore,
+		QueryKindFunctionScore:     q.functionScore,
+		QueryKindDisjunctionMax:    q.disjunctionMax,
+		QueryKindFuzzy:             q.fuzzy,
 		QueryKindScriptScore:       q.scriptScore,
 		QueryKindScript:            q.script,
-		QueryKindFunctionScore:     q.functionScore,
-		QueryKindBoosting:          q.boosting,
-		QueryKindConstantScore:     q.constantScore,
-		QueryKindDisjunctionMax:    q.disjunctionMax,
 		QueryKindIDs:               q.ids,
 		QueryKindIntervals:         q.intervals,
 		QueryKindMatchBoolPrefix:   q.matchBoolPrefix,
 		QueryKindMatchPhrase:       q.matchPhrase,
+		QueryKindMatchPhrasePrefix: q.matchPhrasePrefix,
 		QueryKindMultiMatch:        q.multiMatch,
 		QueryKindQueryString:       q.queryString,
 		QueryKindSimpleQueryString: q.simpleQueryString,
 		QueryKindGeoBoundingBox:    q.geoBoundingBox,
+
+		// QueryKindAllOf:             q.allOf,
+
+		// QueryKindGeoDistance:      q.geoDistance,
+		// QueryKindGeoPolygon:       q.geoPolygon,
+		// QueryKindGeoShape:         q.geoShape,
+		// QueryKindShape:            q.shape,
+		// QueryKindNested:           q.nested,
+		// QueryKindHasChild:         q.hasChild,
+		// QueryKindHasParent:        q.hasParent,
+		// QueryKindParentID:         q.parentID,
+		// QueryKindDistantFeature:   q.distantFeature,
+		// QueryKindMoreLikeThis:     q.moreLikeThis,
+		// QueryKindPercolate:        q.percolate,
+		// QueryKindRankFeature:      q.rankFeature,
+		// QueryKindWrapper:          q.wrapper,
+		// QueryKindPinned:           q.pinned,
+		// QueryKindSpanContaining:   q.spanContaining,
+		// QueryKindFieldMaskingSpan: q.fieldMaskingSpan,
+		// QueryKindSpanFirst:        q.spanFirst,
+		// QueryKindSpanMulti:        q.spanMulti,
+		// QueryKindSpanNear:         q.spanNear,
+		// QueryKindSpanNot:          q.spanNot,
+		// QueryKindSpanOr:           q.spanOr,
+		// QueryKindSpanTerm:         q.spanTerm,
+		// QueryKindSpanWithin:       q.spanWithin,
 	}
 }
 
 func (q *Query) setClause(qc QueryClause) {
 	switch qc.Kind() {
-	case QueryKindSimpleQueryString:
-		q.simpleQueryString = qc.(*SimpleQueryStringQuery)
-	case QueryKindQueryString:
-		q.queryString = qc.(*QueryStringQuery)
+
+	case QueryKindPrefix:
+		q.prefix = qc.(*PrefixQuery)
 	case QueryKindMatch:
 		q.match = qc.(*MatchQuery)
-	case QueryKindTerm:
-		q.term = qc.(*TermQuery)
-	case QueryKindTerms:
-		q.terms = qc.(*TermsQuery)
-	case QueryKindBoolean:
-		q.boolean = qc.(*BoolQuery)
-	case QueryKindExists:
-		q.exists = qc.(*ExistsQuery)
-	case QueryKindFuzzy:
-		q.fuzzy = qc.(*FuzzyQuery)
 	case QueryKindMatchAll:
 		q.matchAll = qc.(*MatchAllQuery)
 	case QueryKindMatchNone:
 		q.matchNone = qc.(*MatchNoneQuery)
-	case QueryKindPrefix:
-		q.prefix = qc.(*PrefixQuery)
+	case QueryKindTerm:
+		q.term = qc.(*TermQuery)
+	case QueryKindExists:
+		q.exists = qc.(*ExistsQuery)
+	case QueryKindTerms:
+		q.terms = qc.(*TermsQuery)
 	case QueryKindRange:
 		q.rng = qc.(*RangeQuery)
+	case QueryKindBoosting:
+		q.boosting = qc.(*BoostingQuery)
+	case QueryKindBoolean:
+		q.boolean = qc.(*BoolQuery)
+	case QueryKindConstantScore:
+		q.constantScore = qc.(*ConstantScoreQuery)
+	case QueryKindFunctionScore:
+		q.functionScore = qc.(*FunctionScoreQuery)
+	case QueryKindDisjunctionMax:
+		q.disjunctionMax = qc.(*DisjunctionMaxQuery)
+	// case QueryKindAllOf:
+	// 	q.allOf = qc.(*AllOfQuery)
+	case QueryKindFuzzy:
+		q.fuzzy = qc.(*FuzzyQuery)
 	case QueryKindScriptScore:
 		q.scriptScore = qc.(*ScriptScoreQuery)
 	case QueryKindScript:
 		q.script = qc.(*ScriptQuery)
-	case QueryKindFunctionScore:
-		q.functionScore = qc.(*FunctionScoreQuery)
-	case QueryKindBoosting:
-		q.boosting = qc.(*BoostingQuery)
-	case QueryKindConstantScore:
-		q.constantScore = qc.(*ConstantScoreQuery)
-	case QueryKindDisjunctionMax:
-		q.disjunctionMax = qc.(*DisjunctionMaxQuery)
 	case QueryKindIDs:
 		q.ids = qc.(*IDsQuery)
 	case QueryKindIntervals:
 		q.intervals = qc.(*IntervalsQuery)
+	case QueryKindMatchBoolPrefix:
+		q.matchBoolPrefix = qc.(*MatchBoolPrefixQuery)
 	case QueryKindMatchPhrase:
 		q.matchPhrase = qc.(*MatchPhraseQuery)
+	case QueryKindMatchPhrasePrefix:
+		q.matchPhrasePrefix = qc.(*MatchPhrasePrefixQuery)
 	case QueryKindMultiMatch:
 		q.multiMatch = qc.(*MultiMatchQuery)
+	case QueryKindQueryString:
+		q.queryString = qc.(*QueryStringQuery)
+	case QueryKindSimpleQueryString:
+		q.simpleQueryString = qc.(*SimpleQueryStringQuery)
 	case QueryKindGeoBoundingBox:
 		q.geoBoundingBox = qc.(*GeoBoundingBoxQuery)
+
+		// case QueryKindGeoDistance:
+		// 	q.geoDistance = qc.(*GeoDistanceQuery)
+		// case QueryKindGeoPolygon:
+		// 	q.geoPolygon = qc.(*GeoPolygonQuery)
+		// case QueryKindGeoShape:
+		// 	q.geoShape = qc.(*GeoShapeQuery)
+		// case QueryKindShape:
+		// 	q.shape = qc.(*ShapeQuery)
+		// case QueryKindNested:
+		// 	q.nested = qc.(*NestedQuery)
+		// case QueryKindHasChild:
+		// 	q.hasChild = qc.(*HasChildQuery)
+		// case QueryKindHasParent:
+		// 	q.hasParent = qc.(*HasParentQuery)
+		// case QueryKindParentID:
+		// 	q.parentID = qc.(*ParentIDQuery)
+		// case QueryKindDistantFeature:
+		// 	q.distantFeature = qc.(*DistantFeatureQuery)
+		// case QueryKindMoreLikeThis:
+		// 	q.moreLikeThis = qc.(*MoreLikeThisQuery)
+		// case QueryKindPercolate:
+		// 	q.percolate = qc.(*PercolateQuery)
+		// case QueryKindRankFeature:
+		// 	q.rankFeature = qc.(*RankFeatureQuery)
+		// case QueryKindWrapper:
+		// 	q.wrapper = qc.(*WrapperQuery)
+		// case QueryKindPinned:
+		// 	q.pinned = qc.(*PinnedQuery)
+		// case QueryKindSpanContaining:
+		// 	q.spanContaining = qc.(*SpanContainingQuery)
+		// case QueryKindFieldMaskingSpan:
+		// 	q.fieldMaskingSpan = qc.(*FieldMaskingSpanQuery)
+		// case QueryKindSpanFirst:
+		// 	q.spanFirst = qc.(*SpanFirstQuery)
+		// case QueryKindSpanMulti:
+		// 	q.spanMulti = qc.(*SpanMultiQuery)
+		// case QueryKindSpanNear:
+		// 	q.spanNear = qc.(*SpanNearQuery)
+		// case QueryKindSpanNot:
+		// 	q.spanNot = qc.(*SpanNotQuery)
+		// case QueryKindSpanOr:
+		// 	q.spanOr = qc.(*SpanOrQuery)
+		// case QueryKindSpanTerm:
+		// 	q.spanTerm = qc.(*SpanTermQuery)
+		// case QueryKindSpanWithin:
+		// 	q.spanWithin = qc.(*SpanWithinQuery)
 	}
 }
 func (q *Query) Set(params Querier) error {
