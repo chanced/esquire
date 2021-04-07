@@ -97,6 +97,7 @@ func (g *GeoBoundingBoxQuery) UnmarshalJSON(data []byte) error {
 			g.typ = typ
 		default:
 			g.field = field
+			g.boundingBoxRaw = d
 			var bb interface{}
 			err = json.Unmarshal(d, &bb)
 			g.boundingBox = bb
