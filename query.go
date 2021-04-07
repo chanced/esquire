@@ -274,6 +274,30 @@ type QueryParams struct {
 	SimpleQueryString SimpleQueryStringer
 	MatchPhrasePrefix MatchPhrasePrefixer
 	GeoBoundingBox    GeoBoundingBoxer
+
+	// GeoDistance      GeoDistanceer
+	// GeoPolygon       GeoPolygoner
+	// GeoShape         GeoShapeer
+	// Shape            Shapeer
+	// Nested           Nesteder
+	// HasChild         HasChilder
+	// HasParent        HasParenter
+	// ParentID         ParentIDer
+	// DistantFeature   DistantFeatureer
+	// MoreLikeThis     MoreLikeThiser
+	// Percolate        Percolateer
+	// RankFeature      RankFeatureer
+	// Wrapper          Wrapperer
+	// Pinned           Pinneder
+	// SpanContaining   SpanContaininger
+	// FieldMaskingSpan FieldMaskingSpaner
+	// SpanFirst        SpanFirster
+	// SpanMulti        SpanMultier
+	// SpanNear         SpanNearer
+	// SpanNot          SpanNoter
+	// SpanOr           SpanOrer
+	// SpanTerm         SpanTermer
+	// SpanWithin       SpanWithiner
 }
 
 func (q QueryParams) matchPhrasePrefix() (*MatchPhrasePrefixQuery, error) {
