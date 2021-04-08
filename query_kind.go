@@ -63,6 +63,11 @@ const (
 	QueryKindSpanOr           QueryKind = "span_or"
 	QueryKindSpanTerm         QueryKind = "span_term"
 	QueryKindSpanWithin       QueryKind = "span_within"
+	QueryKindCommon           QueryKind = "common"
+	QueryKindRegexp           QueryKind = "regexp"
+	QueryKindTermSet          QueryKind = "terms_set"
+	QueryKindType             QueryKind = "type"
+	QueryKindWildcard         QueryKind = "wildcard"
 )
 
 var queryKindHandlers = map[QueryKind]func() QueryClause{
