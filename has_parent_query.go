@@ -30,7 +30,7 @@ func (HasParentQuery) Kind() QueryKind {
 func (q *HasParentQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *HasParentQuery) HasParent() (QueryClause, error) {
+func (q *HasParentQuery) HasParent() (*HasParentQuery, error) {
 	return q, nil
 }
 func (q *HasParentQuery) Clear() {

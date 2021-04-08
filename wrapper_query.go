@@ -30,7 +30,7 @@ func (WrapperQuery) Kind() QueryKind {
 func (q *WrapperQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *WrapperQuery) Wrapper() (QueryClause, error) {
+func (q *WrapperQuery) Wrapper() (*WrapperQuery, error) {
 	return q, nil
 }
 func (q *WrapperQuery) Clear() {

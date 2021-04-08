@@ -30,7 +30,7 @@ func (SpanNotQuery) Kind() QueryKind {
 func (q *SpanNotQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanNotQuery) SpanNot() (QueryClause, error) {
+func (q *SpanNotQuery) SpanNot() (*SpanNotQuery, error) {
 	return q, nil
 }
 func (q *SpanNotQuery) Clear() {

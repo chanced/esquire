@@ -30,7 +30,7 @@ func (SpanTermQuery) Kind() QueryKind {
 func (q *SpanTermQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanTermQuery) SpanTerm() (QueryClause, error) {
+func (q *SpanTermQuery) SpanTerm() (*SpanTermQuery, error) {
 	return q, nil
 }
 func (q *SpanTermQuery) Clear() {

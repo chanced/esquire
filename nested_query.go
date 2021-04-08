@@ -30,7 +30,7 @@ func (NestedQuery) Kind() QueryKind {
 func (q *NestedQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *NestedQuery) Nested() (QueryClause, error) {
+func (q *NestedQuery) Nested() (*NestedQuery, error) {
 	return q, nil
 }
 func (q *NestedQuery) Clear() {

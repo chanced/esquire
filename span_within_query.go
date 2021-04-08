@@ -30,7 +30,7 @@ func (SpanWithinQuery) Kind() QueryKind {
 func (q *SpanWithinQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanWithinQuery) SpanWithin() (QueryClause, error) {
+func (q *SpanWithinQuery) SpanWithin() (*SpanWithinQuery, error) {
 	return q, nil
 }
 func (q *SpanWithinQuery) Clear() {

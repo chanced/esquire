@@ -30,7 +30,7 @@ func (PinnedQuery) Kind() QueryKind {
 func (q *PinnedQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *PinnedQuery) Pinned() (QueryClause, error) {
+func (q *PinnedQuery) Pinned() (*PinnedQuery, error) {
 	return q, nil
 }
 func (q *PinnedQuery) Clear() {

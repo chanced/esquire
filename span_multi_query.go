@@ -30,7 +30,7 @@ func (SpanMultiQuery) Kind() QueryKind {
 func (q *SpanMultiQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanMultiQuery) SpanMulti() (QueryClause, error) {
+func (q *SpanMultiQuery) SpanMulti() (*SpanMultiQuery, error) {
 	return q, nil
 }
 func (q *SpanMultiQuery) Clear() {

@@ -298,8 +298,43 @@ type QueryParams struct {
 	// SpanOr           SpanOrer
 	// SpanTerm         SpanTermer
 	// SpanWithin       SpanWithiner
+	Common   Commoner
+	Regexp   Regexper
+	TermSet  TermSetter
+	Type     Typer
+	Wildcard Wildcarder
 }
 
+func (q QueryParams) common() (*CommonQuery, error) {
+	if q.Common == nil {
+		return nil, nil
+	}
+	return q.Common.Common()
+}
+func (q QueryParams) regexp() (*RegexpQuery, error) {
+	if q.Regexp == nil {
+		return nil, nil
+	}
+	return q.Regexp.Regexp()
+}
+func (q QueryParams) termSet() (*TermSetQuery, error) {
+	if q.TermSet == nil {
+		return nil, nil
+	}
+	return q.TermSet.TermSet()
+}
+func (q QueryParams) typ() (*TypeQuery, error) {
+	if q.Type == nil {
+		return nil, nil
+	}
+	return q.Type.Type()
+}
+func (q QueryParams) wildcard() (*WildcardQuery, error) {
+	if q.Wildcard == nil {
+		return nil, nil
+	}
+	return q.Wildcard.Wildcard()
+}
 func (q QueryParams) matchPhrasePrefix() (*MatchPhrasePrefixQuery, error) {
 	if q.MatchPhrasePrefix == nil {
 		return nil, nil
@@ -464,142 +499,142 @@ func (q QueryParams) multiMatch() (*MultiMatchQuery, error) {
 }
 
 // func (q QueryParams) geoDistance() (*GeoDistanceQuery, error) {
-//     if q.GeoDistance == nil {
-//         return nil, nil
-//     }
-//     return q.GeoDistance.GeoDistance()
+// 	if q.GeoDistance == nil {
+// 		return nil, nil
+// 	}
+// 	return q.GeoDistance.GeoDistance()
 // }
 // func (q QueryParams) geoPolygon() (*GeoPolygonQuery, error) {
-//     if q.GeoPolygon == nil {
-//         return nil, nil
-//     }
-//     return q.GeoPolygon.GeoPolygon()
+// 	if q.GeoPolygon == nil {
+// 		return nil, nil
+// 	}
+// 	return q.GeoPolygon.GeoPolygon()
 // }
 // func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
-//     if q.GeoShape == nil {
-//         return nil, nil
-//     }
-//     return q.GeoShape.GeoShape()
+// 	if q.GeoShape == nil {
+// 		return nil, nil
+// 	}
+// 	return q.GeoShape.GeoShape()
 // }
 // func (q QueryParams) shape() (*ShapeQuery, error) {
-//     if q.Shape == nil {
-//         return nil, nil
-//     }
-//     return q.Shape.Shape()
+// 	if q.Shape == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Shape.Shape()
 // }
 // func (q QueryParams) nested() (*NestedQuery, error) {
-//     if q.Nested == nil {
-//         return nil, nil
-//     }
-//     return q.Nested.Nested()
+// 	if q.Nested == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Nested.Nested()
 // }
 // func (q QueryParams) hasChild() (*HasChildQuery, error) {
-//     if q.HasChild == nil {
-//         return nil, nil
-//     }
-//     return q.HasChild.HasChild()
+// 	if q.HasChild == nil {
+// 		return nil, nil
+// 	}
+// 	return q.HasChild.HasChild()
 // }
 // func (q QueryParams) hasParent() (*HasParentQuery, error) {
-//     if q.HasParent == nil {
-//         return nil, nil
-//     }
-//     return q.HasParent.HasParent()
+// 	if q.HasParent == nil {
+// 		return nil, nil
+// 	}
+// 	return q.HasParent.HasParent()
 // }
 // func (q QueryParams) parentID() (*ParentIDQuery, error) {
-//     if q.ParentID == nil {
-//         return nil, nil
-//     }
-//     return q.ParentID.ParentID()
+// 	if q.ParentID == nil {
+// 		return nil, nil
+// 	}
+// 	return q.ParentID.ParentID()
 // }
 // func (q QueryParams) distantFeature() (*DistantFeatureQuery, error) {
-//     if q.DistantFeature == nil {
-//         return nil, nil
-//     }
-//     return q.DistantFeature.DistantFeature()
+// 	if q.DistantFeature == nil {
+// 		return nil, nil
+// 	}
+// 	return q.DistantFeature.DistantFeature()
 // }
 // func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
-//     if q.MoreLikeThis == nil {
-//         return nil, nil
-//     }
-//     return q.MoreLikeThis.MoreLikeThis()
+// 	if q.MoreLikeThis == nil {
+// 		return nil, nil
+// 	}
+// 	return q.MoreLikeThis.MoreLikeThis()
 // }
 // func (q QueryParams) percolate() (*PercolateQuery, error) {
-//     if q.Percolate == nil {
-//         return nil, nil
-//     }
-//     return q.Percolate.Percolate()
+// 	if q.Percolate == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Percolate.Percolate()
 // }
 // func (q QueryParams) rankFeature() (*RankFeatureQuery, error) {
-//     if q.RankFeature == nil {
-//         return nil, nil
-//     }
-//     return q.RankFeature.RankFeature()
+// 	if q.RankFeature == nil {
+// 		return nil, nil
+// 	}
+// 	return q.RankFeature.RankFeature()
 // }
 // func (q QueryParams) wrapper() (*WrapperQuery, error) {
-//     if q.Wrapper == nil {
-//         return nil, nil
-//     }
-//     return q.Wrapper.Wrapper()
+// 	if q.Wrapper == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Wrapper.Wrapper()
 // }
 // func (q QueryParams) pinned() (*PinnedQuery, error) {
-//     if q.Pinned == nil {
-//         return nil, nil
-//     }
-//     return q.Pinned.Pinned()
+// 	if q.Pinned == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Pinned.Pinned()
 // }
 // func (q QueryParams) spanContaining() (*SpanContainingQuery, error) {
-//     if q.SpanContaining == nil {
-//         return nil, nil
-//     }
-//     return q.SpanContaining.SpanContaining()
+// 	if q.SpanContaining == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanContaining.SpanContaining()
 // }
 // func (q QueryParams) fieldMaskingSpan() (*FieldMaskingSpanQuery, error) {
-//     if q.FieldMaskingSpan == nil {
-//         return nil, nil
-//     }
-//     return q.FieldMaskingSpan.FieldMaskingSpan()
+// 	if q.FieldMaskingSpan == nil {
+// 		return nil, nil
+// 	}
+// 	return q.FieldMaskingSpan.FieldMaskingSpan()
 // }
 // func (q QueryParams) spanFirst() (*SpanFirstQuery, error) {
-//     if q.SpanFirst == nil {
-//         return nil, nil
-//     }
-//     return q.SpanFirst.SpanFirst()
+// 	if q.SpanFirst == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanFirst.SpanFirst()
 // }
 // func (q QueryParams) spanMulti() (*SpanMultiQuery, error) {
-//     if q.SpanMulti == nil {
-//         return nil, nil
-//     }
-//     return q.SpanMulti.SpanMulti()
+// 	if q.SpanMulti == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanMulti.SpanMulti()
 // }
 // func (q QueryParams) spanNear() (*SpanNearQuery, error) {
-//     if q.SpanNear == nil {
-//         return nil, nil
-//     }
-//     return q.SpanNear.SpanNear()
+// 	if q.SpanNear == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanNear.SpanNear()
 // }
 // func (q QueryParams) spanNot() (*SpanNotQuery, error) {
-//     if q.SpanNot == nil {
-//         return nil, nil
-//     }
-//     return q.SpanNot.SpanNot()
+// 	if q.SpanNot == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanNot.SpanNot()
 // }
 // func (q QueryParams) spanOr() (*SpanOrQuery, error) {
-//     if q.SpanOr == nil {
-//         return nil, nil
-//     }
-//     return q.SpanOr.SpanOr()
+// 	if q.SpanOr == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanOr.SpanOr()
 // }
 // func (q QueryParams) spanTerm() (*SpanTermQuery, error) {
-//     if q.SpanTerm == nil {
-//         return nil, nil
-//     }
-//     return q.SpanTerm.SpanTerm()
+// 	if q.SpanTerm == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanTerm.SpanTerm()
 // }
 // func (q QueryParams) spanWithin() (*SpanWithinQuery, error) {
-//     if q.SpanWithin == nil {
-//         return nil, nil
-//     }
-//     return q.SpanWithin.SpanWithin()
+// 	if q.SpanWithin == nil {
+// 		return nil, nil
+// 	}
+// 	return q.SpanWithin.SpanWithin()
 // }
 
 func (q *QueryParams) Query() (*Query, error) {
@@ -703,6 +738,27 @@ func (q *QueryParams) Query() (*Query, error) {
 		return nil, err
 	}
 	multiMatch, err := q.multiMatch()
+	if err != nil {
+		return nil, err
+	}
+	// common, err := q.common()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// regexp, err := q.regexp()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// termSet, err := q.termSet()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// typ, err := q.typ()
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	wildcard, err := q.wildcard()
 	if err != nil {
 		return nil, err
 	}
@@ -824,6 +880,11 @@ func (q *QueryParams) Query() (*Query, error) {
 		simpleQueryString: simpleQueryString,
 		geoBoundingBox:    geoBoundingBox,
 		matchPhrasePrefix: matchPhrasePrefix,
+		wildcard:          wildcard,
+		// common:            common,
+		// regexp:            regexp,
+		// termSet:           termSet,
+		// typ:               typ,
 		// geoDistance:       geoDistance,
 		// geoPolygon:        geoPolygon,
 		// geoShape:          geoShape,
@@ -896,6 +957,11 @@ type Query struct {
 	queryString       *QueryStringQuery
 	simpleQueryString *SimpleQueryStringQuery
 	geoBoundingBox    *GeoBoundingBoxQuery
+	wildcard          *WildcardQuery
+	// common            *CommonQuery
+	// regexp            *RegexpQuery
+	// termSet           *TermSetQuery
+	// typ               *TypeQuery
 	// geoDistance       *GeoDistanceQuery
 	// geoPolygon        *GeoPolygonQuery
 	// geoShape          *GeoShapeQuery
@@ -1068,6 +1134,38 @@ func (q *Query) MatchNone() *MatchNoneQuery {
 		q.matchNone = &MatchNoneQuery{}
 	}
 	return q.matchNone
+}
+
+// func (q *Query) Common() *CommonQuery {
+// 	if q.common == nil {
+// 		q.common = &CommonQuery{}
+// 	}
+// 	return q.common
+// }
+// func (q *Query) Regexp() *RegexpQuery {
+// 	if q.regexp == nil {
+// 		q.regexp = &RegexpQuery{}
+// 	}
+// 	return q.regexp
+// }
+// func (q *Query) TermSet() *TermSetQuery {
+// 	if q.termSet == nil {
+// 		q.termSet = &TermSetQuery{}
+// 	}
+// 	return q.termSet
+// }
+// func (q *Query) Type() *TypeQuery {
+// 	if q.typ == nil {
+// 		q.typ = &TypeQuery{}
+// 	}
+// 	return q.typ
+// }
+
+func (q *Query) Wildcard() *WildcardQuery {
+	if q.wildcard == nil {
+		q.wildcard = &WildcardQuery{}
+	}
+	return q.wildcard
 }
 
 // func (q *Query) AllOf() *AllOfQuery {
@@ -1266,7 +1364,12 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindQueryString:       q.queryString,
 		QueryKindSimpleQueryString: q.simpleQueryString,
 		QueryKindGeoBoundingBox:    q.geoBoundingBox,
-
+		QueryKindWildcard:          q.wildcard,
+		// QueryKindCommon:            q.common,
+		// QueryKindRegexp:            q.regexp,
+		// QueryKindTermSet:           q.termSet,
+		// QueryKindType:              q.typ,
+		// QueryKindWildcard:          q.wildcard,
 		// QueryKindAllOf:             q.allOf,
 
 		// QueryKindGeoDistance:      q.geoDistance,
@@ -1350,7 +1453,17 @@ func (q *Query) setClause(qc QueryClause) {
 		q.simpleQueryString = qc.(*SimpleQueryStringQuery)
 	case QueryKindGeoBoundingBox:
 		q.geoBoundingBox = qc.(*GeoBoundingBoxQuery)
+	case QueryKindWildcard:
+		q.wildcard = qc.(*WildcardQuery)
 
+		// case QueryKindCommon:
+		// 	q.common= qc.(*CommonQuery)
+		// case QueryKindRegexp:
+		// 	q.regexp= qc.(*RegexpQuery)
+		// case QueryKindTermSet:
+		// 	q.termSet= qc.(*TermSetQuery)
+		// case QueryKindType:
+		// 	q.typ= qc.(*TypeQuery)
 		// case QueryKindGeoDistance:
 		// 	q.geoDistance = qc.(*GeoDistanceQuery)
 		// case QueryKindGeoPolygon:

@@ -1,7 +1,21 @@
 package picker
 
+import (
+	"encoding/json"
+
+	"github.com/chanced/dynamic"
+)
+
+type Wildcarder interface {
+	Wildcard() (*WildcardQuery, error)
+}
 type WildcardQueryParams struct {
-	Name string
+	Name            string
+	Boost           interface{}
+	Value           string
+	CaseInsensitive bool
+	Field           string
+	Rewrite         Rewrite
 	completeClause
 }
 
@@ -14,13 +28,34 @@ func (p WildcardQueryParams) Clause() (QueryClause, error) {
 }
 func (p WildcardQueryParams) Wildcard() (*WildcardQuery, error) {
 	q := &WildcardQuery{}
-	_ = q
-	panic("not implemented")
-	// return q, nil
+	q.SetCaseInsensitive(p.CaseInsensitive)
+	err := q.SetField(p.Field)
+	if err != nil {
+		return q, newQueryError(err, QueryKindWildcard)
+	}
+	err = q.SetBoost(p.Boost)
+	if err != nil {
+		return q, newQueryError(err, QueryKindWildcard, q.field)
+	}
+	err = q.SetValue(p.Value)
+	if err != nil {
+		return q, newQueryError(err, QueryKindWildcard, q.field)
+	}
+	q.SetName(p.Name)
+	err = q.SetRewrite(p.Rewrite)
+	if err != nil {
+		return q, newQueryError(err, QueryKindWildcard, q.field)
+	}
+	return q, nil
 }
 
 type WildcardQuery struct {
+	value string
 	nameParam
+	boostParam
+	rewriteParam
+	caseInsensitiveParam
+	fieldParam
 	completeClause
 }
 
@@ -30,7 +65,7 @@ func (WildcardQuery) Kind() QueryKind {
 func (q *WildcardQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *WildcardQuery) Wildcard() (QueryClause, error) {
+func (q *WildcardQuery) Wildcard() (*WildcardQuery, error) {
 	return q, nil
 }
 func (q *WildcardQuery) Clear() {
@@ -39,16 +74,51 @@ func (q *WildcardQuery) Clear() {
 	}
 	*q = WildcardQuery{}
 }
+func (q *WildcardQuery) SetValue(value string) error {
+	if len(value) == 0 {
+		return ErrValueRequired
+	}
+	q.value = value
+	return nil
+}
+func (q WildcardQuery) Value() string {
+	return q.value
+}
 func (q *WildcardQuery) UnmarshalJSON(data []byte) error {
-	panic("not implemented")
+	*q = WildcardQuery{}
+	rd := dynamic.JSONObject{}
+	err := rd.UnmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	for field, d := range rd {
+		q.field = field
+		obj, err := unmarshalClauseParams(d, q)
+		if err != nil {
+			return err
+		}
+		var value string
+		err = json.Unmarshal(obj["value"], &value)
+		if err != nil {
+			return err
+		}
+		q.value = value
+		return nil
+	}
+	return nil
 }
 func (q WildcardQuery) MarshalJSON() ([]byte, error) {
-	panic("not implemented")
+	data, err := marshalClauseParams(&q)
+	if err != nil {
+		return nil, err
+	}
+	data["value"] = q.value
+	qd, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(dynamic.JSONObject{q.field: qd})
 }
 func (q *WildcardQuery) IsEmpty() bool {
-	panic("not implemented")
-}
-
-type wildcardQuery struct {
-	Name string `json:"_name,omitempty"`
+	return q == nil || len(q.value) == 0 || len(q.field) == 0
 }

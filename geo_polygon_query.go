@@ -30,7 +30,7 @@ func (GeoPolygonQuery) Kind() QueryKind {
 func (q *GeoPolygonQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *GeoPolygonQuery) GeoPolygon() (QueryClause, error) {
+func (q *GeoPolygonQuery) GeoPolygon() (*GeoPolygonQuery, error) {
 	return q, nil
 }
 func (q *GeoPolygonQuery) Clear() {

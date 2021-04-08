@@ -30,7 +30,7 @@ func (SpanOrQuery) Kind() QueryKind {
 func (q *SpanOrQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanOrQuery) SpanOr() (QueryClause, error) {
+func (q *SpanOrQuery) SpanOr() (*SpanOrQuery, error) {
 	return q, nil
 }
 func (q *SpanOrQuery) Clear() {

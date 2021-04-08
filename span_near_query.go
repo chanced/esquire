@@ -30,7 +30,7 @@ func (SpanNearQuery) Kind() QueryKind {
 func (q *SpanNearQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanNearQuery) SpanNear() (QueryClause, error) {
+func (q *SpanNearQuery) SpanNear() (*SpanNearQuery, error) {
 	return q, nil
 }
 func (q *SpanNearQuery) Clear() {

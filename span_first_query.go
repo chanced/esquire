@@ -30,7 +30,7 @@ func (SpanFirstQuery) Kind() QueryKind {
 func (q *SpanFirstQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanFirstQuery) SpanFirst() (QueryClause, error) {
+func (q *SpanFirstQuery) SpanFirst() (*SpanFirstQuery, error) {
 	return q, nil
 }
 func (q *SpanFirstQuery) Clear() {

@@ -1,53 +1,58 @@
-
 package picker
 
-type RegexpQueryParams struct {
-  Name string
-completeClause
+type Regexper interface {
+	Regexp() (*RegexpQuery, error)
 }
+
+type RegexpQueryParams struct {
+	Name string
+	completeClause
+}
+
 func (RegexpQueryParams) Kind() QueryKind {
-return QueryKindRegexp
+	return QueryKindRegexp
 }
 
 func (p RegexpQueryParams) Clause() (QueryClause, error) {
-  return p.Regexp()
+	return p.Regexp()
 }
 func (p RegexpQueryParams) Regexp() (*RegexpQuery, error) {
-  q := &RegexpQuery{}
-  _=q
-  panic("not implemented")
-  // return q, nil
+	q := &RegexpQuery{}
+	_ = q
+	panic("not implemented")
+	// return q, nil
 }
+
 type RegexpQuery struct {
-  nameParam
-  completeClause
+	nameParam
+	completeClause
 }
+
 func (RegexpQuery) Kind() QueryKind {
-return QueryKindRegexp
+	return QueryKindRegexp
 }
 func (q *RegexpQuery) Clause() (QueryClause, error) {
-return q, nil
+	return q, nil
 }
-func (q *RegexpQuery) Regexp() (QueryClause, error) {
-return q, nil
+func (q *RegexpQuery) Regexp() (*RegexpQuery, error) {
+	return q, nil
 }
 func (q *RegexpQuery) Clear() {
-if q == nil {
-return 
-}
-*q = RegexpQuery{}
+	if q == nil {
+		return
+	}
+	*q = RegexpQuery{}
 }
 func (q *RegexpQuery) UnmarshalJSON(data []byte) error {
-panic("not implemented")
+	panic("not implemented")
 }
 func (q RegexpQuery) MarshalJSON() ([]byte, error) {
-panic("not implemented")
+	panic("not implemented")
 }
 func (q *RegexpQuery) IsEmpty() bool {
-panic("not implemented")
+	panic("not implemented")
 }
 
-type regexpQuery struct{
-Name string `json:"_name,omitempty"`
+type regexpQuery struct {
+	Name string `json:"_name,omitempty"`
 }
-

@@ -30,7 +30,7 @@ func (FieldMaskingSpanQuery) Kind() QueryKind {
 func (q *FieldMaskingSpanQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *FieldMaskingSpanQuery) FieldMaskingSpan() (QueryClause, error) {
+func (q *FieldMaskingSpanQuery) FieldMaskingSpan() (*FieldMaskingSpanQuery, error) {
 	return q, nil
 }
 func (q *FieldMaskingSpanQuery) Clear() {

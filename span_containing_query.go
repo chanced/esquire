@@ -30,7 +30,7 @@ func (SpanContainingQuery) Kind() QueryKind {
 func (q *SpanContainingQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *SpanContainingQuery) SpanContaining() (QueryClause, error) {
+func (q *SpanContainingQuery) SpanContaining() (*SpanContainingQuery, error) {
 	return q, nil
 }
 func (q *SpanContainingQuery) Clear() {
