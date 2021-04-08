@@ -10,6 +10,7 @@ import (
 type MatchAllQueryParams struct {
 	Boost interface{}
 	Name  string
+	completeClause
 }
 
 func (ma MatchAllQueryParams) Clause() (QueryClause, error) {
@@ -24,6 +25,7 @@ func (ma MatchAllQueryParams) Kind() QueryKind {
 func (ma MatchAllQueryParams) MatchAll() (*MatchAllQuery, error) {
 	c := &MatchAllQuery{}
 	err := c.SetBoost(ma.Boost)
+	c.SetName(ma.Name)
 	if err != nil {
 		return c, err
 	}
@@ -38,6 +40,9 @@ type MatchAllQuery struct {
 	completeClause
 }
 
+func (ma *MatchAllQuery) MatchAll() (*MatchAllQuery, error) {
+	return ma, nil
+}
 func (ma *MatchAllQuery) Clause() (QueryClause, error) {
 	return ma, nil
 }

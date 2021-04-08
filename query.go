@@ -277,8 +277,8 @@ type QueryParams struct {
 
 	// GeoDistance      GeoDistanceer
 	// GeoPolygon       GeoPolygoner
-	// GeoShape         GeoShapeer
-	// Shape            Shapeer
+	GeoShape GeoShaper
+	// Shape            Shaper
 	// Nested           Nesteder
 	// HasChild         HasChilder
 	// HasParent        HasParenter
@@ -510,12 +510,13 @@ func (q QueryParams) multiMatch() (*MultiMatchQuery, error) {
 // 	}
 // 	return q.GeoPolygon.GeoPolygon()
 // }
-// func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
-// 	if q.GeoShape == nil {
-// 		return nil, nil
-// 	}
-// 	return q.GeoShape.GeoShape()
-// }
+func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
+	if q.GeoShape == nil {
+		return nil, nil
+	}
+	return q.GeoShape.GeoShape()
+}
+
 // func (q QueryParams) shape() (*ShapeQuery, error) {
 // 	if q.Shape == nil {
 // 		return nil, nil
@@ -762,95 +763,95 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// geoDistance, err := q.GeoDistance()
+	// geoDistance, err := q.geoDistance()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// geoPolygon, err := q.GeoPolygon()
+	// geoPolygon, err := q.geoPolygon()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// geoShape, err := q.GeoShape()
+	geoShape, err := q.geoShape()
+	if err != nil {
+		return nil, err
+	}
+	// shape, err := q.shape()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// shape, err := q.Shape()
+	// nested, err := q.nested()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// nested, err := q.Nested()
+	// hasChild, err := q.hasChild()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// hasChild, err := q.HasChild()
+	// hasParent, err := q.hasParent()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// hasParent, err := q.HasParent()
+	// parentID, err := q.parentID()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// parentID, err := q.ParentID()
+	// distantFeature, err := q.distantFeature()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// distantFeature, err := q.DistantFeature()
+	// moreLikeThis, err := q.moreLikeThis()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// moreLikeThis, err := q.MoreLikeThis()
+	// percolate, err := q.percolate()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// percolate, err := q.Percolate()
+	// rankFeature, err := q.rankFeature()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// rankFeature, err := q.RankFeature()
+	// wrapper, err := q.wrapper()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// wrapper, err := q.Wrapper()
+	// pinned, err := q.pinned()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// pinned, err := q.Pinned()
+	// spanContaining, err := q.spanContaining()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanContaining, err := q.SpanContaining()
+	// fieldMaskingSpan, err := q.fieldMaskingSpan()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// fieldMaskingSpan, err := q.FieldMaskingSpan()
+	// spanFirst, err := q.spanFirst()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanFirst, err := q.SpanFirst()
+	// spanMulti, err := q.spanMulti()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanMulti, err := q.SpanMulti()
+	// spanNear, err := q.spanNear()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanNear, err := q.SpanNear()
+	// spanNot, err := q.spanNot()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanNot, err := q.SpanNot()
+	// spanOr, err := q.spanOr()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanOr, err := q.SpanOr()
+	// spanTerm, err := q.spanTerm()
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// spanTerm, err := q.SpanTerm()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// spanWithin, err := q.SpanWithin()
+	// spanWithin, err := q.spanWithin()
 	// if err != nil {
 	// 	return nil, err
 	// }
@@ -887,7 +888,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		// typ:               typ,
 		// geoDistance:       geoDistance,
 		// geoPolygon:        geoPolygon,
-		// geoShape:          geoShape,
+		geoShape: geoShape,
 		// shape:             shape,
 		// nested:            nested,
 		// hasChild:          hasChild,
@@ -964,7 +965,7 @@ type Query struct {
 	// typ               *TypeQuery
 	// geoDistance       *GeoDistanceQuery
 	// geoPolygon        *GeoPolygonQuery
-	// geoShape          *GeoShapeQuery
+	geoShape *GeoShapeQuery
 	// shape             *ShapeQuery
 	// nested            *NestedQuery
 	// hasChild          *HasChildQuery
@@ -1194,12 +1195,14 @@ func (q *Query) MatchPhrasePrefix() *MatchPhrasePrefixQuery {
 //     }
 //     return q.geoPolygon
 // }
-// func (q *Query) GeoShape() *GeoShapeQuery {
-//     if q.geoShape == nil {
-//         q.geoShape = &GeoShapeQuery{}
-//     }
-//     return q.geoShape
-// }
+
+func (q *Query) GeoShape() *GeoShapeQuery {
+	if q.geoShape == nil {
+		q.geoShape = &GeoShapeQuery{}
+	}
+	return q.geoShape
+}
+
 // func (q *Query) Shape() *ShapeQuery {
 //     if q.shape == nil {
 //         q.shape = &ShapeQuery{}
@@ -1374,7 +1377,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 
 		// QueryKindGeoDistance:      q.geoDistance,
 		// QueryKindGeoPolygon:       q.geoPolygon,
-		// QueryKindGeoShape:         q.geoShape,
+		QueryKindGeoShape: q.geoShape,
 		// QueryKindShape:            q.shape,
 		// QueryKindNested:           q.nested,
 		// QueryKindHasChild:         q.hasChild,
@@ -1456,20 +1459,20 @@ func (q *Query) setClause(qc QueryClause) {
 	case QueryKindWildcard:
 		q.wildcard = qc.(*WildcardQuery)
 
-		// case QueryKindCommon:
-		// 	q.common= qc.(*CommonQuery)
-		// case QueryKindRegexp:
-		// 	q.regexp= qc.(*RegexpQuery)
-		// case QueryKindTermSet:
-		// 	q.termSet= qc.(*TermSetQuery)
-		// case QueryKindType:
-		// 	q.typ= qc.(*TypeQuery)
-		// case QueryKindGeoDistance:
-		// 	q.geoDistance = qc.(*GeoDistanceQuery)
-		// case QueryKindGeoPolygon:
-		// 	q.geoPolygon = qc.(*GeoPolygonQuery)
-		// case QueryKindGeoShape:
-		// 	q.geoShape = qc.(*GeoShapeQuery)
+	// case QueryKindCommon:
+	// 	q.common= qc.(*CommonQuery)
+	// case QueryKindRegexp:
+	// 	q.regexp= qc.(*RegexpQuery)
+	// case QueryKindTermSet:
+	// 	q.termSet= qc.(*TermSetQuery)
+	// case QueryKindType:
+	// 	q.typ= qc.(*TypeQuery)
+	// case QueryKindGeoDistance:
+	// 	q.geoDistance = qc.(*GeoDistanceQuery)
+	// case QueryKindGeoPolygon:
+	// 	q.geoPolygon = qc.(*GeoPolygonQuery)
+	case QueryKindGeoShape:
+		q.geoShape = qc.(*GeoShapeQuery)
 		// case QueryKindShape:
 		// 	q.shape = qc.(*ShapeQuery)
 		// case QueryKindNested:

@@ -263,11 +263,12 @@ func unpackClause(clause CompleteClause) (QueryClause, error) {
 		}
 		return qc, nil
 	}
+
 	if v, ok := clause.(QueryClause); ok {
 		return v, nil
 	}
-
-	return nil, errors.New("invalid query")
+	fmt.Printf("%T", clause)
+	return nil, errors.New("query is not complete")
 }
 
 func marshalSingleQueryClause(clause QueryClause) (dynamic.JSON, error) {

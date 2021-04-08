@@ -239,7 +239,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Finds documents with geo-points within the specified distance of a central point.
   - [ ] **[Geo polygon](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-polygon-query.html) [Deprecated]**\
          Find documents with geo-points within the specified polygon.
-  - [ ] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-shape-query.html)**
+  - [x] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-shape-query.html)**
     - geo-shapes which either intersect, are contained by, or do not intersect with the specified geo-shape
     - geo-points which intersect the specified geo-shape
 - #### [Shape queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape-queries.html) [X-Pack]
