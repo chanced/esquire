@@ -274,11 +274,10 @@ type QueryParams struct {
 	SimpleQueryString SimpleQueryStringer
 	MatchPhrasePrefix MatchPhrasePrefixer
 	GeoBoundingBox    GeoBoundingBoxer
-
-	GeoDistance GeoDistancer
+	GeoDistance       GeoDistancer
+	GeoShape          GeoShaper
+	Shape             ShapeQuerier
 	// GeoPolygon       GeoPolygoner
-	GeoShape GeoShaper
-	// Shape            Shaper
 	// Nested           Nesteder
 	// HasChild         HasChilder
 	// HasParent        HasParenter
@@ -305,30 +304,30 @@ type QueryParams struct {
 	Wildcard Wildcarder
 }
 
-func (q QueryParams) common() (*CommonQuery, error) {
-	if q.Common == nil {
-		return nil, nil
-	}
-	return q.Common.Common()
-}
-func (q QueryParams) regexp() (*RegexpQuery, error) {
-	if q.Regexp == nil {
-		return nil, nil
-	}
-	return q.Regexp.Regexp()
-}
-func (q QueryParams) termSet() (*TermSetQuery, error) {
-	if q.TermSet == nil {
-		return nil, nil
-	}
-	return q.TermSet.TermSet()
-}
-func (q QueryParams) typ() (*TypeQuery, error) {
-	if q.Type == nil {
-		return nil, nil
-	}
-	return q.Type.Type()
-}
+// func (q QueryParams) common() (*CommonQuery, error) {
+// 	if q.Common == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Common.Common()
+// }
+// func (q QueryParams) regexp() (*RegexpQuery, error) {
+// 	if q.Regexp == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Regexp.Regexp()
+// }
+// func (q QueryParams) termSet() (*TermSetQuery, error) {
+// 	if q.TermSet == nil {
+// 		return nil, nil
+// 	}
+// 	return q.TermSet.TermSet()
+// }
+// func (q QueryParams) typ() (*TypeQuery, error) {
+// 	if q.Type == nil {
+// 		return nil, nil
+// 	}
+// 	return q.Type.Type()
+// }
 func (q QueryParams) wildcard() (*WildcardQuery, error) {
 	if q.Wildcard == nil {
 		return nil, nil
@@ -518,12 +517,13 @@ func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
 	return q.GeoShape.GeoShape()
 }
 
-// func (q QueryParams) shape() (*ShapeQuery, error) {
-// 	if q.Shape == nil {
-// 		return nil, nil
-// 	}
-// 	return q.Shape.Shape()
-// }
+func (q QueryParams) shape() (*ShapeQuery, error) {
+	if q.Shape == nil {
+		return nil, nil
+	}
+	return q.Shape.ShapeQuery()
+}
+
 // func (q QueryParams) nested() (*NestedQuery, error) {
 // 	if q.Nested == nil {
 // 		return nil, nil
@@ -776,10 +776,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// shape, err := q.shape()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	shape, err := q.shape()
+	if err != nil {
+		return nil, err
+	}
 	// nested, err := q.nested()
 	// if err != nil {
 	// 	return nil, err
@@ -890,7 +890,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		geoDistance: geoDistance,
 		// geoPolygon:        geoPolygon,
 		geoShape: geoShape,
-		// shape:             shape,
+		shape:    shape,
 		// nested:            nested,
 		// hasChild:          hasChild,
 		// hasParent:         hasParent,
@@ -967,7 +967,7 @@ type Query struct {
 	geoDistance *GeoDistanceQuery
 	// geoPolygon        *GeoPolygonQuery
 	geoShape *GeoShapeQuery
-	// shape             *ShapeQuery
+	shape    *ShapeQuery
 	// nested            *NestedQuery
 	// hasChild          *HasChildQuery
 	// hasParent         *HasParentQuery
@@ -1205,12 +1205,13 @@ func (q *Query) GeoShape() *GeoShapeQuery {
 	return q.geoShape
 }
 
-// func (q *Query) Shape() *ShapeQuery {
-//     if q.shape == nil {
-//         q.shape = &ShapeQuery{}
-//     }
-//     return q.shape
-// }
+func (q *Query) Shape() *ShapeQuery {
+	if q.shape == nil {
+		q.shape = &ShapeQuery{}
+	}
+	return q.shape
+}
+
 // func (q *Query) Nested() *NestedQuery {
 //     if q.nested == nil {
 //         q.nested = &NestedQuery{}
@@ -1380,7 +1381,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindGeoDistance: q.geoDistance,
 		// QueryKindGeoPolygon:       q.geoPolygon,
 		QueryKindGeoShape: q.geoShape,
-		// QueryKindShape:            q.shape,
+		QueryKindShape:    q.shape,
 		// QueryKindNested:           q.nested,
 		// QueryKindHasChild:         q.hasChild,
 		// QueryKindHasParent:        q.hasParent,
@@ -1475,8 +1476,8 @@ func (q *Query) setClause(qc QueryClause) {
 	// 	q.geoPolygon = qc.(*GeoPolygonQuery)
 	case QueryKindGeoShape:
 		q.geoShape = qc.(*GeoShapeQuery)
-		// case QueryKindShape:
-		// 	q.shape = qc.(*ShapeQuery)
+	case QueryKindShape:
+		q.shape = qc.(*ShapeQuery)
 		// case QueryKindNested:
 		// 	q.nested = qc.(*NestedQuery)
 		// case QueryKindHasChild:

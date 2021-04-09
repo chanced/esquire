@@ -2,7 +2,7 @@ package picker
 
 import "github.com/chanced/dynamic"
 
-type Shaper interface {
+type ShapeQuerier interface {
 	ShapeQuery() (*ShapeQuery, error)
 }
 type ShapeQueryParams struct {
@@ -112,8 +112,7 @@ func (q *ShapeQuery) UnmarshalJSON(data []byte) error {
 	}
 	q.field = field
 	v := shapeQuery{}
-	//todo;
-	// err = v.UnmarshalJSON(fd)
+	err = v.UnmarshalJSON(fd)
 	if err != nil {
 		return err
 	}
@@ -132,9 +131,7 @@ func (q ShapeQuery) MarshalJSON() ([]byte, error) {
 		IndexedShape:   q.indexedShape,
 		IgnoreUnmapped: q.ignoreUnmapped,
 	}
-	_ = v
-	//todo;
-	d, err := geoShapeQuery{}.MarshalJSON() //.MarshalJSON()
+	d, err := v.MarshalJSON()
 
 	if err != nil {
 		return nil, err

@@ -245,7 +245,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 - #### [Shape queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape-queries.html) [X-Pack]
   Like geo_shape Elasticsearch supports the ability to index arbitrary two dimension (non Geospatial) geometries making it possible to map out virtual worlds, sporting venues, theme parks, and CAD diagrams.
   Elasticsearch supports two types of cartesian data: point fields which support x/y pairs, and shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
-  - [ ] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-shape-query.html)**
+  - [x] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-shape-query.html)**
     - shapes which either intersect, are contained by, are within or do not intersect with the specified shape
     - points which intersect the specified shape
 - #### [Joining queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/joining-queries.html)
