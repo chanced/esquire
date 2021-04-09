@@ -280,7 +280,7 @@ type QueryParams struct {
 	Nested            NestedQuerier
 	// HasChild         HasChilder
 	// HasParent        HasParenter
-	// ParentID         ParentIDer
+	ParentID ParentIDer
 	// DistanceFeature   DistanceFeaturer
 	MoreLikeThis MoreLikeThiser
 	// Percolate        Percolater
@@ -543,12 +543,13 @@ func (q QueryParams) nested() (*NestedQuery, error) {
 // 	}
 // 	return q.HasParent.HasParent()
 // }
-// func (q QueryParams) parentID() (*ParentIDQuery, error) {
-// 	if q.ParentID == nil {
-// 		return nil, nil
-// 	}
-// 	return q.ParentID.ParentID()
-// }
+func (q QueryParams) parentID() (*ParentIDQuery, error) {
+	if q.ParentID == nil {
+		return nil, nil
+	}
+	return q.ParentID.ParentID()
+}
+
 // func (q QueryParams) distanceFeature() (*DistanceFeatureQuery, error) {
 // 	if q.DistanceFeature == nil {
 // 		return nil, nil
@@ -794,10 +795,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// parentID, err := q.parentID()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	parentID, err := q.parentID()
+	if err != nil {
+		return nil, err
+	}
 	// distanceFeature, err := q.distanceFeature()
 	// if err != nil {
 	// 	return nil, err
@@ -896,7 +897,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		nested:   nested,
 		// hasChild:          hasChild,
 		// hasParent:         hasParent,
-		// parentID:          parentID,
+		parentID: parentID,
 		// distanceFeature:    distanceFeature,
 		moreLikeThis: moreLikeThis,
 		// percolate:         percolate,
@@ -973,7 +974,7 @@ type Query struct {
 	nested   *NestedQuery
 	// hasChild          *HasChildQuery
 	// hasParent         *HasParentQuery
-	// parentID          *ParentIDQuery
+	parentID *ParentIDQuery
 	// distanceFeature    *DistanceFeatureQuery
 	moreLikeThis *MoreLikeThisQuery
 	// percolate         *PercolateQuery
@@ -1233,12 +1234,13 @@ func (q *Query) Nested() *NestedQuery {
 //     }
 //     return q.hasParent
 // }
-// func (q *Query) ParentID() *ParentIDQuery {
-//     if q.parentID == nil {
-//         q.parentID = &ParentIDQuery{}
-//     }
-//     return q.parentID
-// }
+func (q *Query) ParentID() *ParentIDQuery {
+	if q.parentID == nil {
+		q.parentID = &ParentIDQuery{}
+	}
+	return q.parentID
+}
+
 // func (q *Query) DistanceFeature() *DistanceFeatureQuery {
 //     if q.distanceFeature == nil {
 //         q.distanceFeature = &DistanceFeatureQuery{}
@@ -1389,7 +1391,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindNested:   q.nested,
 		// QueryKindHasChild:         q.hasChild,
 		// QueryKindHasParent:        q.hasParent,
-		// QueryKindParentID:         q.parentID,
+		QueryKindParentID: q.parentID,
 		// QueryKindDistanceFeature:   q.distanceFeature,
 		QueryKindMoreLikeThis: q.moreLikeThis,
 		// QueryKindPercolate:        q.percolate,
@@ -1488,8 +1490,8 @@ func (q *Query) setClause(qc QueryClause) {
 	// 	q.hasChild = qc.(*HasChildQuery)
 	// case QueryKindHasParent:
 	// 	q.hasParent = qc.(*HasParentQuery)
-	// case QueryKindParentID:
-	// 	q.parentID = qc.(*ParentIDQuery)
+	case QueryKindParentID:
+		q.parentID = qc.(*ParentIDQuery)
 	// case QueryKindDistanceFeature:
 	// 	q.distanceFeature = qc.(*DistanceFeatureQuery)
 	case QueryKindMoreLikeThis:

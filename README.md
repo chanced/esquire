@@ -255,7 +255,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          A join field relationship can exist between documents within a single index. The has_child query returns parent documents whose child documents match the specified query, while the has_parent query returns child documents whose parent document matches the specified query.
   - [ ] **[Has parent](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-has-parent-query.html)**\
          Returns child documents whose joined parent document matches a provided query. You can create parent-child relationships between documents in the same index using a join field mapping.
-  - [ ] **[Parent ID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-parent-id-query.html)**\
+  - [x] **[Parent ID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-parent-id-query.html)**\
          Returns child documents joined to a specific parent document. You can use a join field mapping to create parent-child relationships between documents in the same index.
 - [x] **[Match all](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-all-query.html)**\
        The most simple query, which matches all documents, giving them all a \_score of 1.0.

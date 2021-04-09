@@ -1,7 +1,25 @@
 package picker
 
+import "github.com/chanced/dynamic"
+
+type ParentIDer interface {
+	ParentID() (*ParentIDQuery, error)
+}
+
 type ParentIDQueryParams struct {
 	Name string
+	// (Required) ID of the parent document. The query will return child documents of this parent docume
+	ID string
+	// (Required, string) Name of the child relationship mapped for the join field.
+	Type string
+	// (Optional, Boolean) Indicates whether to ignore an unmapped type and not
+	// return any documents instead of an error. Defaults to false.
+	//
+	// If false, Elasticsearch returns an error if the type is unmapped.
+	//
+	// You can use this parameter to query multiple indices that may not contain the
+	// type.
+	IgnoreUnmapped interface{}
 	completeClause
 }
 
@@ -14,14 +32,59 @@ func (p ParentIDQueryParams) Clause() (QueryClause, error) {
 }
 func (p ParentIDQueryParams) ParentID() (*ParentIDQuery, error) {
 	q := &ParentIDQuery{}
-	_ = q
-	panic("not implemented")
-	// return q, nil
+	err := q.SetID(p.ID)
+	if err != nil {
+		return q, err
+	}
+	q.name = p.Name
+	err = q.SetType(p.Type)
+	if err != nil {
+		return q, err
+	}
+	err = q.ignoreUnmapped.Set(p.IgnoreUnmapped)
+	if err != nil {
+		return q, err
+	}
+	return q, nil
 }
 
 type ParentIDQuery struct {
 	nameParam
+	id             string
+	typ            string
+	ignoreUnmapped dynamic.Bool
 	completeClause
+}
+
+func (q ParentIDQuery) ID() string {
+	return q.id
+}
+func (q *ParentIDQuery) SetID(id string) error {
+	if len(id) == 0 {
+		return ErrIDRequired
+	}
+	q.id = id
+	return nil
+}
+func (q ParentIDQuery) IgnoreUnmapped() bool {
+	if b, ok := q.ignoreUnmapped.Bool(); ok {
+		return b
+	}
+	return false
+}
+func (q *ParentIDQuery) SetIgnoreUnmapped(ignore interface{}) error {
+	return q.ignoreUnmapped.Set(ignore)
+}
+
+func (q ParentIDQuery) Type() string {
+	return q.typ
+}
+func (q *ParentIDQuery) SetType(typ string) error {
+	if len(typ) == 0 {
+		return ErrTypeRequired
+	}
+	q.typ = typ
+	return nil
 }
 
 func (ParentIDQuery) Kind() QueryKind {
@@ -40,15 +103,34 @@ func (q *ParentIDQuery) Clear() {
 	*q = ParentIDQuery{}
 }
 func (q *ParentIDQuery) UnmarshalJSON(data []byte) error {
-	panic("not implemented")
+	q.Clear()
+	p := parentIDQuery{}
+	err := p.UnmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	q.id = p.ID
+	q.name = p.Name
+	q.typ = p.Type
+	q.ignoreUnmapped.Set(p.IgnoreUnmapped)
+	return nil
 }
 func (q ParentIDQuery) MarshalJSON() ([]byte, error) {
-	panic("not implemented")
+	return parentIDQuery{
+		Name:           q.name,
+		ID:             q.id,
+		Type:           q.typ,
+		IgnoreUnmapped: q.ignoreUnmapped.Value(),
+	}.MarshalJSON()
 }
 func (q *ParentIDQuery) IsEmpty() bool {
-	panic("not implemented")
+	return q == nil || len(q.typ) == 0 || len(q.id) == 0
 }
 
+//easyjson:json
 type parentIDQuery struct {
-	Name string `json:"_name,omitempty"`
+	Name           string      `json:"_name,omitempty"`
+	ID             string      `json:"id"`
+	Type           string      `json:"type"`
+	IgnoreUnmapped interface{} `json:"ignore_unmapped,omitempty"`
 }

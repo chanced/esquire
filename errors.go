@@ -61,6 +61,7 @@ var (
 	ErrDistanceRequired           = errors.New("picker: distance is required")
 	ErrGeoPointRequired           = errors.New("picker: GeoPoint is required")
 	ErrLikeRequired               = errors.New("picker: like is required")
+	ErrTypeRequired               = errors.New("picker: type is required")
 )
 
 type FieldError struct {
