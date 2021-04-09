@@ -48,7 +48,7 @@ const (
 	QueryKindHasChild         QueryKind = "has_child"
 	QueryKindHasParent        QueryKind = "has_parent"
 	QueryKindParentID         QueryKind = "parent_id"
-	QueryKindDistantFeature   QueryKind = "distance_feature"
+	QueryKindDistanceFeature  QueryKind = "distance_feature"
 	QueryKindMoreLikeThis     QueryKind = "more_like_this"
 	QueryKindPercolate        QueryKind = "percolate"
 	QueryKindRankFeature      QueryKind = "rank_feature"
@@ -104,7 +104,7 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	// QueryKindHasChild:          func() QueryClause { return &HasChildQuery{} },
 	// QueryKindHasParent:         func() QueryClause { return &HasParentQuery{} },
 	// QueryKindParentID:          func() QueryClause { return &ParentIDQuery{} },
-	// QueryKindDistantFeature:    func() QueryClause { return &DistantFeatureQuery{} },
+	// QueryKindDistanceFeature:    func() QueryClause { return &DistanceFeatureQuery{} },
 	// QueryKindMoreLikeThis:      func() QueryClause { return &MoreLikeThisQuery{} },
 	// QueryKindPercolate:         func() QueryClause { return &PercolateQuery{} },
 	// QueryKindRankFeature:       func() QueryClause { return &RankFeatureQuery{} },

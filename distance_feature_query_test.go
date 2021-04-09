@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDistantFeature(t *testing.T) {
+func TestDistanceFeature(t *testing.T) {
 	assert := require.New(t)
 	_ = assert
 }

@@ -1,54 +1,54 @@
 package picker
 
-type DistantFeatureQueryParams struct {
+type DistanceFeatureQueryParams struct {
 	Name string
 	completeClause
 }
 
-func (DistantFeatureQueryParams) Kind() QueryKind {
-	return QueryKindDistantFeature
+func (DistanceFeatureQueryParams) Kind() QueryKind {
+	return QueryKindDistanceFeature
 }
 
-func (p DistantFeatureQueryParams) Clause() (QueryClause, error) {
-	return p.DistantFeature()
+func (p DistanceFeatureQueryParams) Clause() (QueryClause, error) {
+	return p.DistanceFeature()
 }
-func (p DistantFeatureQueryParams) DistantFeature() (*DistantFeatureQuery, error) {
-	q := &DistantFeatureQuery{}
+func (p DistanceFeatureQueryParams) DistanceFeature() (*DistanceFeatureQuery, error) {
+	q := &DistanceFeatureQuery{}
 	_ = q
 	panic("not implemented")
 	// return q, nil
 }
 
-type DistantFeatureQuery struct {
+type DistanceFeatureQuery struct {
 	nameParam
 	completeClause
 }
 
-func (DistantFeatureQuery) Kind() QueryKind {
-	return QueryKindDistantFeature
+func (DistanceFeatureQuery) Kind() QueryKind {
+	return QueryKindDistanceFeature
 }
-func (q *DistantFeatureQuery) Clause() (QueryClause, error) {
+func (q *DistanceFeatureQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *DistantFeatureQuery) DistantFeature() (QueryClause, error) {
+func (q *DistanceFeatureQuery) DistanceFeature() (*DistanceFeatureQuery, error) {
 	return q, nil
 }
-func (q *DistantFeatureQuery) Clear() {
+func (q *DistanceFeatureQuery) Clear() {
 	if q == nil {
 		return
 	}
-	*q = DistantFeatureQuery{}
+	*q = DistanceFeatureQuery{}
 }
-func (q *DistantFeatureQuery) UnmarshalJSON(data []byte) error {
+func (q *DistanceFeatureQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
-func (q DistantFeatureQuery) MarshalJSON() ([]byte, error) {
+func (q DistanceFeatureQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }
-func (q *DistantFeatureQuery) IsEmpty() bool {
+func (q *DistanceFeatureQuery) IsEmpty() bool {
 	panic("not implemented")
 }
 
-type distantFeatureQuery struct {
+type distanceFeatureQuery struct {
 	Name string `json:"_name,omitempty"`
 }

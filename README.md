@@ -235,7 +235,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
   Elasticsearch supports two types of geo data: geo_point fields which support lat/lon pairs, and geo_shape fields, which support points, lines, circles, polygons, multi-polygons, etc.
   - [x] **[Geo bounding box](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-bounding-box-query.html)**\
          Finds documents with geo-points that fall into the specified rectangle.
-  - [ ] **[Geo distance](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-distance-query.html)**\
+  - [x] **[Geo distance](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-distance-query.html)**\
          Finds documents with geo-points within the specified distance of a central point.
   - [ ] **[Geo polygon](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-geo-polygon-query.html) [Deprecated]**\
          Find documents with geo-points within the specified polygon.

@@ -30,7 +30,7 @@ func (MoreLikeThisQuery) Kind() QueryKind {
 func (q *MoreLikeThisQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *MoreLikeThisQuery) MoreLikeThis() (QueryClause, error) {
+func (q *MoreLikeThisQuery) MoreLikeThis() (*MoreLikeThisQuery, error) {
 	return q, nil
 }
 func (q *MoreLikeThisQuery) Clear() {

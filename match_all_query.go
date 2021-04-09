@@ -43,8 +43,8 @@ type MatchAllQuery struct {
 func (ma *MatchAllQuery) MatchAll() (*MatchAllQuery, error) {
 	return ma, nil
 }
-func (ma *MatchAllQuery) Clause() (QueryClause, error) {
-	return ma, nil
+func (ma MatchAllQuery) Clause() (QueryClause, error) {
+	return &ma, nil
 }
 func (MatchAllQuery) Kind() QueryKind {
 	return QueryKindMatchAll

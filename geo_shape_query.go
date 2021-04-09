@@ -92,7 +92,7 @@ func (GeoShapeQuery) Kind() QueryKind {
 func (q *GeoShapeQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *GeoShapeQuery) GeoShape() (QueryClause, error) {
+func (q *GeoShapeQuery) GeoShape() (*GeoShapeQuery, error) {
 	return q, nil
 }
 func (q *GeoShapeQuery) Clear() {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/chanced/cmpjson"
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
@@ -50,7 +51,7 @@ func TestBoostingQuery(t *testing.T) {
 	assert.NoError(err)
 	jsonRes, err := json.Marshal(s)
 	assert.NoError(err)
-	assert.NoError(compareJSONObject(data, jsonRes))
+	assert.True(cmpjson.Equal(data, jsonRes), cmpjson.Diff(data, jsonRes))
 	// diff, str := jsondiff.Compare(data, res, &jsondiff.Options{})
 	// assert.Equal(jsondiff.FullMatch, diff, str)
 	var res picker.Search
@@ -59,7 +60,7 @@ func TestBoostingQuery(t *testing.T) {
 
 	jsonRes, err = json.Marshal(res)
 	assert.NoError(err)
-	assert.NoError(compareJSONObject(data, jsonRes))
+	assert.True(cmpjson.Equal(data, jsonRes), cmpjson.Diff(data, jsonRes))
 
 	_, err = picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{

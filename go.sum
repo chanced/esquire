@@ -1,3 +1,5 @@
+github.com/chanced/cmpjson v0.0.0-20210409185041-871bbccf3310 h1:668Dh9vfRzEaNf5gjLyLYfvGQ3VgaIaR4fYF11CnSK4=
+github.com/chanced/cmpjson v0.0.0-20210409185041-871bbccf3310/go.mod h1:yhcmlFk1hxuZ+5XZbupzT/cEm/eE4ZvWbmsW1+Q/aZE=
 github.com/chanced/dynamic v0.0.0-20210402200914-d75398456c6a h1:jN7K8QDj2VcwO4/VZh0XbVzBnQEZz6vzjLKfeFfQN7g=
 github.com/chanced/dynamic v0.0.0-20210402200914-d75398456c6a/go.mod h1:XVNfXN5kgZST4PQ0W/oBAHJku2OteCeHxjAbvfd0ARM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=

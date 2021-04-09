@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/chanced/cmpjson"
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
@@ -67,5 +68,5 @@ func TestIntervalsQuery(t *testing.T) {
 	sd, err := json.MarshalIndent(s, "", "  ")
 	fmt.Println(string(sd))
 	assert.NoError(err)
-	assert.NoError(compareJSONObject(data, sd))
+	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
 }

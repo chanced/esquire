@@ -30,7 +30,7 @@ func (PercolateQuery) Kind() QueryKind {
 func (q *PercolateQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *PercolateQuery) Percolate() (QueryClause, error) {
+func (q *PercolateQuery) Percolate() (*PercolateQuery, error) {
 	return q, nil
 }
 func (q *PercolateQuery) Clear() {

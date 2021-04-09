@@ -58,6 +58,8 @@ var (
 	ErrInvalidOperator            = errors.New("picker: invalid operator")
 	ErrInvalidMultiMatchType      = errors.New("picker: invalid multimatch type")
 	ErrInvalidTieBreaker          = errors.New("picker: invalid tie breaker value ")
+	ErrDistanceRequired           = errors.New("picker: distance is required")
+	ErrGeoPointRequired           = errors.New("picker: GeoPoint is required")
 )
 
 type FieldError struct {

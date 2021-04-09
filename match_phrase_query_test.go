@@ -3,6 +3,7 @@ package picker_test
 import (
 	"testing"
 
+	"github.com/chanced/cmpjson"
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
 )
@@ -32,7 +33,7 @@ func TestMatchPhrasePrefixQuery(t *testing.T) {
 	assert.NoError(err)
 	sd, err := s.MarshalJSON()
 	assert.NoError(err)
-	assert.NoError(compareJSONObject(data, sd))
+	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
 	data = []byte(`{
 		"query": {
 		  "match_phrase": {
@@ -54,5 +55,5 @@ func TestMatchPhrasePrefixQuery(t *testing.T) {
 		  }
 		}
 	  }`)
-	assert.NoError(compareJSONObject(expected, sd))
+	assert.True(cmpjson.Equal(expected, sd), cmpjson.Diff(expected, sd))
 }

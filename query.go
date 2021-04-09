@@ -275,7 +275,7 @@ type QueryParams struct {
 	MatchPhrasePrefix MatchPhrasePrefixer
 	GeoBoundingBox    GeoBoundingBoxer
 
-	// GeoDistance      GeoDistanceer
+	GeoDistance GeoDistancer
 	// GeoPolygon       GeoPolygoner
 	GeoShape GeoShaper
 	// Shape            Shaper
@@ -283,14 +283,14 @@ type QueryParams struct {
 	// HasChild         HasChilder
 	// HasParent        HasParenter
 	// ParentID         ParentIDer
-	// DistantFeature   DistantFeatureer
+	// DistanceFeature   DistanceFeaturer
 	// MoreLikeThis     MoreLikeThiser
-	// Percolate        Percolateer
-	// RankFeature      RankFeatureer
+	// Percolate        Percolater
+	// RankFeature      RankFeaturer
 	// Wrapper          Wrapperer
 	// Pinned           Pinneder
 	// SpanContaining   SpanContaininger
-	// FieldMaskingSpan FieldMaskingSpaner
+	// FieldMaskingSpan FieldMaskingSpanner
 	// SpanFirst        SpanFirster
 	// SpanMulti        SpanMultier
 	// SpanNear         SpanNearer
@@ -498,12 +498,13 @@ func (q QueryParams) multiMatch() (*MultiMatchQuery, error) {
 	return q.MultiMatch.MultiMatch()
 }
 
-// func (q QueryParams) geoDistance() (*GeoDistanceQuery, error) {
-// 	if q.GeoDistance == nil {
-// 		return nil, nil
-// 	}
-// 	return q.GeoDistance.GeoDistance()
-// }
+func (q QueryParams) geoDistance() (*GeoDistanceQuery, error) {
+	if q.GeoDistance == nil {
+		return nil, nil
+	}
+	return q.GeoDistance.GeoDistance()
+}
+
 // func (q QueryParams) geoPolygon() (*GeoPolygonQuery, error) {
 // 	if q.GeoPolygon == nil {
 // 		return nil, nil
@@ -547,11 +548,11 @@ func (q QueryParams) geoShape() (*GeoShapeQuery, error) {
 // 	}
 // 	return q.ParentID.ParentID()
 // }
-// func (q QueryParams) distantFeature() (*DistantFeatureQuery, error) {
-// 	if q.DistantFeature == nil {
+// func (q QueryParams) distanceFeature() (*DistanceFeatureQuery, error) {
+// 	if q.DistanceFeature == nil {
 // 		return nil, nil
 // 	}
-// 	return q.DistantFeature.DistantFeature()
+// 	return q.DistanceFeature.DistanceFeature()
 // }
 // func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
 // 	if q.MoreLikeThis == nil {
@@ -763,10 +764,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// geoDistance, err := q.geoDistance()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	geoDistance, err := q.geoDistance()
+	if err != nil {
+		return nil, err
+	}
 	// geoPolygon, err := q.geoPolygon()
 	// if err != nil {
 	// 	return nil, err
@@ -795,7 +796,7 @@ func (q *QueryParams) Query() (*Query, error) {
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// distantFeature, err := q.distantFeature()
+	// distanceFeature, err := q.distanceFeature()
 	// if err != nil {
 	// 	return nil, err
 	// }
@@ -886,7 +887,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		// regexp:            regexp,
 		// termSet:           termSet,
 		// typ:               typ,
-		// geoDistance:       geoDistance,
+		geoDistance: geoDistance,
 		// geoPolygon:        geoPolygon,
 		geoShape: geoShape,
 		// shape:             shape,
@@ -894,7 +895,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		// hasChild:          hasChild,
 		// hasParent:         hasParent,
 		// parentID:          parentID,
-		// distantFeature:    distantFeature,
+		// distanceFeature:    distanceFeature,
 		// moreLikeThis:      moreLikeThis,
 		// percolate:         percolate,
 		// rankFeature:       rankFeature,
@@ -963,7 +964,7 @@ type Query struct {
 	// regexp            *RegexpQuery
 	// termSet           *TermSetQuery
 	// typ               *TypeQuery
-	// geoDistance       *GeoDistanceQuery
+	geoDistance *GeoDistanceQuery
 	// geoPolygon        *GeoPolygonQuery
 	geoShape *GeoShapeQuery
 	// shape             *ShapeQuery
@@ -971,7 +972,7 @@ type Query struct {
 	// hasChild          *HasChildQuery
 	// hasParent         *HasParentQuery
 	// parentID          *ParentIDQuery
-	// distantFeature    *DistantFeatureQuery
+	// distanceFeature    *DistanceFeatureQuery
 	// moreLikeThis      *MoreLikeThisQuery
 	// percolate         *PercolateQuery
 	// rankFeature       *RankFeatureQuery
@@ -1183,12 +1184,13 @@ func (q *Query) MatchPhrasePrefix() *MatchPhrasePrefixQuery {
 	return q.matchPhrasePrefix
 }
 
-// func (q *Query) GeoDistance() *GeoDistanceQuery {
-//     if q.geoDistance == nil {
-//         q.geoDistance = &GeoDistanceQuery{}
-//     }
-//     return q.geoDistance
-// }
+func (q *Query) GeoDistance() *GeoDistanceQuery {
+	if q.geoDistance == nil {
+		q.geoDistance = &GeoDistanceQuery{}
+	}
+	return q.geoDistance
+}
+
 // func (q *Query) GeoPolygon() *GeoPolygonQuery {
 //     if q.geoPolygon == nil {
 //         q.geoPolygon = &GeoPolygonQuery{}
@@ -1233,11 +1235,11 @@ func (q *Query) GeoShape() *GeoShapeQuery {
 //     }
 //     return q.parentID
 // }
-// func (q *Query) DistantFeature() *DistantFeatureQuery {
-//     if q.distantFeature == nil {
-//         q.distantFeature = &DistantFeatureQuery{}
+// func (q *Query) DistanceFeature() *DistanceFeatureQuery {
+//     if q.distanceFeature == nil {
+//         q.distanceFeature = &DistanceFeatureQuery{}
 //     }
-//     return q.distantFeature
+//     return q.distanceFeature
 // }
 // func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
 //     if q.moreLikeThis == nil {
@@ -1375,7 +1377,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		// QueryKindWildcard:          q.wildcard,
 		// QueryKindAllOf:             q.allOf,
 
-		// QueryKindGeoDistance:      q.geoDistance,
+		QueryKindGeoDistance: q.geoDistance,
 		// QueryKindGeoPolygon:       q.geoPolygon,
 		QueryKindGeoShape: q.geoShape,
 		// QueryKindShape:            q.shape,
@@ -1383,7 +1385,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		// QueryKindHasChild:         q.hasChild,
 		// QueryKindHasParent:        q.hasParent,
 		// QueryKindParentID:         q.parentID,
-		// QueryKindDistantFeature:   q.distantFeature,
+		// QueryKindDistanceFeature:   q.distanceFeature,
 		// QueryKindMoreLikeThis:     q.moreLikeThis,
 		// QueryKindPercolate:        q.percolate,
 		// QueryKindRankFeature:      q.rankFeature,
@@ -1467,8 +1469,8 @@ func (q *Query) setClause(qc QueryClause) {
 	// 	q.termSet= qc.(*TermSetQuery)
 	// case QueryKindType:
 	// 	q.typ= qc.(*TypeQuery)
-	// case QueryKindGeoDistance:
-	// 	q.geoDistance = qc.(*GeoDistanceQuery)
+	case QueryKindGeoDistance:
+		q.geoDistance = qc.(*GeoDistanceQuery)
 	// case QueryKindGeoPolygon:
 	// 	q.geoPolygon = qc.(*GeoPolygonQuery)
 	case QueryKindGeoShape:
@@ -1483,8 +1485,8 @@ func (q *Query) setClause(qc QueryClause) {
 		// 	q.hasParent = qc.(*HasParentQuery)
 		// case QueryKindParentID:
 		// 	q.parentID = qc.(*ParentIDQuery)
-		// case QueryKindDistantFeature:
-		// 	q.distantFeature = qc.(*DistantFeatureQuery)
+		// case QueryKindDistanceFeature:
+		// 	q.distanceFeature = qc.(*DistanceFeatureQuery)
 		// case QueryKindMoreLikeThis:
 		// 	q.moreLikeThis = qc.(*MoreLikeThisQuery)
 		// case QueryKindPercolate:

@@ -30,7 +30,7 @@ func (RankFeatureQuery) Kind() QueryKind {
 func (q *RankFeatureQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *RankFeatureQuery) RankFeature() (QueryClause, error) {
+func (q *RankFeatureQuery) RankFeature() (*RankFeatureQuery, error) {
 	return q, nil
 }
 func (q *RankFeatureQuery) Clear() {

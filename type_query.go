@@ -34,7 +34,7 @@ func (TypeQuery) Kind() QueryKind {
 func (q *TypeQuery) Clause() (QueryClause, error) {
 	return q, nil
 }
-func (q *TypeQuery) Type() (QueryClause, error) {
+func (q *TypeQuery) Type() (*TypeQuery, error) {
 	return q, nil
 }
 func (q *TypeQuery) Clear() {
