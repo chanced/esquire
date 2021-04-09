@@ -60,6 +60,7 @@ var (
 	ErrInvalidTieBreaker          = errors.New("picker: invalid tie breaker value ")
 	ErrDistanceRequired           = errors.New("picker: distance is required")
 	ErrGeoPointRequired           = errors.New("picker: GeoPoint is required")
+	ErrLikeRequired               = errors.New("picker: like is required")
 )
 
 type FieldError struct {

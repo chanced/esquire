@@ -277,17 +277,17 @@ type QueryParams struct {
 	GeoDistance       GeoDistancer
 	GeoShape          GeoShaper
 	Shape             ShapeQuerier
-	// GeoPolygon       GeoPolygoner
-	// Nested           Nesteder
+	Nested            NestedQuerier
 	// HasChild         HasChilder
 	// HasParent        HasParenter
 	// ParentID         ParentIDer
 	// DistanceFeature   DistanceFeaturer
-	// MoreLikeThis     MoreLikeThiser
+	MoreLikeThis MoreLikeThiser
 	// Percolate        Percolater
 	// RankFeature      RankFeaturer
 	// Wrapper          Wrapperer
 	// Pinned           Pinneder
+	// GeoPolygon       GeoPolygoner
 	// SpanContaining   SpanContaininger
 	// FieldMaskingSpan FieldMaskingSpanner
 	// SpanFirst        SpanFirster
@@ -297,10 +297,10 @@ type QueryParams struct {
 	// SpanOr           SpanOrer
 	// SpanTerm         SpanTermer
 	// SpanWithin       SpanWithiner
-	Common   Commoner
-	Regexp   Regexper
-	TermSet  TermSetter
-	Type     Typer
+	// Common   Commoner
+	// Regexp   Regexper
+	// TermSet  TermSetter
+	// Type     Typer
 	Wildcard Wildcarder
 }
 
@@ -524,12 +524,13 @@ func (q QueryParams) shape() (*ShapeQuery, error) {
 	return q.Shape.ShapeQuery()
 }
 
-// func (q QueryParams) nested() (*NestedQuery, error) {
-// 	if q.Nested == nil {
-// 		return nil, nil
-// 	}
-// 	return q.Nested.Nested()
-// }
+func (q QueryParams) nested() (*NestedQuery, error) {
+	if q.Nested == nil {
+		return nil, nil
+	}
+	return q.Nested.Nested()
+}
+
 // func (q QueryParams) hasChild() (*HasChildQuery, error) {
 // 	if q.HasChild == nil {
 // 		return nil, nil
@@ -554,12 +555,13 @@ func (q QueryParams) shape() (*ShapeQuery, error) {
 // 	}
 // 	return q.DistanceFeature.DistanceFeature()
 // }
-// func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
-// 	if q.MoreLikeThis == nil {
-// 		return nil, nil
-// 	}
-// 	return q.MoreLikeThis.MoreLikeThis()
-// }
+func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
+	if q.MoreLikeThis == nil {
+		return nil, nil
+	}
+	return q.MoreLikeThis.MoreLikeThis()
+}
+
 // func (q QueryParams) percolate() (*PercolateQuery, error) {
 // 	if q.Percolate == nil {
 // 		return nil, nil
@@ -780,10 +782,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// nested, err := q.nested()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	nested, err := q.nested()
+	if err != nil {
+		return nil, err
+	}
 	// hasChild, err := q.hasChild()
 	// if err != nil {
 	// 	return nil, err
@@ -800,10 +802,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// moreLikeThis, err := q.moreLikeThis()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	moreLikeThis, err := q.moreLikeThis()
+	if err != nil {
+		return nil, err
+	}
 	// percolate, err := q.percolate()
 	// if err != nil {
 	// 	return nil, err
@@ -891,12 +893,12 @@ func (q *QueryParams) Query() (*Query, error) {
 		// geoPolygon:        geoPolygon,
 		geoShape: geoShape,
 		shape:    shape,
-		// nested:            nested,
+		nested:   nested,
 		// hasChild:          hasChild,
 		// hasParent:         hasParent,
 		// parentID:          parentID,
 		// distanceFeature:    distanceFeature,
-		// moreLikeThis:      moreLikeThis,
+		moreLikeThis: moreLikeThis,
 		// percolate:         percolate,
 		// rankFeature:       rankFeature,
 		// wrapper:           wrapper,
@@ -968,12 +970,12 @@ type Query struct {
 	// geoPolygon        *GeoPolygonQuery
 	geoShape *GeoShapeQuery
 	shape    *ShapeQuery
-	// nested            *NestedQuery
+	nested   *NestedQuery
 	// hasChild          *HasChildQuery
 	// hasParent         *HasParentQuery
 	// parentID          *ParentIDQuery
 	// distanceFeature    *DistanceFeatureQuery
-	// moreLikeThis      *MoreLikeThisQuery
+	moreLikeThis *MoreLikeThisQuery
 	// percolate         *PercolateQuery
 	// rankFeature       *RankFeatureQuery
 	// wrapper           *WrapperQuery
@@ -1212,12 +1214,13 @@ func (q *Query) Shape() *ShapeQuery {
 	return q.shape
 }
 
-// func (q *Query) Nested() *NestedQuery {
-//     if q.nested == nil {
-//         q.nested = &NestedQuery{}
-//     }
-//     return q.nested
-// }
+func (q *Query) Nested() *NestedQuery {
+	if q.nested == nil {
+		q.nested = &NestedQuery{}
+	}
+	return q.nested
+}
+
 // func (q *Query) HasChild() *HasChildQuery {
 //     if q.hasChild == nil {
 //         q.hasChild = &HasChildQuery{}
@@ -1242,12 +1245,13 @@ func (q *Query) Shape() *ShapeQuery {
 //     }
 //     return q.distanceFeature
 // }
-// func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
-//     if q.moreLikeThis == nil {
-//         q.moreLikeThis = &MoreLikeThisQuery{}
-//     }
-//     return q.moreLikeThis
-// }
+func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
+	if q.moreLikeThis == nil {
+		q.moreLikeThis = &MoreLikeThisQuery{}
+	}
+	return q.moreLikeThis
+}
+
 // func (q *Query) Percolate() *PercolateQuery {
 //     if q.percolate == nil {
 //         q.percolate = &PercolateQuery{}
@@ -1382,12 +1386,12 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		// QueryKindGeoPolygon:       q.geoPolygon,
 		QueryKindGeoShape: q.geoShape,
 		QueryKindShape:    q.shape,
-		// QueryKindNested:           q.nested,
+		QueryKindNested:   q.nested,
 		// QueryKindHasChild:         q.hasChild,
 		// QueryKindHasParent:        q.hasParent,
 		// QueryKindParentID:         q.parentID,
 		// QueryKindDistanceFeature:   q.distanceFeature,
-		// QueryKindMoreLikeThis:     q.moreLikeThis,
+		QueryKindMoreLikeThis: q.moreLikeThis,
 		// QueryKindPercolate:        q.percolate,
 		// QueryKindRankFeature:      q.rankFeature,
 		// QueryKindWrapper:          q.wrapper,
@@ -1478,18 +1482,18 @@ func (q *Query) setClause(qc QueryClause) {
 		q.geoShape = qc.(*GeoShapeQuery)
 	case QueryKindShape:
 		q.shape = qc.(*ShapeQuery)
-		// case QueryKindNested:
-		// 	q.nested = qc.(*NestedQuery)
-		// case QueryKindHasChild:
-		// 	q.hasChild = qc.(*HasChildQuery)
-		// case QueryKindHasParent:
-		// 	q.hasParent = qc.(*HasParentQuery)
-		// case QueryKindParentID:
-		// 	q.parentID = qc.(*ParentIDQuery)
-		// case QueryKindDistanceFeature:
-		// 	q.distanceFeature = qc.(*DistanceFeatureQuery)
-		// case QueryKindMoreLikeThis:
-		// 	q.moreLikeThis = qc.(*MoreLikeThisQuery)
+	case QueryKindNested:
+		q.nested = qc.(*NestedQuery)
+	// case QueryKindHasChild:
+	// 	q.hasChild = qc.(*HasChildQuery)
+	// case QueryKindHasParent:
+	// 	q.hasParent = qc.(*HasParentQuery)
+	// case QueryKindParentID:
+	// 	q.parentID = qc.(*ParentIDQuery)
+	// case QueryKindDistanceFeature:
+	// 	q.distanceFeature = qc.(*DistanceFeatureQuery)
+	case QueryKindMoreLikeThis:
+		q.moreLikeThis = qc.(*MoreLikeThisQuery)
 		// case QueryKindPercolate:
 		// 	q.percolate = qc.(*PercolateQuery)
 		// case QueryKindRankFeature:

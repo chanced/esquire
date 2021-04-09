@@ -94,10 +94,12 @@ func (m MatchQueryParams) Clause() (QueryClause, error) {
 	return m.Match()
 }
 func (m MatchQueryParams) Match() (*MatchQuery, error) {
-	q := &MatchQuery{
-		field: m.Field,
+	q := &MatchQuery{}
+	err := q.SetField(m.Field)
+	if err != nil {
+		return q, newQueryError(err, QueryKindMatch)
 	}
-	err := q.SetQuery(m.Query)
+	err = q.SetQuery(m.Query)
 	if err != nil {
 		return q, newQueryError(err, QueryKindMatch, m.Field)
 	}
@@ -144,7 +146,7 @@ func (m MatchQueryParams) Match() (*MatchQuery, error) {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 type MatchQuery struct {
-	field string
+	fieldParam
 	query dynamic.StringNumberBoolOrTime
 	completeClause
 	nameParam
@@ -166,12 +168,6 @@ func (m *MatchQuery) Clause() (QueryClause, error) {
 }
 func (m *MatchQuery) Match() (*MatchQuery, error) {
 	return m, nil
-}
-func (m *MatchQuery) Field() string {
-	if m == nil {
-		return ""
-	}
-	return m.field
 }
 
 func (m *MatchQuery) IsEmpty() bool {
@@ -263,5 +259,5 @@ func (m *MatchQuery) SetQuery(query interface{}) error {
 	if query == nil {
 		return ErrQueryRequired
 	}
-	return nil
+	return m.query.Set(query)
 }

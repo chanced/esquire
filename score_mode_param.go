@@ -23,7 +23,7 @@ const (
 	// ScoreModeMin - minimum score is used
 	ScoreModeMin ScoreMode = "min"
 )
-
+const DefaultNestedScoreMode = ScoreModeAvg
 const DefaultScoreMode = ScoreModeMultiply
 
 type ScoreMode string

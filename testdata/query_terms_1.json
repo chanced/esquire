@@ -1,8 +1,0 @@
-{
-  "query": {
-    "terms": {
-      "user.id": ["chanced"],
-      "boost": 1.2
-    }
-  }
-}
