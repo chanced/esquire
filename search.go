@@ -214,8 +214,8 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	// 	}
 	// }
 	if d, ok := m["query"]; ok {
-		var q Query
-		err = json.Unmarshal(d, &q)
+		q := Query{}
+		err = q.UnmarshalJSON(d)
 		if err != nil {
 			return err
 		}

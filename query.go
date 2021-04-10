@@ -2,6 +2,7 @@ package picker
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/chanced/dynamic"
 )
@@ -1564,7 +1565,7 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 	for k, v := range obj {
 		handler, ok := queryKindHandlers[QueryKind(k)]
 		if !ok {
-			continue
+			return fmt.Errorf("unsupported query type <%s>", k)
 		}
 		c := handler()
 		err := c.UnmarshalJSON(v)

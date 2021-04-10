@@ -104,7 +104,7 @@ func (m *MatchBoolPrefixQuery) UnmarshalJSON(data []byte) error {
 			}
 			mq = matchBoolPrefixQuery{Query: str}
 		} else {
-			mq := matchBoolPrefixQuery{}
+			mq = matchBoolPrefixQuery{}
 			err := mq.UnmarshalJSON(md)
 			if err != nil {
 				return err

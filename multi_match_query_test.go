@@ -28,12 +28,19 @@ func TestMultiMatchQuery(t *testing.T) {
 			},
 		},
 	})
+
+	assert.Equal("this is a test", s.Query().MultiMatch().Query())
 	assert.NoError(err)
 	sd, err := json.Marshal(s)
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
-	var sr *picker.Search
+	var sr picker.Search
 	err = json.Unmarshal(data, &sr)
+	assert.Equal("this is a test", sr.Query().MultiMatch().Query())
+
 	assert.NoError(err)
+	sd2, err := sr.MarshalJSON()
+	assert.NoError(err)
+	assert.True(cmpjson.Equal(data, sd2), cmpjson.Diff(data, sd2))
 
 }

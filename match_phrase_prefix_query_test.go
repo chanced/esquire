@@ -9,15 +9,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTermSet(t *testing.T) {
+func TestMatchPhrasePrefixQuery(t *testing.T) {
 	assert := require.New(t)
 	_ = assert
 	data := []byte(`{
 		"query": {
-		  "terms_set": {
-			"programming_languages": {
-			  "terms": [ "c++", "java", "php" ],
-			  "minimum_should_match_field": "required_matches"
+		  "match_phrase_prefix": {
+			"message": {
+			  "query": "quick brown f"
 			}
 		  }
 		}
@@ -25,10 +24,9 @@ func TestTermSet(t *testing.T) {
 	_ = data
 	s, err := picker.NewSearch(picker.SearchParams{
 		Query: picker.QueryParams{
-			TermsSet: picker.TermsSetQueryParams{
-				Field:                   "programming_languages",
-				Terms:                   []string{"c++", "java", "php"},
-				MinimumShouldMatchField: "required_matches",
+			MatchPhrasePrefix: picker.MatchPhrasePrefixQueryParams{
+				Query: "quick brown f",
+				Field: "message",
 			},
 		},
 	})

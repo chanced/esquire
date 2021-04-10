@@ -43,5 +43,8 @@ func TestShape(t *testing.T) {
 	var sr *picker.Search
 	err = json.Unmarshal(data, &sr)
 	assert.NoError(err)
+	sd2, err := sr.MarshalJSON()
+	assert.NoError(err)
+	assert.True(cmpjson.Equal(data, sd2), cmpjson.Diff(data, sd2))
 
 }

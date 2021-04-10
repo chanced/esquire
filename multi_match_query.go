@@ -138,53 +138,53 @@ type MultiMatchQuery struct {
 	completeClause
 }
 
-func (mm *MultiMatchQuery) Clause() (QueryClause, error) {
-	return mm, nil
+func (q *MultiMatchQuery) Clause() (QueryClause, error) {
+	return q, nil
 }
-func (mm *MultiMatchQuery) MultiMatch() (*MultiMatchQuery, error) {
-	return mm, nil
+func (q *MultiMatchQuery) MultiMatch() (*MultiMatchQuery, error) {
+	return q, nil
 }
 
-func (mm MultiMatchQuery) Query() string {
-	return mm.query
+func (q MultiMatchQuery) Query() string {
+	return q.query
 }
-func (mm *MultiMatchQuery) SetQuery(q string) error {
-	if len(q) == 0 {
+func (q *MultiMatchQuery) SetQuery(query string) error {
+	if len(query) == 0 {
 		return ErrQueryRequired
 	}
-	mm.query = q
+	q.query = query
 	return nil
 }
 
-func (mm *MultiMatchQuery) SetFields(fields []string) error {
+func (q *MultiMatchQuery) SetFields(fields []string) error {
 	if len(fields) == 0 {
 		return ErrFieldRequired
 	}
-	mm.fields = fields
+	q.fields = fields
 	return nil
 }
-func (mm MultiMatchQuery) Fields() []string {
-	return mm.fields
+func (q MultiMatchQuery) Fields() []string {
+	return q.fields
 }
-func (mm *MultiMatchQuery) Clear() {
-	if mm == nil {
+func (q *MultiMatchQuery) Clear() {
+	if q == nil {
 		return
 	}
-	*mm = MultiMatchQuery{}
+	*q = MultiMatchQuery{}
 }
-func (mm *MultiMatchQuery) IsEmpty() bool {
-	return mm == nil || len(mm.fields) == 0 || len(mm.query) == 0
+func (q *MultiMatchQuery) IsEmpty() bool {
+	return q == nil || len(q.fields) == 0 || len(q.query) == 0
 }
-func (mm MultiMatchQuery) MarshalJSON() ([]byte, error) {
-	params, err := marshalClauseParams(&mm)
+func (q MultiMatchQuery) MarshalJSON() ([]byte, error) {
+	params, err := marshalClauseParams(&q)
 	if err != nil {
 		return nil, err
 	}
-	params["query"] = mm.query
-	if mm.typ != MultiMatchTypeUnspecified {
-		params["type"] = mm.typ
+	params["query"] = q.query
+	if q.typ != MultiMatchTypeUnspecified {
+		params["type"] = q.typ
 	}
-	params["fields"] = mm.fields
+	params["fields"] = q.fields
 	return json.Marshal(params)
 }
 
@@ -192,20 +192,20 @@ func (MultiMatchQuery) Kind() QueryKind {
 	return QueryKindMultiMatch
 }
 
-func (mm *MultiMatchQuery) UnmarshalJSON(data []byte) error {
-	*mm = MultiMatchQuery{}
+func (q *MultiMatchQuery) UnmarshalJSON(data []byte) error {
+	*q = MultiMatchQuery{}
 
-	params, err := unmarshalClauseParams(data, mm)
+	params, err := unmarshalClauseParams(data, q)
 	if err != nil {
 		return err
 	}
 	if v, ok := params["query"]; ok {
-		var q string
-		err := json.Unmarshal(v, &q)
+		var query string
+		err := json.Unmarshal(v, &query)
 		if err != nil {
 			return err
 		}
-		mm.query = q
+		q.query = query
 	}
 	if v, ok := params["fields"]; ok {
 		var fields []string
@@ -213,6 +213,7 @@ func (mm *MultiMatchQuery) UnmarshalJSON(data []byte) error {
 		if err != nil {
 			return err
 		}
+		q.fields = fields
 	}
 	if v, ok := params["type"]; ok {
 		var typ MultiMatchType

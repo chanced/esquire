@@ -1,6 +1,10 @@
 package picker
 
-import "github.com/chanced/dynamic"
+import (
+	"fmt"
+
+	"github.com/chanced/dynamic"
+)
 
 type TermsSetter interface {
 	TermsSet() (*TermsSetQuery, error)
@@ -116,13 +120,17 @@ func (q *TermsSetQuery) UnmarshalJSON(data []byte) error {
 	for field, d := range obj {
 		q.field = field
 		p := termsSetQuery{}
+		str := string(d)
+		fmt.Println(str)
 		err := p.UnmarshalJSON(d)
 		if err != nil {
 			return err
 		}
+		q.terms = p.Terms
 		q.SetBoost(p.Boost)
 		q.SetName(p.Name)
 		q.SetMinimumShouldMatchField(p.MinimumShouldMatchField)
+		q.minimumShouldMatchScript = p.MinimumShouldMatchScript
 		return nil
 	}
 	return nil

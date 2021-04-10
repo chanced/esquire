@@ -85,6 +85,7 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindIntervals:         func() QueryClause { return &IntervalsQuery{} },
 	QueryKindMatchPhrase:       func() QueryClause { return &MatchPhraseQuery{} },
 	QueryKindMatchPhrasePrefix: func() QueryClause { return &MatchPhrasePrefixQuery{} },
+	QueryKindMatchBoolPrefix:   func() QueryClause { return &MatchBoolPrefixQuery{} },
 	QueryKindMultiMatch:        func() QueryClause { return &MultiMatchQuery{} },
 	QueryKindQueryString:       func() QueryClause { return &QueryStringQuery{} },
 	QueryKindSimpleQueryString: func() QueryClause { return &SimpleQueryStringQuery{} },
