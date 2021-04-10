@@ -266,7 +266,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
   - [x] **[More like this](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-mlt-query.html)**\
          This query finds documents which are similar to the specified text, document, or collection of documents.
-  - [ ] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-percolate-query.html)**\
+  - [x] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-percolate-query.html)**\
          This query finds queries that are stored as documents that match with the specified document.
   - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-rank-feature-query.html)**\
          A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.

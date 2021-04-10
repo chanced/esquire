@@ -283,7 +283,7 @@ type QueryParams struct {
 	ParentID ParentIDer
 	// DistanceFeature   DistanceFeaturer
 	MoreLikeThis MoreLikeThiser
-	// Percolate        Percolater
+	Percolate    Percolater
 	// RankFeature      RankFeaturer
 	// Wrapper          Wrapperer
 	// Pinned           Pinneder
@@ -563,12 +563,13 @@ func (q QueryParams) moreLikeThis() (*MoreLikeThisQuery, error) {
 	return q.MoreLikeThis.MoreLikeThis()
 }
 
-// func (q QueryParams) percolate() (*PercolateQuery, error) {
-// 	if q.Percolate == nil {
-// 		return nil, nil
-// 	}
-// 	return q.Percolate.Percolate()
-// }
+func (q QueryParams) percolate() (*PercolateQuery, error) {
+	if q.Percolate == nil {
+		return nil, nil
+	}
+	return q.Percolate.Percolate()
+}
+
 // func (q QueryParams) rankFeature() (*RankFeatureQuery, error) {
 // 	if q.RankFeature == nil {
 // 		return nil, nil
@@ -807,10 +808,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// percolate, err := q.percolate()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	percolate, err := q.percolate()
+	if err != nil {
+		return nil, err
+	}
 	// rankFeature, err := q.rankFeature()
 	// if err != nil {
 	// 	return nil, err
@@ -900,7 +901,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		parentID: parentID,
 		// distanceFeature:    distanceFeature,
 		moreLikeThis: moreLikeThis,
-		// percolate:         percolate,
+		percolate:    percolate,
 		// rankFeature:       rankFeature,
 		// wrapper:           wrapper,
 		// pinned:            pinned,
@@ -977,7 +978,7 @@ type Query struct {
 	parentID *ParentIDQuery
 	// distanceFeature    *DistanceFeatureQuery
 	moreLikeThis *MoreLikeThisQuery
-	// percolate         *PercolateQuery
+	percolate    *PercolateQuery
 	// rankFeature       *RankFeatureQuery
 	// wrapper           *WrapperQuery
 	// pinned            *PinnedQuery
@@ -1234,6 +1235,7 @@ func (q *Query) Nested() *NestedQuery {
 //     }
 //     return q.hasParent
 // }
+
 func (q *Query) ParentID() *ParentIDQuery {
 	if q.parentID == nil {
 		q.parentID = &ParentIDQuery{}
@@ -1247,6 +1249,7 @@ func (q *Query) ParentID() *ParentIDQuery {
 //     }
 //     return q.distanceFeature
 // }
+
 func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
 	if q.moreLikeThis == nil {
 		q.moreLikeThis = &MoreLikeThisQuery{}
@@ -1254,12 +1257,13 @@ func (q *Query) MoreLikeThis() *MoreLikeThisQuery {
 	return q.moreLikeThis
 }
 
-// func (q *Query) Percolate() *PercolateQuery {
-//     if q.percolate == nil {
-//         q.percolate = &PercolateQuery{}
-//     }
-//     return q.percolate
-// }
+func (q *Query) Percolate() *PercolateQuery {
+	if q.percolate == nil {
+		q.percolate = &PercolateQuery{}
+	}
+	return q.percolate
+}
+
 // func (q *Query) RankFeature() *RankFeatureQuery {
 //     if q.rankFeature == nil {
 //         q.rankFeature = &RankFeatureQuery{}
@@ -1394,7 +1398,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindParentID: q.parentID,
 		// QueryKindDistanceFeature:   q.distanceFeature,
 		QueryKindMoreLikeThis: q.moreLikeThis,
-		// QueryKindPercolate:        q.percolate,
+		QueryKindPercolate:    q.percolate,
 		// QueryKindRankFeature:      q.rankFeature,
 		// QueryKindWrapper:          q.wrapper,
 		// QueryKindPinned:           q.pinned,
@@ -1496,8 +1500,8 @@ func (q *Query) setClause(qc QueryClause) {
 	// 	q.distanceFeature = qc.(*DistanceFeatureQuery)
 	case QueryKindMoreLikeThis:
 		q.moreLikeThis = qc.(*MoreLikeThisQuery)
-		// case QueryKindPercolate:
-		// 	q.percolate = qc.(*PercolateQuery)
+	case QueryKindPercolate:
+		q.percolate = qc.(*PercolateQuery)
 		// case QueryKindRankFeature:
 		// 	q.rankFeature = qc.(*RankFeatureQuery)
 		// case QueryKindWrapper:

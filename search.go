@@ -102,6 +102,8 @@ type SearchParams struct {
 
 	// If true, returns document version as part of a hit. Defaults to false. (Optional)
 	Version bool
+
+	Highlight interface{}
 }
 
 func NewSearch(p SearchParams) (*Search, error) {
