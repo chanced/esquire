@@ -96,7 +96,7 @@ func (gs ShapeField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(shapeField{
 		IgnoreMalformed: gs.ignoreMalformed.Value(),
 		NullValue:       gs.nullValue,
-		IgnoreZValue:    gs.ignoreZ,
+		IgnoreZValue:    gs.ignoreZ.Value(),
 		Orientation:     gs.orientation,
 		Type:            gs.Type(),
 	})

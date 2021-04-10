@@ -10,6 +10,10 @@ type ConstantFieldParams struct {
 	Value interface{} `json:"value"`
 }
 
+func (ConstantFieldParams) Type() FieldType {
+	return FieldTypeConstant
+}
+
 func (c ConstantFieldParams) Field() (Field, error) {
 	return c.ConstantField()
 }

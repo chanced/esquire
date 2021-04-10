@@ -17,6 +17,10 @@ func (a AliasFieldParams) Alias() (*AliasField, error) {
 
 }
 
+func (AliasFieldParams) Type() FieldType {
+	return FieldTypeAlias
+}
+
 func (a AliasFieldParams) Field() (Field, error) {
 	return a.Alias()
 }

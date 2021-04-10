@@ -1,5 +1,7 @@
 package picker
 
+import "encoding/json"
+
 type IndexParams struct {
 	Mappings Mappings `json:"mappings"`
 }
@@ -14,9 +16,25 @@ func (p IndexParams) Index() (*Index, error) {
 	return i, nil
 }
 
-//easyjson:json
 type Index struct {
 	Mappings FieldMappings `json:"mappings"`
+}
+type index struct {
+	Mappings FieldMappings `json:"mappings"`
+}
+
+func (i Index) MarshalJSON() ([]byte, error) {
+	return json.Marshal(index{Mappings: i.Mappings})
+}
+
+func (i *Index) UnmarshalJSON(data []byte) error {
+	var idx index
+	err := json.Unmarshal(data, &idx)
+	if err != nil {
+		return err
+	}
+	i.Mappings = idx.Mappings
+	return nil
 }
 
 func NewIndex(params IndexParams) (*Index, error) {

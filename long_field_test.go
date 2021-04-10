@@ -17,7 +17,7 @@ func TestLongField(t *testing.T) {
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()
 	assert.NoError(err)
-	assert.True(cmpjson.Equal(data, ixd))
+	assert.True(cmpjson.Equal(data, ixd), cmpjson.Diff(data, ixd))
 	i2 := picker.Index{}
 	err = i2.UnmarshalJSON(data)
 	assert.NoError(err)
