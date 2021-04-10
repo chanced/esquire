@@ -1,11 +1,7 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"testing"
-
-	"github.com/chanced/picker"
-	"github.com/tj/assert"
 )
 
 func TestCommon(t *testing.T) {
@@ -18,8 +14,8 @@ func TestCommon(t *testing.T) {
 	// sd, err := s.MarshalJSON()
 	// assert.NoError(err)
 	// 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
-	var sr *picker.Search
-	err = json.Unmarshal(data, &sr)
-	assert.NoError(err)
+	// var sr *picker.Search
+	// err = json.Unmarshal(data, &sr)
+	// assert.NoError(err)
 
 }

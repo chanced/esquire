@@ -45,5 +45,6 @@ func TestClauses(t *testing.T) {
 	assert.Equal("chanced", clauses.Clauses()[0].(*picker.TermQuery).Value())
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)
+	_ = d
 	assert.NoError(err)
 }

@@ -20,24 +20,6 @@ type CompleteTermser interface {
 	CompleteClauser
 }
 
-// NewTermsQuery returns a new *TermsQuery
-//
-// Valid options are:
-//  - picker.Terms
-//  - picker.Lookup
-//  - any type which satisfies Termser that sets the Field value
-func NewTermsQuery(params Termser) (*TermsQuery, error) {
-	q, err := params.Terms()
-	if err != nil {
-		return q, newQueryError(err, QueryKindTerms, q.field)
-	}
-	err = checkField(q.field, QueryKindTerms)
-	if err != nil {
-		return q, err
-	}
-	return q, nil
-}
-
 // TermsQueryParams returns documents that contain one or more exact terms in a provided
 // field.
 //

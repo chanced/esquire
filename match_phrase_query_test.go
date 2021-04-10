@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/chanced/cmpjson"
@@ -9,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMatchPhrasePrefixQuery(t *testing.T) {
+func TestMatchPhraseQuery(t *testing.T) {
 	assert := require.New(t)
 
 	data := []byte(`{
@@ -35,8 +34,8 @@ func TestMatchPhrasePrefixQuery(t *testing.T) {
 	sd, err := s.MarshalJSON()
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
-	var sr *picker.Search
-	err = json.Unmarshal(data, &sr)
+	sr := picker.Search{}
+	err = sr.UnmarshalJSON(data)
 	assert.NoError(err)
 
 	data = []byte(`{

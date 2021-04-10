@@ -74,7 +74,7 @@ func (m *MatchPhraseQuery) UnmarshalJSON(data []byte) error {
 			}
 			mq = matchPhraseQuery{Query: str}
 		} else {
-			mq := matchPhraseQuery{}
+			mq = matchPhraseQuery{}
 			err := mq.UnmarshalJSON(md)
 			if err != nil {
 				return err

@@ -1,8 +1,6 @@
 package picker_test
 
 import (
-	"io/ioutil"
-	"os"
 	"testing"
 
 	"encoding/json"
@@ -42,31 +40,38 @@ func TestTerms(t *testing.T) {
 	assert.Equal([]string{"chanced", "kimchy", "elkbee"}, res1.Terms().Value(), "res1")
 	assert.Equal("user.id", res1.Terms().Field(), "res1")
 
-	j2, err := os.Open("./testdata/terms_2.json")
+	json2 := []byte(`{
+		"query": {
+		  "terms": {
+			  "color" : {
+				  "index" : "my-index-000001",
+				  "id" : "2",
+				  "path" : "color"
+			  }
+		  }
+		}
+	  }`)
 	assert.NoError(err)
-	defer j2.Close()
-	json2, err := ioutil.ReadAll(j2)
-	assert.NoError(err)
-	var q2 picker.Query
+	var s2 picker.Search
 
-	err = json.Unmarshal(json2, &q2)
+	err = json.Unmarshal(json2, &s2)
 	assert.NoError(err)
-	lookup := q2.Terms().Lookup()
+	lookup := s2.Query().Terms().Lookup()
 	assert.Equal("2", lookup.ID())
 	assert.Equal("my-index-000001", lookup.Index())
 	assert.Equal("color", lookup.Path())
-	assert.Equal("color", q2.Terms().Field())
+	assert.Equal("color", s2.Query().Terms().Field())
 
-	json2Res, err := json.MarshalIndent(q2.Terms(), "", "  ")
+	json2Res, err := json.MarshalIndent(s2.Query().Terms(), "", "  ")
 	assert.NoError(err)
 	var res2 picker.TermsQuery
 
 	err = json.Unmarshal(json2Res, &res2)
 	assert.NoError(err)
-	lookup = q2.Terms().Lookup()
+	lookup = s2.Query().Terms().Lookup()
 	assert.Equal("2", lookup.ID())
 	assert.Equal("my-index-000001", lookup.Index())
 	assert.Equal("color", lookup.Path())
-	assert.Equal("color", q2.Terms().Field())
+	assert.Equal("color", s2.Query().Terms().Field())
 
 }

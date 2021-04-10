@@ -38,7 +38,7 @@ type MatchPhrasePrefixQueryParams struct {
 }
 
 func (MatchPhrasePrefixQueryParams) Kind() QueryKind {
-	return QueryKindMatch
+	return QueryKindMatchPhrasePrefix
 }
 func (p MatchPhrasePrefixQueryParams) Clause() (QueryClause, error) {
 	return p.MatchPhrasePrefix()
@@ -88,7 +88,7 @@ type MatchPhrasePrefixQuery struct {
 }
 
 func (MatchPhrasePrefixQuery) Kind() QueryKind {
-	return QueryKindMatch
+	return QueryKindMatchPhrasePrefix
 }
 func (m *MatchPhrasePrefixQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchPhrasePrefixQuery{}
@@ -108,7 +108,7 @@ func (m *MatchPhrasePrefixQuery) UnmarshalJSON(data []byte) error {
 			}
 			mq = matchPhrasePrefixQuery{Query: str}
 		} else {
-			mq := matchPhrasePrefixQuery{}
+			mq = matchPhrasePrefixQuery{}
 			_ = mq
 			err := mq.UnmarshalJSON(md)
 			if err != nil {

@@ -3,6 +3,7 @@ package picker
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/chanced/dynamic"
 )
@@ -132,7 +133,7 @@ func UnmarshalRule(data []byte) (QueryRule, error) {
 	for k, rd := range d {
 		handler, ok := ruleTypeHandlers[RuleType(k)]
 		if !ok {
-			return nil, errors.New("picker: unsupported rule type")
+			return nil, fmt.Errorf("picker: unsupported rule type <%s>", k)
 		}
 		qr = handler()
 		err = qr.UnmarshalJSON(rd)
@@ -146,6 +147,6 @@ var ruleTypeHandlers = map[RuleType]func() QueryRule{
 	RuleTypeFuzzy:    func() QueryRule { return &FuzzyRule{} },
 	RuleTypeWildcard: func() QueryRule { return &WildcardRule{} },
 	RuleTypePrefix:   func() QueryRule { return &PrefixRule{} },
-	// RuleTypeAllOf:    func() QueryRule { return &AllOfRule{} },
-	// RuleTypeAnyOf:    func() QueryRule { return &AnyOfRule{} },
+	RuleTypeAllOf:    func() QueryRule { return &AllOfRule{} },
+	RuleTypeAnyOf:    func() QueryRule { return &AnyOfRule{} },
 }
