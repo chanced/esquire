@@ -1,6 +1,7 @@
 package picker_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/chanced/cmpjson"
@@ -54,4 +55,8 @@ func TestMoreLikeThis(t *testing.T) {
 	sd, err := s.MarshalJSON()
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
+	var sr *picker.Search
+	err = json.Unmarshal(data, &sr)
+	assert.NoError(err)
+
 }

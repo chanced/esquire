@@ -29,4 +29,8 @@ func TestIDsQuery(t *testing.T) {
 	sd, err := json.Marshal(s)
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
+	var sr *picker.Search
+	err = json.Unmarshal(data, &sr)
+	assert.NoError(err)
+
 }

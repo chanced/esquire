@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -32,9 +31,6 @@ func TestBoolean(t *testing.T) {
 	var q1 picker.Query
 
 	err := json.Unmarshal(json1, &q1)
-	assert.NoError(err)
-	data1, err := json.MarshalIndent(q1.Bool(), "", "  ")
-	fmt.Println(string(data1))
 	assert.NoError(err)
 	assert.Equal(2, q1.Bool().Should().Len())
 

@@ -82,8 +82,8 @@ const (
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#type-cross-fields
 	MultiMatchCrossFields MultiMatchType = "cross_fields"
-	// Runs a match_phrase query on each field and uses the _score from the
-	// best field.
+	// Runs a match_phrase query on each field and uses the _score from the best
+	// field.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#type-phrase
 	MultiMatchPhrase MultiMatchType = "phrase"
@@ -92,7 +92,8 @@ const (
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#type-phrase
 	MultiMatchPhrasePrefix MultiMatchType = "phrase_prefix"
-	// Creates a match_bool_prefix query on each field and combines the _score from each field.
+	// Creates a match_bool_prefix query on each field and combines the _score
+	// from each field.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-multi-match-query.html#type-bool-prefix
 	MultiMatchBoolPrefix MultiMatchType = "bool_prefix"

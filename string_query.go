@@ -33,7 +33,7 @@ func (s String) Terms() (TermsQuery, error) {
 			strs[i] = str
 		}
 	}
-	err := q.setValue(strs)
+	err := q.SetValue(strs)
 	return q, err
 }
 
@@ -41,7 +41,7 @@ type Strings []string
 
 func (s Strings) Terms() (TermsQuery, error) {
 	q := TermsQuery{}
-	err := q.setValue(s)
+	err := q.SetValue(s)
 	return q, err
 }
 

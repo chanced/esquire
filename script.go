@@ -17,8 +17,8 @@ func (s *Script) Clear() {
 		*s = Script{}
 	}
 }
-func (s Script) IsEmpty() bool {
-	return len(s.Source) == 0
+func (s *Script) IsEmpty() bool {
+	return s == nil || len(s.Source) == 0
 }
 func (s Script) Script() (*ScriptQuery, error) {
 	sq := &ScriptQueryParams{

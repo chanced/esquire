@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -53,7 +52,6 @@ func TestJSON(t *testing.T) {
 	assert.NoError(err)
 	emplID, err := m1.Properties.Field("employee-id")
 	assert.NoError(err)
-	fmt.Printf("%+v", emplID)
 	assert.NotNil(emplID, "employee-id should have been parsed and aded to the Properties Field map")
 	emplIDAsKeyword, ok := emplID.(*picker.KeywordField)
 	assert.True(ok, "employee-id should be unmarshaled and a KeywordField")
@@ -71,7 +69,4 @@ func TestJSON(t *testing.T) {
 	_, err = m1.Properties.Field("not_exist")
 	assert.ErrorIs(err, picker.ErrFieldNotFound)
 
-	d, err := json.MarshalIndent(m1, "", "  ")
-	assert.NoError(err)
-	fmt.Println(string(d))
 }

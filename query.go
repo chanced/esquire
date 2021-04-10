@@ -299,7 +299,7 @@ type QueryParams struct {
 	// SpanWithin       SpanWithiner
 	// Common   Commoner
 	// Regexp   Regexper
-	// TermSet  TermSetter
+	TermsSet TermsSetter
 	// Type     Typer
 	Wildcard Wildcarder
 }
@@ -316,12 +316,13 @@ type QueryParams struct {
 // 	}
 // 	return q.Regexp.Regexp()
 // }
-// func (q QueryParams) termSet() (*TermSetQuery, error) {
-// 	if q.TermSet == nil {
-// 		return nil, nil
-// 	}
-// 	return q.TermSet.TermSet()
-// }
+func (q QueryParams) termsSet() (*TermsSetQuery, error) {
+	if q.TermsSet == nil {
+		return nil, nil
+	}
+	return q.TermsSet.TermsSet()
+}
+
 // func (q QueryParams) typ() (*TypeQuery, error) {
 // 	if q.Type == nil {
 // 		return nil, nil
@@ -755,10 +756,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	// if err != nil {
 	// 	return nil, err
 	// }
-	// termSet, err := q.termSet()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	termsSet, err := q.termsSet()
+	if err != nil {
+		return nil, err
+	}
 	// typ, err := q.typ()
 	// if err != nil {
 	// 	return nil, err
@@ -889,7 +890,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		wildcard:          wildcard,
 		// common:            common,
 		// regexp:            regexp,
-		// termSet:           termSet,
+		termsSet: termsSet,
 		// typ:               typ,
 		geoDistance: geoDistance,
 		// geoPolygon:        geoPolygon,
@@ -966,7 +967,7 @@ type Query struct {
 	wildcard          *WildcardQuery
 	// common            *CommonQuery
 	// regexp            *RegexpQuery
-	// termSet           *TermSetQuery
+	termsSet *TermsSetQuery
 	// typ               *TypeQuery
 	geoDistance *GeoDistanceQuery
 	// geoPolygon        *GeoPolygonQuery
@@ -1154,12 +1155,14 @@ func (q *Query) MatchNone() *MatchNoneQuery {
 // 	}
 // 	return q.regexp
 // }
-// func (q *Query) TermSet() *TermSetQuery {
-// 	if q.termSet == nil {
-// 		q.termSet = &TermSetQuery{}
-// 	}
-// 	return q.termSet
-// }
+
+func (q *Query) TermsSet() *TermsSetQuery {
+	if q.termsSet == nil {
+		q.termsSet = &TermsSetQuery{}
+	}
+	return q.termsSet
+}
+
 // func (q *Query) Type() *TypeQuery {
 // 	if q.typ == nil {
 // 		q.typ = &TypeQuery{}
@@ -1383,7 +1386,7 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindWildcard:          q.wildcard,
 		// QueryKindCommon:            q.common,
 		// QueryKindRegexp:            q.regexp,
-		// QueryKindTermSet:           q.termSet,
+		QueryKindTermsSet: q.termsSet,
 		// QueryKindType:              q.typ,
 		// QueryKindWildcard:          q.wildcard,
 		// QueryKindAllOf:             q.allOf,
@@ -1476,8 +1479,8 @@ func (q *Query) setClause(qc QueryClause) {
 	// 	q.common= qc.(*CommonQuery)
 	// case QueryKindRegexp:
 	// 	q.regexp= qc.(*RegexpQuery)
-	// case QueryKindTermSet:
-	// 	q.termSet= qc.(*TermSetQuery)
+	case QueryKindTermsSet:
+		q.termsSet = qc.(*TermsSetQuery)
 	// case QueryKindType:
 	// 	q.typ= qc.(*TypeQuery)
 	case QueryKindGeoDistance:

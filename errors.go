@@ -53,6 +53,7 @@ var (
 	ErrPrefixRequired             = errors.New("picker: prefix is required")
 	ErrWildcardRequired           = errors.New("picker: wildcard is required")
 	ErrTermRequired               = errors.New("picker: term is required")
+	ErrTermsRequired              = errors.New("picker: terms is required")
 	ErrValuesRequired             = errors.New("picker: values is required")
 	ErrIntervalsRequired          = errors.New("picker: intervals are required")
 	ErrInvalidOperator            = errors.New("picker: invalid operator")

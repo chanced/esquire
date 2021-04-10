@@ -63,7 +63,7 @@ const (
 	QueryKindSpanWithin        QueryKind = "span_within"
 	QueryKindCommon            QueryKind = "common"
 	QueryKindRegexp            QueryKind = "regexp"
-	QueryKindTermSet           QueryKind = "terms_set"
+	QueryKindTermsSet          QueryKind = "terms_set"
 	QueryKindType              QueryKind = "type"
 	QueryKindWildcard          QueryKind = "wildcard"
 )
@@ -93,7 +93,7 @@ var queryKindHandlers = map[QueryKind]func() QueryClause{
 	QueryKindGeoShape:          func() QueryClause { return &GeoShapeQuery{} },
 	QueryKindCommon:            func() QueryClause { return &CommonQuery{} },
 	QueryKindRegexp:            func() QueryClause { return &RegexpQuery{} },
-	QueryKindTermSet:           func() QueryClause { return &TermSetQuery{} },
+	QueryKindTermsSet:          func() QueryClause { return &TermsSetQuery{} },
 	QueryKindType:              func() QueryClause { return &TypeQuery{} },
 	QueryKindGeoDistance:       func() QueryClause { return &GeoDistanceQuery{} },
 	QueryKindGeoPolygon:        func() QueryClause { return &GeoPolygonQuery{} },

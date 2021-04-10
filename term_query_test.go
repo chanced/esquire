@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -34,8 +33,6 @@ func TestTerm(t *testing.T) {
 	assert.True(q1.Term().CaseInsensitive())
 	json1Res, err := json.MarshalIndent(q1, "", "  ")
 	assert.NoError(err)
-	fmt.Printf("%+v\n", q1.Term())
-	fmt.Println(string(json1Res))
 
 	var rq1 picker.Query
 	err = json.Unmarshal(json1Res, &rq1)

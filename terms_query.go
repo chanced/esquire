@@ -62,7 +62,7 @@ func (t TermsQueryParams) Terms() (*TermsQuery, error) {
 	if err != nil {
 		return q, newQueryError(err, QueryKindTerms, t.Field)
 	}
-	err = q.setValue(t.Value)
+	err = q.SetValue(t.Value)
 	if err != nil {
 		return q, newQueryError(err, QueryKindTerms, t.Field)
 	}
@@ -78,7 +78,7 @@ func (t *TermsQuery) SetField(field string) {
 	t.field = field
 }
 
-func (t *TermsQuery) setValue(value []string) error {
+func (t *TermsQuery) SetValue(value []string) error {
 	err := checkValues(value, QueryKindTerms, t.field)
 	if err != nil {
 		return err

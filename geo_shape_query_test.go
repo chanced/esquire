@@ -2,7 +2,6 @@ package picker_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/chanced/cmpjson"
@@ -53,10 +52,11 @@ func TestGeoShape(t *testing.T) {
 	})
 	assert.NoError(err)
 
-	sdp, _ := json.MarshalIndent(s, "", "  ")
-	fmt.Println(string(sdp))
-
 	sd, err := s.MarshalJSON()
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
+	var sr *picker.Search
+	err = json.Unmarshal(data, &sr)
+	assert.NoError(err)
+
 }

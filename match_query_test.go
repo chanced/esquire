@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -28,7 +27,6 @@ func TestMatch(t *testing.T) {
 
 	rjson1, err := json.Marshal(q1)
 	assert.NoError(err)
-	fmt.Println(string(rjson1))
 
 	var rq1 picker.Query
 	err = json.Unmarshal(rjson1, &rq1)
@@ -76,7 +74,6 @@ func TestMatch(t *testing.T) {
 	assert.Equal(true, q2.Match().Lenient())
 	rjson2, err := json.Marshal(q2)
 	assert.NoError(err)
-	fmt.Println(string(rjson2))
 
 	var rq2 picker.Query
 	err = json.Unmarshal(rjson2, &rq2)

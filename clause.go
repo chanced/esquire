@@ -248,7 +248,6 @@ func (qc *QueryClauses) UnmarshalJSON(data []byte) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(ce)
 			qc.clauses = append(qc.clauses, ce)
 		}
 	}
@@ -267,7 +266,6 @@ func unpackClause(clause CompleteClause) (QueryClause, error) {
 	if v, ok := clause.(QueryClause); ok {
 		return v, nil
 	}
-	fmt.Printf("%T", clause)
 	return nil, errors.New("query is not complete")
 }
 

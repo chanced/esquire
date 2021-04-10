@@ -1,10 +1,7 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
-
-	"encoding/json"
 
 	"github.com/chanced/picker"
 	"github.com/stretchr/testify/require"
@@ -43,7 +40,4 @@ func TestScriptScoreQuery(t *testing.T) {
 	assert.NoError(err)
 	_ = s
 
-	data, err := json.MarshalIndent(s.Query().ScriptScore(), "", "  ")
-	assert.NoError(err)
-	fmt.Println(string(data))
 }

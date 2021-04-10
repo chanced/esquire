@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -28,7 +27,6 @@ func TestClauses(t *testing.T) {
 	assert.NoError(err)
 	res1, err := json.Marshal(clauses)
 	assert.NoError(err)
-	fmt.Println(string(res1))
 
 	clauses = picker.QueryClauses{}
 	err = json.Unmarshal(res1, &clauses)
@@ -48,5 +46,4 @@ func TestClauses(t *testing.T) {
 	assert.NoError(err)
 	d, err := json.Marshal(clauses)
 	assert.NoError(err)
-	fmt.Println(string(d))
 }

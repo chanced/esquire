@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -34,7 +33,6 @@ func TestTerms(t *testing.T) {
 	assert.Equal("user.id", q1.Terms().Field())
 	assert.True(q1.Terms().CaseInsensitive())
 	json1Res, err := json.MarshalIndent(q1, "", "  ")
-	fmt.Println(string(json1Res))
 	assert.NoError(err)
 	var res1 picker.Query
 	err = json.Unmarshal(json1Res, &res1)
@@ -51,7 +49,6 @@ func TestTerms(t *testing.T) {
 	assert.NoError(err)
 	var q2 picker.Query
 
-	fmt.Println("json2:\n", string(json2))
 	err = json.Unmarshal(json2, &q2)
 	assert.NoError(err)
 	lookup := q2.Terms().Lookup()
@@ -64,7 +61,6 @@ func TestTerms(t *testing.T) {
 	assert.NoError(err)
 	var res2 picker.TermsQuery
 
-	fmt.Println(string(json2Res))
 	err = json.Unmarshal(json2Res, &res2)
 	assert.NoError(err)
 	lookup = q2.Terms().Lookup()

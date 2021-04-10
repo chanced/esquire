@@ -1,7 +1,6 @@
 package picker_test
 
 import (
-	"fmt"
 	"testing"
 
 	"encoding/json"
@@ -86,7 +85,6 @@ func TestFunctionScoreQuery(t *testing.T) {
 	assert.NoError(err)
 	data, err := json.MarshalIndent(s.Query().FunctionScore(), "", "  ")
 	assert.NoError(err)
-	fmt.Println(string(data))
 	var fs picker.FunctionScoreQuery
 	err = json.Unmarshal(data, &fs)
 	assert.NoError(err)

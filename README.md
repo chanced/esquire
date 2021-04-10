@@ -297,7 +297,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          Returns documents that contain an exact term in a provided field.
   - [x] **[Terms](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-terms-query.html)**\
          Returns documents that contain one or more exact terms in a provided field.
-  - [ ] **[Terms set](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-terms-set-query.html)**\
+  - [x] **[Terms set](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-terms-set-query.html)**\
          Returns documents that contain a minimum number of exact terms in a provided field. You can define the minimum number of matching terms using a field or script.
   - [ ] **[Type](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-type-query.html) [Deprecated]**\
          Returns documents of the specified type.

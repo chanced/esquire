@@ -2,7 +2,6 @@ package picker_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/chanced/cmpjson"
@@ -36,11 +35,11 @@ func TestWildcard(t *testing.T) {
 		},
 	})
 	assert.NoError(err)
-	sdi, err := json.MarshalIndent(s, "", "  ")
-	fmt.Println(string(sdi))
-	assert.NoError(err)
 	sd, err := s.MarshalJSON()
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, sd), cmpjson.Diff(data, sd))
+	var sr *picker.Search
+	err = json.Unmarshal(data, &sr)
+	assert.NoError(err)
 
 }
