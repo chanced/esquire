@@ -26,7 +26,7 @@ type MatchBoolPrefixQueryParams struct {
 }
 
 func (MatchBoolPrefixQueryParams) Kind() QueryKind {
-	return QueryKindMatch
+	return QueryKindMatchBoolPrefix
 }
 func (p MatchBoolPrefixQueryParams) Clause() (QueryClause, error) {
 	return p.MatchBoolPrefix()
@@ -84,7 +84,7 @@ type MatchBoolPrefixQuery struct {
 }
 
 func (MatchBoolPrefixQuery) Kind() QueryKind {
-	return QueryKindMatch
+	return QueryKindMatchBoolPrefix
 }
 func (m *MatchBoolPrefixQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchBoolPrefixQuery{}
