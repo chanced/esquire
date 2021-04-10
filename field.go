@@ -14,8 +14,6 @@ import (
 // TODO TypeAggregateMetricDouble
 // TODO TypeHistogram
 // TODO TypeAnnotatedText
-// TODO TypePoint
-// TODO TypeShape
 
 // FieldTypeHandlers is a map of mapping Type to func that returns a Field instantiated with the appropriate Type
 var FieldTypeHandlers = map[FieldType]func() Field{

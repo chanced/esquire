@@ -70,6 +70,24 @@ type FieldError struct {
 	Err   error
 }
 
+func newFieldError(err error, field string) *FieldError {
+	var fe *FieldError
+	if errors.As(err, &fe) {
+		if fe.Field == field || strings.HasPrefix(field, fe.Field) {
+			return fe
+		}
+		if len(fe.Field) == 0 {
+			fe.Field = field
+		} else {
+			fe.Field = field + "->" + fe.Field
+		}
+		return fe
+	}
+	return &FieldError{
+		Field: field,
+		Err:   err,
+	}
+}
 func (e *FieldError) Error() string {
 	return e.Err.Error()
 }

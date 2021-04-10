@@ -3,11 +3,31 @@ package picker
 import "encoding/json"
 
 type mappings struct {
-	Properties Fields `json:"properties"  bson:"properties"`
+	Properties Fields `json:"properties"`
 }
 
 type Mappings struct {
-	Properties FieldMap `json:"properties"  bson:"properties"`
+	Properties FieldMap `json:"properties"`
+}
+
+func (m Mappings) FieldMappings() (FieldMappings, error) {
+	merr := MappingError{}
+	fm := FieldMappings{
+		Properties: make(Fields, len(m.Properties)),
+	}
+	for field, v := range m.Properties {
+		f, err := v.Field()
+		if err != nil {
+			merr.Append(newFieldError(err, field))
+			continue
+		}
+		fm.Properties[field] = f
+	}
+	return fm, merr.ErrorOrNil()
+}
+
+type FieldMappings struct {
+	Properties Fields `json:"properties"`
 }
 
 func (m *Mappings) UnmarshalJSON(data []byte) error {

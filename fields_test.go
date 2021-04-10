@@ -10,14 +10,7 @@ import (
 )
 
 func TestJSON(t *testing.T) {
-
-	var err error
 	assert := require.New(t)
-
-	handler := picker.FieldTypeHandlers[picker.FieldTypeInteger]
-	hv := handler()
-	assert.NotNil(handler)
-	assert.NotNil(hv)
 
 	data := []byte(`{
         "type" : "keyword",
@@ -25,7 +18,7 @@ func TestJSON(t *testing.T) {
         }`)
 
 	var keyword picker.Field = &picker.KeywordField{}
-	err = json.Unmarshal(data, keyword)
+	err := json.Unmarshal(data, keyword)
 	assert.NoError(err)
 	assert.False(keyword.(*picker.KeywordField).Index())
 

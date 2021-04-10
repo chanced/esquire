@@ -7,7 +7,7 @@ import (
 func TestRegexp(t *testing.T) {
 	// assert := require.New(t)
 	// _ = assert
-	// data := []byte(``)
+	// data := []byte(`{}`)
 	// _ = data
 	// s, err := picker.NewSearch(picker.SearchParams{})
 	// assert.NoError(err)

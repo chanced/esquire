@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGeoPointField(t *testing.T) {
+func TestHalfFloatField(t *testing.T) {
 	assert := require.New(t)
 	data := []byte(`{}`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
