@@ -10,9 +10,18 @@ import (
 
 func TestPercolatorField(t *testing.T) {
 	assert := require.New(t)
-	data := []byte(`{}`)
+	data := []byte(`{
+      "mappings": {
+        "properties": {
+            "percolator": {
+                "type": "percolator"
+           }
+        }
+     }
+  }`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
-		Properties: picker.FieldMap{},
+		Properties: picker.FieldMap{
+			"percolator": picker.PercolatorFieldParams{}},
 	}})
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()

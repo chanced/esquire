@@ -10,9 +10,18 @@ import (
 
 func TestSearchAsYouTypeField(t *testing.T) {
 	assert := require.New(t)
-	data := []byte(`{}`)
+	data := []byte(`{
+      "mappings": {
+        "properties": {
+            "searchAsYouType": {
+                "type": "searchAsYouType"
+           }
+        }
+     }
+  }`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
-		Properties: picker.FieldMap{},
+		Properties: picker.FieldMap{
+			"searchAsYouType": picker.SearchAsYouTypeFieldParams{}},
 	}})
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()

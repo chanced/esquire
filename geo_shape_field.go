@@ -86,7 +86,7 @@ func (gs *GeoShapeField) UnmarshalJSON(data []byte) error {
 func (gs GeoShapeField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(geoShapeField{
 		IgnoreMalformed: gs.ignoreMalformed.Value(),
-		IgnoreZValue:    gs.ignoreZ,
+		IgnoreZValue:    gs.ignoreZ.Value(),
 		Orientation:     gs.orientation,
 		Type:            gs.Type(),
 	})

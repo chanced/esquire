@@ -76,7 +76,7 @@ func (IntegerRangeFieldParams) Type() FieldType {
 func (p IntegerRangeFieldParams) IntegerRange() (*IntegerRangeField, error) {
 	f := &IntegerRangeField{}
 	e := &MappingError{}
-	err := f.SetCoerce(p)
+	err := f.SetCoerce(p.Coerce)
 	if err != nil {
 		e.Append(err)
 	}
@@ -141,7 +141,7 @@ func (p FloatRangeFieldParams) Field() (Field, error) {
 func (p FloatRangeFieldParams) FloatRange() (*FloatRangeField, error) {
 	f := &FloatRangeField{}
 	e := &MappingError{}
-	err := f.SetCoerce(p)
+	err := f.SetCoerce(p.Coerce)
 	if err != nil {
 		e.Append(err)
 	}
@@ -208,7 +208,7 @@ func (p LongRangeFieldParams) Field() (Field, error) {
 func (p LongRangeFieldParams) LongRange() (*LongRangeField, error) {
 	f := &LongRangeField{}
 	e := &MappingError{}
-	err := f.SetCoerce(p)
+	err := f.SetCoerce(p.Coerce)
 	if err != nil {
 		e.Append(err)
 	}
@@ -275,7 +275,7 @@ func (p DoubleRangeFieldParams) Field() (Field, error) {
 func (p DoubleRangeFieldParams) DoubleRange() (*DoubleRangeField, error) {
 	f := &DoubleRangeField{}
 	e := &MappingError{}
-	err := f.SetCoerce(p)
+	err := f.SetCoerce(p.Coerce)
 	if err != nil {
 		e.Append(err)
 	}
@@ -462,7 +462,7 @@ func (p IPRangeFieldParams) Field() (Field, error) {
 func (p IPRangeFieldParams) IPRange() (*IPRangeField, error) {
 	f := &IPRangeField{}
 	e := &MappingError{}
-	err := f.SetCoerce(p)
+	err := f.SetCoerce(p.Coerce)
 	if err != nil {
 		e.Append(err)
 	}

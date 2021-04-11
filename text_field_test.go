@@ -10,9 +10,18 @@ import (
 
 func TestTextField(t *testing.T) {
 	assert := require.New(t)
-	data := []byte(`{}`)
+	data := []byte(`{
+      "mappings": {
+        "properties": {
+            "text": {
+                "type": "text"
+           }
+        }
+     }
+  }`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
-		Properties: picker.FieldMap{},
+		Properties: picker.FieldMap{
+			"text": picker.TextFieldParams{}},
 	}})
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()

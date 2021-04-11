@@ -10,9 +10,18 @@ import (
 
 func TestPointField(t *testing.T) {
 	assert := require.New(t)
-	data := []byte(`{}`)
+	data := []byte(`{
+      "mappings": {
+        "properties": {
+            "point": {
+                "type": "point"
+           }
+        }
+     }
+  }`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
-		Properties: picker.FieldMap{},
+		Properties: picker.FieldMap{
+			"point": picker.PointFieldParams{}},
 	}})
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()

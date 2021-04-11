@@ -42,6 +42,10 @@ func (p propertiesParam) Properties() Fields {
 
 // SetProperties sets the Properties value to v
 func (p *propertiesParam) SetProperties(v Fieldset) error {
+	if v == nil {
+		p.properties = nil
+		return nil
+	}
 	f, err := v.Fields()
 	if err != nil {
 		return err

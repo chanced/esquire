@@ -1,7 +1,5 @@
 package picker
 
-import "encoding/json"
-
 type IPFieldParams struct {
 	// IgnoreMalformed determines if malformed numbers are ignored. If true,
 	// malformed numbers are ignored. If false (default), malformed numbers
@@ -125,28 +123,67 @@ func (ip *IPField) Field() (Field, error) {
 	return ip, nil
 }
 func (ip *IPField) UnmarshalJSON(data []byte) error {
-
-	var params IPFieldParams
-	err := json.Unmarshal(data, &params)
+	*ip = IPField{}
+	f := ipField{}
+	err := f.UnmarshalJSON(data)
 	if err != nil {
 		return err
 	}
-	v, err := params.IP()
-	*ip = *v
+	nv, err := f.IP()
+	*ip = *nv
 	return err
 }
 
 func (ip IPField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(IPFieldParams{
+	return ipField{
 		IgnoreMalformed: ip.ignoreMalformed.Value(),
 		DocValues:       ip.docValues.Value(),
 		Index:           ip.index.Value(),
 		NullValue:       ip.nullValue,
 		Store:           ip.store.Value(),
 		Boost:           ip.boost.Value(),
-	})
+		Type:            string(ip.Type()),
+	}.MarshalJSON()
 }
 
 func NewIPField(params IPFieldParams) (*IPField, error) {
 	return params.IP()
+}
+
+//easyjson:json
+type ipField struct {
+	IgnoreMalformed interface{} `json:"ignore_malformed,omitempty"`
+	DocValues       interface{} `json:"doc_values,omitempty"`
+	Index           interface{} `json:"index,omitempty"`
+	NullValue       interface{} `json:"null_value,omitempty"`
+	Store           interface{} `json:"store,omitempty"`
+	Boost           interface{} `json:"boost,omitempty"`
+	Type            string      `json:"type"`
+}
+
+func (p ipField) IP() (*IPField, error) {
+	f := &IPField{}
+	e := &MappingError{}
+	err := f.SetDocValues(p.DocValues)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetIgnoreMalformed(p.IgnoreMalformed)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetIndex(p.Index)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetStore(p.Store)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetBoost(p.Boost)
+	if err != nil {
+		e.Append(err)
+	}
+	f.SetNullValue(p.NullValue)
+	return f, e.ErrorOrNil()
 }

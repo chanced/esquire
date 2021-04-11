@@ -10,9 +10,18 @@ import (
 
 func TestWildcardKeywordField(t *testing.T) {
 	assert := require.New(t)
-	data := []byte(`{}`)
+	data := []byte(`{
+      "mappings": {
+        "properties": {
+            "wildcard": {
+                "type": "wildcard"
+           }
+        }
+     }
+  }`)
 	i, err := picker.NewIndex(picker.IndexParams{Mappings: picker.Mappings{
-		Properties: picker.FieldMap{},
+		Properties: picker.FieldMap{
+			"wildcard": picker.WildcardFieldParams{}},
 	}})
 	assert.NoError(err)
 	ixd, err := i.MarshalJSON()

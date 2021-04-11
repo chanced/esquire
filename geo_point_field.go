@@ -105,7 +105,7 @@ func (gp GeoPointField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(geoPointField{
 		IgnoreMalformed: gp.ignoreMalformed.Value(),
 		NullValue:       gp.nullValue,
-		IgnoreZValue:    gp.ignoreZ,
+		IgnoreZValue:    gp.ignoreZ.Value(),
 		Type:            gp.Type(),
 	})
 }
