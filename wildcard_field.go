@@ -64,10 +64,11 @@ func (WildcardField) Type() FieldType {
 }
 
 func (w WildcardField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(WildcardFieldParams{
+	return wildcardField{
 		NullValue:   w.nullValue,
 		IgnoreAbove: w.ignoreAbove.Value(),
-	})
+		Type:        string(w.Type()),
+	}.MarshalJSON()
 }
 func (w *WildcardField) UnmarshalJSON(data []byte) error {
 	*w = WildcardField{}
@@ -79,4 +80,11 @@ func (w *WildcardField) UnmarshalJSON(data []byte) error {
 	n, err := p.Wildcard()
 	*w = *n
 	return err
+}
+
+//easyjson:json
+type wildcardField struct {
+	NullValue   interface{} `json:"null_value,omitempty"`
+	IgnoreAbove interface{} `json:"ignore_above,omitempty"`
+	Type        string      `json:"type"`
 }

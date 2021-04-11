@@ -4,7 +4,7 @@ import "encoding/json"
 
 type nestedField struct {
 	Dynamic         Dynamic     `json:"dynamic,omitempty"`
-	Properties      Fieldset    `json:"properties,omitempty"`
+	Properties      Fields      `json:"properties,omitempty"`
 	IncludeInParent interface{} `json:"include_in_parent,omitempty"`
 	IncludeInRoot   interface{} `json:"include_in_root,omitempty"`
 	Type            FieldType   `json:"type"`
@@ -151,8 +151,8 @@ func (n NestedField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(nestedField{
 		Dynamic:         n.dynamic,
 		Properties:      n.properties,
-		IncludeInParent: n.includeInParent,
-		IncludeInRoot:   n.includeInRoot,
+		IncludeInParent: n.includeInParent.Value(),
+		IncludeInRoot:   n.includeInRoot.Value(),
 		Type:            n.Type(),
 	})
 }

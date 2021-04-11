@@ -14,7 +14,7 @@ func TestUnsignedLongField(t *testing.T) {
       "mappings": {
         "properties": {
             "unsignedLong": {
-                "type": "unsignedLong"
+                "type": "unsigned_long"
            }
         }
      }

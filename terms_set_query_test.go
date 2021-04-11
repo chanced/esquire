@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTermSet(t *testing.T) {
+func TestTermsSet(t *testing.T) {
 	assert := require.New(t)
 	_ = assert
 	data := []byte(`{

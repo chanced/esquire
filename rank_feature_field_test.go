@@ -14,7 +14,7 @@ func TestRankFeatureField(t *testing.T) {
       "mappings": {
         "properties": {
             "rankFeature": {
-                "type": "rankFeature"
+                "type": "rank_feature"
            }
         }
      }

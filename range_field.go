@@ -509,6 +509,7 @@ func (r IPRangeField) MarshalJSON() ([]byte, error) {
 		Coerce: r.coerce.Value(),
 		Index:  r.index.Value(),
 		Store:  r.store.Value(),
+		Type:   r.Type(),
 	}.MarshalJSON()
 }
 

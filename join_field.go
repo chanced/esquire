@@ -43,7 +43,7 @@ type JoinFieldParams struct {
 	// has_child queries and parent aggregations.
 	//
 	// https://www.elastic.co/guide/en/elasticsearch/reference/current/eager-global-ordinals.html
-	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals"`
+	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals,omitempty"`
 }
 
 func (JoinFieldParams) Type() FieldType {
@@ -199,12 +199,20 @@ func (j *JoinField) UnmarshalJSON(data []byte) error {
 }
 
 func (j JoinField) MarshalJSON() ([]byte, error) {
-	return json.Marshal(JoinFieldParams{
+	return joinField{
 		Relations:           j.relations,
 		EagerGlobalOrdinals: j.eagerGlobalOrdinals.Value(),
-	})
+		Type:                string(j.Type()),
+	}.MarshalJSON()
 }
 
 func NewJoinField(params JoinFieldParams) (*JoinField, error) {
 	return params.Join()
+}
+
+//easyjson:json
+type joinField struct {
+	Relations           Relations   `json:"relations,omitempty"`
+	EagerGlobalOrdinals interface{} `json:"eager_global_ordinals,omitempty"`
+	Type                string      `json:"type"`
 }

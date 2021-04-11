@@ -14,7 +14,7 @@ func TestLongRangeField(t *testing.T) {
       "mappings": {
         "properties": {
             "longRange": {
-                "type": "longRange"
+                "type": "long_range"
            }
         }
      }

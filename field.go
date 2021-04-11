@@ -32,6 +32,7 @@ var FieldTypeHandlers = map[FieldType]func() Field{
 	FieldTypeFlattened:       func() Field { return &FlattenedField{} },
 	FieldTypeFloat:           func() Field { return &FloatField{} },
 	FieldTypeFloatRange:      func() Field { return &FloatRangeField{} },
+	FieldTypePoint:           func() Field { return &PointField{} },
 	FieldTypeGeoPoint:        func() Field { return &GeoPointField{} },
 	FieldTypeGeoShape:        func() Field { return &GeoShapeField{} },
 	FieldTypeShape:           func() Field { return &ShapeField{} },

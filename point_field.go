@@ -108,7 +108,7 @@ func (gp PointField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(pointField{
 		IgnoreMalformed: gp.ignoreMalformed.Value(),
 		NullValue:       gp.nullValue,
-		IgnoreZValue:    gp.ignoreZ,
+		IgnoreZValue:    gp.ignoreZ.Value(),
 		Type:            gp.Type(),
 	})
 }

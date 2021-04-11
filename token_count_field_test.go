@@ -14,7 +14,7 @@ func TestTokenCountField(t *testing.T) {
       "mappings": {
         "properties": {
             "tokenCount": {
-                "type": "tokenCount"
+                "type": "token_count"
            }
         }
      }

@@ -14,7 +14,7 @@ func TestIPRangeField(t *testing.T) {
       "mappings": {
         "properties": {
             "iPRange": {
-                "type": "iPRange"
+                "type": "ip_range"
            }
         }
      }

@@ -1,8 +1,6 @@
 package picker
 
 import (
-	"fmt"
-
 	"github.com/chanced/dynamic"
 )
 
@@ -120,8 +118,6 @@ func (q *TermsSetQuery) UnmarshalJSON(data []byte) error {
 	for field, d := range obj {
 		q.field = field
 		p := termsSetQuery{}
-		str := string(d)
-		fmt.Println(str)
 		err := p.UnmarshalJSON(d)
 		if err != nil {
 			return err

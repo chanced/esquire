@@ -14,7 +14,7 @@ func TestSearchAsYouTypeField(t *testing.T) {
       "mappings": {
         "properties": {
             "searchAsYouType": {
-                "type": "searchAsYouType"
+                "type": "search_as_you_type"
            }
         }
      }
