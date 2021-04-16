@@ -51,8 +51,7 @@ func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) er
 				return err
 			}
 			bv, _ := b.Bool()
-			a.SetFuzzyTranspositions(bv)
-			return nil
+			return a.SetFuzzyTranspositions(bv)
 		}
 		var str string
 		err = json.Unmarshal(data, &str)
@@ -64,11 +63,10 @@ func unmarshalFuzzyTranspositionsParam(data dynamic.JSON, target interface{}) er
 			return err
 		}
 		if v, ok := b.Bool(); ok {
-			a.SetFuzzyTranspositions(v)
-			return nil
-		} else {
-			return &json.UnmarshalTypeError{Value: string(data), Type: typeString}
+			return a.SetFuzzyTranspositions(v)
 		}
+
+		return &json.UnmarshalTypeError{Value: string(data), Type: typeString}
 
 	}
 	return nil

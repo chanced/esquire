@@ -251,9 +251,9 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 - #### [Joining queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/joining-queries.html)
   - [x] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-nested-query.html)**\
          Documents may contain fields of type nested. These fields are used to index arrays of objects, where each object can be queried (with the nested query) as an independent document.
-  - [ ] **[Has child](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-has-child-query.html)**\
+  - [x] **[Has child](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-has-child-query.html)**\
          A join field relationship can exist between documents within a single index. The has_child query returns parent documents whose child documents match the specified query, while the has_parent query returns child documents whose parent document matches the specified query.
-  - [ ] **[Has parent](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-has-parent-query.html)**\
+  - [x] **[Has parent](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-has-parent-query.html)**\
          Returns child documents whose joined parent document matches a provided query. You can create parent-child relationships between documents in the same index using a join field mapping.
   - [x] **[Parent ID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-parent-id-query.html)**\
          Returns child documents joined to a specific parent document. You can use a join field mapping to create parent-child relationships between documents in the same index.

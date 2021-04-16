@@ -21,10 +21,12 @@ const (
 	// ScoreModeMax - maximum score is used
 	ScoreModeMax ScoreMode = "max"
 	// ScoreModeMin - minimum score is used
-	ScoreModeMin ScoreMode = "min"
+	ScoreModeMin  ScoreMode = "min"
+	ScoreModeNone ScoreMode = "none"
 )
 const DefaultNestedScoreMode = ScoreModeAvg
 const DefaultScoreMode = ScoreModeMultiply
+const DefaultHasChildScoreMode = ScoreModeNone
 
 type ScoreMode string
 
@@ -72,12 +74,11 @@ func (sm *scoreModeParam) SetScoreMode(scoreMode ScoreMode) error {
 	return nil
 }
 func (sm *scoreModeParam) ScoreMode() ScoreMode {
-	if sm.scoreMode == ScoreModeUnspecified {
+	if sm.scoreMode == "" {
 		return DefaultScoreMode
 	}
 	return sm.scoreMode
 }
-
 func marshalScoreModeParam(source interface{}) (dynamic.JSON, error) {
 	if b, ok := source.(WithScoreMode); ok {
 		if b.ScoreMode() != DefaultScoreMode {
