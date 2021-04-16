@@ -134,6 +134,10 @@ func (t *TermsQuery) unmarshalLookupJSON(data []byte) error {
 	t.lookup = tl
 	return nil
 }
+func (t *TermsQuery) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
+}
+
 func (t *TermsQuery) UnmarshalJSON(data []byte) error {
 	*t = TermsQuery{}
 
@@ -157,10 +161,6 @@ func (t *TermsQuery) UnmarshalJSON(data []byte) error {
 		return t.unmarshalLookupJSON(fd)
 	}
 	return err
-}
-
-func (t *TermsQuery) UnmarshalBSON(data []byte) error {
-	return t.UnmarshalJSON(data)
 }
 
 type TermsQuery struct {

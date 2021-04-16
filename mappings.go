@@ -30,6 +30,10 @@ type FieldMappings struct {
 	Properties Fields `json:"properties"`
 }
 
+func (m *Mappings) UnmarshalBSON(data []byte) error {
+	return m.UnmarshalJSON(data)
+}
+
 func (m *Mappings) UnmarshalJSON(data []byte) error {
 	*m = Mappings{}
 	var v mappings

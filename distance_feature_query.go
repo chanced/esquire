@@ -39,9 +39,17 @@ func (q *DistanceFeatureQuery) Clear() {
 	}
 	*q = DistanceFeatureQuery{}
 }
+func (q *DistanceFeatureQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *DistanceFeatureQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q DistanceFeatureQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q DistanceFeatureQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

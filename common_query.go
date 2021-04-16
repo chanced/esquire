@@ -42,9 +42,17 @@ func (q *CommonQuery) Clear() {
 	}
 	*q = CommonQuery{}
 }
+func (q *CommonQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *CommonQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q CommonQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q CommonQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

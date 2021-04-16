@@ -85,9 +85,17 @@ func (a *AliasField) SetPath(path string) error {
 	a.path = path
 	return nil
 }
+func (a AliasField) MarshalBSON() ([]byte, error) {
+	return a.MarshalJSON()
+}
+
 func (a AliasField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(aliasField{Path: a.path, Type: a.Type()})
 }
+func (a *AliasField) UnmarshalBSON(data []byte) error {
+	return a.UnmarshalJSON(data)
+}
+
 func (a *AliasField) UnmarshalJSON(data []byte) error {
 	p := AliasFieldParams{}
 	err := json.Unmarshal(data, &p)

@@ -68,12 +68,20 @@ func (b *BoostingQuery) SetPositive(params Querier) error {
 	return nil
 }
 
+func (b BoostingQuery) MarshalBSON() ([]byte, error) {
+	return b.MarshalJSON()
+}
+
 func (b BoostingQuery) MarshalJSON() ([]byte, error) {
 	return json.Marshal(boostingQuery{
 		Negative:      b.negative,
 		Positive:      b.positive,
 		NegativeBoost: b.negativeBoost,
 	})
+}
+
+func (b *BoostingQuery) UnmarshalBSON(data []byte) error {
+	return b.UnmarshalJSON(data)
 }
 
 func (b *BoostingQuery) UnmarshalJSON(data []byte) error {

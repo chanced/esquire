@@ -127,6 +127,10 @@ func (t *TermQuery) SetValue(v string) error {
 	return nil
 }
 
+func (t TermQuery) MarshalBSON() ([]byte, error) {
+	return t.MarshalJSON()
+}
+
 func (t TermQuery) MarshalJSON() ([]byte, error) {
 	if t.IsEmpty() {
 		return dynamic.Null, nil
@@ -137,6 +141,10 @@ func (t TermQuery) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(dynamic.Map{t.field: data})
+}
+
+func (t *TermQuery) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
 }
 
 func (t *TermQuery) UnmarshalJSON(data []byte) error {

@@ -39,9 +39,17 @@ func (q *SpanWithinQuery) Clear() {
 	}
 	*q = SpanWithinQuery{}
 }
+func (q *SpanWithinQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *SpanWithinQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q SpanWithinQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q SpanWithinQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

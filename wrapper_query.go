@@ -39,9 +39,17 @@ func (q *WrapperQuery) Clear() {
 	}
 	*q = WrapperQuery{}
 }
+func (q *WrapperQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *WrapperQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q WrapperQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q WrapperQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

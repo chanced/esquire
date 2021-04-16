@@ -184,6 +184,10 @@ func (LongField) Type() FieldType {
 func (l *LongField) Field() (Field, error) {
 	return l, nil
 }
+func (l *LongField) UnmarshalBSON(data []byte) error {
+	return l.UnmarshalJSON(data)
+}
+
 func (l *LongField) UnmarshalJSON(data []byte) error {
 
 	var params LongFieldParams
@@ -194,6 +198,10 @@ func (l *LongField) UnmarshalJSON(data []byte) error {
 	v, err := params.Long()
 	*l = *v
 	return err
+}
+
+func (l LongField) MarshalBSON() ([]byte, error) {
+	return l.MarshalJSON()
 }
 
 func (l LongField) MarshalJSON() ([]byte, error) {
@@ -251,6 +259,10 @@ func (IntegerField) Type() FieldType {
 	return FieldTypeInteger
 }
 
+func (i *IntegerField) UnmarshalBSON(data []byte) error {
+	return i.UnmarshalJSON(data)
+}
+
 func (i *IntegerField) UnmarshalJSON(data []byte) error {
 
 	var params IntegerFieldParams
@@ -262,6 +274,10 @@ func (i *IntegerField) UnmarshalJSON(data []byte) error {
 	v, err := params.Integer()
 	*i = *v
 	return err
+}
+
+func (i IntegerField) MarshalBSON() ([]byte, error) {
+	return i.MarshalJSON()
 }
 
 func (i IntegerField) MarshalJSON() ([]byte, error) {
@@ -319,6 +335,10 @@ func (ShortField) Type() FieldType {
 func (s *ShortField) Field() (Field, error) {
 	return s, nil
 }
+func (s *ShortField) UnmarshalBSON(data []byte) error {
+	return s.UnmarshalJSON(data)
+}
+
 func (s *ShortField) UnmarshalJSON(data []byte) error {
 
 	var params ShortFieldParams
@@ -329,6 +349,10 @@ func (s *ShortField) UnmarshalJSON(data []byte) error {
 	v, err := params.Short()
 	*s = *v
 	return err
+}
+
+func (s ShortField) MarshalBSON() ([]byte, error) {
+	return s.MarshalJSON()
 }
 
 func (s ShortField) MarshalJSON() ([]byte, error) {
@@ -385,6 +409,10 @@ func (DoubleField) Type() FieldType {
 	return FieldTypeDouble
 }
 
+func (d *DoubleField) UnmarshalBSON(data []byte) error {
+	return d.UnmarshalJSON(data)
+}
+
 func (d *DoubleField) UnmarshalJSON(data []byte) error {
 
 	var params DoubleFieldParams
@@ -395,6 +423,10 @@ func (d *DoubleField) UnmarshalJSON(data []byte) error {
 	v, err := params.Double()
 	*d = *v
 	return err
+}
+
+func (d DoubleField) MarshalBSON() ([]byte, error) {
+	return d.MarshalJSON()
 }
 
 func (d DoubleField) MarshalJSON() ([]byte, error) {
@@ -452,6 +484,10 @@ func (ByteField) Type() FieldType {
 	return FieldTypeByte
 }
 
+func (b *ByteField) UnmarshalBSON(data []byte) error {
+	return b.UnmarshalJSON(data)
+}
+
 func (b *ByteField) UnmarshalJSON(data []byte) error {
 
 	var params ByteFieldParams
@@ -462,6 +498,10 @@ func (b *ByteField) UnmarshalJSON(data []byte) error {
 	v, err := params.Byte()
 	*b = *v
 	return err
+}
+
+func (b ByteField) MarshalBSON() ([]byte, error) {
+	return b.MarshalJSON()
 }
 
 func (b ByteField) MarshalJSON() ([]byte, error) {
@@ -519,6 +559,10 @@ func (FloatField) Type() FieldType {
 func (f *FloatField) Field() (Field, error) {
 	return f, nil
 }
+func (f *FloatField) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *FloatField) UnmarshalJSON(data []byte) error {
 
 	var params FloatFieldParams
@@ -529,6 +573,10 @@ func (f *FloatField) UnmarshalJSON(data []byte) error {
 	v, err := params.Float()
 	*f = *v
 	return err
+}
+
+func (f FloatField) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
 }
 
 func (f FloatField) MarshalJSON() ([]byte, error) {

@@ -63,6 +63,10 @@ func (WildcardField) Type() FieldType {
 	return FieldTypeWildcardKeyword
 }
 
+func (w WildcardField) MarshalBSON() ([]byte, error) {
+	return w.MarshalJSON()
+}
+
 func (w WildcardField) MarshalJSON() ([]byte, error) {
 	return wildcardField{
 		NullValue:   w.nullValue,
@@ -70,6 +74,10 @@ func (w WildcardField) MarshalJSON() ([]byte, error) {
 		Type:        string(w.Type()),
 	}.MarshalJSON()
 }
+func (w *WildcardField) UnmarshalBSON(data []byte) error {
+	return w.UnmarshalJSON(data)
+}
+
 func (w *WildcardField) UnmarshalJSON(data []byte) error {
 	*w = WildcardField{}
 	var p WildcardFieldParams

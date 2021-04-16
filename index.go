@@ -23,8 +23,16 @@ type index struct {
 	Mappings FieldMappings `json:"mappings"`
 }
 
+func (i Index) MarshalBSON() ([]byte, error) {
+	return i.MarshalJSON()
+}
+
 func (i Index) MarshalJSON() ([]byte, error) {
 	return json.Marshal(index{Mappings: i.Mappings})
+}
+
+func (i *Index) UnmarshalBSON(data []byte) error {
+	return i.UnmarshalJSON(data)
 }
 
 func (i *Index) UnmarshalJSON(data []byte) error {

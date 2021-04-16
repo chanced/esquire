@@ -1552,6 +1552,10 @@ func (q *Query) IsEmpty() bool {
 	return true
 }
 
+func (q *Query) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *Query) UnmarshalJSON(data []byte) error {
 	*q = Query{}
 	if len(data) == 0 || dynamic.JSON(data).IsNull() {
@@ -1575,6 +1579,10 @@ func (q *Query) UnmarshalJSON(data []byte) error {
 		q.setClause(c)
 	}
 	return nil
+}
+
+func (q Query) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
 }
 
 func (q Query) MarshalJSON() ([]byte, error) {

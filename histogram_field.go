@@ -26,9 +26,17 @@ func (HistogramField) Type() FieldType {
 func (h *HistogramField) Field() (Field, error) {
 	return h, nil
 }
+func (h *HistogramField) UnmarshalBSON(data []byte) error {
+	return h.UnmarshalJSON(data)
+}
+
 func (h *HistogramField) UnmarshalJSON(data []byte) error {
 
 	return nil
+}
+
+func (h HistogramField) MarshalBSON() ([]byte, error) {
+	return h.MarshalJSON()
 }
 
 func (h HistogramField) MarshalJSON() ([]byte, error) {

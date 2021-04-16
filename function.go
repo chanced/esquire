@@ -111,25 +111,29 @@ type Functions []Function
 
 // TODO: This needs refactoring. Funcs are a pain to unmarshal
 
-func (f *Functions) UnmarshalJSON(raw []byte) error {
+func (f *Functions) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
+func (f *Functions) UnmarshalJSON(data []byte) error {
 	*f = Functions{}
 	var fds []dynamic.JSON
-	data := dynamic.JSON(raw)
-	if data.IsNull() || len(data) == 0 {
+	d := dynamic.JSON(data)
+	if d.IsNull() || len(d) == 0 {
 		return nil
 	}
-	if data.IsNull() {
+	if d.IsNull() {
 		return nil
 	}
 
-	if data.IsArray() {
-		err := json.Unmarshal(data, &fds)
+	if d.IsArray() {
+		err := json.Unmarshal(d, &fds)
 		if err != nil {
 			return err
 		}
 	} else {
 
-		fds = []dynamic.JSON{data}
+		fds = []dynamic.JSON{d}
 	}
 
 	for _, fd := range fds {

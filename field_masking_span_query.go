@@ -39,9 +39,17 @@ func (q *FieldMaskingSpanQuery) Clear() {
 	}
 	*q = FieldMaskingSpanQuery{}
 }
+func (q *FieldMaskingSpanQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *FieldMaskingSpanQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q FieldMaskingSpanQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q FieldMaskingSpanQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

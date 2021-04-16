@@ -86,6 +86,10 @@ type MatchBoolPrefixQuery struct {
 func (MatchBoolPrefixQuery) Kind() QueryKind {
 	return QueryKindMatchBoolPrefix
 }
+func (m *MatchBoolPrefixQuery) UnmarshalBSON(data []byte) error {
+	return m.UnmarshalJSON(data)
+}
+
 func (m *MatchBoolPrefixQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchBoolPrefixQuery{}
 	obj := dynamic.JSONObject{}
@@ -137,6 +141,10 @@ func (m *MatchBoolPrefixQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (m MatchBoolPrefixQuery) MarshalBSON() ([]byte, error) {
+	return m.MarshalJSON()
+}
+
 func (m MatchBoolPrefixQuery) MarshalJSON() ([]byte, error) {
 	qd, err := matchBoolPrefixQuery{
 		Query:               m.query,

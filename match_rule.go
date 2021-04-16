@@ -94,6 +94,10 @@ func (m *MatchRule) SetQuery(query string) error {
 func (MatchRule) Type() RuleType {
 	return RuleTypeMatch
 }
+func (m *MatchRule) UnmarshalBSON(data []byte) error {
+	return m.UnmarshalJSON(data)
+}
+
 func (m *MatchRule) UnmarshalJSON(data []byte) error {
 	*m = MatchRule{}
 	rd := dynamic.JSON(data)
@@ -118,6 +122,10 @@ func (m *MatchRule) UnmarshalJSON(data []byte) error {
 	mv, err := r.MatchRule()
 	*m = *mv
 	return err
+}
+
+func (m MatchRule) MarshalBSON() ([]byte, error) {
+	return m.MarshalJSON()
 }
 
 func (m MatchRule) MarshalJSON() ([]byte, error) {

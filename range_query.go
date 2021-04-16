@@ -156,6 +156,10 @@ func (r RangeQuery) values() map[string]dynamic.StringNumberOrTime {
 		"lte": r.lessThanOrEqualTo,
 	}
 }
+func (r RangeQuery) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r RangeQuery) MarshalJSON() ([]byte, error) {
 	if r.IsEmpty() {
 		return dynamic.Null, nil
@@ -179,6 +183,10 @@ func (r RangeQuery) marshalClauseJSON() (dynamic.JSON, error) {
 		}
 	}
 	return json.Marshal(data)
+}
+
+func (r *RangeQuery) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *RangeQuery) UnmarshalJSON(data []byte) error {

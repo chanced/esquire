@@ -39,9 +39,17 @@ func (q *PinnedQuery) Clear() {
 	}
 	*q = PinnedQuery{}
 }
+func (q *PinnedQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *PinnedQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q PinnedQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q PinnedQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

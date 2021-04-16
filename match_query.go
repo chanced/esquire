@@ -195,6 +195,10 @@ func (m *MatchQuery) Query() *dynamic.StringNumberBoolOrTime {
 	return &m.query
 }
 
+func (m MatchQuery) MarshalBSON() ([]byte, error) {
+	return m.MarshalJSON()
+}
+
 func (m MatchQuery) MarshalJSON() ([]byte, error) {
 	if m.IsEmpty() {
 		return dynamic.Null, nil
@@ -213,6 +217,10 @@ func (m MatchQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	}
 	params["query"] = m.query
 	return json.Marshal(params)
+}
+
+func (m *MatchQuery) UnmarshalBSON(data []byte) error {
+	return m.UnmarshalJSON(data)
 }
 
 func (m *MatchQuery) UnmarshalJSON(data []byte) error {

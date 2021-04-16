@@ -39,9 +39,17 @@ func (q *HasParentQuery) Clear() {
 	}
 	*q = HasParentQuery{}
 }
+func (q *HasParentQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *HasParentQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q HasParentQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q HasParentQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

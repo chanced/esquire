@@ -161,6 +161,10 @@ func (g *GaussFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, g)
 }
 
+func (g GaussFunction) MarshalBSON() ([]byte, error) {
+	return g.MarshalJSON()
+}
+
 func (g GaussFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&g)
 }

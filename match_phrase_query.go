@@ -56,6 +56,10 @@ type MatchPhraseQuery struct {
 func (MatchPhraseQuery) Kind() QueryKind {
 	return QueryKindMatchPhrase
 }
+func (m *MatchPhraseQuery) UnmarshalBSON(data []byte) error {
+	return m.UnmarshalJSON(data)
+}
+
 func (m *MatchPhraseQuery) UnmarshalJSON(data []byte) error {
 	*m = MatchPhraseQuery{}
 	obj := dynamic.JSONObject{}
@@ -92,6 +96,10 @@ func (m *MatchPhraseQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (m MatchPhraseQuery) MarshalBSON() ([]byte, error) {
+	return m.MarshalJSON()
+}
+
 func (m MatchPhraseQuery) MarshalJSON() ([]byte, error) {
 	qd, err := matchPhraseQuery{
 		Query:     m.query,

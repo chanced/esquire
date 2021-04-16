@@ -162,6 +162,10 @@ func (SearchAsYouTypeField) Type() FieldType {
 	return FieldTypeSearchAsYouType
 }
 
+func (s *SearchAsYouTypeField) UnmarshalBSON(data []byte) error {
+	return s.UnmarshalJSON(data)
+}
+
 func (s *SearchAsYouTypeField) UnmarshalJSON(data []byte) error {
 	var params SearchAsYouTypeFieldParams
 	err := json.Unmarshal(data, &params)
@@ -171,6 +175,10 @@ func (s *SearchAsYouTypeField) UnmarshalJSON(data []byte) error {
 	v, err := params.SearchAsYouType()
 	*s = *v
 	return err
+}
+
+func (s SearchAsYouTypeField) MarshalBSON() ([]byte, error) {
+	return s.MarshalJSON()
 }
 
 func (s SearchAsYouTypeField) MarshalJSON() ([]byte, error) {

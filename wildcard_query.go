@@ -84,6 +84,10 @@ func (q *WildcardQuery) SetValue(value string) error {
 func (q WildcardQuery) Value() string {
 	return q.value
 }
+func (q *WildcardQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *WildcardQuery) UnmarshalJSON(data []byte) error {
 	*q = WildcardQuery{}
 	rd := dynamic.JSONObject{}
@@ -107,6 +111,10 @@ func (q *WildcardQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (q WildcardQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q WildcardQuery) MarshalJSON() ([]byte, error) {
 	data, err := marshalClauseParams(&q)
 	if err != nil {

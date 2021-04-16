@@ -131,6 +131,10 @@ func (f *FlattenedField) Field() (Field, error) {
 func (FlattenedField) Type() FieldType {
 	return FieldTypeFlattened
 }
+func (f FlattenedField) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
+}
+
 func (f FlattenedField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(flattenedField{
 		DepthLimit:               f.depthLimit.Value(),
@@ -145,6 +149,10 @@ func (f FlattenedField) MarshalJSON() ([]byte, error) {
 		Type:                     f.Type(),
 	})
 }
+func (f *FlattenedField) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *FlattenedField) UnmarshalJSON(data []byte) error {
 	var p FlattenedFieldParams
 

@@ -108,6 +108,10 @@ func (IntegerRangeField) Type() FieldType {
 	return FieldTypeIntegerRange
 }
 
+func (r IntegerRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r IntegerRangeField) MarshalJSON() ([]byte, error) {
 	return numericRangeField{
 		Coerce: r.coerce.Value(),
@@ -115,6 +119,10 @@ func (r IntegerRangeField) MarshalJSON() ([]byte, error) {
 		Store:  r.store.Value(),
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *IntegerRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *IntegerRangeField) UnmarshalJSON(data []byte) error {
@@ -175,6 +183,10 @@ func (FloatRangeField) Type() FieldType {
 	return FieldTypeFloatRange
 }
 
+func (r FloatRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r FloatRangeField) MarshalJSON() ([]byte, error) {
 	return numericRangeField{
 		Coerce: r.coerce.Value(),
@@ -182,6 +194,10 @@ func (r FloatRangeField) MarshalJSON() ([]byte, error) {
 		Store:  r.store.Value(),
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *FloatRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *FloatRangeField) UnmarshalJSON(data []byte) error {
@@ -243,6 +259,10 @@ func (LongRangeField) Type() FieldType {
 	return FieldTypeLongRange
 }
 
+func (r LongRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r LongRangeField) MarshalJSON() ([]byte, error) {
 	return numericRangeField{
 		Coerce: r.coerce.Value(),
@@ -250,6 +270,10 @@ func (r LongRangeField) MarshalJSON() ([]byte, error) {
 		Store:  r.store.Value(),
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *LongRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *LongRangeField) UnmarshalJSON(data []byte) error {
@@ -310,6 +334,10 @@ func (DoubleRangeField) Type() FieldType {
 	return FieldTypeDoubleRange
 }
 
+func (r DoubleRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r DoubleRangeField) MarshalJSON() ([]byte, error) {
 	return numericRangeField{
 		Coerce: r.coerce.Value(),
@@ -317,6 +345,10 @@ func (r DoubleRangeField) MarshalJSON() ([]byte, error) {
 		Store:  r.store.Value(),
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *DoubleRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *DoubleRangeField) UnmarshalJSON(data []byte) error {
@@ -428,6 +460,10 @@ func (DateRangeField) Type() FieldType {
 	return FieldTypeDateRange
 }
 
+func (r DateRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r DateRangeField) MarshalJSON() ([]byte, error) {
 	return dateRangeField{
 		Coerce: r.coerce.Value(),
@@ -436,6 +472,10 @@ func (r DateRangeField) MarshalJSON() ([]byte, error) {
 		Format: r.format,
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *DateRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *DateRangeField) UnmarshalJSON(data []byte) error {
@@ -504,6 +544,10 @@ func (IPRangeField) Type() FieldType {
 	return FieldTypeIPRange
 }
 
+func (r IPRangeField) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
+}
+
 func (r IPRangeField) MarshalJSON() ([]byte, error) {
 	return ipRangeField{
 		Coerce: r.coerce.Value(),
@@ -511,6 +555,10 @@ func (r IPRangeField) MarshalJSON() ([]byte, error) {
 		Store:  r.store.Value(),
 		Type:   r.Type(),
 	}.MarshalJSON()
+}
+
+func (r *IPRangeField) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
 }
 
 func (r *IPRangeField) UnmarshalJSON(data []byte) error {

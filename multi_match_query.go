@@ -175,6 +175,10 @@ func (q *MultiMatchQuery) Clear() {
 func (q *MultiMatchQuery) IsEmpty() bool {
 	return q == nil || len(q.fields) == 0 || len(q.query) == 0
 }
+func (q MultiMatchQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q MultiMatchQuery) MarshalJSON() ([]byte, error) {
 	params, err := marshalClauseParams(&q)
 	if err != nil {
@@ -190,6 +194,10 @@ func (q MultiMatchQuery) MarshalJSON() ([]byte, error) {
 
 func (MultiMatchQuery) Kind() QueryKind {
 	return QueryKindMultiMatch
+}
+
+func (q *MultiMatchQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
 }
 
 func (q *MultiMatchQuery) UnmarshalJSON(data []byte) error {

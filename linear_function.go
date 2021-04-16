@@ -161,6 +161,10 @@ func (l *LinearFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, l)
 }
 
+func (l LinearFunction) MarshalBSON() ([]byte, error) {
+	return l.MarshalJSON()
+}
+
 func (l LinearFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&l)
 }

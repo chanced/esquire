@@ -95,6 +95,10 @@ func (s *ScriptScoreQuery) Set(scriptScore *ScriptScoreQueryParams) error {
 func (s *ScriptScoreQuery) Clause() (QueryClause, error) {
 	return s, nil
 }
+func (s ScriptScoreQuery) MarshalBSON() ([]byte, error) {
+	return s.MarshalJSON()
+}
+
 func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
@@ -119,6 +123,10 @@ func (s ScriptScoreQuery) MarshalJSON() ([]byte, error) {
 		data["query"] = query
 	}
 	return json.Marshal(data)
+}
+
+func (s *ScriptScoreQuery) UnmarshalBSON(data []byte) error {
+	return s.UnmarshalJSON(data)
 }
 
 func (s *ScriptScoreQuery) UnmarshalJSON(data []byte) error {

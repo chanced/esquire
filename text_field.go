@@ -214,6 +214,10 @@ func (TextField) Type() FieldType {
 	return FieldTypeText
 }
 
+func (t *TextField) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
+}
+
 func (t *TextField) UnmarshalJSON(data []byte) error {
 	var params TextFieldParams
 	err := json.Unmarshal(data, &params)
@@ -223,6 +227,10 @@ func (t *TextField) UnmarshalJSON(data []byte) error {
 	v, err := params.Text()
 	*t = *v
 	return err
+}
+
+func (t TextField) MarshalBSON() ([]byte, error) {
+	return t.MarshalJSON()
 }
 
 func (t TextField) MarshalJSON() ([]byte, error) {

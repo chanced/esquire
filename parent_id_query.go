@@ -102,6 +102,10 @@ func (q *ParentIDQuery) Clear() {
 	}
 	*q = ParentIDQuery{}
 }
+func (q *ParentIDQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *ParentIDQuery) UnmarshalJSON(data []byte) error {
 	q.Clear()
 	p := parentIDQuery{}
@@ -115,6 +119,10 @@ func (q *ParentIDQuery) UnmarshalJSON(data []byte) error {
 	q.ignoreUnmapped.Set(p.IgnoreUnmapped)
 	return nil
 }
+func (q ParentIDQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q ParentIDQuery) MarshalJSON() ([]byte, error) {
 	return parentIDQuery{
 		Name:           q.name,

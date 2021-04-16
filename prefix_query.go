@@ -85,6 +85,10 @@ func (p PrefixQuery) Kind() QueryKind {
 	return QueryKindPrefix
 }
 
+func (p PrefixQuery) MarshalBSON() ([]byte, error) {
+	return p.MarshalJSON()
+}
+
 func (p PrefixQuery) MarshalJSON() ([]byte, error) {
 	if p.IsEmpty() {
 		return dynamic.Null, nil
@@ -103,6 +107,10 @@ func (p PrefixQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	}
 	params["value"] = p.value
 	return json.Marshal(params)
+}
+
+func (p *PrefixQuery) UnmarshalBSON(data []byte) error {
+	return p.UnmarshalJSON(data)
 }
 
 func (p *PrefixQuery) UnmarshalJSON(data []byte) error {

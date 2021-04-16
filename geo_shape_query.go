@@ -101,6 +101,10 @@ func (q *GeoShapeQuery) Clear() {
 	}
 	*q = GeoShapeQuery{}
 }
+func (q *GeoShapeQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *GeoShapeQuery) UnmarshalJSON(data []byte) error {
 	*q = GeoShapeQuery{}
 	field, fd, err := unmarshalField(data)
@@ -123,6 +127,10 @@ func (q *GeoShapeQuery) UnmarshalJSON(data []byte) error {
 	q.name = v.Name
 	return nil
 }
+func (q GeoShapeQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q GeoShapeQuery) MarshalJSON() ([]byte, error) {
 	v := geoShapeQuery{
 		Name:           q.name,

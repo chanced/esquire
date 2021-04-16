@@ -43,9 +43,17 @@ func (q *RegexpQuery) Clear() {
 	}
 	*q = RegexpQuery{}
 }
+func (q *RegexpQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *RegexpQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q RegexpQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q RegexpQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

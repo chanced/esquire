@@ -22,11 +22,19 @@ type SearchField struct {
 
 type field SearchField
 
+func (f SearchField) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
+}
+
 func (f SearchField) MarshalJSON() ([]byte, error) {
 	if f.Format != "" {
 		return json.Marshal(f.Field)
 	}
 	return json.Marshal(field(f))
+}
+
+func (f *SearchField) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
 }
 
 func (f *SearchField) UnmarshalJSON(data []byte) error {

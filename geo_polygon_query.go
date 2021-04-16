@@ -39,9 +39,17 @@ func (q *GeoPolygonQuery) Clear() {
 	}
 	*q = GeoPolygonQuery{}
 }
+func (q *GeoPolygonQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *GeoPolygonQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q GeoPolygonQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q GeoPolygonQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

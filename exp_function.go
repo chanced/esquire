@@ -161,6 +161,10 @@ func (e *ExpFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, e)
 }
 
+func (e ExpFunction) MarshalBSON() ([]byte, error) {
+	return e.MarshalJSON()
+}
+
 func (e ExpFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&e)
 }

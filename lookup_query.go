@@ -123,6 +123,10 @@ func (l LookupValues) IsEmpty() bool {
 	return len(l.id) == 0 && len(l.index) == 0 && len(l.path) == 0 && len(l.routing) == 0
 }
 
+func (l *LookupValues) UnmarshalBSON(data []byte) error {
+	return l.UnmarshalJSON(data)
+}
+
 func (l *LookupValues) UnmarshalJSON(data []byte) error {
 	*l = LookupValues{}
 	var m map[string]string
@@ -136,6 +140,10 @@ func (l *LookupValues) UnmarshalJSON(data []byte) error {
 	l.routing = m["routing"]
 	return nil
 }
+func (l LookupValues) MarshalBSON() ([]byte, error) {
+	return l.MarshalJSON()
+}
+
 func (l LookupValues) MarshalJSON() ([]byte, error) {
 	m := map[string]string{
 		"id":      l.id,

@@ -78,6 +78,10 @@ func (f Fields) Set(key string, field Fielder) (Field, error) {
 	return fld, nil
 }
 
+func (f *Fields) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *Fields) UnmarshalJSON(data []byte) error {
 	var m map[string]dynamic.JSON
 	err := json.Unmarshal(data, &m)

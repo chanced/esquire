@@ -142,6 +142,10 @@ func (BooleanField) Type() FieldType {
 	return FieldTypeBoolean
 }
 
+func (b *BooleanField) UnmarshalBSON(data []byte) error {
+	return b.UnmarshalJSON(data)
+}
+
 func (b *BooleanField) UnmarshalJSON(data []byte) error {
 
 	var params BooleanFieldParams
@@ -152,6 +156,10 @@ func (b *BooleanField) UnmarshalJSON(data []byte) error {
 	v, err := params.Boolean()
 	*b = *v
 	return err
+}
+
+func (b BooleanField) MarshalBSON() ([]byte, error) {
+	return b.MarshalJSON()
 }
 
 func (b BooleanField) MarshalJSON() ([]byte, error) {

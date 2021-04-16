@@ -316,6 +316,10 @@ func (q *MoreLikeThisQuery) Clear() {
 	}
 	*q = MoreLikeThisQuery{}
 }
+func (q *MoreLikeThisQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *MoreLikeThisQuery) UnmarshalJSON(data []byte) error {
 	*q = MoreLikeThisQuery{}
 	var p moreLikeThisQuery
@@ -331,6 +335,10 @@ func (q *MoreLikeThisQuery) UnmarshalJSON(data []byte) error {
 	*q = *qv
 	return nil
 }
+func (q MoreLikeThisQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q MoreLikeThisQuery) MarshalJSON() ([]byte, error) {
 	return moreLikeThisQuery{
 		Name:                   q.name,

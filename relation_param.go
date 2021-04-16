@@ -23,6 +23,10 @@ func (r Relation) IsValid() bool {
 	return false
 }
 
+func (r *Relation) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
+}
+
 func (r *Relation) UnmarshalJSON(data []byte) error {
 	var str string
 	err := json.Unmarshal(data, &str)
@@ -31,6 +35,10 @@ func (r *Relation) UnmarshalJSON(data []byte) error {
 	}
 	*r = Relation(strings.ToUpper(str))
 	return nil
+}
+
+func (r Relation) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
 }
 
 func (r Relation) MarshalJSON() ([]byte, error) {

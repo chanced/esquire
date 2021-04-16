@@ -169,6 +169,10 @@ func (q *GeoDistanceQuery) Clear() {
 	}
 	*q = GeoDistanceQuery{}
 }
+func (q *GeoDistanceQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *GeoDistanceQuery) UnmarshalJSON(data []byte) error {
 	*q = GeoDistanceQuery{}
 	obj := dynamic.JSONObject{}
@@ -205,6 +209,10 @@ func (q *GeoDistanceQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (q GeoDistanceQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q GeoDistanceQuery) MarshalJSON() ([]byte, error) {
 	geoPoint, err := json.Marshal(q.geoPoint)
 	if err != nil {

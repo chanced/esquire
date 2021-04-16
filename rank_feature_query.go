@@ -39,9 +39,17 @@ func (q *RankFeatureQuery) Clear() {
 	}
 	*q = RankFeatureQuery{}
 }
+func (q *RankFeatureQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *RankFeatureQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q RankFeatureQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q RankFeatureQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

@@ -67,6 +67,10 @@ func (w *WildcardRule) SetWildcard(wildcard string) error {
 func (WildcardRule) Type() RuleType {
 	return RuleTypeWildcard
 }
+func (p *WildcardRule) UnmarshalBSON(data []byte) error {
+	return p.UnmarshalJSON(data)
+}
+
 func (p *WildcardRule) UnmarshalJSON(data []byte) error {
 	*p = WildcardRule{}
 	rd := dynamic.JSON(data)
@@ -93,6 +97,10 @@ func (p *WildcardRule) UnmarshalJSON(data []byte) error {
 	mv, err := r.WildcardRule()
 	*p = *mv
 	return err
+}
+
+func (p WildcardRule) MarshalBSON() ([]byte, error) {
+	return p.MarshalJSON()
 }
 
 func (p WildcardRule) MarshalJSON() ([]byte, error) {

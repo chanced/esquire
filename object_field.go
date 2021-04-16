@@ -53,6 +53,10 @@ func (o *ObjectField) Field() (Field, error) {
 	return o, nil
 }
 
+func (o *ObjectField) UnmarshalBSON(data []byte) error {
+	return o.UnmarshalJSON(data)
+}
+
 func (o *ObjectField) UnmarshalJSON(data []byte) error {
 	var p ObjectFieldParams
 	err := json.Unmarshal(data, &p)
@@ -62,6 +66,10 @@ func (o *ObjectField) UnmarshalJSON(data []byte) error {
 	f, err := p.Object()
 	*o = *f
 	return err
+}
+
+func (o ObjectField) MarshalBSON() ([]byte, error) {
+	return o.MarshalJSON()
 }
 
 func (o ObjectField) MarshalJSON() ([]byte, error) {

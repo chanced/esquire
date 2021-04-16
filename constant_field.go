@@ -40,11 +40,19 @@ type ConstantField struct {
 func (c *ConstantField) Field() (Field, error) {
 	return c, nil
 }
+func (c ConstantField) MarshalBSON() ([]byte, error) {
+	return c.MarshalJSON()
+}
+
 func (c ConstantField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(constantField{
 		Value: c.value,
 		Type:  c.Type(),
 	})
+}
+
+func (c *ConstantField) UnmarshalBSON(data []byte) error {
+	return c.UnmarshalJSON(data)
 }
 
 func (c *ConstantField) UnmarshalJSON(data []byte) error {

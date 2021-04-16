@@ -49,6 +49,10 @@ func (b BinaryField) Field() (Field, error) {
 func (BinaryField) Type() FieldType {
 	return FieldTypeBinary
 }
+func (b BinaryField) MarshalBSON() ([]byte, error) {
+	return b.MarshalJSON()
+}
+
 func (b BinaryField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(binaryField{
 		DocValues: b.docValues.Value(),
@@ -56,6 +60,10 @@ func (b BinaryField) MarshalJSON() ([]byte, error) {
 		Type:      b.Type(),
 	})
 }
+func (b *BinaryField) UnmarshalBSON(data []byte) error {
+	return b.UnmarshalJSON(data)
+}
+
 func (b *BinaryField) UnmarshalJSON(data []byte) error {
 	mErr := &MappingError{}
 	p := BinaryFieldParams{}

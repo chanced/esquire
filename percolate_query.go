@@ -217,6 +217,10 @@ func (q *PercolateQuery) Clear() {
 	}
 	*q = PercolateQuery{}
 }
+func (q *PercolateQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *PercolateQuery) UnmarshalJSON(data []byte) error {
 	*q = PercolateQuery{}
 	p := percolateQuery{}
@@ -239,6 +243,10 @@ func (q *PercolateQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (q PercolateQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q PercolateQuery) MarshalJSON() ([]byte, error) {
 	return percolateQuery{
 		Name:         q.name,

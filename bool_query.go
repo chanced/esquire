@@ -174,6 +174,10 @@ func (b *BoolQuery) SetFilter(clauses Clauses) error {
 	return b.filter.Set(clauses)
 }
 
+func (b *BoolQuery) UnmarshalBSON(data []byte) error {
+	return b.UnmarshalJSON(data)
+}
+
 func (b *BoolQuery) UnmarshalJSON(data []byte) error {
 	*b = BoolQuery{}
 	obj, err := unmarshalClauseParams(data, b)
@@ -197,6 +201,10 @@ func (b *BoolQuery) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return nil
+}
+
+func (b BoolQuery) MarshalBSON() ([]byte, error) {
+	return b.MarshalJSON()
 }
 
 func (b BoolQuery) MarshalJSON() ([]byte, error) {

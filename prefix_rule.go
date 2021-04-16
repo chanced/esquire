@@ -68,6 +68,10 @@ func (p *PrefixRule) SetPrefix(prefix string) error {
 func (PrefixRule) Type() RuleType {
 	return RuleTypePrefix
 }
+func (p *PrefixRule) UnmarshalBSON(data []byte) error {
+	return p.UnmarshalJSON(data)
+}
+
 func (p *PrefixRule) UnmarshalJSON(data []byte) error {
 	*p = PrefixRule{}
 	rd := dynamic.JSON(data)
@@ -91,6 +95,10 @@ func (p *PrefixRule) UnmarshalJSON(data []byte) error {
 	mv, err := r.PrefixRule()
 	*p = *mv
 	return err
+}
+
+func (p PrefixRule) MarshalBSON() ([]byte, error) {
+	return p.MarshalJSON()
 }
 
 func (p PrefixRule) MarshalJSON() ([]byte, error) {

@@ -142,6 +142,10 @@ func (DateField) Type() FieldType {
 	return FieldTypeDate
 }
 
+func (d *DateField) UnmarshalBSON(data []byte) error {
+	return d.UnmarshalJSON(data)
+}
+
 func (d *DateField) UnmarshalJSON(data []byte) error {
 
 	var params DateFieldParams
@@ -152,6 +156,10 @@ func (d *DateField) UnmarshalJSON(data []byte) error {
 	v, err := params.Date()
 	*d = *v
 	return err
+}
+
+func (d DateField) MarshalBSON() ([]byte, error) {
+	return d.MarshalJSON()
 }
 
 func (d DateField) MarshalJSON() ([]byte, error) {
@@ -254,6 +262,10 @@ func (d DateNanoSecField) Type() FieldType {
 func (d *DateNanoSecField) Field() (Field, error) {
 	return d, nil
 }
+func (d *DateNanoSecField) UnmarshalBSON(data []byte) error {
+	return d.UnmarshalJSON(data)
+}
+
 func (d *DateNanoSecField) UnmarshalJSON(data []byte) error {
 
 	var params DateNanoSecFieldParams
@@ -264,6 +276,10 @@ func (d *DateNanoSecField) UnmarshalJSON(data []byte) error {
 	v, err := params.DateNanoSec()
 	*d = *v
 	return err
+}
+
+func (d DateNanoSecField) MarshalBSON() ([]byte, error) {
+	return d.MarshalJSON()
 }
 
 func (d DateNanoSecField) MarshalJSON() ([]byte, error) {

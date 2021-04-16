@@ -101,6 +101,10 @@ func (q *ShapeQuery) Clear() {
 	}
 	*q = ShapeQuery{}
 }
+func (q *ShapeQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *ShapeQuery) UnmarshalJSON(data []byte) error {
 	*q = ShapeQuery{}
 	field, fd, err := unmarshalField(data)
@@ -123,6 +127,10 @@ func (q *ShapeQuery) UnmarshalJSON(data []byte) error {
 	q.name = v.Name
 	return nil
 }
+func (q ShapeQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q ShapeQuery) MarshalJSON() ([]byte, error) {
 	v := shapeQuery{
 		Name:           q.name,

@@ -85,6 +85,10 @@ func (f *FuzzyRule) Rule() (QueryRule, error) {
 	return f, nil
 }
 
+func (f *FuzzyRule) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *FuzzyRule) UnmarshalJSON(data []byte) error {
 	*f = FuzzyRule{}
 	rd := dynamic.JSON(data)
@@ -108,6 +112,10 @@ func (f *FuzzyRule) UnmarshalJSON(data []byte) error {
 	mv, err := r.FuzzyRule()
 	*f = *mv
 	return err
+}
+
+func (f FuzzyRule) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
 }
 
 func (f FuzzyRule) MarshalJSON() ([]byte, error) {

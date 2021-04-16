@@ -136,6 +136,10 @@ func (NestedField) Type() FieldType {
 	return FieldTypeNested
 }
 
+func (n *NestedField) UnmarshalBSON(data []byte) error {
+	return n.UnmarshalJSON(data)
+}
+
 func (n *NestedField) UnmarshalJSON(data []byte) error {
 	var p NestedFieldParams
 	err := json.Unmarshal(data, &p)
@@ -145,6 +149,10 @@ func (n *NestedField) UnmarshalJSON(data []byte) error {
 	f, err := p.Nested()
 	*n = *f
 	return err
+}
+
+func (n NestedField) MarshalBSON() ([]byte, error) {
+	return n.MarshalJSON()
 }
 
 func (n NestedField) MarshalJSON() ([]byte, error) {

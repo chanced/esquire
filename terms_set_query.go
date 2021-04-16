@@ -108,6 +108,10 @@ func (q TermsSetQuery) MinimumShouldMatchField() string {
 func (q *TermsSetQuery) SetMinimumShouldMatchField(v string) {
 	q.minimumShouldMatchField = v
 }
+func (q *TermsSetQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *TermsSetQuery) UnmarshalJSON(data []byte) error {
 	*q = TermsSetQuery{}
 	obj := dynamic.JSONObject{}
@@ -131,6 +135,10 @@ func (q *TermsSetQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (q TermsSetQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q TermsSetQuery) MarshalJSON() ([]byte, error) {
 	p := termsSetQuery{
 		Name:                    q.name,

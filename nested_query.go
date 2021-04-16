@@ -102,6 +102,10 @@ func (q *NestedQuery) SetQuery(query Querier) error {
 	q.query = qv
 	return nil
 }
+func (q *NestedQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *NestedQuery) UnmarshalJSON(data []byte) error {
 	*q = NestedQuery{}
 	p := nestedQuery{}
@@ -128,6 +132,10 @@ func (q *NestedQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (q NestedQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q NestedQuery) MarshalJSON() ([]byte, error) {
 	return nestedQuery{
 		Name:           q.name,

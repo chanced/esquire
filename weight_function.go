@@ -59,6 +59,10 @@ func (w *WeightFunction) SetFilter(c CompleteClauser) error {
 	return nil
 }
 
+func (w WeightFunction) MarshalBSON() ([]byte, error) {
+	return w.MarshalJSON()
+}
+
 func (w WeightFunction) MarshalJSON() ([]byte, error) {
 	data := dynamic.JSONObject{}
 	if w.filter != nil {
@@ -77,6 +81,10 @@ func (w WeightFunction) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(data)
 }
+func (w *WeightFunction) UnmarshalBSON(data []byte) error {
+	return w.UnmarshalJSON(data)
+}
+
 func (w *WeightFunction) UnmarshalJSON(data []byte) error {
 	*w = WeightFunction{}
 	var obj dynamic.JSONObject

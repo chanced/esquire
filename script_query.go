@@ -73,6 +73,10 @@ func (s *ScriptQuery) Set(script Scripter) error {
 func (s *ScriptQuery) Clause() (QueryClause, error) {
 	return s, nil
 }
+func (s ScriptQuery) MarshalBSON() ([]byte, error) {
+	return s.MarshalJSON()
+}
+
 func (s ScriptQuery) MarshalJSON() ([]byte, error) {
 	if s.IsEmpty() {
 		return dynamic.Null, nil
@@ -89,6 +93,10 @@ func (s ScriptQuery) MarshalJSON() ([]byte, error) {
 		data["script"] = script
 	}
 	return json.Marshal(data)
+}
+
+func (s *ScriptQuery) UnmarshalBSON(data []byte) error {
+	return s.UnmarshalJSON(data)
 }
 
 func (s *ScriptQuery) UnmarshalJSON(data []byte) error {

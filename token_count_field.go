@@ -99,6 +99,10 @@ func (TokenCountField) Type() FieldType {
 func (t *TokenCountField) Field() (Field, error) {
 	return t, nil
 }
+func (t *TokenCountField) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
+}
+
 func (t *TokenCountField) UnmarshalJSON(data []byte) error {
 
 	var params TokenCountFieldParams
@@ -109,6 +113,10 @@ func (t *TokenCountField) UnmarshalJSON(data []byte) error {
 	v, err := params.TokenCount()
 	*t = *v
 	return err
+}
+
+func (t TokenCountField) MarshalBSON() ([]byte, error) {
+	return t.MarshalJSON()
 }
 
 func (t TokenCountField) MarshalJSON() ([]byte, error) {

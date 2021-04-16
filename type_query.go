@@ -43,9 +43,17 @@ func (q *TypeQuery) Clear() {
 	}
 	*q = TypeQuery{}
 }
+func (q *TypeQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *TypeQuery) UnmarshalJSON(data []byte) error {
 	panic("not implemented")
 }
+func (q TypeQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q TypeQuery) MarshalJSON() ([]byte, error) {
 	panic("not implemented")
 }

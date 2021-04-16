@@ -184,6 +184,10 @@ func (f *FuzzyQuery) setValue(v string) error {
 	return nil
 }
 
+func (f FuzzyQuery) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
+}
+
 func (f FuzzyQuery) MarshalJSON() ([]byte, error) {
 	if f.IsEmpty() {
 		return dynamic.Null, nil
@@ -202,6 +206,10 @@ func (f FuzzyQuery) marshalClauseJSON() (dynamic.JSON, error) {
 	}
 	params["value"] = f.value
 	return json.Marshal(params)
+}
+
+func (f *FuzzyQuery) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
 }
 
 func (f *FuzzyQuery) UnmarshalJSON(data []byte) error {

@@ -162,6 +162,10 @@ type Search struct {
 
 var zeroSearch = &Search{}
 
+func (s *Search) UnmarshalBSON(data []byte) error {
+	return s.UnmarshalJSON(data)
+}
+
 func (s *Search) UnmarshalJSON(data []byte) (err error) {
 	*s = *zeroSearch
 	var m map[string]dynamic.JSON
@@ -352,6 +356,10 @@ func (s *Search) UnmarshalJSON(data []byte) (err error) {
 		s.version = v
 	}
 	return nil
+}
+
+func (s Search) MarshalBSON() ([]byte, error) {
+	return s.MarshalJSON()
 }
 
 func (s Search) MarshalJSON() ([]byte, error) {

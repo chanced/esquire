@@ -184,6 +184,10 @@ func (JoinField) Type() FieldType {
 	return FieldTypeJoin
 }
 
+func (j *JoinField) UnmarshalBSON(data []byte) error {
+	return j.UnmarshalJSON(data)
+}
+
 func (j *JoinField) UnmarshalJSON(data []byte) error {
 	var p JoinFieldParams
 	err := json.Unmarshal(data, &p)
@@ -196,6 +200,10 @@ func (j *JoinField) UnmarshalJSON(data []byte) error {
 	}
 	*j = *f
 	return nil
+}
+
+func (j JoinField) MarshalBSON() ([]byte, error) {
+	return j.MarshalJSON()
 }
 
 func (j JoinField) MarshalJSON() ([]byte, error) {

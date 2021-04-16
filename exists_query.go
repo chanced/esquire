@@ -107,6 +107,10 @@ func (e ExistsQuery) Kind() QueryKind {
 	return QueryKindExists
 }
 
+func (e ExistsQuery) MarshalBSON() ([]byte, error) {
+	return e.MarshalJSON()
+}
+
 func (e ExistsQuery) MarshalJSON() ([]byte, error) {
 	if e.IsEmpty() {
 		return dynamic.Null, nil
@@ -114,6 +118,10 @@ func (e ExistsQuery) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]string{
 		"field": e.field,
 	})
+}
+
+func (e *ExistsQuery) UnmarshalBSON(data []byte) error {
+	return e.UnmarshalJSON(data)
 }
 
 func (e *ExistsQuery) UnmarshalJSON(data []byte) error {

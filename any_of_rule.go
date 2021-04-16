@@ -49,6 +49,10 @@ func (a *AnyOfRule) SetIntervals(intervals Ruleset) error {
 	return nil
 }
 
+func (a *AnyOfRule) UnmarshalBSON(data []byte) error {
+	return a.UnmarshalJSON(data)
+}
+
 func (a *AnyOfRule) UnmarshalJSON(data []byte) error {
 	*a = AnyOfRule{}
 	var rv anyOfRule
@@ -60,6 +64,10 @@ func (a *AnyOfRule) UnmarshalJSON(data []byte) error {
 	a.intervals = rv.Intervals
 
 	return nil
+}
+
+func (a AnyOfRule) MarshalBSON() ([]byte, error) {
+	return a.MarshalJSON()
 }
 
 func (a AnyOfRule) MarshalJSON() ([]byte, error) {

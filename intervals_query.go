@@ -75,6 +75,10 @@ func (q *IntervalsQuery) Intervals() (*IntervalsQuery, error) {
 	return q, nil
 }
 
+func (q IntervalsQuery) MarshalBSON() ([]byte, error) {
+	return q.MarshalJSON()
+}
+
 func (q IntervalsQuery) MarshalJSON() ([]byte, error) {
 	rd, err := MarshalRule(q.rule)
 	if err != nil {
@@ -85,6 +89,10 @@ func (q IntervalsQuery) MarshalJSON() ([]byte, error) {
 	}
 	return obj.MarshalJSON()
 }
+func (q *IntervalsQuery) UnmarshalBSON(data []byte) error {
+	return q.UnmarshalJSON(data)
+}
+
 func (q *IntervalsQuery) UnmarshalJSON(data []byte) error {
 	*q = IntervalsQuery{}
 	obj := dynamic.JSONObject{}

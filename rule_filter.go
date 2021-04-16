@@ -90,6 +90,10 @@ type RuleFilter struct {
 func (r *RuleFilter) RuleFilter() (*RuleFilter, error) {
 	return r, nil
 }
+func (r *RuleFilter) UnmarshalBSON(data []byte) error {
+	return r.UnmarshalJSON(data)
+}
+
 func (r *RuleFilter) UnmarshalJSON(data []byte) error {
 	*r = RuleFilter{}
 	var v ruleFilter
@@ -108,6 +112,10 @@ func (r *RuleFilter) UnmarshalJSON(data []byte) error {
 	r.script = v.Script
 
 	return nil
+}
+
+func (r RuleFilter) MarshalBSON() ([]byte, error) {
+	return r.MarshalJSON()
 }
 
 func (r RuleFilter) MarshalJSON() ([]byte, error) {

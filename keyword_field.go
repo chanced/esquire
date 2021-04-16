@@ -146,6 +146,10 @@ func (KeywordField) Type() FieldType {
 	return FieldTypeKeyword
 }
 
+func (t *KeywordField) UnmarshalBSON(data []byte) error {
+	return t.UnmarshalJSON(data)
+}
+
 func (t *KeywordField) UnmarshalJSON(data []byte) error {
 	var params KeywordFieldParams
 	err := json.Unmarshal(data, &params)
@@ -155,6 +159,10 @@ func (t *KeywordField) UnmarshalJSON(data []byte) error {
 	v, err := params.Keyword()
 	*t = *v
 	return err
+}
+
+func (t KeywordField) MarshalBSON() ([]byte, error) {
+	return t.MarshalJSON()
 }
 
 func (t KeywordField) MarshalJSON() ([]byte, error) {

@@ -52,12 +52,20 @@ func (f *RankFeatureField) Field() (Field, error) {
 	return f, nil
 }
 
+func (f RankFeatureField) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
+}
+
 func (f RankFeatureField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(rankFeatureField{
 		PositiveScoreImpact: f.positiveScoreImpact.Value(),
 		Type:                f.Type(),
 	})
 }
+func (f *RankFeatureField) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *RankFeatureField) UnmarshalJSON(data []byte) error {
 	var p RankFeatureFieldParams
 
@@ -122,12 +130,20 @@ func (f *RankFeaturesField) Field() (Field, error) {
 	return f, nil
 }
 
+func (f RankFeaturesField) MarshalBSON() ([]byte, error) {
+	return f.MarshalJSON()
+}
+
 func (f RankFeaturesField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(rankFeaturesField{
 		PositiveScoreImpact: f.positiveScoreImpact.Value(),
 		Type:                f.Type(),
 	})
 }
+func (f *RankFeaturesField) UnmarshalBSON(data []byte) error {
+	return f.UnmarshalJSON(data)
+}
+
 func (f *RankFeaturesField) UnmarshalJSON(data []byte) error {
 	var p RankFeaturesFieldParams
 

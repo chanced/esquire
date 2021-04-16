@@ -76,6 +76,10 @@ func (g *GeoBoundingBoxQuery) Clause() (QueryClause, error) {
 func (g *GeoBoundingBoxQuery) GeoBoundingBox() (*GeoBoundingBoxQuery, error) {
 	return g, nil
 }
+func (g *GeoBoundingBoxQuery) UnmarshalBSON(data []byte) error {
+	return g.UnmarshalJSON(data)
+}
+
 func (g *GeoBoundingBoxQuery) UnmarshalJSON(data []byte) error {
 	*g = GeoBoundingBoxQuery{}
 
@@ -108,6 +112,10 @@ func (g *GeoBoundingBoxQuery) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+func (g GeoBoundingBoxQuery) MarshalBSON() ([]byte, error) {
+	return g.MarshalJSON()
+}
+
 func (g GeoBoundingBoxQuery) MarshalJSON() ([]byte, error) {
 
 	bx, err := json.Marshal(g.boundingBox)

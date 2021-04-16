@@ -115,6 +115,10 @@ func NewCompletionField(params CompletionFieldParams) (*CompletionField, error) 
 	return params.Completion()
 }
 
+func (c CompletionField) MarshalBSON() ([]byte, error) {
+	return c.MarshalJSON()
+}
+
 func (c CompletionField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(completionField{
 		Analyzer:                   c.analyzer,
@@ -125,6 +129,10 @@ func (c CompletionField) MarshalJSON() ([]byte, error) {
 		MaxInputLength:             c.maxInputLength.Value(),
 		Type:                       c.Type(),
 	})
+}
+
+func (c *CompletionField) UnmarshalBSON(data []byte) error {
+	return c.UnmarshalJSON(data)
 }
 
 func (c *CompletionField) UnmarshalJSON(data []byte) error {
