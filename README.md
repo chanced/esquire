@@ -276,7 +276,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
          A query that allows to modify the score of a sub-query with a script.
   - [ ] **[Wrapper](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-wrapper-query.html)**\
          A query that accepts other queries as json or yaml string.
-  - [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-pinned-query.html)**\
+  - [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-pinned-query.html) [X-Pack]**\
          A query that promotes selected documents over others matching a given query.
 - #### [Term-level queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/term-level-queries.html)
   You can use term-level queries to find documents based on precise values in structured data. Examples of structured data include date ranges, IP addresses, prices, or product IDs.
