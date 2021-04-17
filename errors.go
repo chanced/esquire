@@ -63,6 +63,7 @@ var (
 	ErrGeoPointRequired           = errors.New("picker: GeoPoint is required")
 	ErrLikeRequired               = errors.New("picker: like is required")
 	ErrTypeRequired               = errors.New("picker: type is required")
+	ErrPivotRequired              = errors.New("picker: pivot is required")
 )
 
 type FieldError struct {
