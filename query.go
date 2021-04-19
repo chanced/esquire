@@ -68,8 +68,6 @@ type Querier interface {
 	Query() (*Query, error)
 }
 
-// TODO: Add specific clause functions so the actual query, like *TermQuery, can be used as a param
-
 type QueryParams struct {
 
 	// Term returns documents that contain an exact term in a provided field.

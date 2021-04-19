@@ -48,9 +48,9 @@ const (
 )
 
 var scoreFunctionHandlers = map[FuncKind]func() function{
-	FuncKindExp:              func() function { return &ExpFunction{} },
+	FuncKindExp:              func() function { return &ExpDecayFunction{} },
 	FuncKindGauss:            func() function { return &GaussFunction{} },
-	FuncKindLinear:           func() function { return &LinearFunction{} },
+	FuncKindLinear:           func() function { return &LinearDecayFunction{} },
 	FuncKindScriptScore:      func() function { return &ScriptScoreFunction{} },
 	FuncKindRandomScore:      func() function { return &RandomScoreFunction{} },
 	FuncKindFieldValueFactor: func() function { return &FieldValueFactorFunction{} },
