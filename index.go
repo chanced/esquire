@@ -228,6 +228,7 @@ func (p IndexParams) Index() (*Index, error) {
 
 type Index struct {
 	Mappings FieldMappings `json:"mappings"`
+	Settings map[string]interface{}
 }
 
 //easyjson:json
@@ -241,7 +242,10 @@ func (i Index) MarshalBSON() ([]byte, error) {
 }
 
 func (i Index) MarshalJSON() ([]byte, error) {
-	return index{Mappings: i.Mappings}.MarshalJSON()
+	return index{
+		Mappings: i.Mappings,
+		Settings: i.Settings,
+	}.MarshalJSON()
 }
 
 func (i *Index) UnmarshalBSON(data []byte) error {
