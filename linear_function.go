@@ -4,7 +4,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type LinearFunc struct {
+type LinearDecayFunctionParams struct {
 	// Field
 	Field string
 	// Weight (float)
@@ -31,11 +31,11 @@ type LinearFunc struct {
 	Filter CompleteClauser
 }
 
-func (LinearFunc) FuncKind() FuncKind {
+func (LinearDecayFunctionParams) FuncKind() FuncKind {
 	return FuncKindLinear
 }
-func (l LinearFunc) Function() (Function, error) {
-	f := &LinearFunction{}
+func (l LinearDecayFunctionParams) Function() (Function, error) {
+	f := &LinearDecayFunction{}
 	err := f.SetField(l.Field)
 	if err != nil {
 		return f, err
@@ -67,7 +67,7 @@ func (l LinearFunc) Function() (Function, error) {
 	return f, nil
 }
 
-type LinearFunction struct {
+type LinearDecayFunction struct {
 	weightParam
 	field  string
 	origin interface{}
@@ -77,34 +77,34 @@ type LinearFunction struct {
 	scale  dynamic.StringOrNumber
 }
 
-func (l *LinearFunction) Field() string {
+func (l *LinearDecayFunction) Field() string {
 	if l == nil {
 		return ""
 	}
 	return l.field
 }
 
-func (l *LinearFunction) SetField(field string) error {
+func (l *LinearDecayFunction) SetField(field string) error {
 	if len(field) == 0 {
 		return ErrFieldRequired
 	}
 	l.field = field
 	return nil
 }
-func (LinearFunction) FuncKind() FuncKind {
+func (LinearDecayFunction) FuncKind() FuncKind {
 	return FuncKindLinear
 }
-func (l LinearFunction) Filter() QueryClause {
+func (l LinearDecayFunction) Filter() QueryClause {
 	return l.filter
 }
-func (l *LinearFunction) Decay() dynamic.Number {
+func (l *LinearDecayFunction) Decay() dynamic.Number {
 	return l.decay
 }
-func (l *LinearFunction) SetDecay(value interface{}) error {
+func (l *LinearDecayFunction) SetDecay(value interface{}) error {
 	return l.decay.Set(value)
 }
 
-func (l *LinearFunction) SetScale(scale interface{}) error {
+func (l *LinearDecayFunction) SetScale(scale interface{}) error {
 	if scale == nil {
 		return ErrScaleRequired
 	}
@@ -118,23 +118,23 @@ func (l *LinearFunction) SetScale(scale interface{}) error {
 	return nil
 }
 
-func (l LinearFunction) Scale() dynamic.StringOrNumber {
+func (l LinearDecayFunction) Scale() dynamic.StringOrNumber {
 	return l.scale
 }
 
-func (l LinearFunction) Origin() interface{} {
+func (l LinearDecayFunction) Origin() interface{} {
 	return l.origin
 }
 
-func (l *LinearFunction) Offset() dynamic.StringNumberOrTime {
+func (l *LinearDecayFunction) Offset() dynamic.StringNumberOrTime {
 	return l.offset
 }
 
-func (l *LinearFunction) SetOffset(offset interface{}) error {
+func (l *LinearDecayFunction) SetOffset(offset interface{}) error {
 	return l.offset.Set(offset)
 }
 
-func (l *LinearFunction) SetFilter(c CompleteClauser) error {
+func (l *LinearDecayFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		l.filter = nil
 		return nil
@@ -146,7 +146,7 @@ func (l *LinearFunction) SetFilter(c CompleteClauser) error {
 	l.filter = qc
 	return nil
 }
-func (l *LinearFunction) SetOrigin(origin interface{}) error {
+func (l *LinearDecayFunction) SetOrigin(origin interface{}) error {
 	if origin == nil {
 		return ErrOriginRequired
 	}
@@ -157,17 +157,17 @@ func (l *LinearFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (l *LinearFunction) unmarshalParams(data dynamic.JSON) error {
+func (l *LinearDecayFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, l)
 }
 
-func (l LinearFunction) MarshalBSON() ([]byte, error) {
+func (l LinearDecayFunction) MarshalBSON() ([]byte, error) {
 	return l.MarshalJSON()
 }
 
-func (l LinearFunction) MarshalJSON() ([]byte, error) {
+func (l LinearDecayFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&l)
 }
-func (l *LinearFunction) marshalParams(data dynamic.JSONObject) error {
+func (l *LinearDecayFunction) marshalParams(data dynamic.JSONObject) error {
 	return marshalDecayFunction(data, l)
 }

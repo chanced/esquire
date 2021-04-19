@@ -15,7 +15,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 		Query: picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
-					picker.ExpFunc{},
+					picker.ExpDecayFunctionParams{},
 				},
 			},
 		},
@@ -27,7 +27,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 		Query: picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
-					picker.ExpFunc{
+					picker.ExpDecayFunctionParams{
 						Field: "field",
 					},
 				},
@@ -40,7 +40,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 		Query: picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
-					picker.ExpFunc{
+					picker.ExpDecayFunctionParams{
 						Field:  "field",
 						Origin: "sdf",
 					},
@@ -63,7 +63,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 					},
 				},
 				Functions: picker.Funcs{
-					picker.ExpFunc{
+					picker.ExpDecayFunctionParams{
 						Field:  "fieldName",
 						Origin: "sdf",
 						Scale:  34,

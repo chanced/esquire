@@ -4,7 +4,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type GaussFunc struct {
+type GaussFunctionParams struct {
 	// Field
 	Field string
 	// Weight (float)
@@ -31,10 +31,10 @@ type GaussFunc struct {
 	Filter CompleteClauser
 }
 
-func (GaussFunc) FuncKind() FuncKind {
+func (GaussFunctionParams) FuncKind() FuncKind {
 	return FuncKindGauss
 }
-func (g GaussFunc) Function() (Function, error) {
+func (g GaussFunctionParams) Function() (Function, error) {
 	f := &GaussFunction{}
 	err := f.SetField(g.Field)
 	if err != nil {

@@ -6,16 +6,16 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type WeightFunc struct {
+type WeightFunctionParams struct {
 	// Weight
 	Weight float64
 	Filter CompleteClauser
 }
 
-func (WeightFunc) FuncKind() FuncKind {
+func (WeightFunctionParams) FuncKind() FuncKind {
 	return FuncKindWeight
 }
-func (w WeightFunc) Function() (Function, error) {
+func (w WeightFunctionParams) Function() (Function, error) {
 	f := &WeightFunction{}
 	if w.Weight == 0 {
 		return f, ErrWeightRequired

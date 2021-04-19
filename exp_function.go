@@ -4,7 +4,7 @@ import (
 	"github.com/chanced/dynamic"
 )
 
-type ExpFunc struct {
+type ExpDecayFunctionParams struct {
 	// Field
 	Field string
 	// Weight (float)
@@ -31,11 +31,11 @@ type ExpFunc struct {
 	Filter CompleteClauser
 }
 
-func (ExpFunc) FuncKind() FuncKind {
+func (ExpDecayFunctionParams) FuncKind() FuncKind {
 	return FuncKindExp
 }
-func (e ExpFunc) Function() (Function, error) {
-	f := &ExpFunction{}
+func (e ExpDecayFunctionParams) Function() (Function, error) {
+	f := &ExpDecayFunction{}
 	err := f.SetField(e.Field)
 	if err != nil {
 		return f, err
@@ -67,7 +67,7 @@ func (e ExpFunc) Function() (Function, error) {
 	return f, nil
 }
 
-type ExpFunction struct {
+type ExpDecayFunction struct {
 	weightParam
 	field  string
 	origin interface{}
@@ -77,34 +77,34 @@ type ExpFunction struct {
 	scale  dynamic.StringOrNumber
 }
 
-func (e *ExpFunction) Field() string {
+func (e *ExpDecayFunction) Field() string {
 	if e == nil {
 		return ""
 	}
 	return e.field
 }
 
-func (e *ExpFunction) SetField(field string) error {
+func (e *ExpDecayFunction) SetField(field string) error {
 	if len(field) == 0 {
 		return ErrFieldRequired
 	}
 	e.field = field
 	return nil
 }
-func (ExpFunction) FuncKind() FuncKind {
+func (ExpDecayFunction) FuncKind() FuncKind {
 	return FuncKindExp
 }
-func (e ExpFunction) Filter() QueryClause {
+func (e ExpDecayFunction) Filter() QueryClause {
 	return e.filter
 }
-func (e *ExpFunction) Decay() dynamic.Number {
+func (e *ExpDecayFunction) Decay() dynamic.Number {
 	return e.decay
 }
-func (e *ExpFunction) SetDecay(value interface{}) error {
+func (e *ExpDecayFunction) SetDecay(value interface{}) error {
 	return e.decay.Set(value)
 }
 
-func (e *ExpFunction) SetScale(scale interface{}) error {
+func (e *ExpDecayFunction) SetScale(scale interface{}) error {
 	if scale == nil {
 		return ErrScaleRequired
 	}
@@ -118,23 +118,23 @@ func (e *ExpFunction) SetScale(scale interface{}) error {
 	return nil
 }
 
-func (e ExpFunction) Scale() dynamic.StringOrNumber {
+func (e ExpDecayFunction) Scale() dynamic.StringOrNumber {
 	return e.scale
 }
 
-func (e ExpFunction) Origin() interface{} {
+func (e ExpDecayFunction) Origin() interface{} {
 	return e.origin
 }
 
-func (e *ExpFunction) Offset() dynamic.StringNumberOrTime {
+func (e *ExpDecayFunction) Offset() dynamic.StringNumberOrTime {
 	return e.offset
 }
 
-func (e *ExpFunction) SetOffset(offset interface{}) error {
+func (e *ExpDecayFunction) SetOffset(offset interface{}) error {
 	return e.offset.Set(offset)
 }
 
-func (e *ExpFunction) SetFilter(c CompleteClauser) error {
+func (e *ExpDecayFunction) SetFilter(c CompleteClauser) error {
 	if c == nil {
 		e.filter = nil
 		return nil
@@ -146,7 +146,7 @@ func (e *ExpFunction) SetFilter(c CompleteClauser) error {
 	e.filter = qc
 	return nil
 }
-func (e *ExpFunction) SetOrigin(origin interface{}) error {
+func (e *ExpDecayFunction) SetOrigin(origin interface{}) error {
 	if origin == nil {
 		return ErrOriginRequired
 	}
@@ -157,17 +157,17 @@ func (e *ExpFunction) SetOrigin(origin interface{}) error {
 	return nil
 }
 
-func (e *ExpFunction) unmarshalParams(data dynamic.JSON) error {
+func (e *ExpDecayFunction) unmarshalParams(data dynamic.JSON) error {
 	return unmarshalDecayFunction(data, e)
 }
 
-func (e ExpFunction) MarshalBSON() ([]byte, error) {
+func (e ExpDecayFunction) MarshalBSON() ([]byte, error) {
 	return e.MarshalJSON()
 }
 
-func (e ExpFunction) MarshalJSON() ([]byte, error) {
+func (e ExpDecayFunction) MarshalJSON() ([]byte, error) {
 	return marshalFunction(&e)
 }
-func (e *ExpFunction) marshalParams(data dynamic.JSONObject) error {
+func (e *ExpDecayFunction) marshalParams(data dynamic.JSONObject) error {
 	return marshalDecayFunction(data, e)
 }
