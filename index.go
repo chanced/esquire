@@ -4,6 +4,58 @@ import (
 	"encoding/json"
 )
 
+type IndexParams struct {
+	Mappings Mappings `json:"mappings"`
+	Settings map[string]interface{}
+}
+
+func (p IndexParams) Index() (*Index, error) {
+
+	fm, err := p.Mappings.FieldMappings()
+	i := &Index{}
+	if err != nil {
+		return i, err
+	}
+	i.Mappings = fm
+	return i, nil
+}
+
+type Index struct {
+	Mappings FieldMappings `json:"mappings"`
+	Settings map[string]interface{}
+}
+
+type index struct {
+	Mappings FieldMappings          `json:"mappings"`
+	Settings map[string]interface{} `json:"settings"`
+}
+
+func (i Index) MarshalBSON() ([]byte, error) {
+	return i.MarshalJSON()
+}
+
+func (i Index) MarshalJSON() ([]byte, error) {
+	return json.Marshal(index(i))
+}
+
+func (i *Index) UnmarshalBSON(data []byte) error {
+	return i.UnmarshalJSON(data)
+}
+
+func (i *Index) UnmarshalJSON(data []byte) error {
+	var idx index
+	err := json.Unmarshal(data, &idx)
+	if err != nil {
+		return err
+	}
+	i.Mappings = idx.Mappings
+	return nil
+}
+
+func NewIndex(params IndexParams) (*Index, error) {
+	return params.Index()
+}
+
 type IndexSettingsParams struct {
 	// The number of primary shards that an index should have. Defaults to 1.
 	// This setting can only be set at index creation time. It cannot be changed
@@ -208,60 +260,4 @@ type IndexSettingsParams struct {
 	// default pipeline (if it exists). The special pipeline name _none
 	// indicates no ingest pipeline will run.
 	FinalPipeline string
-}
-
-type IndexParams struct {
-	Mappings Mappings `json:"mappings"`
-	Settings map[string]interface{}
-}
-
-func (p IndexParams) Index() (*Index, error) {
-
-	fm, err := p.Mappings.FieldMappings()
-	i := &Index{}
-	if err != nil {
-		return i, err
-	}
-	i.Mappings = fm
-	return i, nil
-}
-
-type Index struct {
-	Mappings FieldMappings `json:"mappings"`
-	Settings map[string]interface{}
-}
-
-//easyjson:json
-type index struct {
-	Mappings FieldMappings          `json:"mappings"`
-	Settings map[string]interface{} `json:"settings"`
-}
-
-func (i Index) MarshalBSON() ([]byte, error) {
-	return i.MarshalJSON()
-}
-
-func (i Index) MarshalJSON() ([]byte, error) {
-	return index{
-		Mappings: i.Mappings,
-		Settings: i.Settings,
-	}.MarshalJSON()
-}
-
-func (i *Index) UnmarshalBSON(data []byte) error {
-	return i.UnmarshalJSON(data)
-}
-
-func (i *Index) UnmarshalJSON(data []byte) error {
-	var idx index
-	err := json.Unmarshal(data, &idx)
-	if err != nil {
-		return err
-	}
-	i.Mappings = idx.Mappings
-	return nil
-}
-
-func NewIndex(params IndexParams) (*Index, error) {
-	return params.Index()
 }
