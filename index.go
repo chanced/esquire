@@ -1,6 +1,7 @@
 package picker
 
 import (
+	"bytes"
 	"encoding/json"
 )
 
@@ -20,14 +21,21 @@ func (p IndexParams) Index() (*Index, error) {
 	return i, nil
 }
 
+type index struct {
+	Mappings FieldMappings          `json:"mappings"`
+	Settings map[string]interface{} `json:"settings"`
+}
+
 type Index struct {
 	Mappings FieldMappings `json:"mappings"`
 	Settings map[string]interface{}
 }
 
-type index struct {
-	Mappings FieldMappings          `json:"mappings"`
-	Settings map[string]interface{} `json:"settings"`
+func (i Index) Encode() (*bytes.Buffer, error) {
+	buf := &bytes.Buffer{}
+	encoder := json.NewEncoder(buf)
+	err := encoder.Encode(i)
+	return buf, err
 }
 
 func (i Index) MarshalBSON() ([]byte, error) {

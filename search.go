@@ -2,7 +2,6 @@ package picker
 
 import (
 	"bytes"
-	"io"
 	"time"
 
 	"encoding/json"
@@ -521,15 +520,12 @@ func (s *Search) SetExplain(v bool) {
 func (s Search) From() int {
 	return s.from
 }
-func (s Search) NewReader() (io.Reader, error) {
-	buf := &bytes.Buffer{}
 
-	enc := json.NewEncoder(buf)
-	err := enc.Encode(s)
-	if err != nil {
-		return nil, err
-	}
-	return buf, nil
+func (s Search) Encode() (*bytes.Buffer, error) {
+	buf := &bytes.Buffer{}
+	encoder := json.NewEncoder(buf)
+	err := encoder.Encode(s)
+	return buf, err
 }
 
 // SetFrom sets the FromValue to v
