@@ -349,11 +349,11 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-processor.html)**\
        Parses dates from fields, and then uses the date or timestamp as the timestamp for the document. By default, the date processor adds the parsed date as a new field called @timestamp. You can specify a different field by setting the target_field configuration parameter. Multiple date formats are supported as part of the same date processor definition. They will be used sequentially to attempt parsing the date field, in the same order they were defined as part of the processor definition.
 - [ ] **[DateIndexName](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-index-name-processor.html)**\
-       The purpose of this processor is to point documents to the right time based index based on a date or timestamp field in a document by using the date math index name support.
-      The processor sets the \_index metadata field with a date math index name expression based on the provided index name prefix, a date or timestamp field in the documents being processed and the provided date rounding.
+       The purpose of this processor is to point documents to the right time based index based on a date or timestamp field in a document by using the date math index name support.\
+       The processor sets the \_index metadata field with a date math index name expression based on the provided index name prefix, a date or timestamp field in the documents being processed and the provided date rounding.
 - [ ] **[Dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dissect-processor.html)**\
-       Similar to the Grok Processor, dissect also extracts structured fields out of a single text field within a document. However unlike the Grok Processor, dissect does not use Regular Expressions. This allows dissect’s syntax to be simple and for some cases faster than the Grok Processor.
-      Dissect matches a single text field against a defined pattern.
+       Similar to the Grok Processor, dissect also extracts structured fields out of a single text field within a document. However unlike the Grok Processor, dissect does not use Regular Expressions. This allows dissect’s syntax to be simple and for some cases faster than the Grok Processor.\
+       Dissect matches a single text field against a defined pattern.
 - [ ] **[DotExpander]()**\
 - [ ] **[Drop]()**\
 - [ ] **[Enrich]()**\
