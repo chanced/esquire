@@ -341,9 +341,9 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 - [ ] **[CommunityID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/community-id-processor.html) [X-Pack]**\
        Computes the Community ID for network flow data as defined in the Community ID Specification. You can use a community ID to correlate network events related to a single flow.
 - [ ] **[Convert](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/convert-processor.html)**\
-       Converts a field in the currently ingested document to a different type, such as converting a string to an integer. If the field value is an array, all members will be converted.
-      The supported types include: integer, long, float, double, string, boolean, and auto.
-      Specifying boolean will set the field to true if its string value is equal to true (ignore case), to false if its string value is equal to false (ignore case), or it will throw an exception otherwise.
+       Converts a field in the currently ingested document to a different type, such as converting a string to an integer. If the field value is an array, all members will be converted.\
+       The supported types include: integer, long, float, double, string, boolean, and auto.\
+       Specifying boolean will set the field to true if its string value is equal to true (ignore case), to false if its string value is equal to false (ignore case), or it will throw an exception otherwise.
 - [ ] **[CSV](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/csv-processor.html)**\
        Extracts fields from CSV line out of a single text field within a document. Any empty field in CSV will be skipped.
 - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-processor.html)**\
@@ -354,16 +354,26 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 - [ ] **[Dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dissect-processor.html)**\
        Similar to the Grok Processor, dissect also extracts structured fields out of a single text field within a document. However unlike the Grok Processor, dissect does not use Regular Expressions. This allows dissect’s syntax to be simple and for some cases faster than the Grok Processor.\
        Dissect matches a single text field against a defined pattern.
-- [ ] **[DotExpander]()**\
-- [ ] **[Drop]()**\
-- [ ] **[Enrich]()**\
-- [ ] **[Fail]()**\
-- [ ] **[Fingerprint]()**\
-- [ ] **[Foreach]()**\
-- [ ] **[GeoIP]()**\
-- [ ] **[Grok]()**\
-- [ ] **[Gsub]()**\
-- [ ] **[HTMLStrip]()**\
+- [ ] **[DotExpander](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dot-expand-processor.html)**\
+       Expands a field with dots into an object field. This processor allows fields with dots in the name to be accessible by other processors in the pipeline. Otherwise these fields can’t be accessed by any processor.
+- [ ] **[Drop](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/drop-processor.html)**\
+       Drops the document without raising any errors. This is useful to prevent the document from getting indexed based on some condition.
+- [ ] **[Enrich](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/enrich-processor.html) [X-Pack]**\
+       The enrich processor can enrich documents with data from another index. See enrich data section for more information about how to set this up.
+- [ ] **[Fail](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/fail-processor.html)**\
+       Raises an exception. This is useful for when you expect a pipeline to fail and want to relay a specific message to the requester.
+- [ ] **[Fingerprint](https://www.elastic.co/guide/en/elasticsearch/reference/current/fingerprint-processor.html) [X-Pack]**\
+       Computes a hash of the document’s content. You can use this hash for content fingerprinting.
+- [ ] **[Foreach](https://www.elastic.co/guide/en/elasticsearch/reference/current/foreach-processor.html)**\
+       Processes elements in an array of unknown length.
+- [ ] **[GeoIP](https://www.elastic.co/guide/en/elasticsearch/reference/current/geoip-processor.html)**\
+       The geoip processor adds information about the geographical location of IP addresses, based on data from the Maxmind databases. This processor adds this information by default under the geoip field. The geoip processor can resolve both IPv4 and IPv6 addresses.
+- [ ] **[Grok](https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html)**\
+       Extracts structured fields out of a single text field within a document. You choose which field to extract matched fields from, as well as the grok pattern you expect will match. A grok pattern is like a regular expression that supports aliased expressions that can be reused.
+- [ ] **[Gsub](https://www.elastic.co/guide/en/elasticsearch/reference/current/gsub-processor.html)**\
+       Converts a string field by applying a regular expression and a replacement. If the field is an array of string, all members of the array will be converted. If any non-string values are encountered, the processor will throw an exception.
+- [ ] **[HTML Strip](https://www.elastic.co/guide/en/elasticsearch/reference/current/htmlstrip-processor.html)**\
+       Removes HTML tags from the field. If the field is an array of strings, HTML tags will be removed from all members of the array.
 - [ ] **[Inference]()**\
 - [ ] **[Join]()**\
 - [ ] **[JSON]()**\
