@@ -338,7 +338,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
        Converts a human readable byte value (e.g. 1kb) to its value in bytes (e.g. 1024). If the field is an array of strings, all members of the array will be converted.
 - [ ] **[Circle](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ingest-circle-processor.html) [X-Pack]**\
        Converts circle definitions of shapes to regular polygons which approximate them.
-- [ ] **[CommunityID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/community-id-processor.html) [X-Pack]**\
+- [ ] **[Community ID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/community-id-processor.html) [X-Pack]**\
        Computes the Community ID for network flow data as defined in the Community ID Specification. You can use a community ID to correlate network events related to a single flow.
 - [ ] **[Convert](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/convert-processor.html)**\
        Converts a field in the currently ingested document to a different type, such as converting a string to an integer. If the field value is an array, all members will be converted.\
@@ -348,7 +348,7 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
        Extracts fields from CSV line out of a single text field within a document. Any empty field in CSV will be skipped.
 - [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-processor.html)**\
        Parses dates from fields, and then uses the date or timestamp as the timestamp for the document. By default, the date processor adds the parsed date as a new field called @timestamp. You can specify a different field by setting the target_field configuration parameter. Multiple date formats are supported as part of the same date processor definition. They will be used sequentially to attempt parsing the date field, in the same order they were defined as part of the processor definition.
-- [ ] **[DateIndexName](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-index-name-processor.html)**\
+- [ ] **[Date Index Name](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-index-name-processor.html)**\
        The purpose of this processor is to point documents to the right time based index based on a date or timestamp field in a document by using the date math index name support.\
        The processor sets the \_index metadata field with a date math index name expression based on the provided index name prefix, a date or timestamp field in the documents being processed and the provided date rounding.
 - [ ] **[Dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dissect-processor.html)**\
@@ -374,25 +374,44 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
        Converts a string field by applying a regular expression and a replacement. If the field is an array of string, all members of the array will be converted. If any non-string values are encountered, the processor will throw an exception.
 - [ ] **[HTML Strip](https://www.elastic.co/guide/en/elasticsearch/reference/current/htmlstrip-processor.html)**\
        Removes HTML tags from the field. If the field is an array of strings, HTML tags will be removed from all members of the array.
-- [ ] **[Inference]()**\
-- [ ] **[Join]()**\
-- [ ] **[JSON]()**\
-- [ ] **[KV]()**\
-- [ ] **[Lowercase]()**\
-- [ ] **[NetworkDirection]()**\
-- [ ] **[Pipeline]()**\
-- [ ] **[Remove]()**\
-- [ ] **[Rename]()**\
-- [ ] **[Script]()**\
-- [ ] **[Set]()**\
-- [ ] **[SetSecurityUser]()**\
-- [ ] **[Sort]()**\
-- [ ] **[Split]()**\
-- [ ] **[Trim]()**\
-- [ ] **[Uppercase]()**\
-- [ ] **[URLDecode]()**\
-- [ ] **[URIParts]()**\
-- [ ] **[UserAgent]()**\
+- [ ] **[Inference](https://www.elastic.co/guide/en/elasticsearch/reference/current/inference-processor.html) [X-Pack]**\
+       Uses a pre-trained data frame analytics model to infer against the data that is being ingested in the pipeline.
+- [ ] **[Join](https://www.elastic.co/guide/en/elasticsearch/reference/current/join-processor.html)**\
+       Joins each element of an array into a single string using a separator character between each element. Throws an error when the field is not an array.
+- [ ] **[JSON](https://www.elastic.co/guide/en/elasticsearch/reference/current/json-processor.html)**\
+       Converts a JSON string into a structured JSON object.
+- [ ] **[KV](https://www.elastic.co/guide/en/elasticsearch/reference/current/kv-processor.html)**\
+       This processor helps automatically parse messages (or specific event fields) which are of the `foo=bar` variety.
+- [ ] **[Lowercase](https://www.elastic.co/guide/en/elasticsearch/reference/current/lowercase-processor.html)**\
+       Converts a string to its lowercase equivalent. If the field is an array of strings, all members of the array will be converted.
+- [ ] **[NetworkDirection](https://www.elastic.co/guide/en/elasticsearch/reference/current/network-direction-processor.html) [X-Pack]**\
+       Calculates the network direction given a source IP address, destination IP address, and a list of internal networks.
+- [ ] **[Pipeline](https://www.elastic.co/guide/en/elasticsearch/reference/current/pipeline-processor.html)**\
+       Executes another pipeline.
+- [ ] **[Remove](https://www.elastic.co/guide/en/elasticsearch/reference/current/remove-processor.html)**\
+       Removes existing fields. If one field doesn’t exist, an exception will be thrown.
+- [ ] **[Rename](https://www.elastic.co/guide/en/elasticsearch/reference/current/rename-processor.html)**\
+       Renames an existing field. If the field doesn’t exist or the new name is already used, an exception will be thrown.
+- [ ] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/current/script-processor.html)**\
+       Allows inline and stored scripts to be executed within ingest pipelines.
+- [ ] **[Set](https://www.elastic.co/guide/en/elasticsearch/reference/current/set-processor.html)**\
+       Sets one field and associates it with the specified value. If the field already exists, its value will be replaced with the provided one.
+- [ ] **[Set Security User](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-node-set-security-user-processor.html)**\
+       Sets user-related details (such as `username`, `roles`, `email`, `full_name`, `metadata`, `api_key`, `realm` and `authentication_type`) from the current authenticated user to the current document by pre-processing the ingest. The `api_key` property exists only if the user authenticates with an API key. It is an object containing the id and name fields of the API key. The `realm` property is also an object with two fields, `name` and `type`. When using API key authentication, the `realm` property refers to the `realm` from which the API key is created. The `authentication_type` property is a string that can take value from `REALM`, `API_KEY`, `TOKEN` and `ANONYMOUS`.
+- [ ] **[Sort](https://www.elastic.co/guide/en/elasticsearch/reference/current/sort-processor.html)**\
+       Sorts the elements of an array ascending or descending. Homogeneous arrays of numbers will be sorted numerically, while arrays of strings or heterogeneous arrays of strings + numbers will be sorted lexicographically. Throws an error when the field is not an array.
+- [ ] **[Split](https://www.elastic.co/guide/en/elasticsearch/reference/current/split-processor.html)**\
+       Splits a field into an array using a separator character. Only works on string fields.
+- [ ] **[Trim](https://www.elastic.co/guide/en/elasticsearch/reference/current/trim-processor.html)**\
+       Trims whitespace from field. If the field is an array of strings, all members of the array will be trimmed.
+- [ ] **[Uppercase](https://www.elastic.co/guide/en/elasticsearch/reference/current/uppercase-processor.html)**\
+       Converts a string to its uppercase equivalent. If the field is an array of strings, all members of the array will be converted.
+- [ ] **[URL Decode](https://www.elastic.co/guide/en/elasticsearch/reference/current/urldecode-processor.html)**\
+       URL-decodes a string. If the field is an array of strings, all members of the array will be decoded.
+- [ ] **[URI Parts](https://www.elastic.co/guide/en/elasticsearch/reference/current/uri-parts-processor.html) [X-Pack]**\
+       Parses a Uniform Resource Identifier (URI) string and extracts its components as an object. This URI object includes properties for the URI’s domain, path, fragment, port, query, scheme, user info, username, and password.
+- [ ] **[User Agent](https://www.elastic.co/guide/en/elasticsearch/reference/current/user-agent-processor.html)**\
+       The user_agent processor extracts details from the user agent string a browser sends with its web requests. This processor adds this information by default under the user_agent field.
 
 ### [Aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html)
 
