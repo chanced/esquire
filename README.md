@@ -330,46 +330,59 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
   - [ ] **[Span within](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-span-within-query.html)**\
          The result from a single span query is returned as long is its span falls within the spans returned by a list of other span queries.
 
-### [Pipeline Processors]()
+### [Pipeline Processors](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ingest.html)
 
-- [ ] [Append]()
-- [ ] [Bytes]()
-- [ ] [Circle]()
-- [ ] [CommunityID]()
-- [ ] [Convert]()
-- [ ] [CSV]()
-- [ ] [Date]()
-- [ ] [DateIndexName]()
-- [ ] [Dissect]()
-- [ ] [DotExpander]()
-- [ ] [Drop]()
-- [ ] [Enrich]()
-- [ ] [Fail]()
-- [ ] [Fingerprint]()
-- [ ] [Foreach]()
-- [ ] [GeoIP]()
-- [ ] [Grok]()
-- [ ] [Gsub]()
-- [ ] [HTMLStrip]()
-- [ ] [Inference]()
-- [ ] [Join]()
-- [ ] [JSON]()
-- [ ] [KV]()
-- [ ] [Lowercase]()
-- [ ] [NetworkDirection]()
-- [ ] [Pipeline]()
-- [ ] [Remove]()
-- [ ] [Rename]()
-- [ ] [Script]()
-- [ ] [Set]()
-- [ ] [SetSecurityUser]()
-- [ ] [Sort]()
-- [ ] [Split]()
-- [ ] [Trim]()
-- [ ] [Uppercase]()
-- [ ] [URLDecode]()
-- [ ] [URIParts]()
-- [ ] [UserAgent]()
+- [ ] **[Append](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/append-processor.html)**\
+       Appends one or more values to an existing array if the field already exists and it is an array. Converts a scalar to an array and appends one or more values to it if the field exists and it is a scalar. Creates an array containing the provided values if the field doesn’t exist. Accepts a single value or an array of values.
+- [ ] **[Bytes](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/bytes-processor.html)**\
+       Converts a human readable byte value (e.g. 1kb) to its value in bytes (e.g. 1024). If the field is an array of strings, all members of the array will be converted.
+- [ ] **[Circle](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ingest-circle-processor.html) [X-Pack]**\
+       Converts circle definitions of shapes to regular polygons which approximate them.
+- [ ] **[CommunityID](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/community-id-processor.html) [X-Pack]**\
+       Computes the Community ID for network flow data as defined in the Community ID Specification. You can use a community ID to correlate network events related to a single flow.
+- [ ] **[Convert](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/convert-processor.html)**\
+       Converts a field in the currently ingested document to a different type, such as converting a string to an integer. If the field value is an array, all members will be converted.
+      The supported types include: integer, long, float, double, string, boolean, and auto.
+      Specifying boolean will set the field to true if its string value is equal to true (ignore case), to false if its string value is equal to false (ignore case), or it will throw an exception otherwise.
+- [ ] **[CSV](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/csv-processor.html)**\
+       Extracts fields from CSV line out of a single text field within a document. Any empty field in CSV will be skipped.
+- [ ] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-processor.html)**\
+       Parses dates from fields, and then uses the date or timestamp as the timestamp for the document. By default, the date processor adds the parsed date as a new field called @timestamp. You can specify a different field by setting the target_field configuration parameter. Multiple date formats are supported as part of the same date processor definition. They will be used sequentially to attempt parsing the date field, in the same order they were defined as part of the processor definition.
+- [ ] **[DateIndexName](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date-index-name-processor.html)**\
+       The purpose of this processor is to point documents to the right time based index based on a date or timestamp field in a document by using the date math index name support.
+      The processor sets the \_index metadata field with a date math index name expression based on the provided index name prefix, a date or timestamp field in the documents being processed and the provided date rounding.
+- [ ] **[Dissect](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dissect-processor.html)**\
+       Similar to the Grok Processor, dissect also extracts structured fields out of a single text field within a document. However unlike the Grok Processor, dissect does not use Regular Expressions. This allows dissect’s syntax to be simple and for some cases faster than the Grok Processor.
+      Dissect matches a single text field against a defined pattern.
+- [ ] **[DotExpander]()**\
+- [ ] **[Drop]()**\
+- [ ] **[Enrich]()**\
+- [ ] **[Fail]()**\
+- [ ] **[Fingerprint]()**\
+- [ ] **[Foreach]()**\
+- [ ] **[GeoIP]()**\
+- [ ] **[Grok]()**\
+- [ ] **[Gsub]()**\
+- [ ] **[HTMLStrip]()**\
+- [ ] **[Inference]()**\
+- [ ] **[Join]()**\
+- [ ] **[JSON]()**\
+- [ ] **[KV]()**\
+- [ ] **[Lowercase]()**\
+- [ ] **[NetworkDirection]()**\
+- [ ] **[Pipeline]()**\
+- [ ] **[Remove]()**\
+- [ ] **[Rename]()**\
+- [ ] **[Script]()**\
+- [ ] **[Set]()**\
+- [ ] **[SetSecurityUser]()**\
+- [ ] **[Sort]()**\
+- [ ] **[Split]()**\
+- [ ] **[Trim]()**\
+- [ ] **[Uppercase]()**\
+- [ ] **[URLDecode]()**\
+- [ ] **[URIParts]()**\
+- [ ] **[UserAgent]()**\
 
 ### [Aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html)
 
