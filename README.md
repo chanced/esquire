@@ -82,120 +82,121 @@ Testing is incredibly sparse at the moment. I'm merely using this list to keep t
 
 ### [Field Mappings](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/mapping-types.html)
 
-- #### Common types
+#### Common types
 
-  - [x] **[Binary](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/binary.html)**\
-         Binary value encoded as a Base64 string.
-  - [x] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/boolean.html)**\
-         true and false values.
-  - [x] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#keyword-field-type)**\
-         used for structured content such as IDs, email addresses, hostnames, status codes, zip codes, or tags.
-  - [x] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type) [X-Pack]**\
-         Constant keyword is a specialization of the keyword field for the case that all documents in the index have the same value.
-  - [x] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
-         The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
-  - [x] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Long is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
-  - [x] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Integer is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
-  - [x] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Byte is a signed 8-bit integer with a minimum value of -128 and a maximum value of 127.
-  - [x] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Float is a single-precision 32-bit IEEE 754 floating point number, restricted to finite values.
-  - [x] **[Double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Double is a double-precision 64-bit IEEE 754 floating point number, restricted to finite values.
-  - [x] **[Short](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Short is signed 16-bit integer with a minimum value of -32,768 and a maximum value of 32,767.
-  - [x] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         HalfFloat is a half-precision 16-bit IEEE 754 floating point number, restricted to finite values.
-  - [x] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value of 0 and a maximum value of 264-1.
-  - [x] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
-         Numeric types, such as long and double, used to express amounts.
-  - [x] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
-         Date field type
-  - [x] **[Date nanoseconds](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date_nanos.html)**\
-         Date nanoseconds field type
-  - [x] **[Alias](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/alias.html)**\
-         Defines an alias for an existing field.
+- [x] **[Binary](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/binary.html)**\
+       Binary value encoded as a Base64 string.
+- [x] **[Boolean](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/boolean.html)**\
+       true and false values.
+- [x] **[Keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#keyword-field-type)**\
+       used for structured content such as IDs, email addresses, hostnames, status codes, zip codes, or tags.
+- [x] **[Constant keyword](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#constant-keyword-field-type) [X-Pack]**\
+       Constant keyword is a specialization of the keyword field for the case that all documents in the index have the same value.
+- [x] **[Wildcard](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/keyword.html#wildcard-field-type) [X-Pack]**\
+       The wildcard field type is a specialized keyword field for unstructured machine-generated content you plan to search using grep-like wildcard and regexp queries. The wildcard type is optimized for fields with large values or high cardinality.
+- [x] **[Long](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Long is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
+- [x] **[Integer](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Integer is a signed 64-bit integer with a minimum value of -263 and a maximum value of 263-1.
+- [x] **[Byte](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Byte is a signed 8-bit integer with a minimum value of -128 and a maximum value of 127.
+- [x] **[Float](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Float is a single-precision 32-bit IEEE 754 floating point number, restricted to finite values.
+- [x] **[Double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Double is a double-precision 64-bit IEEE 754 floating point number, restricted to finite values.
+- [x] **[Short](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Short is signed 16-bit integer with a minimum value of -32,768 and a maximum value of 32,767.
+- [x] **[HalfFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       HalfFloat is a half-precision 16-bit IEEE 754 floating point number, restricted to finite values.
+- [x] **[UnsignedLong](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       UnsignedLongFieldParams are params for an UnsignedLongField which is an unsigned 64-bit integer with a minimum value of 0 and a maximum value of 264-1.
+- [x] **[ScaledFloat](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/number.html)**\
+       Numeric types, such as long and double, used to express amounts.
+- [x] **[Date](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date.html)**\
+       Date field type
+- [x] **[Date nanoseconds](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/date_nanos.html)**\
+       Date nanoseconds field type
+- [x] **[Alias](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/alias.html)**\
+       Defines an alias for an existing field.
 
-- #### Objects and relational types
+#### Objects and relational types
 
-  - [x] **[Object](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/object.html)**\
-         A JSON object.
-  - [x] **[Flattened](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/flattened.html)**\
-         An entire JSON object as a single field value.
-  - [x] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/nested.html)**\
-         A JSON object that preserves the relationship between its subfields.
-  - [x] **[Join](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/parent-join.html)**\
-         Defines a parent/child relationship for documents in the same index.
+- [x] **[Object](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/object.html)**\
+       A JSON object.
+- [x] **[Flattened](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/flattened.html)**\
+       An entire JSON object as a single field value.
+- [x] **[Nested](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/nested.html)**\
+       A JSON object that preserves the relationship between its subfields.
+- [x] **[Join](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/parent-join.html)**\
+       Defines a parent/child relationship for documents in the same index.
 
-- #### Structured data types
+#### Structured data types
 
-  - [x] **[Long range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         LongRangeField is a range of signed 64-bit integers with a minimum value of -263 and maximum of 263-1.
-  - [x] **[Integer range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         Range types, such as long_range, double_range, date_range, and ip_range.
-  - [x] **[Float range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         FloatRangeField is a range of single-precision 32-bit IEEE 754 floating point values.
-  - [x] **[Double range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         Range types, such as long_range, double_range, date_range, and ip_range.
-  - [x] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         DateRangeField is a range of date values. Date ranges support various date formats through the format mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the now date math expression are not supported
-  - [x] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
-         IPRangeField is a range of ip values supporting either IPv4 or IPv6 (or mixed) addresses.
-  - [x] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
-         IPv4 and IPv6 addresses.
-  - [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
-         Software versions. Supports Semantic Versioning precedence rules.
-  - [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html) [Plugin]**\
-         Compute and stores hashes of values.
+- [x] **[Long range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       LongRangeField is a range of signed 64-bit integers with a minimum value of -263 and maximum of 263-1.
+- [x] **[Integer range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       Range types, such as long_range, double_range, date_range, and ip_range.
+- [x] **[Float range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       FloatRangeField is a range of single-precision 32-bit IEEE 754 floating point values.
+- [x] **[Double range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       Range types, such as long_range, double_range, date_range, and ip_range.
+- [x] **[Date range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       DateRangeField is a range of date values. Date ranges support various date formats through the format mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the now date math expression are not supported
+- [x] **[IP range](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/range.html)**\
+       IPRangeField is a range of ip values supporting either IPv4 or IPv6 (or mixed) addresses.
+- [x] **[IP](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/ip.html)**\
+       IPv4 and IPv6 addresses.
+- [ ] **[Version](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/version.html) [X-Pack]**\
+       Software versions. Supports Semantic Versioning precedence rules.
+- [ ] **[Murmur3](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-murmur3.html) [Plugin]**\
+       Compute and stores hashes of values.
 
-- #### Aggregate data types
+#### Aggregate data types
 
-  - [ ] **[Aggregate metric double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/aggregate-metric-double.html) [X-Pack]**\
-         Pre-aggregated metric values.
-  - [x] **[Histogram](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/histogram.html) [X-Pack]**\
-         Pre-aggregated numerical values in the form of a histogram.
+- [ ] **[Aggregate metric double](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/aggregate-metric-double.html) [X-Pack]**\
+       Pre-aggregated metric values.
+- [x] **[Histogram](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/histogram.html) [X-Pack]**\
+       Pre-aggregated numerical values in the form of a histogram.
 
-- #### Text search types
+#### Text search types
 
-  - [x] **[Text](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/text.html)**\
-         Analyzed, unstructured text.
-  - [ ] **[Annotated-text](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-annotated-text.html) [Plugin]**\
-         Text containing special markup. Used for identifying named entities.
-  - [x] **[Completion](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-suggesters.html#completion-suggester)**\
-         Used for auto-complete suggestions.
-  - [x] **[Search as you type](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-as-you-type.html)**\
-         text-like type for as-you-type completion.
-  - [x] **[Token count](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/token-count.html)**\
-         A count of tokens in a text.
+- [x] **[Text](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/text.html)**\
+       Analyzed, unstructured text.
+- [ ] **[Annotated-text](https://www.elastic.co/guide/en/elasticsearch/plugins/7.12/mapper-annotated-text.html) [Plugin]**\
+       Text containing special markup. Used for identifying named entities.
+- [x] **[Completion](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-suggesters.html#completion-suggester)**\
+       Used for auto-complete suggestions.
+- [x] **[Search as you type](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/search-as-you-type.html)**\
+       text-like type for as-you-type completion.
+- [x] **[Token count](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/token-count.html)**\
+       A count of tokens in a text.
 
-- #### Document ranking types
+#### Document ranking types
 
-  - [x] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html) [X-Pack]**\
-         Records dense vectors of float values.
-  - [x] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html) [X-Pack] [Deprecated]**\
-         Records sparse vectors of float values.
-  - [x] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-feature.html)**\
-         Records a numeric feature to boost hits at query time.
-  - [x] **[Rank features](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-features.html)**\
-         Records numeric features to boost hits at query time.
+- [x] **[Dense vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/dense-vector.html) [X-Pack]**\
+       Records dense vectors of float values.
+- [x] **[Sparse vector](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/sparse-vector.html) [X-Pack] [Deprecated]**\
+       Records sparse vectors of float values.
+- [x] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-feature.html)**\
+       Records a numeric feature to boost hits at query time.
+- [x] **[Rank features](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/rank-features.html)**\
+       Records numeric features to boost hits at query time.
 
-- #### Spatial data types
+#### Spatial data types
 
-  - [x] **[Geo point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-point.html)**\
-         Latitude and longitude points.
-  - [x] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-shape.html)**\
-         Complex shapes, such as polygons.
-  - [x] **[Point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/point.html)**\
-         Arbitrary cartesian points.
-  - [x] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape.html)**\
-         Arbitrary cartesian geometries.
+- [x] **[Geo point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-point.html)**\
+       Latitude and longitude points.
+- [x] **[Geo shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/geo-shape.html)**\
+       Complex shapes, such as polygons.
+- [x] **[Point](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/point.html)**\
+       Arbitrary cartesian points.
+- [x] **[Shape](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/shape.html)**\
+       Arbitrary cartesian geometries.
 
-- #### Other types
-  - [x] **[Percolator](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/percolator.html)**\
-         Indexes queries written in Query DSL.
+#### Other types
+
+- [x] **[Percolator](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/percolator.html)**\
+       Indexes queries written in Query DSL.
 
 ### Queries
 
@@ -274,23 +275,25 @@ Elasticsearch supports two types of cartesian data: point fields which support x
        The most simple query, which matches all documents, giving them all a \_score of 1.0.
 - [x] **[Match none](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-match-all-query.html)**\
        This is the inverse of the match_all query, which matches no documents.
-- #### [Specialized queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/specialized-queries.html)
-  - [x] **[Distance feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-distance-feature-query.html)**\
-         A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
-  - [x] **[More like this](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-mlt-query.html)**\
-         This query finds documents which are similar to the specified text, document, or collection of documents.
-  - [x] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-percolate-query.html)**\
-         This query finds queries that are stored as documents that match with the specified document.
-  - [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-rank-feature-query.html)**\
-         A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
-  - [x] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-script-query.html)**\
-         This query allows a script to act as a filter. Also see the function_score query.
-  - [x] **[Script score](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-script-score-query.html)**\
-         A query that allows to modify the score of a sub-query with a script.
-  - [ ] **[Wrapper](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-wrapper-query.html)**\
-         A query that accepts other queries as json or yaml string.
-  - [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-pinned-query.html) [X-Pack]**\
-         A query that promotes selected documents over others matching a given query.
+
+#### [Specialized queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/specialized-queries.html)
+
+- [x] **[Distance feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-distance-feature-query.html)**\
+       A query that computes scores based on the dynamically computed distances between the origin and documents' date, date_nanos and geo_point fields. It is able to efficiently skip non-competitive hits.
+- [x] **[More like this](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-mlt-query.html)**\
+       This query finds documents which are similar to the specified text, document, or collection of documents.
+- [x] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-percolate-query.html)**\
+       This query finds queries that are stored as documents that match with the specified document.
+- [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-rank-feature-query.html)**\
+       A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
+- [x] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-script-query.html)**\
+       This query allows a script to act as a filter. Also see the function_score query.
+- [x] **[Script score](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-script-score-query.html)**\
+       A query that allows to modify the score of a sub-query with a script.
+- [ ] **[Wrapper](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-wrapper-query.html)**\
+       A query that accepts other queries as json or yaml string.
+- [ ] **[Pinned](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-pinned-query.html) [X-Pack]**\
+       A query that promotes selected documents over others matching a given query.
 
 #### [Term-level queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/term-level-queries.html)
 
