@@ -6,7 +6,7 @@ import (
 )
 
 type IndexParams struct {
-	Mappings Mappings `json:"mappings"`
+	Mappings Mappings
 	Settings map[string]interface{}
 }
 
@@ -22,8 +22,8 @@ func (p IndexParams) Index() (*Index, error) {
 }
 
 type index struct {
-	Mappings FieldMappings          `json:"mappings"`
-	Settings map[string]interface{} `json:"settings"`
+	Mappings FieldMappings          `json:"mappings,omitempty"`
+	Settings map[string]interface{} `json:"settings,omitempty"`
 }
 
 type Index struct {

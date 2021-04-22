@@ -40,6 +40,7 @@ var (
 	ErrInvalidIndexPrefixMaxChars = errors.New("picker: invalid value for index prefix_max_chars")
 	ErrInvalidIndexPrefixMinChars = errors.New("picker: invalid value for index_prefix_min_chars")
 	ErrScalingFactorRequired      = errors.New("picker: scaling_factor is required")
+	ErrInvalidScalingFactor       = errors.New("picker: scaling_factor must be >= 1")
 	ErrDimensionsRequired         = errors.New("picker: dimensions is required")
 	ErrInvalidOrientation         = errors.New("picker: invalid orientation")
 	ErrInvalidTermVector          = errors.New("picker: invalid TermVector")
@@ -64,6 +65,10 @@ var (
 	ErrLikeRequired               = errors.New("picker: like is required")
 	ErrTypeRequired               = errors.New("picker: type is required")
 	ErrPivotRequired              = errors.New("picker: pivot is required")
+	ErrInvalidPivot               = errors.New("picker: pivot must be > 0")
+	ErrInvalidExponent            = errors.New("picker: exponent must be > 0")
+	ErrExponentRequired           = errors.New("picker: exponent is required")
+	ErrMultiRankFeatureFunctions  = errors.New("picker: only one function saturation, log, sigmoid or linear can be provided")
 )
 
 type FieldError struct {

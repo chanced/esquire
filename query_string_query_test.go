@@ -20,7 +20,7 @@ func TestQueryStringQuery(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			QueryString: picker.QueryStringQueryParams{
 				Query:        "(new york city) OR (big apple)",
 				DefaultField: "content",
@@ -48,7 +48,7 @@ func TestQueryStringQuery(t *testing.T) {
 		}
 	  }`)
 	s, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			QueryString: picker.QueryStringQueryParams{
 				Query:      "this AND that OR thus",
 				Fields:     []string{"content", "name^5"},

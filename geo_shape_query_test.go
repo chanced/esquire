@@ -32,7 +32,7 @@ func TestGeoShape(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Bool: picker.BoolQueryParams{
 				Must: picker.Clauses{
 					&picker.MatchAllQuery{},

@@ -22,7 +22,7 @@ func TestMatchPhraseQuery(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			MatchPhrase: picker.MatchPhraseQueryParams{
 				Query:    "this is a test",
 				Analyzer: "my_analyzer",

@@ -25,7 +25,7 @@ func TestShape(t *testing.T) {
 	  }`)
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Shape: picker.ShapeQueryParams{
 				Field: "geometry",
 				Shape: picker.Shape{

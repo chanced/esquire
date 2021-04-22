@@ -22,7 +22,7 @@ func TestSimpleQueryStringQuery(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			SimpleQueryString: picker.SimpleQueryStringQueryParams{
 				Query:           "\"fried eggs\" +(eggplant | potato) -frittata",
 				Fields:          []string{"title^5", "body"},

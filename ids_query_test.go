@@ -19,7 +19,7 @@ func TestIDsQuery(t *testing.T) {
 	  }
 	}`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			IDs: picker.IDsQueryParams{
 				Values: []string{"1", "4", "100"},
 			},

@@ -23,7 +23,7 @@ func TestPercolate(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Percolate: picker.PercolateDocumentQueryParams{
 				Field: "query",
 				Document: map[string]string{
@@ -66,7 +66,7 @@ func TestPercolate(t *testing.T) {
 	  }`)
 
 	s, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Percolate: picker.PercolateDocumentsQueryParams{
 				Field: "query",
 				Documents: []map[string]string{
@@ -96,7 +96,7 @@ func TestPercolate(t *testing.T) {
 		}
 	  }`)
 	s, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Percolate: picker.PercolateStoredDocumentQuery{
 				Field:   "query",
 				ID:      "2",

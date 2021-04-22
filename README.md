@@ -6,7 +6,7 @@ Aggregations are currently a `map[string]interface{}`. There are ~70 aggregation
 
 ```go
 s, err := picker.NewSearch(picker.SearchParams{
-    	Query: picker.QueryParams{
+    	Query: &picker.QueryParams{
     		Intervals: picker.IntervalsQueryParams{
     			Field: "my_text",
     			Rule: picker.AllOfRuleParams{
@@ -284,7 +284,7 @@ Elasticsearch supports two types of cartesian data: point fields which support x
        This query finds documents which are similar to the specified text, document, or collection of documents.
 - [x] **[Percolate](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-percolate-query.html)**\
        This query finds queries that are stored as documents that match with the specified document.
-- [ ] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-rank-feature-query.html)**\
+- [x] **[Rank feature](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-rank-feature-query.html)**\
        A query that computes scores based on the values of numeric features and is able to efficiently skip non-competitive hits.
 - [x] **[Script](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/query-dsl-script-query.html)**\
        This query allows a script to act as a filter. Also see the function_score query.

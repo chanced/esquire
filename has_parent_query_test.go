@@ -27,7 +27,7 @@ func TestHasParent(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			HasParent: picker.HasParentQueryParams{
 				ParentType: "parent",
 				Score:      true,

@@ -32,7 +32,7 @@ func TestNested(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Nested: picker.NestedQueryParams{
 				Path: "driver",
 				Query: &picker.QueryParams{

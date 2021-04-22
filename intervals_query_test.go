@@ -41,7 +41,7 @@ func TestIntervalsQuery(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Intervals: picker.IntervalsQueryParams{
 				Field: "my_text",
 				Rule: picker.AllOfRuleParams{

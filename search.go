@@ -17,7 +17,7 @@ var (
 
 // SearchParams are the initial params passed to NewSearch
 type SearchParams struct {
-	Query QueryParams
+	Query Querier
 
 	Aggregations map[string]interface{}
 	// Array of wildcard (*) patterns. The request returns doc values for field
@@ -129,12 +129,15 @@ func NewSearch(p SearchParams) (*Search, error) {
 			return s, err
 		}
 	}
-
-	q, err := p.Query.Query()
-	if err != nil {
-		return nil, err
+	if p.Query != nil {
+		q, err := p.Query.Query()
+		if err != nil {
+			return nil, err
+		}
+		if !q.IsEmpty() {
+			s.query = q
+		}
 	}
-	s.query = q
 	return s, nil
 }
 

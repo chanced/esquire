@@ -24,7 +24,7 @@ func TestTermsSet(t *testing.T) {
 	  }`)
 	_ = data
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			TermsSet: picker.TermsSetQueryParams{
 				Field:                   "programming_languages",
 				Terms:                   []string{"c++", "java", "php"},

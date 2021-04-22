@@ -22,7 +22,7 @@ func TestConstantScore(t *testing.T) {
 		}
 	}`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			ConstantScore: picker.ConstantScoreQueryParams{
 				Filter: &picker.QueryParams{
 					Term: picker.TermQueryParams{

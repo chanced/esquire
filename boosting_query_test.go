@@ -36,7 +36,7 @@ func TestBoostingQuery(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Boosting: picker.BoostingQueryParams{
 				Negative: &picker.QueryParams{
 					Term: picker.TermQueryParams{Field: "text", Value: "pie tart fruit crumble tree"},
@@ -49,6 +49,7 @@ func TestBoostingQuery(t *testing.T) {
 		},
 	})
 	assert.NoError(err)
+	assert.False(s.Query().IsEmpty())
 	jsonRes, err := json.Marshal(s)
 	assert.NoError(err)
 	assert.True(cmpjson.Equal(data, jsonRes), cmpjson.Diff(data, jsonRes))
@@ -63,7 +64,7 @@ func TestBoostingQuery(t *testing.T) {
 	assert.True(cmpjson.Equal(data, jsonRes), cmpjson.Diff(data, jsonRes))
 
 	_, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Boosting: picker.BoostingQueryParams{
 				Positive: &picker.QueryParams{
 					Term: picker.TermQueryParams{Field: "f"},
@@ -74,7 +75,7 @@ func TestBoostingQuery(t *testing.T) {
 
 	assert.ErrorIs(err, picker.ErrNegativeRequired)
 	_, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Boosting: picker.BoostingQueryParams{
 				Negative: &picker.QueryParams{
 					Term: picker.TermQueryParams{Field: "f", Value: "val"},
@@ -84,7 +85,7 @@ func TestBoostingQuery(t *testing.T) {
 	})
 	assert.ErrorIs(err, picker.ErrPositiveRequired)
 	_, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Boosting: picker.BoostingQueryParams{
 				Negative: &picker.QueryParams{
 					Term: picker.TermQueryParams{Field: "f", Value: "negval"},

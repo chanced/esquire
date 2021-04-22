@@ -21,7 +21,7 @@ func TestMultiMatchQuery(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			MultiMatch: picker.MultiMatchQueryParams{
 				Query:  "this is a test",
 				Fields: []string{"subject", "message"},

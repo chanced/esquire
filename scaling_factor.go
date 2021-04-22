@@ -1,6 +1,10 @@
 package picker
 
-import "github.com/chanced/dynamic"
+import (
+	"fmt"
+
+	"github.com/chanced/dynamic"
+)
 
 // WithScalingFactor is a mapping with the scaling_factor param
 //
@@ -21,7 +25,7 @@ type WithScalingFactor interface {
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html#scaled-float-params
 type scalingFactorParam struct {
-	scalingFactor float64
+	scalingFactor dynamic.Number
 }
 
 // ScalingFactor to use when encoding values. Values will be multiplied by this
@@ -31,18 +35,24 @@ type scalingFactorParam struct {
 // as if the document had a value of 2.3. High values of scaling_factor improve
 // accuracy but also increase space requirements. This parameter is required.
 func (sf scalingFactorParam) ScalingFactor() float64 {
-	return sf.scalingFactor
+	if f, ok := sf.scalingFactor.Float64(); ok {
+		return f
+	}
+	return 0
 }
 
 // SetScalingFactor sets the ScalingFactorValue to v
 func (sf *scalingFactorParam) SetScalingFactor(v interface{}) error {
-	n, err := dynamic.NewNumber(v)
+	err := sf.scalingFactor.Set(v)
 	if err != nil {
 		return err
 	}
-	if f, ok := n.Float64(); ok {
-		sf.scalingFactor = f
+	f, ok := sf.scalingFactor.Float64()
+	if ok && f >= 1 {
 		return nil
+	}
+	if ok {
+		return fmt.Errorf("%w, got %f", ErrInvalidScalingFactor, f)
 	}
 	return ErrScalingFactorRequired
 }

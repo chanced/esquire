@@ -285,7 +285,7 @@ type QueryParams struct {
 	Percolate         Percolater
 	TermsSet          TermsSetter
 	Wildcard          Wildcarder
-	// RankFeature      RankFeaturer
+	RankFeature       RankFeaturer
 	// Wrapper          Wrapperer
 	// Pinned           Pinneder
 	// GeoPolygon       GeoPolygoner
@@ -570,12 +570,13 @@ func (q QueryParams) percolate() (*PercolateQuery, error) {
 	return q.Percolate.Percolate()
 }
 
-// func (q QueryParams) rankFeature() (*RankFeatureQuery, error) {
-// 	if q.RankFeature == nil {
-// 		return nil, nil
-// 	}
-// 	return q.RankFeature.RankFeature()
-// }
+func (q QueryParams) rankFeature() (*RankFeatureQuery, error) {
+	if q.RankFeature == nil {
+		return nil, nil
+	}
+	return q.RankFeature.RankFeature()
+}
+
 // func (q QueryParams) wrapper() (*WrapperQuery, error) {
 // 	if q.Wrapper == nil {
 // 		return nil, nil
@@ -812,10 +813,10 @@ func (q *QueryParams) Query() (*Query, error) {
 	if err != nil {
 		return nil, err
 	}
-	// rankFeature, err := q.rankFeature()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	rankFeature, err := q.rankFeature()
+	if err != nil {
+		return nil, err
+	}
 	// wrapper, err := q.wrapper()
 	// if err != nil {
 	// 	return nil, err
@@ -902,7 +903,7 @@ func (q *QueryParams) Query() (*Query, error) {
 		// regexp:            regexp,
 		// typ:               typ,
 		// geoPolygon:        geoPolygon,
-		// rankFeature:       rankFeature,
+		rankFeature: rankFeature,
 		// wrapper:           wrapper,
 		// pinned:            pinned,
 		// spanContaining:    spanContaining,
@@ -974,12 +975,12 @@ type Query struct {
 	parentID          *ParentIDQuery
 	moreLikeThis      *MoreLikeThisQuery
 	percolate         *PercolateQuery
+	distanceFeature   *DistanceFeatureQuery
+	rankFeature       *RankFeatureQuery
 	// common            *CommonQuery
 	// regexp            *RegexpQuery
 	// typ               *TypeQuery
 	// geoPolygon        *GeoPolygonQuery
-	distanceFeature *DistanceFeatureQuery
-	// rankFeature       *RankFeatureQuery
 	// wrapper           *WrapperQuery
 	// pinned            *PinnedQuery
 	// spanContaining    *SpanContainingQuery
@@ -1142,19 +1143,6 @@ func (q *Query) MatchNone() *MatchNoneQuery {
 	return q.matchNone
 }
 
-// func (q *Query) Common() *CommonQuery {
-// 	if q.common == nil {
-// 		q.common = &CommonQuery{}
-// 	}
-// 	return q.common
-// }
-// func (q *Query) Regexp() *RegexpQuery {
-// 	if q.regexp == nil {
-// 		q.regexp = &RegexpQuery{}
-// 	}
-// 	return q.regexp
-// }
-
 func (q *Query) TermsSet() *TermsSetQuery {
 	if q.termsSet == nil {
 		q.termsSet = &TermsSetQuery{}
@@ -1162,26 +1150,12 @@ func (q *Query) TermsSet() *TermsSetQuery {
 	return q.termsSet
 }
 
-// func (q *Query) Type() *TypeQuery {
-// 	if q.typ == nil {
-// 		q.typ = &TypeQuery{}
-// 	}
-// 	return q.typ
-// }
-
 func (q *Query) Wildcard() *WildcardQuery {
 	if q.wildcard == nil {
 		q.wildcard = &WildcardQuery{}
 	}
 	return q.wildcard
 }
-
-// func (q *Query) AllOf() *AllOfQuery {
-//     if q.allOf == nil {
-//         q.allOf = &AllOfQuery{}
-//     }
-//     return q.allOf
-// }
 
 func (q *Query) MatchPhrasePrefix() *MatchPhrasePrefixQuery {
 	if q.matchPhrasePrefix == nil {
@@ -1196,13 +1170,6 @@ func (q *Query) GeoDistance() *GeoDistanceQuery {
 	}
 	return q.geoDistance
 }
-
-// func (q *Query) GeoPolygon() *GeoPolygonQuery {
-//     if q.geoPolygon == nil {
-//         q.geoPolygon = &GeoPolygonQuery{}
-//     }
-//     return q.geoPolygon
-// }
 
 func (q *Query) GeoShape() *GeoShapeQuery {
 	if q.geoShape == nil {
@@ -1266,12 +1233,47 @@ func (q *Query) Percolate() *PercolateQuery {
 	return q.percolate
 }
 
-// func (q *Query) RankFeature() *RankFeatureQuery {
-//     if q.rankFeature == nil {
-//         q.rankFeature = &RankFeatureQuery{}
-//     }
-//     return q.rankFeature
+func (q *Query) RankFeature() *RankFeatureQuery {
+	if q.rankFeature == nil {
+		q.rankFeature = &RankFeatureQuery{}
+	}
+	return q.rankFeature
+}
+
+// func (q *Query) Type() *TypeQuery {
+// 	if q.typ == nil {
+// 		q.typ = &TypeQuery{}
+// 	}
+// 	return q.typ
 // }
+
+// func (q *Query) AllOf() *AllOfQuery {
+//     if q.allOf == nil {
+//         q.allOf = &AllOfQuery{}
+//     }
+//     return q.allOf
+// }
+
+// func (q *Query) Common() *CommonQuery {
+// 	if q.common == nil {
+// 		q.common = &CommonQuery{}
+// 	}
+// 	return q.common
+// }
+// func (q *Query) Regexp() *RegexpQuery {
+// 	if q.regexp == nil {
+// 		q.regexp = &RegexpQuery{}
+// 	}
+// 	return q.regexp
+// }
+
+// func (q *Query) GeoPolygon() *GeoPolygonQuery {
+//     if q.geoPolygon == nil {
+//         q.geoPolygon = &GeoPolygonQuery{}
+//     }
+//     return q.geoPolygon
+// }
+
 // func (q *Query) Wrapper() *WrapperQuery {
 //     if q.wrapper == nil {
 //         q.wrapper = &WrapperQuery{}
@@ -1356,7 +1358,6 @@ func (q *Query) Term() *TermQuery {
 func (q *Query) clauses() map[QueryKind]QueryClause {
 
 	return map[QueryKind]QueryClause{
-
 		QueryKindPrefix:            q.prefix,
 		QueryKindMatch:             q.match,
 		QueryKindMatchAll:          q.matchAll,
@@ -1383,25 +1384,24 @@ func (q *Query) clauses() map[QueryKind]QueryClause {
 		QueryKindSimpleQueryString: q.simpleQueryString,
 		QueryKindGeoBoundingBox:    q.geoBoundingBox,
 		QueryKindWildcard:          q.wildcard,
+		QueryKindTermsSet:          q.termsSet,
+		QueryKindGeoDistance:       q.geoDistance,
+		QueryKindGeoShape:          q.geoShape,
+		QueryKindShape:             q.shape,
+		QueryKindNested:            q.nested,
+		QueryKindHasChild:          q.hasChild,
+		QueryKindHasParent:         q.hasParent,
+		QueryKindParentID:          q.parentID,
+		QueryKindDistanceFeature:   q.distanceFeature,
+		QueryKindMoreLikeThis:      q.moreLikeThis,
+		QueryKindPercolate:         q.percolate,
+		QueryKindRankFeature:       q.rankFeature,
 		// QueryKindCommon:            q.common,
 		// QueryKindRegexp:            q.regexp,
-		QueryKindTermsSet: q.termsSet,
 		// QueryKindType:              q.typ,
 		// QueryKindWildcard:          q.wildcard,
 		// QueryKindAllOf:             q.allOf,
-
-		QueryKindGeoDistance: q.geoDistance,
 		// QueryKindGeoPolygon:       q.geoPolygon,
-		QueryKindGeoShape:        q.geoShape,
-		QueryKindShape:           q.shape,
-		QueryKindNested:          q.nested,
-		QueryKindHasChild:        q.hasChild,
-		QueryKindHasParent:       q.hasParent,
-		QueryKindParentID:        q.parentID,
-		QueryKindDistanceFeature: q.distanceFeature,
-		QueryKindMoreLikeThis:    q.moreLikeThis,
-		QueryKindPercolate:       q.percolate,
-		// QueryKindRankFeature:      q.rankFeature,
 		// QueryKindWrapper:          q.wrapper,
 		// QueryKindPinned:           q.pinned,
 		// QueryKindSpanContaining:   q.spanContaining,
@@ -1445,8 +1445,6 @@ func (q *Query) setClause(qc QueryClause) {
 		q.functionScore = qc.(*FunctionScoreQuery)
 	case QueryKindDisjunctionMax:
 		q.disjunctionMax = qc.(*DisjunctionMaxQuery)
-	// case QueryKindAllOf:
-	// 	q.allOf = qc.(*AllOfQuery)
 	case QueryKindFuzzy:
 		q.fuzzy = qc.(*FuzzyQuery)
 	case QueryKindScriptScore:
@@ -1495,7 +1493,10 @@ func (q *Query) setClause(qc QueryClause) {
 		q.moreLikeThis = qc.(*MoreLikeThisQuery)
 	case QueryKindPercolate:
 		q.percolate = qc.(*PercolateQuery)
-
+	case QueryKindRankFeature:
+		q.rankFeature = qc.(*RankFeatureQuery)
+		// case QueryKindAllOf:
+		// 	q.allOf = qc.(*AllOfQuery)
 		// case QueryKindCommon:
 		// 	q.common= qc.(*CommonQuery)
 		// case QueryKindRegexp:
@@ -1504,8 +1505,6 @@ func (q *Query) setClause(qc QueryClause) {
 		// 	q.typ= qc.(*TypeQuery)
 		// case QueryKindGeoPolygon:
 		// 	q.geoPolygon = qc.(*GeoPolygonQuery)
-		// case QueryKindRankFeature:
-		// 	q.rankFeature = qc.(*RankFeatureQuery)
 		// case QueryKindWrapper:
 		// 	q.wrapper = qc.(*WrapperQuery)
 		// case QueryKindPinned:

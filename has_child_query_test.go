@@ -27,7 +27,7 @@ func TestHasChild(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			HasChild: picker.HasChildQueryParams{
 				Type:      "child",
 				ScoreMode: picker.ScoreModeMax,

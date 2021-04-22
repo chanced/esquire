@@ -32,7 +32,7 @@ func TestMoreLikeThis(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			MoreLikeThis: picker.MoreLikeThisQueryParams{
 				Fields: []string{"title", "description"},
 				Like: []interface{}{

@@ -29,7 +29,7 @@ func TestGeoDistance(t *testing.T) {
 	  }`)
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Bool: picker.BoolQueryParams{
 				Must: picker.Clauses{
 					picker.MatchAllQueryParams{},

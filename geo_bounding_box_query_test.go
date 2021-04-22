@@ -23,7 +23,7 @@ func TestGeoBoundingBoxQuery(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			GeoBoundingBox: picker.GeoBoundingBoxQueryParams{
 				Field: "pin.location",
 				BoundingBox: picker.BoundingBox{

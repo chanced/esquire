@@ -10,7 +10,7 @@ import (
 func TestScriptQuery(t *testing.T) {
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Script: &picker.ScriptQueryParams{
 				Lang:   "painless",
 				Name:   "script_query_name",

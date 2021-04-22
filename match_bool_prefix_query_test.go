@@ -23,7 +23,7 @@ func TestMatchBoolPrefixQuery(t *testing.T) {
 	  }`)
 
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			MatchBoolPrefix: picker.MatchBoolPrefixQueryParams{
 				Field:    "message",
 				Query:    "quick brown f",

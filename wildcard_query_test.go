@@ -25,7 +25,7 @@ func TestWildcard(t *testing.T) {
 	  }`)
 	_ = data
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			Wildcard: picker.WildcardQueryParams{
 				Value:   "ki*y",
 				Boost:   1.1,

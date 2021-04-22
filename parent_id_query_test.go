@@ -20,7 +20,7 @@ func TestParentID(t *testing.T) {
 		}
 	  }`)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			ParentID: picker.ParentIDQueryParams{
 				ID:   "1",
 				Type: "my-child",

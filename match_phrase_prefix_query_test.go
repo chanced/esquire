@@ -23,7 +23,7 @@ func TestMatchPhrasePrefixQuery(t *testing.T) {
 	  }`)
 	_ = data
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			MatchPhrasePrefix: picker.MatchPhrasePrefixQueryParams{
 				Query: "quick brown f",
 				Field: "message",

@@ -12,7 +12,7 @@ import (
 func TestFunctionScoreQuery(t *testing.T) {
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpDecayFunctionParams{},
@@ -24,7 +24,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 	assert.ErrorIs(err, picker.ErrFieldRequired)
 
 	_, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpDecayFunctionParams{
@@ -37,7 +37,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 	assert.ErrorIs(err, picker.ErrOriginRequired)
 
 	_, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Functions: picker.Funcs{
 					picker.ExpDecayFunctionParams{
@@ -51,7 +51,7 @@ func TestFunctionScoreQuery(t *testing.T) {
 	assert.ErrorIs(err, picker.ErrScaleRequired)
 
 	s, err = picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			FunctionScore: &picker.FunctionScoreQueryParams{
 				Query: &picker.QueryParams{
 					Term: &picker.TermQueryParams{

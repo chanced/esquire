@@ -31,7 +31,10 @@ func (b *BoostingQuery) Clear() {
 	*b = BoostingQuery{}
 }
 func (b *BoostingQuery) IsEmpty() bool {
-	return b == nil || b.negative.IsEmpty() || b.positive.IsEmpty()
+	if b == nil {
+		return true
+	}
+	return !(!b.negative.IsEmpty() || !b.positive.IsEmpty())
 }
 
 func (b BoostingQuery) Positive() *Query {

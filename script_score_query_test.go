@@ -15,7 +15,7 @@ type MyStruct struct {
 func TestScriptScoreQuery(t *testing.T) {
 	assert := require.New(t)
 	s, err := picker.NewSearch(picker.SearchParams{
-		Query: picker.QueryParams{
+		Query: &picker.QueryParams{
 			ScriptScore: &picker.ScriptScoreQueryParams{
 				Query: &picker.QueryParams{
 					Term: &picker.TermQueryParams{
