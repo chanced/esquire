@@ -25,6 +25,7 @@ import "time"
 // index privilege for the alias’s concrete indices.
 //
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/point-in-time-api.html
+//easyjson:json
 type PointInTime struct {
 	ID        string     `bson:"id" json:"id"`
 	KeepAlive *time.Time `bson:"keep_alive,omitempty" json:"keep_alive,omitempty"`
