@@ -840,8 +840,6 @@ type ScaledFloatFieldParams struct {
 
 	// Deprecated
 	Boost interface{} `json:"boost,omitempty"`
-	// Ignore this field
-	FieldType FieldType `json:"type"`
 }
 
 func (ScaledFloatFieldParams) Type() FieldType {

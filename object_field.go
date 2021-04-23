@@ -10,7 +10,7 @@ type objectField struct {
 }
 
 type ObjectFieldParams struct {
-	Properties Fields      `json:"properties,omitempty"`
+	Properties FieldMap    `json:"properties,omitempty"`
 	Enabled    interface{} `json:"enabled,omitempty"`
 	Dynamic    Dynamic     `json:"dynamic,omitempty"`
 }
@@ -21,7 +21,19 @@ func (p ObjectFieldParams) Field() (Field, error) {
 func (p ObjectFieldParams) Object() (*ObjectField, error) {
 	f := &ObjectField{}
 	e := &MappingError{}
-
+	s, err := p.Properties.Fields()
+	if err != nil {
+		e.Append(err)
+	}
+	f.properties = s
+	err = f.SetDynamic(p.Dynamic)
+	if err != nil {
+		e.Append(err)
+	}
+	err = f.SetEnabled(p.Enabled)
+	if err != nil {
+		e.Append(err)
+	}
 	return f, e.ErrorOrNil()
 }
 
