@@ -1,6 +1,10 @@
 package picker
 
-import "time"
+import (
+	"bytes"
+	"encoding/json"
+	"time"
+)
 
 // PointInTime is a lightweight view into the state of the data as it existed
 // when initiated.
@@ -31,6 +35,13 @@ type PointInTime struct {
 	KeepAlive *time.Time `bson:"keep_alive,omitempty" json:"keep_alive,omitempty"`
 }
 
+func (pit *PointInTime) Encode() (*bytes.Buffer, error) {
+	buf := &bytes.Buffer{}
+	enc := json.NewEncoder(buf)
+	err := enc.Encode(pit)
+	return buf, err
+
+}
 func (pit *PointInTime) Clone() *PointInTime {
 	if pit == nil {
 		return nil
