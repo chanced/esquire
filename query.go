@@ -1529,6 +1529,21 @@ func (q *Query) setClause(qc QueryClause) {
 		// 	q.spanWithin = qc.(*SpanWithinQuery)
 	}
 }
+
+func (q *Query) Clauses() (Clauses, error) {
+	if q == nil || q.IsEmpty() {
+		return nil, nil
+	}
+	res := Clauses{}
+	for _, c := range q.clauses() {
+		err := res.Add(c)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (q *Query) Set(params Querier) error {
 	qv, err := params.Query()
 	if err != nil {
