@@ -5,11 +5,23 @@ import (
 	"encoding/json"
 )
 
+type Conflicts string
+
+const (
+	ConflictsNotSpecified = ""
+	ConflictsProceed      = "proceed"
+	ConflictsAbort        = "abort"
+)
+
+var DefaultConflicts = ConflictsAbort
+
 type UpdateByQuerier interface {
 	UpdateByQuery() (*UpdateByQuery, error)
 }
 type UpdateByQueryParams struct {
-	Query Querier
+	Query     Querier
+	Script    *Script
+	Conflicts Conflicts
 }
 
 func (p UpdateByQueryParams) UpdateByQuery() (*UpdateByQuery, error) {
@@ -26,7 +38,9 @@ func (p UpdateByQueryParams) UpdateByQuery() (*UpdateByQuery, error) {
 }
 
 type UpdateByQuery struct {
-	query *Query
+	query     *Query
+	script    *Script
+	conflicts Conflicts
 }
 
 func (u UpdateByQuery) Encode() (*bytes.Buffer, error) {
@@ -63,7 +77,37 @@ func (u *UpdateByQuery) UnmarshalBSON(data []byte) error {
 
 //easyjson:json
 type updateByQuery struct {
-	Query *Query `json:"query,omitempty"`
+	Query     *Query    `json:"query,omitempty"`
+	Script    *Script   `json:"script,omitempty"`
+	Conflicts Conflicts `json:"conflicts,omitempty"`
+}
+
+func (u *UpdateByQuery) Conflicts() Conflicts {
+	return u.conflicts
+}
+
+func (u *UpdateByQuery) SetConflicts(c Conflicts) {
+	u.conflicts = c
+}
+
+func (u *UpdateByQuery) Script() *Script {
+	return u.script
+}
+
+func (u *UpdateByQuery) SetScript(script *Script) {
+	u.script = script
+}
+func (u *UpdateByQuery) SetQuery(query Querier) error {
+	if query == nil {
+		u.query = nil
+		return nil
+	}
+	q, err := query.Query()
+	if err != nil {
+		return err
+	}
+	u.query = q
+	return nil
 }
 
 func (u *UpdateByQuery) Query() *Query {

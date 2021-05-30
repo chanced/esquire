@@ -919,6 +919,11 @@ func (q *QueryParams) Query() (*Query, error) {
 	return qv, nil
 }
 
+func NewQuery(q Querier) (*Query, error) {
+	v, err := q.Query()
+	return v, err
+}
+
 // Query defines the search definition using the ElasticSearch Query DSL
 //
 // Elasticsearch provides a full Query DSL (Domain Specific Language) based on
