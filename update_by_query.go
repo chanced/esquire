@@ -52,7 +52,9 @@ func (u UpdateByQuery) Encode() (*bytes.Buffer, error) {
 
 func (u UpdateByQuery) MarshalJSON() ([]byte, error) {
 	return updateByQuery{
-		Query: u.query,
+		Query:     u.query,
+		Script:    u.script,
+		Conflicts: u.conflicts,
 	}.MarshalJSON()
 }
 
@@ -64,6 +66,8 @@ func (u *UpdateByQuery) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	u.query = p.Query
+	u.conflicts = p.Conflicts
+	u.script = p.Script
 	return nil
 }
 
