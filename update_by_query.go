@@ -3,6 +3,7 @@ package picker
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 )
 
 type Conflicts string
@@ -144,4 +145,11 @@ type UpdateByQueryResponse struct {
 type Retries struct {
 	Bulk   int64 `json:"bulk"`
 	Search int64 `json:"search"`
+}
+
+func DecodeUpdateByQueryResponse(body io.Reader) (*UpdateByQueryResponse, error) {
+	dec := json.NewDecoder(body)
+	var res UpdateByQueryResponse
+	err := dec.Decode(&res)
+	return &res, err
 }
