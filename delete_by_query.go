@@ -3,6 +3,7 @@ package picker
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 )
 
 type DeleteByQuerier interface {
@@ -91,4 +92,11 @@ type DeleteByQueryResponse struct {
 	RequestsPerSecond    float64       `json:"requests_per_second"`
 	Failures             []interface{} `json:"failures"`
 	ThrottledUntilMillis int64         `json:"throttled_until_millis"`
+}
+
+func DecodeDeleteByQueryResponse(body io.Reader) (*DeleteByQueryResponse, error) {
+	dec := json.NewDecoder(body)
+	var res DeleteByQueryResponse
+	err := dec.Decode(&res)
+	return &res, err
 }
