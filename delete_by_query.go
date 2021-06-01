@@ -76,3 +76,19 @@ func (d *DeleteByQuery) Query() *Query {
 func NewDeleteByQuery(params DeleteByQueryParams) (*DeleteByQuery, error) {
 	return params.DeleteByQuery()
 }
+
+type DeleteByQueryResponse struct {
+	Took                 int64         `json:"took"`
+	TimedOut             bool          `json:"timed_out"`
+	Total                int64         `json:"total"`
+	Updated              int64         `json:"updated"`
+	Deleted              int64         `json:"deleted"`
+	Batches              int64         `json:"batches"`
+	VersionConflicts     int64         `json:"version_conflicts"`
+	Noops                int64         `json:"noops"`
+	Retries              Retries       `json:"retries"`
+	ThrottledMillis      int64         `json:"throttled_millis"`
+	RequestsPerSecond    float64       `json:"requests_per_second"`
+	Failures             []interface{} `json:"failures"`
+	ThrottledUntilMillis int64         `json:"throttled_until_millis"`
+}
