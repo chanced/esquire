@@ -17,8 +17,8 @@ var (
 
 // SearchParams are the initial params passed to NewSearch
 type SearchParams struct {
-	Query Querier
-
+	Query        Querier
+	Sort         Sort
 	Aggregations map[string]interface{}
 	// Array of wildcard (*) patterns. The request returns doc values for field
 	// names matching these patterns in the hits.fields property of the response
